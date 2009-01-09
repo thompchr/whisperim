@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.vanderbilt.client;
+package org.whisperim.client;
 
 /**
  * @author Chris Thompson

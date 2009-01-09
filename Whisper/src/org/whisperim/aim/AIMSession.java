@@ -1,10 +1,10 @@
-package org.vanderbilt.aim;
+package org.whisperim.aim;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 
-import org.vanderbilt.client.AIMStrategy;
-import org.vanderbilt.client.Message;
+import org.whisperim.client.AIMStrategy;
+import org.whisperim.client.Message;
 
 import com.aol.acc.AccAlert;
 import com.aol.acc.AccAvManager;

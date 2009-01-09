@@ -1,4 +1,4 @@
-package org.vanderbilt.client;
+package org.whisperim.client;
 
 /**
  * This class is designed to help keep track of which buddy

@@ -1,11 +1,11 @@
 /**
  * 
  */
-package org.vanderbilt.aim;
+package org.whisperim.aim;
 
-import org.vanderbilt.client.Command;
-import org.vanderbilt.client.ConnectionManager;
-import org.vanderbilt.client.Message;
+import org.whisperim.client.Command;
+import org.whisperim.client.ConnectionManager;
+import org.whisperim.client.Message;
 
 /**
  * @author Chris Thompson

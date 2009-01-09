@@ -9,7 +9,7 @@
  * Created on Dec 8, 2008, 1:20:03 AM
  */
 
-package org.vanderbilt.client;
+package org.whisperim.client;
 
 import java.security.PrivateKey;
 import java.security.PublicKey;

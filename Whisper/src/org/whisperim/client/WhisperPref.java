@@ -9,7 +9,7 @@
  * Created on Dec 5, 2008, 5:17:55 PM
  */
 
-package org.vanderbilt.client;
+package org.whisperim.client;
 
 /**
  *

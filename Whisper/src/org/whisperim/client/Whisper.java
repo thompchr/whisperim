@@ -1,4 +1,4 @@
-package org.vanderbilt.client;
+package org.whisperim.client;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,6 +22,8 @@ import java.security.PrivateKey;
 //XML Imports
 import java.io.File;
 import org.w3c.dom.*;
+import org.whisperim.keys.*;
+import org.whisperim.security.Encryptor;
 import org.apache.xml.serialize.*;
 import org.xml.sax.*;
 import org.xml.sax.helpers.*;
@@ -32,8 +34,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException; 
 
-import org.vanderbilt.security.Encryptor;
-import org.vanderbilt.keys.*;
 
 import com.sun.org.apache.xml.internal.security.utils.Base64;
 
