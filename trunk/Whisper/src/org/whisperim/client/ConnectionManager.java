@@ -1,4 +1,4 @@
-package org.vanderbilt.client;
+package org.whisperim.client;
 
 import java.security.PrivateKey;
 import java.security.PublicKey;

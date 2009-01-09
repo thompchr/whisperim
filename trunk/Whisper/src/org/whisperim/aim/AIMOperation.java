@@ -1,4 +1,4 @@
-package org.vanderbilt.aim;
+package org.whisperim.aim;
 
 public class AIMOperation {
 	

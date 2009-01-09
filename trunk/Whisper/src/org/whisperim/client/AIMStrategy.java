@@ -1,10 +1,11 @@
 /**
  * 
  */
-package org.vanderbilt.client;
+package org.whisperim.client;
 
 
-import org.vanderbilt.aim.*;
+import org.whisperim.aim.*;
+
 import java.util.ArrayList;
 
 

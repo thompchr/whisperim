@@ -9,9 +9,10 @@
  * Created on Dec 5, 2008, 4:42:26 PM
  */
 
-package org.vanderbilt.client;
+package org.whisperim.client;
 import javax.swing.*;
-import org.vanderbilt.security.Encryptor;
+
+import org.whisperim.security.Encryptor;
 
 import java.security.PrivateKey;
 import java.text.DateFormat;

@@ -1,4 +1,4 @@
-package org.vanderbilt.aim;
+package org.whisperim.aim;
 
 import com.aol.acc.*;
 import java.util.*;
