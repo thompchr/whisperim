@@ -7,7 +7,8 @@ User stories for the Whisper IM project
   * User can set status to "Away" (John)
   * User becomes idle after set amount of inactivity (Kirk) 
   * User can enable/disable logging (Cory)
-  * User can block/unblock another user (Nick)
+  * ~~User can block/unblock another user (Nick)~~
+  * User can select buddy by left click and then  toggle block status using a button on   toolbar (Nick)
 
 =Future=
   * User can share public key information with other users
