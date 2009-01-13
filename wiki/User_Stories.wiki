@@ -8,6 +8,8 @@ User stories for the Whisper IM project
   * User becomes idle after set amount of inactivity (Kirk) 
   * User can enable/disable logging (Cory)
   * User can block/unblock another user (Nick)
+
+=Future=
   * User can share public key information with other users
   * User will see updated buddy list when other users sign in or out
   * User is displayed account setup screen when starting program for first time
