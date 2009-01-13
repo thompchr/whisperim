@@ -1,13 +1,15 @@
-#summary One-sentence summary of this page.
+#labels Phase-Requirements
+User stories for the Whisper IM project
 
-= Introduction =
+=Week 1=
 
-Add your content here.
-
-
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+  #User can chat securely without error messages
+  #User can set status to "Away"
+  #User becomes idle after set amount of inactivity
+  #User can share public key information with other users
+  #User can enable/disable logging
+  #User can block/unblock another user
+  #User will see updated buddy list when other users sign in or out
+  #User is displayed account setup screen when starting program for first time
+  #User can initiate talk with anyone regardless of "buddy" status
+  #User can select "New IM" and be displayed a new window without selecting a buddy
