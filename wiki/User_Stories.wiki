@@ -3,13 +3,13 @@ User stories for the Whisper IM project
 
 =Week 1=
 
-  # User can chat securely without error messages
-    User can set status to "Away"
-    User becomes idle after set amount of inactivity
-  # User can share public key information with other users
-  # User can enable/disable logging
-  # User can block/unblock another user
-  # User will see updated buddy list when other users sign in or out
-  # User is displayed account setup screen when starting program for first time
-  # User can initiate talk with anyone regardless of "buddy" status
-  # User can select "New IM" and be displayed a new window without selecting a buddy
+  1. User can chat securely without error messages
+  2. User can set status to "Away"
+  3. User becomes idle after set amount of inactivity
+  4. User can share public key information with other users
+  5. User can enable/disable logging
+  6. User can block/unblock another user
+  7. User will see updated buddy list when other users sign in or out
+  8. User is displayed account setup screen when starting program for first time
+  9. User can initiate talk with anyone regardless of "buddy" status
+  10. User can select "New IM" and be displayed a new window without selecting a buddy
