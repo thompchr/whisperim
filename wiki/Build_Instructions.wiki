@@ -1,5 +1,4 @@
 
-
-  * Add "-Djava.library.path={path to project}\Whisper\lib" to the JVM arguments in "Run Configurations
+  * Add "-Djava.library.path={path to project}\Whisper\lib" to the JVM arguments in "Run Configurations"
   * Change the working directory to "${workspace_loc:Whisper/lib}"
   
