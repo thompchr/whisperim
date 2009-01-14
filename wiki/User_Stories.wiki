@@ -15,3 +15,4 @@ User stories for the Whisper IM project
   * User is displayed account setup screen when starting program for first time
   * User can initiate talk with anyone regardless of "buddy" status
   * User can select "New IM" and be displayed a new window without selecting a buddy
+  * User can utilize rich text in conversation
