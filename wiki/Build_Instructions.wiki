@@ -1,4 +1,4 @@
-# Instructions for building and running the Whisper IM client from Eclipse.
+
 
   * Add "-Djava.library.path={path to project}\Whisper\lib" to the JVM arguments in "Run Configurations
   * Change the working directory to "${workspace_loc:Whisper/lib}"
