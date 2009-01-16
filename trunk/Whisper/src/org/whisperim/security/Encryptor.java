@@ -145,13 +145,14 @@ public class Encryptor {
 	public String generateCipherText(String message){
 		String encryptedMessage = null;
 		try{
-			Cipher aesCipher = Cipher.getInstance("AES");
+			Cipher aesCipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
 			
 			KeyGenerator sessionKeyGen = KeyGenerator.getInstance("AES");
 			
 			sessionKeyGen.init(128);
 			
 			sessionKey = sessionKeyGen.generateKey();
+			
 			
 			aesCipher.init(Cipher.ENCRYPT_MODE, sessionKey);
 			
@@ -161,7 +162,7 @@ public class Encryptor {
 			
 			encryptedMessage = "<key>";
 			
-			Cipher rsaCipher = Cipher.getInstance("RSA/ECB/NoPadding");
+			Cipher rsaCipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
 			
 			rsaCipher.init(Cipher.ENCRYPT_MODE, publicKey);
 			
@@ -193,20 +194,21 @@ public class Encryptor {
 		try {
 
 			String encKey = message.substring(5, message.indexOf("</key>"));
-			byte [] keyBytes = Base64.decode(encKey.getBytes());
+			byte [] keyBytes = Base64.decode(encKey.getBytes("UTF-8"));
 			
 
 			String encMessage = message.substring(message.indexOf("</key>") + 15, message.indexOf("</message>"));
 			
 			byte [] messageBytes = Base64.decode(encMessage.getBytes("UTF-8"));
 			
-			Cipher rsaCipherDecrypt = Cipher.getInstance("RSA/ECB/NoPadding");
+			Cipher rsaCipherDecrypt = Cipher.getInstance("RSA/ECB/PKCS1Padding");
 			rsaCipherDecrypt.init(Cipher.DECRYPT_MODE, privateKey);
 			
-			String key = new String(rsaCipherDecrypt.doFinal(keyBytes)).substring(112);
 			
-			Cipher aesCipher = Cipher.getInstance("AES");
-			aesCipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key.getBytes(), "AES"));
+			
+			Cipher aesCipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+			SecretKeySpec aesKeyDec = new SecretKeySpec(rsaCipherDecrypt.doFinal(keyBytes), "AES");
+			aesCipher.init(Cipher.DECRYPT_MODE, aesKeyDec);
 
 			outputMessage = new String(aesCipher.doFinal(messageBytes));
 

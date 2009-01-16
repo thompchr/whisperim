@@ -5,7 +5,9 @@ public class IdleListener implements KeyListener, MouseListener, MouseMotionList
 
 	public IdleListener()
 	{
-		addMouseListener(this);
+		//Chris Thompson
+		//Commented this line to stop the compiler from complaining in my branch
+		//addMouseListener(this);
 		
 	}
 	
