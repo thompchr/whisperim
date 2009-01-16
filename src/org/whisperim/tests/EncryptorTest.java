@@ -7,8 +7,6 @@ import java.util.Random;
 
 import org.whisperim.security.*;
 
-import java.lang.Math;
-
 
 public class EncryptorTest extends TestCase {
 
@@ -24,10 +22,16 @@ public class EncryptorTest extends TestCase {
 		
 		int numTests = (int) (rnd.nextDouble() * 1000);
 		
+		System.out.println("Running " + numTests + " tests...");
+		
 		for (int i = 0; i < numTests; ++i){
 			
-			int strLen = (int)(rnd.nextDouble() * 10000);
+			System.out.println("Test " + i);
 			
+			int strLen = (int)(rnd.nextDouble() * 10000);
+			System.out.println("----------------------------");
+			System.out.println("- String length: " + strLen);
+						
 			for (int j = 0; j < strLen; ++j){
 				pt = pt + chars[(int) (rnd.nextDouble() * chars.length)];
 			}
@@ -36,15 +40,21 @@ public class EncryptorTest extends TestCase {
 			KeyPair kp = Encryptor.generateRSAKeyPair();
 			Encryptor enc = new Encryptor(kp.getPublic(), kp.getPrivate());
 			String ct;
-
 			
-
+			Long start = System.currentTimeMillis(); 
 			ct = enc.generateCipherText(pt);
+			Long finish = System.currentTimeMillis();
 
+			System.out.println("- Encryption time: " + (finish-start));
 			assertTrue(!pt.equalsIgnoreCase(ct));
 
+			start = System.currentTimeMillis(); 
 			String dec = enc.decryptMessage(ct);
-
+			finish = System.currentTimeMillis();
+			
+			System.out.println("- Decryption time: " + (finish-start));
+			System.out.println("----------------------------");
+			System.out.println();
 			assertTrue(pt.equalsIgnoreCase(dec));
 
 		}
