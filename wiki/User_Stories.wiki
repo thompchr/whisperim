@@ -5,7 +5,7 @@ User stories for the Whisper IM project
  * User can chat securely without error messages (Chris, Cory, Nick)
  * 1/16: Encryptor class has been fixed, code cleanup still in progress
  * User becomes idle after set amount of inactivity (Kirk, John)
- * 1/15: developed skeleton code for IdleListener class
+ * 1/15: Developed skeleton code for IdleListener class
  * 1/19: Implemented solution to allow user to go idle.  
   * Removed listeners to determine idle status
   * Based Idle status on how recent a user has sent a message
