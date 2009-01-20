@@ -9,7 +9,7 @@ User stories for the Whisper IM project
  * 1/19: Implemented solution to allow user to go idle.  
   * Removed listeners to determine idle status
   * Based Idle status on how recent a user has sent a message
-  * Idle status is updated in the title bar as: Whisper [Idle]
+  * Idle status is updated in the title bar as: Whisper (Idle)
 
 =Future=
   * User can select buddy by left click and then  toggle block status using a button on   toolbar
