@@ -1,6 +1,0 @@
-#Code formatting standard
-
-
- * private member names in have their first letter in lower case with the first letter of the following words capitalized with an underscore after - ex: privateMember_
- * function names in lower case with underscores between - ex: functionName() 
- * constructors have their first letter caps - Ex: MyClass() 
