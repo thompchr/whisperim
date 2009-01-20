@@ -1,5 +1,8 @@
 package org.whisperim.client;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import javax.swing.*;
 
 import java.util.HashMap;
@@ -24,7 +27,8 @@ public class WhisperClient extends javax.swing.JFrame {
     private String[] buddyString;
     private int numOfBuddies = 0;
     private String myHandle_;
- 
+    private Timer myTimer;
+    private IdleTT myTaskTimer;
     
     private ConnectionManager manager_;
 
@@ -37,9 +41,17 @@ public class WhisperClient extends javax.swing.JFrame {
         myHandle_ = handle;
         this.setTitle("Whisper");
         
-        
+        myTimer = new Timer();
+        myTaskTimer = new IdleTT();
+        myTimer.schedule(myTaskTimer, 5000); //user goes idle after 5 seconds for demo/test purposes      
     }
 
+    class IdleTT extends TimerTask {
+        public void run() {
+        	setTitle("Whisper [Idle]");
+        }
+    }
+    
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -192,6 +204,12 @@ public class WhisperClient extends javax.swing.JFrame {
 
     public void sendMessage (Message message){
         manager_.sendMessage(message);
+              
+        this.setTitle("Whisper");
+        
+        myTaskTimer.cancel();
+        myTaskTimer = new IdleTT();
+        myTimer.schedule(myTaskTimer, 5000);
     }
 
 

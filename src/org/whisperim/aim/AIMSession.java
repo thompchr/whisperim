@@ -66,7 +66,6 @@ public class AIMSession implements AccEvents, Runnable {
     	strategy_ = strategy;
     	listenThread = new Thread(this);
     	listenThread.start();
-    	
     }
     
 	@Override
