@@ -10,7 +10,7 @@ import org.whisperim.security.*;
 
 public class EncryptorTest extends TestCase {
 
-	public void testEncryptionDecryption (){
+	public void testEncryptionDecryptionStability (){
 		
 		String pt = "";
 		
@@ -20,7 +20,7 @@ public class EncryptorTest extends TestCase {
 		Random rnd = new Random ();
 		
 		
-		int numTests = (int) (rnd.nextDouble() * 1000);
+		int numTests = (int) (rnd.nextDouble() * 25);
 		
 		System.out.println("Running " + numTests + " tests...");
 		
@@ -59,13 +59,29 @@ public class EncryptorTest extends TestCase {
 
 		}
 		
-		
-
-		
-		
-		
-		
 
 	}
+	
+	public void testEncryptionDecryptionPerformance() {
+		String pt = "";
+		
+		char[] chars = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '1', '2', '3', '4',
+				'5', '6', '7', '8', '9', '0', '?', '!', '@', '#', '$', '%', '&', '*', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
+                'U', 'V', 'W', 'X', 'Y', 'Z', ' ', ':', ';', '[', ']', '.', '(', ')', '{', '}', '\\', '/' };
+		Random rnd = new Random ();
+
+		for (int j = 0; j < 100; ++j){
+			pt = pt + chars[(int) (rnd.nextDouble() * chars.length)];
+		}
+		
+		
+		KeyPair kp = Encryptor.generateRSAKeyPair();
+		Encryptor enc = new Encryptor(kp.getPublic(), kp.getPrivate());
+		String ct = enc.generateCipherText(pt);
+		
+		enc.decryptMessage(ct);
+
+	}
+	
 
 }
