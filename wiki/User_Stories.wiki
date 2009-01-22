@@ -24,3 +24,4 @@ User stories for the Whisper IM project
   * User can utilize the enter key in place of clicking the send button
   * User can utilize the enter key in place of clicking the login button
   * User will be notified and redirected when bad password is entered and given some way to correct problem
+  * User will be notified of errors (exceptions) via dialog boxes unless they are fully handled by the software
