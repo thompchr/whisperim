@@ -1,0 +1,7 @@
+#summary One-sentence summary of this page.
+
+= Instructions for Running the WhisperIM Client =
+
+Unpack the zip file to a directory.  Double click on the Whisper.jar file or navigate to the directory in a command prompt and enter "java -jar Whisper.jar" to run the application.  
+
+Currently requires an AOL screen name and password.
