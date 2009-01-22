@@ -24,26 +24,31 @@ public class ConnectionManager {
 
 	public static final int AIM_SESSION = 0; 
 
-	private HashMap<String, ConnectionStrategy> Strategies = new HashMap<String, ConnectionStrategy>();
+	private HashMap<String, ConnectionStrategy> strategies_ = new HashMap<String, ConnectionStrategy>();
 
-	public ConnectionStrategy GetStrategy(String Strategy)
+	public boolean isHashEmpty()
 	{
-		return Strategies.get(Strategy);
+		return (strategies_.isEmpty());
+	}
+	
+	public ConnectionStrategy getStrategy(String strategy)
+	{
+		return strategies_.get(strategy);
 	}
 
-	public void RemoveStrategy(String Strategy)
+	public void removeStrategy(String strategy)
 	{
-		if(!Strategy.isEmpty())
+		if(!strategy.isEmpty())
 		{
-			Strategies.remove(Strategy);
+			strategies_.remove(strategy);
 		}else{
 			System.out.println("Error: Hashmap is already empty.");
 		}
 	}
 
-	public void AddToMap(String Name, ConnectionStrategy Strategy)
+	public void addToMap(String name, ConnectionStrategy strategy)
 	{
-		Strategies.put(Name, Strategy);
+		strategies_.put(name, strategy);
 	}
 
 	public ConnectionManager(int strategy, String handle, String password, Login login, PrivateKey privKey, PublicKey pubKey) throws IllegalArgumentException{
