@@ -45,7 +45,7 @@ public class EncryptorTest extends TestCase {
 			ct = enc.generateCipherText(pt);
 			Long finish = System.currentTimeMillis();
 
-			System.out.println("- Encryption time: " + (finish-start));
+			System.out.println("- Encryption time: " + (finish - start));
 			assertTrue(!pt.equalsIgnoreCase(ct));
 
 			start = System.currentTimeMillis(); 
