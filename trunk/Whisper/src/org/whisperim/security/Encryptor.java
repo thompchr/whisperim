@@ -153,7 +153,6 @@ public class Encryptor {
 			
 			sessionKey = sessionKeyGen.generateKey();
 			
-			
 			aesCipher.init(Cipher.ENCRYPT_MODE, sessionKey);
 			
 			byte [] byteArray = message.getBytes("UTF-8");
