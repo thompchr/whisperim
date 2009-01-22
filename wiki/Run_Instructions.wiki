@@ -7,3 +7,4 @@ Unpack the zip file to a directory.  Double click on the Whisper.jar file or nav
 Currently requires an AOL screen name and password.
 
 _Version 0.1_
+_Requires Java 1.6_
