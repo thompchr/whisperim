@@ -48,7 +48,6 @@ import org.xml.sax.SAXException;
  */
 public class Encryptor {
 	
-	private SecretKey sessionKey_;
 	private PublicKey publicKey_ = null;
 	private PrivateKey privateKey_ = null;
 	
@@ -90,7 +89,10 @@ public class Encryptor {
 	}
 
 	/**
-	 * 
+	 * The function provides the ability to read the key file from the local file system
+	 * and retrieve the previously acquired public key for a given buddy.  Currently requires
+	 * only a "handle" as a parameter but should, in the future, require a protocol to 
+	 * correctly identify the public key.
 	 * @param handle
 	 * @return PublicKey
 	 */
@@ -175,22 +177,24 @@ public class Encryptor {
 	}
 	
 	/**
-	 * This method will be used to generate the encrypted message.
+	 * This method is used to generate the encrypted message.  The plaintext is provided as a parameter
+	 * and the ciphertext with the encrypted session key including the <key> and <message> tags is returned.
 	 * @param message
 	 * @return String
 	 */
 	public String generateCipherText(String message){
 		String encryptedMessage = null;
 		try{
+			
 			Cipher aesCipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
 			
 			KeyGenerator sessionKeyGen = KeyGenerator.getInstance("AES");
 			
 			sessionKeyGen.init(128);
 			
-			sessionKey_ = sessionKeyGen.generateKey();
+			SecretKey sessionKey = sessionKeyGen.generateKey();
 			
-			aesCipher.init(Cipher.ENCRYPT_MODE, sessionKey_);
+			aesCipher.init(Cipher.ENCRYPT_MODE, sessionKey);
 			
 			byte [] byteArray = message.getBytes("UTF-8");
 			
@@ -202,7 +206,7 @@ public class Encryptor {
 			
 			rsaCipher.init(Cipher.ENCRYPT_MODE, publicKey_);
 			
-			byte [] encryptedKeyBytes = rsaCipher.doFinal(sessionKey_.getEncoded());
+			byte [] encryptedKeyBytes = rsaCipher.doFinal(sessionKey.getEncoded());
 			
 			String encryptedKeyString = new String (Base64.encode(encryptedKeyBytes));
 			
@@ -221,6 +225,9 @@ public class Encryptor {
 	
 	/**
 	 * This function provides the decryption of an entire message.
+	 * It provides the functionality to initially decrypt the session key
+	 * using the member variable privateKey_ as well as then to use the output
+	 * of that decryption to decrypt the body of the message itself.
 	 * @param message
 	 * @return  String
 	 */
@@ -256,10 +263,19 @@ public class Encryptor {
 		
 	}
 	
+	
+	/**
+	 * Set method for the publicKey_ member variable.
+	 * @param key
+	 */
 	public void setPublicKey(PublicKey key){
 		publicKey_ = key;
 	}
 	
+	/**
+	 * Set method for the privateKey_ member variable.
+	 * @param key
+	 */
 	public void setPrivateKey(PrivateKey key){
 		privateKey_ = key;
 	}
