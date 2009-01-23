@@ -7,9 +7,22 @@ import java.util.Random;
 
 import org.whisperim.security.*;
 
-
+/**
+ * This class tests the Encryptor class.  It provides tests for the stability
+ * as well as performance of the encryption algorithms.
+ * @author Chris Thompson
+ *
+ */
 public class EncryptorTest extends TestCase {
 
+	/**
+	 * This method runs a random number of encryption/decryption cycles that each use a string
+	 * of random characters and random size. This functions to test the stability of the encryption/decryption
+	 * process and assure that all strings will be encrypted and decrypted without error.  Further, this test
+	 * verifies that the product of the encryption is not equal to the original plain text.  At the end, it 
+	 * verifies that the output of the decryption function is the same as the original plain text.
+	 * Currently, this test outputs its results and information for each iteration to the command line. 
+	 */
 	public void testEncryptionDecryptionStability (){
 		
 		String pt = "";
@@ -62,6 +75,11 @@ public class EncryptorTest extends TestCase {
 
 	}
 	
+	/**
+	 * This method is designed to test the performance of the encryption/decryption process.  
+	 * It uses a random string of 100 characters.  This test assumes that the encryption/decryption
+	 * process is functioning correctly.
+	 */
 	public void testEncryptionDecryptionPerformance() {
 		String pt = "";
 		
