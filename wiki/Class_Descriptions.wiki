@@ -1,0 +1,5 @@
+#summary The page contains documentation for the classes in the WhisperIM client.
+
+= Encryptor =
+
+This class forms the backbone of the security functionality of the whisper client. It contains methods for generating RSA keypairs as well as performing the encryption/decryption operations on the messages.  It also reads the key file to import a given buddy's public key.
