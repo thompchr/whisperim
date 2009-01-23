@@ -7,3 +7,7 @@ This class forms the backbone of the security functionality of the whisper clien
 = Encryptor Test =
 
 This method runs a random number of encryption/decryption cycles that each use a string of random characters and random size. This functions to test the stability of the encryption/decryption process and assure that all strings will be encrypted and decrypted without error.  Further, this test verifies that the product of the encryption is not equal to the original plain text.  At the end, it verifies that the output of the decryption function is the same as the original plain text. Currently, this test outputs its results and information for each iteration to the command line.
+
+= Connection Manager Test =
+
+This class is designed to provided a set of tests for the ConnectionManager class.
