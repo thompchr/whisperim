@@ -15,11 +15,9 @@ import java.awt.event.KeyEvent;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 
-import javax.swing.KeyStroke;
-
 /**
  *
- * @author Chris Thompson
+ * @author Chris Thompson, Cory Plastek
  */
 public class Login extends javax.swing.JFrame {
 
