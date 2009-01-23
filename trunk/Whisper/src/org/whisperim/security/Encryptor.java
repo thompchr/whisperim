@@ -1,3 +1,19 @@
+ /**************************************************************************
+ * Copyright 2009 Chris Thompson                                           *
+ *                                                                         *
+ * Licensed under the Apache License, Version 2.0 (the "License");         *
+ * you may not use this file except in compliance with the License.        *
+ * You may obtain a copy of the License at                                 *
+ *                                                                         *
+ * http://www.apache.org/licenses/LICENSE-2.0                              *
+ *                                                                         *
+ * Unless required by applicable law or agreed to in writing, software     *
+ * distributed under the License is distributed on an "AS IS" BASIS,       *
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.*
+ * See the License for the specific language governing permissions and     *
+ * limitations under the License.                                          *
+ **************************************************************************/
+
 package org.whisperim.security;
 
 import java.io.File;
@@ -21,19 +37,35 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+
+/**
+ * This class forms the backbone of the security functionality of the whisper client.
+ * It contains methods for generating RSA keypairs as well as performing the encryption/decryption
+ * operations on the messages.  It also reads the key file to import a given buddy's public key.
+ * 
+ * @author Chris Thompson
+ *
+ */
 public class Encryptor {
 	
-	private SecretKey sessionKey;
+	private SecretKey sessionKey_;
+	private PublicKey publicKey_ = null;
+	private PrivateKey privateKey_ = null;
 	
 	
-	private PublicKey publicKey = null;
-	private PrivateKey privateKey = null;
-	
+	/**
+	 * Encryptor class constructor.  Requires a PublicKey (foreign) and a PrivateKey(local)
+	 * as parameters.
+	 * @param key
+	 * @param myKey
+	 */
 	public Encryptor (PublicKey key, PrivateKey myKey){
-		publicKey = key;
-		privateKey = myKey;
+		publicKey_ = key;
+		privateKey_ = myKey;
 			
 	}
+	
+	
 	/**
 	 * Method used for generating an RSA key pair.  This method is 
 	 * static and will only be called when a user first uses the program.
@@ -57,6 +89,11 @@ public class Encryptor {
 		
 	}
 
+	/**
+	 * 
+	 * @param handle
+	 * @return PublicKey
+	 */
     public static PublicKey getPublicKeyForBuddy(String handle){
         try {
             File keyFile = new File(System.getProperty("user.home") + File.separator + "Whisper" + File.separator + "keys");
@@ -151,9 +188,9 @@ public class Encryptor {
 			
 			sessionKeyGen.init(128);
 			
-			sessionKey = sessionKeyGen.generateKey();
+			sessionKey_ = sessionKeyGen.generateKey();
 			
-			aesCipher.init(Cipher.ENCRYPT_MODE, sessionKey);
+			aesCipher.init(Cipher.ENCRYPT_MODE, sessionKey_);
 			
 			byte [] byteArray = message.getBytes("UTF-8");
 			
@@ -163,9 +200,9 @@ public class Encryptor {
 			
 			Cipher rsaCipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
 			
-			rsaCipher.init(Cipher.ENCRYPT_MODE, publicKey);
+			rsaCipher.init(Cipher.ENCRYPT_MODE, publicKey_);
 			
-			byte [] encryptedKeyBytes = rsaCipher.doFinal(sessionKey.getEncoded());
+			byte [] encryptedKeyBytes = rsaCipher.doFinal(sessionKey_.getEncoded());
 			
 			String encryptedKeyString = new String (Base64.encode(encryptedKeyBytes));
 			
@@ -201,7 +238,7 @@ public class Encryptor {
 			byte [] messageBytes = Base64.decode(encMessage.getBytes("UTF-8"));
 			
 			Cipher rsaCipherDecrypt = Cipher.getInstance("RSA/ECB/PKCS1Padding");
-			rsaCipherDecrypt.init(Cipher.DECRYPT_MODE, privateKey);
+			rsaCipherDecrypt.init(Cipher.DECRYPT_MODE, privateKey_);
 			
 			
 			
@@ -220,11 +257,11 @@ public class Encryptor {
 	}
 	
 	public void setPublicKey(PublicKey key){
-		publicKey = key;
+		publicKey_ = key;
 	}
 	
 	public void setPrivateKey(PrivateKey key){
-		privateKey = key;
+		privateKey_ = key;
 	}
 	
 	
