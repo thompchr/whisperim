@@ -8,6 +8,10 @@ This class acts as a helper class to generate operations to pass to the AIMSessi
 
 This class acts as the connection to the AIM service as well as providing the interface to handle events fired from the AIM service.  It runs as an independent thread and handles all traffic between the client and the AIM servers.
 
+== Prefs ==
+
+This class acts as a container for the session preferences for the AIM service. Preferences are added to the HashMap as String objects via the setValue method. This class extends the AccPreferencesHook class which allows it to be passed to and parsed by the AIM service during the connection.
+
 == Encryptor ==
 
 This class forms the backbone of the security functionality of the whisper client. It contains methods for generating RSA keypairs as well as performing the encryption/decryption operations on the messages.  It also reads the key file to import a given buddy's public key.
