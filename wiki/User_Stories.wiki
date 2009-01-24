@@ -10,6 +10,7 @@
   * Removed listeners to determine idle status
   * Based Idle status on how recent a user has sent a message
   * Idle status is updated in the title bar as: Whisper (Idle)
+ * User can utilize the enter key in place of clicking the login button (Cory)
 
 =Future=
   * User can select buddy by left click and then  toggle block status using a button on   toolbar
@@ -22,6 +23,5 @@
   * User can select "New IM" and be displayed a new window without selecting a buddy
   * User can utilize rich text in conversation
   * User can utilize the enter key in place of clicking the send button
-  * User can utilize the enter key in place of clicking the login button
   * User will be notified and redirected when bad password is entered and given some way to correct problem
   * User will be notified of errors (exceptions) via dialog boxes unless they are fully handled by the software
