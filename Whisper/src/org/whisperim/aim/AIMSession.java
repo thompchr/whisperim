@@ -1,3 +1,19 @@
+/**************************************************************************
+ * Copyright 2009 Chris Thompson                                           *
+ *                                                                         *
+ * Licensed under the Apache License, Version 2.0 (the "License");         *
+ * you may not use this file except in compliance with the License.        *
+ * You may obtain a copy of the License at                                 *
+ *                                                                         *
+ * http://www.apache.org/licenses/LICENSE-2.0                              *
+ *                                                                         *
+ * Unless required by applicable law or agreed to in writing, software     *
+ * distributed under the License is distributed on an "AS IS" BASIS,       *
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.*
+ * See the License for the specific language governing permissions and     *
+ * limitations under the License.                                          *
+ **************************************************************************/
+
 package org.whisperim.aim;
 
 import java.util.ArrayList;
@@ -51,24 +67,39 @@ import com.aol.acc.AccUserProp;
 import com.aol.acc.AccUserState;
 import com.aol.acc.AccVariant;
 
+
+/**
+ * This class acts as the connection to the AIM service as well as providing
+ * the interface to handle events fired from the AIM service.  It runs as an 
+ * independent thread and handles all traffic between the client and the AIM
+ * servers.
+ * @author Chris Thompson
+ *
+ */
 public class AIMSession implements AccEvents, Runnable {
 
-	AccSession session;
-    String key = "Key:cm13Hg1hwDNm_tow";
-    Thread listenThread;
-    boolean running = true;
-    AIMStrategy strategy_;
-    
-    LinkedList<AIMOperation> operations = new LinkedList<AIMOperation>();
-    
-    public AIMSession(AIMStrategy strategy){
-    	super();
-    	strategy_ = strategy;
-    	listenThread = new Thread(this);
-    	listenThread.start();
-    	
-    }
-    
+	private AccSession session_;
+	private String key_ = "Key:cm13Hg1hwDNm_tow";
+	private Thread listenThread_;
+	private boolean running_ = true;
+	private AIMStrategy strategy_;
+
+	private LinkedList<AIMOperation> operations_ = new LinkedList<AIMOperation>();
+
+
+	/**
+	 * Constructor.  This method takes the address of its parent strategy in order
+	 * to facilitate propagating received messages.
+	 * @param strategy
+	 */
+	public AIMSession(AIMStrategy strategy){
+		super();
+		strategy_ = strategy;
+		listenThread_ = new Thread(this);
+		listenThread_.start();
+
+	}
+
 	@Override
 	public void BeforeImReceived(AccSession arg0, AccImSession arg1,
 			AccParticipant arg2, AccIm arg3) {
@@ -127,33 +158,38 @@ public class AIMSession implements AccEvents, Runnable {
 	}
 
 	@Override
+	/**
+	 * This event handler is called when the user's buddy list changes.
+	 * @param arg0
+	 * @param arg1
+	 */
 	public void OnBuddyListChange(AccSession arg0, AccBuddyList arg1,
 			AccBuddyListProp arg2) {
 		// TODO Auto-generated method stub
 		ArrayList<String> buddyList = new ArrayList<String>();
 		try {
-	        int groups = arg1.getGroupCount();
-	        for (int i = 0; i < groups; i++){
-	            AccGroup group = arg1.getGroupByIndex(i);
-	            int buddies = group.getBuddyCount();
-	            for (int c = 0; c < buddies; c++) {
-	                AccUser buddy = group.getBuddyByIndex(c);
-	                
-	                if (buddy.getState() != AccUserState.Offline) {
-	                    //Add the buddy to the list of online users
-	                	buddyList.add(buddy.getName());
-	                }
-	            }
-	        }
-	        if (!buddyList.isEmpty()){
-	        	//If the buddy list isn't empty, send it to the UI
-	        	strategy_.receiveBuddies(buddyList);
-	        }
-	        
-	    } catch (AccException e) {
-	        // TODO Auto-generated catch block
-	        e.printStackTrace();
-	    }
+			int groups = arg1.getGroupCount();
+			for (int i = 0; i < groups; i++){
+				AccGroup group = arg1.getGroupByIndex(i);
+				int buddies = group.getBuddyCount();
+				for (int c = 0; c < buddies; c++) {
+					AccUser buddy = group.getBuddyByIndex(c);
+
+					if (buddy.getState() != AccUserState.Offline) {
+						//Add the buddy to the list of online users
+						buddyList.add(buddy.getName());
+					}
+				}
+			}
+			if (!buddyList.isEmpty()){
+				//If the buddy list isn't empty, send it to the UI
+				strategy_.receiveBuddies(buddyList);
+			}
+
+		} catch (AccException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 
 	}
@@ -330,17 +366,25 @@ public class AIMSession implements AccEvents, Runnable {
 	}
 
 	@Override
-	public void OnImReceived(AccSession arg0, AccImSession arg1,
-			AccParticipant arg2, AccIm arg3) {
+
+	/**
+	 * This event handler is called when an IM is received from the AIM service.
+	 * @param accSession
+	 * @param accIMSession
+	 * @param participant
+	 * @param im
+	 */
+	public void OnImReceived(AccSession accSession, AccImSession accIMSession,
+			AccParticipant participant, AccIm im) {
 		try {
-			Message message = new Message(arg2.getName(), arg0.getIdentity(), arg3.getText(), arg3.getTimestamp());
+			Message message = new Message(participant.getName(), accSession.getIdentity(), im.getText(), im.getTimestamp());
 			strategy_.receiveMessage(message);
 		} catch (AccException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
+
+
 	}
 
 	@Override
@@ -535,47 +579,51 @@ public class AIMSession implements AccEvents, Runnable {
 	}
 
 	/**
-	 * OnStateChange called to report change in system state from online to offline and 
-	 * vice versa 
+	 * This event handler is called to report change in system state.  
+	 * Examples include online, offline, etc.
+	 * 
+	 * @param accSession
+	 * @param accSessionState
+	 * @param result
 	 */
 	@Override
-	public void OnStateChange(AccSession arg0, AccSessionState arg1,
-			AccResult arg2) {
-		System.out.println("In OnStateChange..." + arg2);
-		if (arg1 == AccSessionState.Offline) {
+	public void OnStateChange(AccSession accSession, AccSessionState accSessionState,
+			AccResult result) {
+		System.out.println("In OnStateChange..." + result);
+		if (accSessionState == AccSessionState.Offline) {
 			//Kill the thread
 			System.out.print("offline...");
-	        running = false;
-	        if (arg2 == AccResult.ACC_E_INVALID_KEY) {
-	            //Bad client key
-	        	System.out.println("Bad client key");
-	        }
-	        if (arg2 == AccResult.ACC_E_RATE_LIMITED) {
-	            //Rate limited
-	        }
-	        if (arg2 == AccResult.ACC_E_RATE_LIMITED_KEY) {
-	           //Key rate limited
-	        }
-	     System.out.print(arg2.toString());
-	        //Signout
-	        return;
-	    }
-        if (arg1 == AccSessionState.Connecting){
-            strategy_.statusUpdate("Connecting...");
-            return;
-        }
-        if (arg1 == AccSessionState.Negotiating){
-            strategy_.statusUpdate("Negotiating...");
-            return;
-        }
-        if (arg1 == AccSessionState.Validating){
-            strategy_.statusUpdate("Verifying Username and Password...");
-            return;
-        }
-	    if (arg1 == AccSessionState.Online) {
-            strategy_.statusUpdate("Signed In");
-            return;
-	    }
+			running_ = false;
+			if (result == AccResult.ACC_E_INVALID_KEY) {
+				//Bad client key
+				System.out.println("Bad client key");
+			}
+			if (result == AccResult.ACC_E_RATE_LIMITED) {
+				//Rate limited
+			}
+			if (result == AccResult.ACC_E_RATE_LIMITED_KEY) {
+				//Key rate limited
+			}
+			System.out.print(result.toString());
+			//Signout
+			return;
+		}
+		if (accSessionState == AccSessionState.Connecting){
+			strategy_.statusUpdate("Connecting...");
+			return;
+		}
+		if (accSessionState == AccSessionState.Negotiating){
+			strategy_.statusUpdate("Negotiating...");
+			return;
+		}
+		if (accSessionState == AccSessionState.Validating){
+			strategy_.statusUpdate("Verifying Username and Password...");
+			return;
+		}
+		if (accSessionState == AccSessionState.Online) {
+			strategy_.statusUpdate("Signed In");
+			return;
+		}
 
 
 
@@ -596,130 +644,162 @@ public class AIMSession implements AccEvents, Runnable {
 	}
 
 	@Override
+	/**
+	 * This method serves as the actual connection to the AIM service.
+	 * It establishes the session preferences via the preferences class, 
+	 * adds itself as the event listener for the session and makes the connection.
+	 * The thread also loops infinitely until told to sign off and checks the operations
+	 * queue, performing any it comes across.
+	 */
 	public void run() {
 		// TODO Auto-generated method stub
 		try {
-	        session = new AccSession();
-	        
-	        // Add event listener
-	        session.setEventListener(this);
-	        
-	        // set key
-	        AccClientInfo info = session.getClientInfo();
-	        info.setDescription(key);
-	        
-	        // setup prefs so anyone can IM us, but not chats or DIMs
-	        session.setPrefsHook(new Prefs());
-	        AccPreferences prefs = session.getPrefs();
-	        prefs.setValue("aimcc.im.chat.permissions.buddies", 
-	                       AccPermissions.AcceptAll);
-	        prefs.setValue("aimcc.im.chat.permissions.nonBuddies", 
-			               AccPermissions.AcceptAll);
-	        prefs.setValue("aimcc.im.direct.permissions.buddies", 
-			               AccPermissions.AcceptAll);
-	        prefs.setValue("aimcc.im.direct.permissions.nonBuddies", 
-			               AccPermissions.AcceptAll);
-	        prefs.setValue("aimcc.im.standard.permissions.buddies", 
-			               AccPermissions.AcceptAll);
-	        prefs.setValue("aimcc.im.standard.permissions.nonBuddies", 
-			               AccPermissions.AcceptAll);
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	        return;
-	    }
-	        
-	    while( running ) 
-	    {
-	        try {
-	            AccSession.pump(50);
-	            AIMOperation operation = this.getOperation();
-	            if (operation != null) {
-	                this.processOperation(operation);
-	            }
-	            Thread.sleep(50);
-	        } catch (Exception e) {
-	            e.printStackTrace();
-	        }
-	    }
+			session_ = new AccSession();
+
+			// Add event listener
+			session_.setEventListener(this);
+
+			// set key
+			AccClientInfo info = session_.getClientInfo();
+			info.setDescription(key_);
+
+			// setup prefs so anyone can IM us, but not chats or DIMs
+			session_.setPrefsHook(new Prefs());
+			AccPreferences prefs = session_.getPrefs();
+			prefs.setValue("aimcc.im.chat.permissions.buddies", 
+					AccPermissions.AcceptAll);
+			prefs.setValue("aimcc.im.chat.permissions.nonBuddies", 
+					AccPermissions.AcceptAll);
+			prefs.setValue("aimcc.im.direct.permissions.buddies", 
+					AccPermissions.AcceptAll);
+			prefs.setValue("aimcc.im.direct.permissions.nonBuddies", 
+					AccPermissions.AcceptAll);
+			prefs.setValue("aimcc.im.standard.permissions.buddies", 
+					AccPermissions.AcceptAll);
+			prefs.setValue("aimcc.im.standard.permissions.nonBuddies", 
+					AccPermissions.AcceptAll);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return;
+		}
+
+		while( running_ ) 
+		{
+			try {
+				AccSession.pump(50);
+				AIMOperation operation = this.getOperation();
+				if (operation != null) {
+					this.processOperation(operation);
+				}
+				Thread.sleep(50);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 
 
-	}
-	private void processOperation(AIMOperation operation) throws AccException {
-	    switch (operation.getOperation()) {
-	    case AIMOperation.SIGNIN:
-	    {
-	        Class[] types = {String.class, String.class};
-	        this.checkArgs(operation, types);
-	        String handle = (String) operation.arguments[0];
-	        String password = (String) operation.arguments[1];
-	        // set screen name
-	        session.setIdentity(handle);
-	        session.signOn(password);
-	        break;
-	        }
-	    case AIMOperation.SIGNOUT:
-	    {
-	        Class[] types = new Class[0];
-	        this.checkArgs(operation, types);
-	        session.signOff();
-	        break;
-	        }           
-	    case AIMOperation.SEND_MESSAGE:
-	    {
-	        Class[] types = {String.class, String.class};
-	        this.checkArgs(operation, types);
-	        String userName = (String) operation.arguments[0];
-	        String message = (String) operation.arguments[1];
-	        AccIm im = session.createIm(message, null);
-	        AccImSession imSession = session.createImSession(userName, AccImSessionType.Im);
-	        imSession.sendIm(im);
-	        
-	        break;
-	        }
-	    }
 	}
 	
 	/**
-	 * Helper method for checking the argument types passed to the operation
+	 * This method is a helper method designed to parse operations placed in
+	 * the operations queue.
+	 * @param operation
+	 * @throws AccException
+	 */
+	private void processOperation(AIMOperation operation) throws AccException {
+		switch (operation.getOperation()) {
+		case AIMOperation.SIGNIN:
+		{
+			Class[] types = {String.class, String.class};
+			this.checkArgs(operation, types);
+			String handle = (String) operation.getArguments()[0];
+			String password = (String) operation.getArguments()[1];
+			// set screen name
+			session_.setIdentity(handle);
+			session_.signOn(password);
+			break;
+		}
+		case AIMOperation.SIGNOUT:
+		{
+			Class[] types = new Class[0];
+			this.checkArgs(operation, types);
+			session_.signOff();
+			break;
+		}           
+		case AIMOperation.SEND_MESSAGE:
+		{
+			Class[] types = {String.class, String.class};
+			this.checkArgs(operation, types);
+			String userName = (String) operation.getArguments()[0];
+			String message = (String) operation.getArguments()[1];
+			AccIm im = session_.createIm(message, null);
+			AccImSession imSession = session_.createImSession(userName, AccImSessionType.Im);
+			imSession.sendIm(im);
+
+			break;
+		}
+		}
+	}
+
+	/**
+	 * Helper method for checking the argument types passed to the operation.  Asserts that
+	 * the parameters passed to the operation are of the types required by that operation.
 	 * @param operation
 	 * @param types
 	 */
 	private void checkArgs(AIMOperation operation, Class[] types) {
-		if (operation.arguments.length != types.length) {
+		if (operation.getArguments().length != types.length) {
 			throw new IllegalArgumentException("Wrong number of arguments");
 		}
 		int l = types.length;
 		for (int i = 0; i < l; i++) {
-			if (!types[i].isInstance(operation.arguments[i])) {
+			if (!types[i].isInstance(operation.getArguments()[i])) {
 				throw new IllegalArgumentException("Argument is wrong type, should be " +
 						types[i].getName() +", is " +
-						operation.arguments[i].getClass().getName());
+						operation.getArguments()[i].getClass().getName());
 			}
 		}
 
 	}
-	
+
+	/**
+	 * Adds an operation to the queue of operations.
+	 * @param op
+	 */
 	public void addOperation(AIMOperation op) {
-	    synchronized (operations) {
-	        operations.add(op);		
-	    }
+		synchronized (operations_) {
+			operations_.add(op);		
+		}
 	}
-		
+
+	/**
+	 * Retrieves an operation from the operations queue.
+	 * @return AIMOperation
+	 */
 	public AIMOperation getOperation() {
-	    synchronized (operations) {
-	        if (operations.size() > 0) {
-	            return operations.remove();
-	        }
-	    }
-	    return null;
+		synchronized (operations_) {
+			if (operations_.size() > 0) {
+				return operations_.remove();
+			}
+		}
+		return null;
 	}
 
+	/**
+	 * Determines whether the session thread is running or not.
+	 * @return boolean
+	 */
 	public boolean isRunning() {
-		return running;
+		return running_;
 	}
 
+	/**
+	 * Sets the running_ member variable in order to instruct the session
+	 * thread to terminate. 
+	 * @param running
+	 */
 	public void setRunning(boolean running) {
-		this.running = running;
+		running_ = running;
 	}
 
 }
