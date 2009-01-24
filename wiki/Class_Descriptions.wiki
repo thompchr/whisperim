@@ -4,6 +4,10 @@
 
 This class acts as a helper class to generate operations to pass to the AIMSession class and it's running thread.  It also contains the enumerations required to designate operations.  AIMOperation objects are passed to the AIMSession object and are then placed in a queue to be performed. 
 
+== AIM Session ==
+
+This class acts as the connection to the AIM service as well as providing the interface to handle events fired from the AIM service.  It runs as an independent thread and handles all traffic between the client and the AIM servers.
+
 == Encryptor ==
 
 This class forms the backbone of the security functionality of the whisper client. It contains methods for generating RSA keypairs as well as performing the encryption/decryption operations on the messages.  It also reads the key file to import a given buddy's public key.
