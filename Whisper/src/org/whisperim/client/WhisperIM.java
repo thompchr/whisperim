@@ -37,11 +37,11 @@ public class WhisperIM extends javax.swing.JFrame{
     public WhisperIM(String theirHandle, String myHandle, WhisperClient myParent, PrivateKey myKey) {
     	super("Whisper IM Conversation with " + theirHandle);
     	initComponents();
-        buddyName.setText(theirHandle);
+        buddyName_.setText(theirHandle);
         encrypt = new Encryptor(Encryptor.getPublicKeyForBuddy(theirHandle), myKey);
-        toggleEncryption.setSelected(doEncryption);
-        toggleEncryption.setText("Encryption: Off");
-        talkArea.requestFocus();
+        toggleEncryption_.setSelected(doEncryption);
+        toggleEncryption_.setText("Encryption: Off");
+        talkArea_.requestFocus();
         theirHandle_ = theirHandle;
         myHandle_ = myHandle;
         myParent_ = myParent;
@@ -57,17 +57,17 @@ public class WhisperIM extends javax.swing.JFrame{
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jDialog1 = new javax.swing.JDialog();
-        jDialog2 = new javax.swing.JDialog();
-        messageArea = new java.awt.TextArea();
-        sendBtn = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        talkArea = new javax.swing.JTextArea();
-        buddyName = new javax.swing.JLabel();
-        toggleEncryption = new javax.swing.JToggleButton();
+        jDialog1_ = new javax.swing.JDialog();
+        jDialog2_ = new javax.swing.JDialog();
+        messageArea_ = new java.awt.TextArea();
+        sendBtn_ = new javax.swing.JButton();
+        jScrollPane1_ = new javax.swing.JScrollPane();
+        talkArea_ = new javax.swing.JTextArea();
+        buddyName_ = new javax.swing.JLabel();
+        toggleEncryption_ = new javax.swing.JToggleButton();
 
-        org.jdesktop.layout.GroupLayout jDialog1Layout = new org.jdesktop.layout.GroupLayout(jDialog1.getContentPane());
-        jDialog1.getContentPane().setLayout(jDialog1Layout);
+        org.jdesktop.layout.GroupLayout jDialog1Layout = new org.jdesktop.layout.GroupLayout(jDialog1_.getContentPane());
+        jDialog1_.getContentPane().setLayout(jDialog1Layout);
         jDialog1Layout.setHorizontalGroup(
             jDialog1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(0, 400, Short.MAX_VALUE)
@@ -77,8 +77,8 @@ public class WhisperIM extends javax.swing.JFrame{
             .add(0, 300, Short.MAX_VALUE)
         );
 
-        org.jdesktop.layout.GroupLayout jDialog2Layout = new org.jdesktop.layout.GroupLayout(jDialog2.getContentPane());
-        jDialog2.getContentPane().setLayout(jDialog2Layout);
+        org.jdesktop.layout.GroupLayout jDialog2Layout = new org.jdesktop.layout.GroupLayout(jDialog2_.getContentPane());
+        jDialog2_.getContentPane().setLayout(jDialog2Layout);
         jDialog2Layout.setHorizontalGroup(
             jDialog2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(0, 400, Short.MAX_VALUE)
@@ -99,20 +99,20 @@ public class WhisperIM extends javax.swing.JFrame{
             }
         });
 
-        sendBtn.setText("Send");
-        sendBtn.addActionListener(new java.awt.event.ActionListener() {
+        sendBtn_.setText("Send");
+        sendBtn_.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 sendBtnActionPerformed(evt);
             }
         });
 
-        talkArea.setColumns(20);
-        talkArea.setRows(5);
-        jScrollPane1.setViewportView(talkArea);
+        talkArea_.setColumns(20);
+        talkArea_.setRows(5);
+        jScrollPane1_.setViewportView(talkArea_);
 
-        buddyName.setText("jLabel1");
+        buddyName_.setText("jLabel1");
 
-        toggleEncryption.addActionListener(new java.awt.event.ActionListener() {
+        toggleEncryption_.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 toggleEncryptionActionPerformed(evt);
             }
@@ -126,12 +126,12 @@ public class WhisperIM extends javax.swing.JFrame{
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(layout.createSequentialGroup()
-                        .add(buddyName, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 73, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .add(buddyName_, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 73, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 200, Short.MAX_VALUE)
-                        .add(toggleEncryption))
-                    .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 306, Short.MAX_VALUE)
-                    .add(messageArea, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 306, Short.MAX_VALUE)
-                    .add(sendBtn))
+                        .add(toggleEncryption_))
+                    .add(jScrollPane1_, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 306, Short.MAX_VALUE)
+                    .add(messageArea_, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 306, Short.MAX_VALUE)
+                    .add(sendBtn_))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -139,32 +139,39 @@ public class WhisperIM extends javax.swing.JFrame{
             .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(buddyName, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 18, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(toggleEncryption))
+                    .add(buddyName_, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 18, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(toggleEncryption_))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 153, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(jScrollPane1_, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 153, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 20, Short.MAX_VALUE)
-                .add(messageArea, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 31, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(messageArea_, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 31, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(sendBtn)
+                .add(sendBtn_)
                 .add(42, 42, 42))
         );
 
-        buddyName.getAccessibleContext().setAccessibleName("Buddy");
+        buddyName_.getAccessibleContext().setAccessibleName("Buddy");
     }// </editor-fold>//GEN-END:initComponents
 
     private void toggleEncryptionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toggleEncryptionActionPerformed
         if (doEncryption){
             doEncryption = false;
-            toggleEncryption.setText("Encryption: Off");
+            toggleEncryption_.setText("Encryption: Off");
         }else{
             doEncryption = true;
-            toggleEncryption.setText("Encryption: On");
+            toggleEncryption_.setText("Encryption: On");
         }
 }//GEN-LAST:event_toggleEncryptionActionPerformed
 
     private void sendBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sendBtnActionPerformed
-        sendMsg();
+        
+    	if (messageArea_.getText().equalsIgnoreCase(""))
+    	{
+    		//Message area is empty, do nothing
+    	}else{
+    		sendMsg();
+    	}
+    	
 }//GEN-LAST:event_sendBtnActionPerformed
 
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
@@ -181,17 +188,17 @@ public class WhisperIM extends javax.swing.JFrame{
     	
     	
     	DateFormat d = DateFormat.getTimeInstance(DateFormat.MEDIUM);
-    	talkArea.append("(" + d.format(message.getTimeSent()) + ") ");
-    	talkArea.append(message.getFrom() + ": ");
+    	talkArea_.append("(" + d.format(message.getTimeSent()) + ") ");
+    	talkArea_.append(message.getFrom() + ": ");
         
     	if (!doEncryption || !message.getMessage().contains("<key>")){
-    		talkArea.append(message.getMessage());
+    		talkArea_.append(message.getMessage());
     	}else{
     		
-    		talkArea.append("(Encrypted Message) " + encrypt.decryptMessage(message.getMessage()));
+    		talkArea_.append("(Encrypted Message) " + encrypt.decryptMessage(message.getMessage()));
     	}
         
-        talkArea.append("\n");
+        talkArea_.append("\n");
     }
 
     public void sendMsg()
@@ -203,28 +210,28 @@ public class WhisperIM extends javax.swing.JFrame{
         DateFormat df1 = DateFormat.getTimeInstance(DateFormat.MEDIUM);
         if (doEncryption){
             //Message will be encrypted
-        	talkArea.append("(" + df1.format(d) + ") " + myHandle_ + ":  (Ecrypted Message) " + messageArea.getText() + "\n");
-            messageText = encrypt.generateCipherText(messageArea.getText());
+        	talkArea_.append("(" + df1.format(d) + ") " + myHandle_ + ":  (Ecrypted Message) " + messageArea_.getText() + "\n");
+            messageText = encrypt.generateCipherText(messageArea_.getText());
         }else{
-        	talkArea.append("(" + df1.format(d) + ") " + myHandle_ + ": " + messageArea.getText() + "\n");
-            messageText = messageArea.getText();
+        	talkArea_.append("(" + df1.format(d) + ") " + myHandle_ + ": " + messageArea_.getText() + "\n");
+            messageText = messageArea_.getText();
         }
 
         Message message = new Message(myHandle_, theirHandle_, messageText, Calendar.getInstance().getTime());
         
         myParent_.sendMessage(message);
-        messageArea.setText("");
+        messageArea_.setText("");
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel buddyName;
-    private javax.swing.JDialog jDialog1;
-    private javax.swing.JDialog jDialog2;
-    private javax.swing.JScrollPane jScrollPane1;
-    private java.awt.TextArea messageArea;
-    private javax.swing.JButton sendBtn;
-    private javax.swing.JTextArea talkArea;
-    private javax.swing.JToggleButton toggleEncryption;
+    private javax.swing.JLabel buddyName_;
+    private javax.swing.JDialog jDialog1_;
+    private javax.swing.JDialog jDialog2_;
+    private javax.swing.JScrollPane jScrollPane1_;
+    private java.awt.TextArea messageArea_;
+    private javax.swing.JButton sendBtn_;
+    private javax.swing.JTextArea talkArea_;
+    private javax.swing.JToggleButton toggleEncryption_;
     // End of variables declaration//GEN-END:variables
 
 }
