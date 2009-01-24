@@ -15,6 +15,8 @@ import java.awt.event.KeyEvent;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author Chris Thompson, Cory Plastek
@@ -177,6 +179,15 @@ public class Login extends javax.swing.JFrame {
         		}
         	});
             this.dispose();
+        }
+        if (status.equalsIgnoreCase("Invalid Username or Password")){
+        	JOptionPane.showMessageDialog(this, status, "Error", JOptionPane.ERROR_MESSAGE);
+        	usernameLbl.setVisible(true);
+            passwordLbl.setVisible(true);
+            usernameTxtBox.setVisible(true);
+            passwordTxtBox.setVisible(true);
+            signOnButton.setVisible(true);
+            statusLbl.setText("");
         }
     }
 

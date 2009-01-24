@@ -604,6 +604,10 @@ public class AIMSession implements AccEvents, Runnable {
 			if (result == AccResult.ACC_E_RATE_LIMITED_KEY) {
 				//Key rate limited
 			}
+			if (result == AccResult.ACC_E_INVALID_PASSWORD){
+				strategy_.statusUpdate("Invalid Username or Password");
+				return;
+			}
 			System.out.print(result.toString());
 			//Signout
 			return;
@@ -624,6 +628,7 @@ public class AIMSession implements AccEvents, Runnable {
 			strategy_.statusUpdate("Signed In");
 			return;
 		}
+
 
 
 
