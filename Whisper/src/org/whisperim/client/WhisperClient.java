@@ -1,3 +1,19 @@
+ /**************************************************************************
+ * Copyright 2009 John Dlugokecki                                         *
+ *                                                                         *
+ * Licensed under the Apache License, Version 2.0 (the "License");         *
+ * you may not use this file except in compliance with the License.        *
+ * You may obtain a copy of the License at                                 *
+ *                                                                         *
+ * http://www.apache.org/licenses/LICENSE-2.0                              *
+ *                                                                         *
+ * Unless required by applicable law or agreed to in writing, software     *
+ * distributed under the License is distributed on an "AS IS" BASIS,       *
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.*
+ * See the License for the specific language governing permissions and     *
+ * limitations under the License.                                          *
+ **************************************************************************/
+
 package org.whisperim.client;
 import java.util.ArrayList;
 import java.util.Timer;
@@ -7,20 +23,13 @@ import javax.swing.*;
 
 import java.util.HashMap;
 
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/*
- * WhisperClient.java
- *
- * Created on Dec 5, 2008, 3:13:05 PM
- */
-
 /**
- *
- * @author Kirk Banks, Chris Thompson
+ * This class handles the creation of the swing interface components that 
+ * includes the buddy list and sign-on dialog.  The class also handles the
+ * sending of messages, setting the idle status locally, and delegating
+ * UI updates to the appropriate places.
+ * 
+ * @author Kirk Banks, Chris Thompson, John Dlugokecki
  */
 public class WhisperClient extends javax.swing.JFrame {
 
