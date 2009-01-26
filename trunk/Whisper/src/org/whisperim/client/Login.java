@@ -1,13 +1,18 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/*
- * Login.java
- *
- * Created on Dec 8, 2008, 1:20:03 AM
- */
+ /**************************************************************************
+ * Copyright 2009 John Dlugokecki                                         *
+ *                                                                         *
+ * Licensed under the Apache License, Version 2.0 (the "License");         *
+ * you may not use this file except in compliance with the License.        *
+ * You may obtain a copy of the License at                                 *
+ *                                                                         *
+ * http://www.apache.org/licenses/LICENSE-2.0                              *
+ *                                                                         *
+ * Unless required by applicable law or agreed to in writing, software     *
+ * distributed under the License is distributed on an "AS IS" BASIS,       *
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.*
+ * See the License for the specific language governing permissions and     *
+ * limitations under the License.                                          *
+ **************************************************************************/
 
 package org.whisperim.client;
 
@@ -18,8 +23,11 @@ import java.security.PublicKey;
 import javax.swing.JOptionPane;
 
 /**
+ * This class handles the login and authentication of users to the AIM
+ * system.  Some of these responsibilities are passed on to the
+ * connection manager.
  *
- * @author Chris Thompson, Cory Plastek
+ * @author Chris Thompson, Cory Plastek, John Dlugokecki
  */
 public class Login extends javax.swing.JFrame {
 

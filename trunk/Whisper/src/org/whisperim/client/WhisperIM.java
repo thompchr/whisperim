@@ -1,14 +1,18 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/*
- * WhisperIM.java
- *
- * Created on Dec 5, 2008, 4:42:26 PM
- */
-
+ /**************************************************************************
+ * Copyright 2009 John Dlugokecki                                         *
+ *                                                                         *
+ * Licensed under the Apache License, Version 2.0 (the "License");         *
+ * you may not use this file except in compliance with the License.        *
+ * You may obtain a copy of the License at                                 *
+ *                                                                         *
+ * http://www.apache.org/licenses/LICENSE-2.0                              *
+ *                                                                         *
+ * Unless required by applicable law or agreed to in writing, software     *
+ * distributed under the License is distributed on an "AS IS" BASIS,       *
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.*
+ * See the License for the specific language governing permissions and     *
+ * limitations under the License.                                          *
+ **************************************************************************/
 package org.whisperim.client;
 import javax.swing.*;
 
@@ -21,8 +25,11 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 /**
- *
- * @author Kirk Banks, Chris Thompson
+ * The majority of this class is auto-generated code using Java's swing UI
+ * components. The primary method of interest is the WhisperIM constructor that
+ * is called from WhisperClient.java
+ * 
+ * @author Kirk Banks, Chris Thompson, John Dlugokecki
  */
 public class WhisperIM extends javax.swing.JFrame{
     //Encryptor for the chat session
