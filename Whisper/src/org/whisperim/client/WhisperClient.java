@@ -36,8 +36,8 @@ public class WhisperClient extends javax.swing.JFrame {
     private String[] buddyString;
     private int numOfBuddies = 0;
     private String myHandle_;
-    private Timer myTimer;
-    private IdleTT myTaskTimer;
+    private Timer myTimer_;
+    private IdleTT myTaskTimer_;
         
     private ConnectionManager manager_;
 
@@ -50,9 +50,25 @@ public class WhisperClient extends javax.swing.JFrame {
         myHandle_ = handle;
         this.setTitle("Whisper");
         
-        myTimer = new Timer();
-        myTaskTimer = new IdleTT();
-        myTimer.schedule(myTaskTimer, 5000); //user goes idle after 5 seconds for demo/test purposes    
+        resetTimer(5000);    
+    }
+    
+    private void resetTimer(int timeToIdle)
+    {
+    	if(myTaskTimer_ != null)
+    	{
+            this.setTitle("Whisper");
+            
+            myTaskTimer_.cancel();
+            myTaskTimer_ = new IdleTT();
+            myTimer_.schedule(myTaskTimer_, timeToIdle);
+    	}
+    	else
+    	{
+	    	myTimer_ = new Timer();
+	        myTaskTimer_ = new IdleTT();
+	        myTimer_.schedule(myTaskTimer_, timeToIdle); //user goes idle after 5 seconds for demo/test purposes
+    	}
     }
     
     class IdleTT extends TimerTask {
@@ -214,11 +230,7 @@ public class WhisperClient extends javax.swing.JFrame {
     public void sendMessage (Message message){
         manager_.sendMessage(message);
         
-        this.setTitle("Whisper");
-        
-        myTaskTimer.cancel();
-        myTaskTimer = new IdleTT();
-        myTimer.schedule(myTaskTimer, 5000);
+        resetTimer(5000);
     }
 
 
