@@ -7,6 +7,7 @@
  * User can utilize the enter key in place of clicking the send button (Cory, Kirk)
  * User can share public key information with other users (Chris)
  * User can view File, etc. menus without problems (Cory)
+ * User can view messages in text wrapped window (Cory, Kirk)
 
 =Build 1=
  * User can chat securely without error messages (Chris, Cory, Nick)
