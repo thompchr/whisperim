@@ -1,13 +1,13 @@
 #summary User stories for the Whisper IM project
 #labels Phase-Requirements
 
-=Week 2=
+=Build 2=
  * User can set status. (Nick, John)
  * User can utilize rich text in conversation (Cory, Kirk)
  * User can utilize the enter key in place of clicking the send button (Cory, Kirk)
  * User can share public key information with other users (Chris)
 
-=Week 1=
+=Build 1=
  * User can chat securely without error messages (Chris, Cory, Nick)
  * 1/16: Encryptor class has been fixed, code cleanup still in progress
  * User becomes idle after set amount of inactivity (Kirk, John)
