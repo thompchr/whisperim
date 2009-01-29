@@ -97,7 +97,6 @@ public class AIMSession implements AccEvents, Runnable {
 		strategy_ = strategy;
 		listenThread_ = new Thread(this);
 		listenThread_.start();
-
 	}
 
 	@Override
@@ -712,6 +711,15 @@ public class AIMSession implements AccEvents, Runnable {
 	
 	 public void setAwayMessage(String message, boolean away){
 		 System.out.println("Done.");
+		 AccIm im = null;
+		try {
+			/*im = session_.createIm("Away!!!!!", "Really, away.");
+			im.setSubject("AwaYYYYYYY");
+			im.setText("Anal");
+			session_.setAwayMessage(im);*/
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	 }
 
 }
