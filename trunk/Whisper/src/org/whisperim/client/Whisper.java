@@ -59,7 +59,7 @@ import com.sun.org.apache.xml.internal.security.utils.Base64;
  * @author Kirk Banks, Chris Thompson, John Dlugokecki
  */
 
-public class Whisper {
+public class Whisper {  
 
 	private ArrayList<Buddy> buddies = new ArrayList<Buddy>();
 	
