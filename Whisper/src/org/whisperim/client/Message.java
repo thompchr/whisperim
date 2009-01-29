@@ -34,6 +34,10 @@ public class Message {
 	
 	private Date timeSent_;
 	
+	//Protocol identifier specified in the
+	//ConnectionStategy object.
+	private String protocolID_;
+	
 	private String other_ = null;
 	
 	/**
@@ -84,6 +88,14 @@ public class Message {
 	
 	public String getOther(){
 		return other_;
+	}
+	
+	public String getProtocol(){
+		return protocolID_;
+	}
+	
+	public void setProtocol(String protocol){
+		protocolID_ = protocol;
 	}
 	
 	
