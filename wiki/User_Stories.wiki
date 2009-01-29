@@ -3,7 +3,7 @@
 
 =Build 2=
  * User can set status. (Nick, John)
- * User can receive parced rich text in conversation with an AIM user(Cory, Kirk)
+ * User can receive parsed rich text in conversation with an AIM user(Cory, Kirk)
  * User can utilize the enter key in place of clicking the send button (Cory, Kirk)
  * User can share public key information with other users (Chris)
  * User can view File, etc. menus without problems (Cory)
