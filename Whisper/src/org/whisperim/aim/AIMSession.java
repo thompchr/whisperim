@@ -713,9 +713,9 @@ public class AIMSession implements AccEvents, Runnable {
 		 System.out.println("Done.");
 		 AccIm im = null;
 		try {
-			/*im = session_.createIm("Away!!!!!", "Really, away.");
-			im.setSubject("AwaYYYYYYY");
-			im.setText("Anal");
+			/*im = session_.createIm("createIm Var1", "createIM Var2");
+			im.setSubject("Test setSubject");
+			im.setText("Test setText");
 			session_.setAwayMessage(im);*/
 		} catch (Exception e) {
 			e.printStackTrace();
