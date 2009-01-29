@@ -43,7 +43,6 @@ public class AIMStrategy implements ConnectionStrategy {
 
 	@Override
 	public void receiveMessage(Message message) {
-		// TODO Auto-generated method stub
 		manager_.messageReceived(message);
 	}
 
@@ -53,14 +52,11 @@ public class AIMStrategy implements ConnectionStrategy {
 		session.addOperation(AIMOperation.createSendMessage(message.getTo(), message.getMessage()));
 	}
 
-
 	@Override
 	public void signOff() {
 		
 		session.addOperation(AIMOperation.createSignOut());
-
 	}
-
 
 	@Override
 	public void signOn(String username, String password) {
@@ -78,4 +74,7 @@ public class AIMStrategy implements ConnectionStrategy {
         manager_.statusUpdate(update);
     }
 
+    public void setAwayMessage(String message, boolean away){
+    	session.setAwayMessage(message, away);
+    }
 }

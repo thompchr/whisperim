@@ -103,58 +103,42 @@ public class AIMSession implements AccEvents, Runnable {
 	@Override
 	public void BeforeImReceived(AccSession arg0, AccImSession arg1,
 			AccParticipant arg2, AccIm arg3) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void BeforeImSend(AccSession arg0, AccImSession arg1,
 			AccParticipant arg2, AccIm arg3) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void OnAlertReceived(AccSession arg0, AccAlert arg1) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void OnAudioLevelChange(AccSession arg0, AccAvSession arg1,
 			String arg2, int arg3) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void OnAvManagerChange(AccSession arg0, AccAvManager arg1,
 			AccAvManagerProp arg2, AccResult arg3) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void OnAvStreamStateChange(AccSession arg0, AccAvSession arg1,
 			String arg2, AccAvStreamType arg3, AccSecondarySessionState arg4,
 			AccResult arg5) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void OnBartItemRequestPropertyResult(AccSession arg0,
 			AccBartItem arg1, AccBartItemProp arg2, int arg3, AccResult arg4,
 			AccVariant arg5) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void OnBuddyAdded(AccSession arg0, AccGroup arg1, AccUser arg2,
 			int arg3, AccResult arg4) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -165,8 +149,9 @@ public class AIMSession implements AccEvents, Runnable {
 	 */
 	public void OnBuddyListChange(AccSession arg0, AccBuddyList arg1,
 			AccBuddyListProp arg2) {
-		// TODO Auto-generated method stub
+		
 		ArrayList<String> buddyList = new ArrayList<String>();
+		
 		try {
 			int groups = arg1.getGroupCount();
 			for (int i = 0; i < groups; i++){
@@ -197,172 +182,123 @@ public class AIMSession implements AccEvents, Runnable {
 	@Override
 	public void OnBuddyMoved(AccSession arg0, AccUser arg1, AccGroup arg2,
 			int arg3, AccGroup arg4, int arg5, AccResult arg6) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void OnBuddyRemoved(AccSession arg0, AccGroup arg1, AccUser arg2,
 			AccResult arg3) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void OnChangesBegin(AccSession arg0) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void OnChangesEnd(AccSession arg0) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void OnConfirmAccountResult(AccSession arg0, int arg1, AccResult arg2) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void OnCustomDataReceived(AccSession arg0, AccCustomSession arg1,
 			AccParticipant arg2, AccIm arg3) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void OnCustomSendResult(AccSession arg0, AccCustomSession arg1,
 			AccParticipant arg2, AccIm arg3, AccResult arg4) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void OnDeleteStoredImsResult(AccSession arg0, int arg1,
 			AccResult arg2) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void OnDeliverStoredImsResult(AccSession arg0, int arg1,
 			AccResult arg2) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void OnEjectResult(AccSession arg0, AccSecondarySession arg1,
 			String arg2, int arg3, AccResult arg4) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void OnEmbedDownloadComplete(AccSession arg0, AccImSession arg1,
 			AccIm arg2) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void OnEmbedDownloadProgress(AccSession arg0, AccImSession arg1,
 			AccIm arg2, String arg3, AccStream arg4) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void OnEmbedUploadComplete(AccSession arg0, AccImSession arg1,
 			AccIm arg2) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void OnEmbedUploadProgress(AccSession arg0, AccImSession arg1,
 			AccIm arg2, String arg3, AccStream arg4) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void OnFileSharingRequestListingResult(AccSession arg0,
 			AccFileSharingSession arg1, AccFileSharingItem arg2, int arg3,
 			AccResult arg4) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void OnFileSharingRequestXferResult(AccSession arg0,
 			AccFileSharingSession arg1, AccFileXferSession arg2, int arg3,
 			AccFileXfer arg4) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void OnFileXferCollision(AccSession arg0, AccFileXferSession arg1,
 			AccFileXfer arg2) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void OnFileXferComplete(AccSession arg0, AccFileXferSession arg1,
 			AccFileXfer arg2, AccResult arg3) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void OnFileXferProgress(AccSession arg0, AccFileXferSession arg1,
 			AccFileXfer arg2) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void OnFileXferSessionComplete(AccSession arg0,
 			AccFileXferSession arg1, AccResult arg2) {
-		// TODO Auto-generated method stub
-
-	}
+		}
 
 	@Override
 	public void OnGroupAdded(AccSession arg0, AccGroup arg1, int arg2,
 			AccResult arg3) {
-		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
 	public void OnGroupChange(AccSession arg0, AccGroup arg1, AccGroupProp arg2) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void OnGroupMoved(AccSession arg0, AccGroup arg1, int arg2,
 			int arg3, AccResult arg4) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void OnGroupRemoved(AccSession arg0, AccGroup arg1, AccResult arg2) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void OnIdleStateChange(AccSession arg0, int arg1) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -380,7 +316,6 @@ public class AIMSession implements AccEvents, Runnable {
 			Message message = new Message(participant.getName(), accSession.getIdentity(), im.getText(), im.getTimestamp());
 			strategy_.receiveMessage(message);
 		} catch (AccException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -390,109 +325,77 @@ public class AIMSession implements AccEvents, Runnable {
 	@Override
 	public void OnImSendResult(AccSession arg0, AccImSession arg1,
 			AccParticipant arg2, AccIm arg3, AccResult arg4) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void OnImSent(AccSession arg0, AccImSession arg1,
 			AccParticipant arg2, AccIm arg3) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void OnInputStateChange(AccSession arg0, AccImSession arg1,
 			String arg2, AccImInputState arg3) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void OnInstanceChange(AccSession arg0, AccInstance arg1,
 			AccInstance arg2, AccInstanceProp arg3) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void OnInviteResult(AccSession arg0, AccSecondarySession arg1,
 			String arg2, int arg3, AccResult arg4) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void OnLocalImReceived(AccSession arg0, AccImSession arg1, AccIm arg2) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void OnLookupUsersResult(AccSession arg0, String[] arg1, int arg2,
 			AccResult arg3, AccUser[] arg4) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void OnNewFileXfer(AccSession arg0, AccFileXferSession arg1,
 			AccFileXfer arg2) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void OnNewSecondarySession(AccSession arg0,
 			AccSecondarySession arg1, int arg2) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void OnParticipantChange(AccSession arg0, AccSecondarySession arg1,
 			AccParticipant arg2, AccParticipant arg3, AccParticipantProp arg4) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void OnParticipantJoined(AccSession arg0, AccSecondarySession arg1,
 			AccParticipant arg2) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void OnParticipantLeft(AccSession arg0, AccSecondarySession arg1,
 			AccParticipant arg2, AccResult arg3, String arg4, String arg5) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void OnPluginChange(AccSession arg0, AccPluginInfo arg1,
 			AccPluginInfoProp arg2) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void OnPluginUninstall(AccSession arg0, AccPluginInfo arg1) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void OnPreferenceChange(AccSession arg0, String arg1, AccResult arg2) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void OnPreferenceInvalid(AccSession arg0, String arg1, AccResult arg2) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -806,5 +709,9 @@ public class AIMSession implements AccEvents, Runnable {
 	public void setRunning(boolean running) {
 		running_ = running;
 	}
+	
+	 public void setAwayMessage(String message, boolean away){
+		 System.out.println("Done.");
+	 }
 
 }

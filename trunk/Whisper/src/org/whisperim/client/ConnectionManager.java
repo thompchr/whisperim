@@ -130,6 +130,9 @@ public class ConnectionManager {
 		return myPublicKey_;
 	}
 
+	 public void setAwayMessage(String message, boolean away){
+		 strategy_.setAwayMessage(message, away);
+	 }
 
 
 }

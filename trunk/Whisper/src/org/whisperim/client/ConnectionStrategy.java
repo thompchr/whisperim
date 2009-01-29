@@ -31,4 +31,6 @@ public interface ConnectionStrategy {
 	public void receiveBuddies(ArrayList<String> buddies);
 
     public void statusUpdate(String status);
+    
+    public void setAwayMessage(String message, boolean away);
 }
