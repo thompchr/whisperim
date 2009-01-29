@@ -37,9 +37,9 @@ public class WhisperClient extends javax.swing.JFrame {
     private int numOfBuddies = 0;
     private String myHandle_;
     private Timer myTimer_;
-    private IdleTT myTaskTimer_;
-        
+    private IdleTT myTaskTimer_;    
     private ConnectionManager manager_;
+  
 
     private HashMap<String, WhisperIM> windows = new HashMap<String, WhisperIM>();
     /** Creates new form WhisperClient */
@@ -49,8 +49,9 @@ public class WhisperClient extends javax.swing.JFrame {
         manager_.setClient(this);
         myHandle_ = handle;
         this.setTitle("Whisper");
+        resetTimer(5000);   
         
-        resetTimer(5000);    
+        this.setAwayMessage("Away!!!", true);
     }
     
     private void resetTimer(int timeToIdle)
@@ -274,5 +275,9 @@ public class WhisperClient extends javax.swing.JFrame {
     private java.awt.MenuBar menuBar3;
     private java.awt.PopupMenu popupMenu1;
     // End of variables declaration//GEN-END:variables
+    
+    private void setAwayMessage(String message, boolean away){
+    	manager_.setAwayMessage(message, away);
+    }
 
 }
