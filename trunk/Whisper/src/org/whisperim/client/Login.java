@@ -164,13 +164,30 @@ public class Login extends javax.swing.JFrame {
 }
     
     private void signOn() {
-    	usernameLbl.setVisible(false);
-        passwordLbl.setVisible(false);
-        usernameTxtBox.setVisible(false);
-        passwordTxtBox.setVisible(false);
-        signOnButton.setVisible(false);
+    	setVisibility(false);
         manager = new ConnectionManager(ConnectionManager.AIM_SESSION, usernameTxtBox.getText(), new String(passwordTxtBox.getPassword()), this, myPrivate_, myPublic_);
     }
+
+	/**
+	 * Helper method to toggle the visibility of the form objects on the 
+	 * login object.
+	 * 
+	 * @param visible - indicates whether the objects should be visible or not.
+	 * 
+	 * 					
+	 */
+	private void setVisibility(boolean visible) {
+		usernameLbl.setVisible(visible);
+        passwordLbl.setVisible(visible);
+        usernameTxtBox.setVisible(visible);
+        passwordTxtBox.setVisible(visible);
+        signOnButton.setVisible(visible);
+        
+        //The status label is opposite the others.
+        //It is only visible when the others are not.
+        statusLbl.setVisible(!visible);
+
+	}
 
     private void signOnButtonActionPerformed(java.awt.event.ActionEvent evt) {
     	signOn();
@@ -190,12 +207,7 @@ public class Login extends javax.swing.JFrame {
         }
         if (status.equalsIgnoreCase("Invalid Username or Password")){
         	JOptionPane.showMessageDialog(this, status, "Error", JOptionPane.ERROR_MESSAGE);
-        	usernameLbl.setVisible(true);
-            passwordLbl.setVisible(true);
-            usernameTxtBox.setVisible(true);
-            passwordTxtBox.setVisible(true);
-            signOnButton.setVisible(true);
-            statusLbl.setText("");
+        	setVisibility(true);
         }
     }
 
