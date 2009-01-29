@@ -140,6 +140,22 @@ public class Encryptor {
 		}
         return null;
     }
+    
+    /**
+     * This method is designed to write a key into the key store file. It takes a string
+     * that has been received from the buddy as well as the buddy's handle.  It will also
+     * verify that the key does not already exist in the file.  If it does, it will ignore
+     * the request.  If the buddy has a different key associated with their buddy handle,
+     * this method will assume the new key is valid and the old key has been discarded.
+     * It will then overwrite the old key.
+     * @param keyText
+     * @param handle
+     */
+    public static void writeKeyToFile(String keyText, String handle){
+    	//Identifier will be handle:protocol
+    	//The handle string passed to the encryptor is already formatted correctly,
+    	//no need to get any more information, just write the bugger.
+    }
 	
 	public static KeyPair generateRSAKeyPairFromString(String[] keys) throws Base64DecodingException{
 		KeyFactory rsaKeyFac = null;
