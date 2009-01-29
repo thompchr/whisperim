@@ -1,0 +1,21 @@
+The following pertains to NSS and NSPR, which may be included in this SDK.
+
+
+Copyright (C) 1994-2000 Netscape Communications Corporation. All Rights Reserved.
+Portions are copyrighted by other contributors, as noted in the source code.
+
+Copyright (C) 2008 AOL LLC. All Rights Reserved.
+AOL LLC provides NSS & NSPR to you under the LGPL, version 2.1 or later.
+
+
+You may read about NSS here:
+<http://www.mozilla.org/projects/security/pki/nss/>
+
+You may read about NSPR here:
+<http://www.mozilla.org/projects/nspr/>
+
+We are currently using NSS 3.11.9 and NSPR 4.7.
+You may download the source code from here:
+<http://ftp.mozilla.org/pub/mozilla.org/security/nss/releases/NSS_3_11_9_RTM/src/nss-3.11.9-with-nspr-4.7.tar.gz>
+
+You may also find the source code on <http://dev.aol.com/>
