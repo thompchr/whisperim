@@ -38,10 +38,14 @@ public class WhisperIM extends javax.swing.JFrame{
     private String theirHandle_;
     private String myHandle_;
     private WhisperClient myParent_;
-    //Logger for this session.  Should not be created by default, demonstration only
+
+    /*
+     * The logging portion should be toggled by the user.  Until the additional UI
+     * is implemented, the logger is created by default, and logging is universal
+     */
+    //Logger for this session.
     private Logger log_ = new Logger();
-    //Should also be toggles, but for demonstration
-    private boolean toggleLogging = true;
+    private boolean toggleLogging = false;
 
     /** Creates new form WhisperIM */
     public WhisperIM(String theirHandle, String myHandle, WhisperClient myParent, PrivateKey myKey) {
