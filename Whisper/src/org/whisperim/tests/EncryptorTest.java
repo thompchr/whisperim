@@ -23,6 +23,8 @@ import java.util.Random;
 
 import org.whisperim.security.*;
 
+import com.sun.org.apache.xml.internal.security.utils.Base64;
+
 /**
  * This class tests the Encryptor class.  It provides tests for the stability
  * as well as performance of the encryption algorithms.
@@ -115,6 +117,12 @@ public class EncryptorTest extends TestCase {
 		
 		enc.decryptMessage(ct);
 
+	}
+	
+	
+	public void testWriteToFile(){
+		Encryptor.writeKeyToFile(Base64.encode(Encryptor.generateRSAKeyPair().getPublic().getEncoded()),
+				"fightinggator13:aol");
 	}
 	
 
