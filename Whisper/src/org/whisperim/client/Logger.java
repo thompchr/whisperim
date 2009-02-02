@@ -1,14 +1,20 @@
 package org.whisperim.client;
 
+
+/*
+ *  This is a simple buffered logger.  
+ * 
+ *  Each IM Session gets its own logger. 
+ * 
+ *  Currently, the log is stored in Whisper/lib, as it is the working directory set in the
+ *  run configuration.
+ *  @author: logan buchanan
+ */
+
+
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-/*
- * This is a simple buffered logger.  
- * 
- * Each IM Session gets its own logger.  
- */
-
 
 public class Logger{
 	 
@@ -18,10 +24,11 @@ public class Logger{
 	Date date = new Date();
 	SimpleDateFormat filename_ = new SimpleDateFormat("MM-dd-yy");
 	
-	//Default ctor, creates the file with the date and buddy name.
+	//Default ctor, creates the file with the date as filename
 	public Logger(){
 		
 		try{				
+			//Appends to the file if it exists
 			writer_ = new BufferedWriter(new FileWriter(filename_.format(date) + ".txt",true));
 		}		
 		catch (IOException e){
@@ -29,7 +36,9 @@ public class Logger{
 		}
 	}
 	
-	//Ctor that creates log with user defined filename, for future use?
+	//Ctor that creates log with user defined filename.
+	//Currently not used, but could be used in the future to give users the option to specify
+	//the filename.
 	public Logger(String filename){
 		
 		try{
