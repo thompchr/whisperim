@@ -38,8 +38,11 @@ public class WhisperIM extends javax.swing.JFrame{
     private String theirHandle_;
     private String myHandle_;
     private WhisperClient myParent_;
-  
-    
+    //Logger for this session.  Should not be created by default, demonstration only
+    private Logger log_ = new Logger();
+    //Should also be toggles, but for demonstration
+    private boolean toggleLogging = true;
+
     /** Creates new form WhisperIM */
     public WhisperIM(String theirHandle, String myHandle, WhisperClient myParent, PrivateKey myKey) {
     	super("Whisper IM Conversation with " + theirHandle);
@@ -187,6 +190,8 @@ public class WhisperIM extends javax.swing.JFrame{
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
     	System.out.println("Window closing");
+    	//Close the open file
+    	log_.close();
     	myParent_.onWindowClose(theirHandle_);
     }//GEN-LAST:event_formWindowClosing
 
@@ -205,6 +210,9 @@ public class WhisperIM extends javax.swing.JFrame{
     		talkArea_.append("(Encrypted Message) " + encrypt.decryptMessage(message.getMessage()));
     	}
         
+    	if (toggleLogging)
+        	log_.write(message, message.getFrom());
+        	
         talkArea_.append("\n");
     }
 
@@ -227,6 +235,10 @@ public class WhisperIM extends javax.swing.JFrame{
         Message message = new Message(myHandle_, theirHandle_, messageText, Calendar.getInstance().getTime());
         
         myParent_.sendMessage(message);
+        
+        if (toggleLogging)
+        	log_.write(message, myHandle_);
+        
         messageArea_.setText("");
     }
 
