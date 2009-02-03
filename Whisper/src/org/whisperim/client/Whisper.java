@@ -61,7 +61,7 @@ import com.sun.org.apache.xml.internal.security.utils.Base64;
 
 public class Whisper {  
 
-	private ArrayList<Buddy> buddies = new ArrayList<Buddy>();
+	private ArrayList<Buddy> buddies_ = new ArrayList<Buddy>();
 	
 	private PrivateKey myPrivateKey_;
 	private PublicKey myPublicKey_;
@@ -74,7 +74,6 @@ public class Whisper {
 		Whisper main = new Whisper();
 
 	}
-	
 	
 	public Whisper(){
 		
@@ -103,7 +102,6 @@ public class Whisper {
 		}else{
 			//Directory does not exist, create it and the file
 			try{
-				
 				dir.mkdir();
 				keyFile.createNewFile();
 				
@@ -115,10 +113,7 @@ public class Whisper {
 		}
 
 		//Make sure that a keypair has been generated
-		try { 
-			
-			
-			
+		try { 	
 			DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
 			Document doc;
@@ -155,8 +150,6 @@ public class Whisper {
 					e.printStackTrace();
 				}
 			}
-
-
 		} catch (SAXException e) {
 
 			e.printStackTrace();
@@ -166,17 +159,13 @@ public class Whisper {
 		} catch (ParserConfigurationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		
-		
+		}		
 		java.awt.EventQueue.invokeLater(new Runnable() {
 	           public void run() {
 	               Login client = new Login(myPublicKey_, myPrivateKey_);
 	               client.setVisible(true);
 	           }
 	        });
-		
-		
 	}
 	/**
 	 * I take a xml element and the tag name, look for the tag and get
@@ -201,8 +190,6 @@ public class Whisper {
 		
 	}
 
-	
-	
 	/**
 	 * This is a helper method to generate the XML for the keys.
 	 * It also handles generating a keypair for the user.  It will
@@ -210,7 +197,6 @@ public class Whisper {
 	 * @param keyFile
 	 */
 	private void generateXML(File keyFile){
-		
 		Document dom = null;
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		try {
@@ -264,8 +250,6 @@ public class Whisper {
 		} catch(IOException ie) {
 		    ie.printStackTrace();
 		}
-
 	}
-
 }
 
