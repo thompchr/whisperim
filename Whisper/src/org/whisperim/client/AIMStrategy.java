@@ -29,14 +29,14 @@ import java.util.ArrayList;
  */
 public class AIMStrategy implements ConnectionStrategy {
 	
-	AIMSession session;
+	AIMSession session_;
 	ConnectionManager manager_;
 	
 	
 	public AIMStrategy(ConnectionManager manager){
 
 		manager_ = manager;
-		session = new AIMSession (this);
+		session_ = new AIMSession (this);
 		
 	}
 
@@ -49,19 +49,19 @@ public class AIMStrategy implements ConnectionStrategy {
 
 	@Override
 	public void sendMessage(Message message) {
-		session.addOperation(AIMOperation.createSendMessage(message.getTo(), message.getMessage()));
+		session_.addOperation(AIMOperation.createSendMessage(message.getTo(), message.getMessage()));
 	}
 
 	@Override
 	public void signOff() {
 		
-		session.addOperation(AIMOperation.createSignOut());
+		session_.addOperation(AIMOperation.createSignOut());
 	}
 
 	@Override
 	public void signOn(String username, String password) {
 
-		session.addOperation(AIMOperation.createSignIn(username, password));
+		session_.addOperation(AIMOperation.createSignIn(username, password));
 	}
 	
 	@Override
@@ -75,6 +75,6 @@ public class AIMStrategy implements ConnectionStrategy {
     }
 
     public void setAwayMessage(String message, boolean away){
-    	session.setAwayMessage(message, away);
+    	session_.setAwayMessage(message, away);
     }
 }
