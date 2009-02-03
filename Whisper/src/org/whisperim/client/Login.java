@@ -82,6 +82,13 @@ public class Login extends JFrame implements ActionListener {
         	);
 		signOnButton.setText(SIGN_ON_);
 		signOnButton.addActionListener(this);
+		signOnButton.addKeyListener (
+        		new KeyAdapter() {
+        			public void keyPressed(KeyEvent e) {
+        	            if (e.getKeyCode() == KeyEvent.VK_ENTER) signOn();
+        	    	} //end anonymous class
+        		} //end method
+        	);
 
         GroupLayout layout = new GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
