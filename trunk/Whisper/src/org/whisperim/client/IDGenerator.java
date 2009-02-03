@@ -10,7 +10,7 @@ package org.whisperim.client;
 public class IDGenerator {
 
 	private static IDGenerator instance_ = null;
-	private int number = 0;
+	private int number_ = 0;
 	
 	private IDGenerator(){}
 	
@@ -22,7 +22,7 @@ public class IDGenerator {
 	}
 	
 	public int generateID(){
-		return ++number;
+		return ++number_;
 	}
 	
 }
