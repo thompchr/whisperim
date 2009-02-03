@@ -16,9 +16,10 @@
 package org.whisperim.client;
 
 
-import org.whisperim.aim.*;
-
 import java.util.ArrayList;
+
+import org.whisperim.aim.AIMOperation;
+import org.whisperim.aim.AIMSession;
 
 
 /**
@@ -31,7 +32,8 @@ public class AIMStrategy implements ConnectionStrategy {
 	
 	AIMSession session_;
 	ConnectionManager manager_;
-	
+	String protocol_ = "aol";
+
 	
 	public AIMStrategy(ConnectionManager manager){
 
@@ -77,4 +79,10 @@ public class AIMStrategy implements ConnectionStrategy {
     public void setAwayMessage(String message, boolean away){
     	session_.setAwayMessage(message, away);
     }
+
+
+	@Override
+	public String getProtocol() {
+		return protocol_;
+	}
 }
