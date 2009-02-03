@@ -122,7 +122,7 @@ public class Encryptor {
 
 	
 			Element buddy = null;
-			
+
 			if (buddies.getLength() != 0){
 				//We need to see if we already have a key for this buddy
 				for (int i = 0; i < buddies.getLength(); ++i){
@@ -139,6 +139,8 @@ public class Encryptor {
 				}
 			}
 
+			NodeList children = buddy.getChildNodes();
+			
 			String keyString = buddy.getTextContent();
 			X509EncodedKeySpec pubKeySpec = new X509EncodedKeySpec(Base64.decode(keyString.getBytes()));
 
@@ -189,6 +191,7 @@ public class Encryptor {
 		Document doc;
 		DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder docBuilder;
+		
 		try {
 
 			docBuilder = docBuilderFactory.newDocumentBuilder();
@@ -220,15 +223,33 @@ public class Encryptor {
 				//We didn't find the buddy
 				buddy = doc.createElement("Buddy");
 				buddy.setAttribute("handle", handle);
-				buddy.setTextContent(keyText);
+				Element key = doc.createElement("Key");
+				key.setTextContent(keyText);
+				buddy.appendChild(key);
+				root.appendChild(buddy);
 				
-				
+								
 			}else {
-				buddy.setTextContent(keyText);
+				
+				NodeList children = buddy.getChildNodes();
+				boolean found = false;
+				
+				for (int i = 0; i < children.getLength(); ++i){
+					if (children.item(i).getNodeName().compareToIgnoreCase("Key") == 0){
+						//Key node already exists
+						children.item(i).setTextContent(keyText);
+						found = true;
+						break;
+					}
+				}
+				if (!found){
+					Element key = doc.createElement("Key");
+					key.setTextContent(keyText);
+					buddy.appendChild(key);
+				}
 				
 			}
 			
-			root.appendChild(buddy);
 			
 			OutputFormat format = new OutputFormat(doc);
 			format.setIndenting(true);
@@ -249,9 +270,6 @@ public class Encryptor {
 			
 			e.printStackTrace();
 		}
-		
-		
-		
 
 	}
 
@@ -261,7 +279,6 @@ public class Encryptor {
 		try {
 			rsaKeyFac = KeyFactory.getInstance("RSA");
 		} catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		X509EncodedKeySpec pubKeySpec = new X509EncodedKeySpec(Base64.decode(keys[0].getBytes()));
