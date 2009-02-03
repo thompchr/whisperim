@@ -35,8 +35,8 @@ import java.util.HashMap;
  */
 public class WhisperClient extends javax.swing.JFrame {
 
-	private String[] buddyString;
-	private int numOfBuddies = 0;
+	private String[] buddyString_;
+	private int numOfBuddies_ = 0;
 	private String myHandle_;
 	private Timer myTimer_;
 	private IdleTT myTaskTimer_;    
@@ -271,7 +271,7 @@ public class WhisperClient extends javax.swing.JFrame {
 
 	public void updateBuddyList(ArrayList<String> newBuddies)
 	{
-		numOfBuddies = newBuddies.size();
+		numOfBuddies_ = newBuddies.size();
 
 		for(int i=0; i<newBuddies.size(); i++)
 		{
