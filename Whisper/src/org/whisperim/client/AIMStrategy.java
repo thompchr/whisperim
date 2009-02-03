@@ -1,5 +1,5 @@
  /**************************************************************************
- * Copyright 2009 John Dlugokecki                                         *
+ * Copyright 2009 John Dlugokecki                                          *
  *                                                                         *
  * Licensed under the Apache License, Version 2.0 (the "License");         *
  * you may not use this file except in compliance with the License.        *
@@ -25,7 +25,7 @@ import org.whisperim.aim.AIMSession;
 /**
  * @author Chris Thompson
  *
- * This is the concrete implementation of the ConnectionStrategy class for
+ * This is the concrete implementation of the ConnectionStrategy interface for
  * an AIM-based chat.
  */
 public class AIMStrategy implements ConnectionStrategy {
