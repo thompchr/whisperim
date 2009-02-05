@@ -367,7 +367,7 @@ public class Encryptor {
 
 	}
 	
-	public String getMyPublicKey() throws ParserConfigurationException, SAXException, IOException{
+	public static String getMyPublicKey() throws ParserConfigurationException, SAXException, IOException{
 		File keyFile = new File(System.getProperty("user.home") + File.separator + "Whisper" + File.separator + "keys");
 		DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
