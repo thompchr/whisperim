@@ -78,6 +78,7 @@ public class WhisperIM extends JFrame{
         	encrypt = new Encryptor(theirKey, myKey);
             
         }else{
+        
         	toggleEncryption_.setEnabled(false);
         }
         myKey_ = myKey;
@@ -241,7 +242,7 @@ public class WhisperIM extends JFrame{
     
     private void sendKeyBtnActionPerformed(ActionEvent evt){
     	try{
-    		Message keyMsg = new Message(myHandle_, theirHandle_, "{!keyspec=" + encrypt.getMyPublicKey() + "!}", Calendar.getInstance().getTime());
+    		Message keyMsg = new Message(myHandle_, theirHandle_, "{!keyspec=" + Encryptor.getMyPublicKey() + "!}", Calendar.getInstance().getTime());
     		myParent_.sendMessage(keyMsg);
     		talkArea_.append("Public key sent\n");
     		
