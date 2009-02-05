@@ -4,7 +4,7 @@
 =Build 2=
  * Ability to log conversations.  (Logan)
  * User can set status. (Nick, John) (** DELAY PENDING OFFICE HOURS **)
- * User can receive parsed rich text in conversation with an AIM user(Cory, Kirk)
+ * User can receive parsed rich text in conversation with an AIM user(Cory, Kirk) (Delayed)
  * User can utilize the enter key in place of clicking the send button (Cory, Kirk)
  * User can share public key information with other users (Chris)
  * User can view File, etc. menus without problems (Cory) (Delayed for next build cycle - office hours)
