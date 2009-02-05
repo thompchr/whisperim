@@ -47,7 +47,7 @@ import org.whisperim.security.Encryptor;
  * 
  * @author Kirk Banks, Chris Thompson, John Dlugokecki, Cory Plastek
  */
-public class WhisperIM extends JFrame {
+public class WhisperIM extends JFrame implements ActionListener {
     //Encryptor for the chat session
     private Encryptor encrypt;
     private boolean doEncryption = false;
@@ -159,14 +159,14 @@ public class WhisperIM extends JFrame {
         sendBtn_.setActionCommand(SEND_);
         sendBtn_.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                sendBtnActionPerformed(evt);
+                WhisperIM.this.actionPerformed(evt);
             }
         });
         sendKeyBtn_.setText(SEND_KEY_);
         sendKeyBtn_.setActionCommand(SEND_KEY_);
         sendKeyBtn_.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                sendKeyBtnActionPerformed(evt);
+            	WhisperIM.this.actionPerformed(evt);
             }
         });
 
@@ -187,7 +187,7 @@ public class WhisperIM extends JFrame {
         toggleEncryption_.setActionCommand(TOGGLE_ENCRYPTION_);
         toggleEncryption_.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                toggleEncryptionActionPerformed(evt);
+            	WhisperIM.this.actionPerformed(evt);
             }
         });
         
@@ -247,13 +247,13 @@ public class WhisperIM extends JFrame {
         buddyName_.getAccessibleContext().setAccessibleName("Buddy");
     }
 
-    /*
+    
     public void actionPerformed(ActionEvent e) {
     	String actionCommand = e.getActionCommand();
-    	if (actionCommand.equals(SEND_)) {
+    	if (actionCommand.equals(sendBtn_.getActionCommand())) {
     		sendMsg();
     	}
-    	if(actionCommand.equals(ENCRYPTION_ON_) || actionCommand.equals(ENCRYPTION_OFF_)) {
+    	if(actionCommand.equals(toggleEncryption_.getActionCommand())) {
     		if (doEncryption) {
                 doEncryption = false;
                 toggleEncryption_.setText(ENCRYPTION_OFF_);
@@ -263,7 +263,7 @@ public class WhisperIM extends JFrame {
                 toggleEncryption_.setText(ENCRYPTION_ON_);
             }
     	}
-    	if (actionCommand.equals(SEND_KEY_)) {
+    	if (actionCommand.equals(sendKeyBtn_.getActionCommand())) {
     		try{
         		Message keyMsg = new Message(myHandle_, theirHandle_, "{!keyspec=" + Encryptor.getMyPublicKey() + "!}", Calendar.getInstance().getTime());
         		myParent_.sendMessage(keyMsg);
@@ -280,36 +280,6 @@ public class WhisperIM extends JFrame {
     	}
     }
     
-    */
-    
-    private void toggleEncryptionActionPerformed(ActionEvent evt) {
-        if (doEncryption) {
-            doEncryption = false;
-            toggleEncryption_.setText(ENCRYPTION_OFF_);
-        }
-        else {
-            doEncryption = true;
-            toggleEncryption_.setText(ENCRYPTION_ON_);
-        }
-}
-
-    private void sendBtnActionPerformed(ActionEvent evt) {
-		sendMsg();
-    }
-    
-    private void sendKeyBtnActionPerformed(ActionEvent evt){
-    	try{
-    		Message keyMsg = new Message(myHandle_, theirHandle_, "{!keyspec=" + Encryptor.getMyPublicKey() + "!}", Calendar.getInstance().getTime());
-    		myParent_.sendMessage(keyMsg);
-    		talkArea_.append("Public key sent\n");
-    		
-    	}catch (Exception e){
-    		talkArea_.append("An error has occurred sending the key.\n");
-    	}
-    	
-    	
-    }
-
     private void formWindowClosed(WindowEvent evt) {
 
     }
