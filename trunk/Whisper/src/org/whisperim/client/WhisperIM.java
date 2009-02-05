@@ -15,17 +15,15 @@
  **************************************************************************/
 package org.whisperim.client;
 
-import java.awt.TextArea;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-
 import java.security.PrivateKey;
-import java.security.PublicKey;
-
+import java.text.DateFormat;import java.util.Calendar;import java.util.Date;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -34,11 +32,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JToggleButton;
 import javax.swing.WindowConstants;
-
-import java.text.DateFormat;
-
-import java.util.Calendar;
-import java.util.Date;
 
 import org.jdesktop.layout.GroupLayout;
 import org.jdesktop.layout.LayoutStyle;
@@ -57,6 +50,10 @@ public class WhisperIM extends JFrame{
     private boolean doEncryption = false;
     private String theirHandle_;
     private String myHandle_;
+    
+    private static final String ENCRYPTION_OFF_ = "Encryption: Off";
+    private static final String ENCRYPTION_ON_ = "Encryption: On";
+    
     private WhisperClient myParent_;
     private PrivateKey myKey_;
 
@@ -73,17 +70,8 @@ public class WhisperIM extends JFrame{
     	super("Whisper IM Conversation with " + theirHandle);
     	initComponents();
         buddyName_.setText(theirHandle);
-        PublicKey theirKey = Encryptor.getPublicKeyForBuddy(theirHandle);
-        if (theirKey != null){
-        	encrypt = new Encryptor(theirKey, myKey);
-            
-        }else{
-        
-        	toggleEncryption_.setEnabled(false);
-        }
-        myKey_ = myKey;
-        toggleEncryption_.setSelected(doEncryption);
-        toggleEncryption_.setText("Encryption: Off");
+        PublicKey theirKey = Encryptor.getPublicKeyForBuddy(theirHandle);        if (theirKey != null){        	encrypt = new Encryptor(theirKey, myKey);                    }else{                	toggleEncryption_.setEnabled(false);        }        myKey_ = myKey;        toggleEncryption_.setSelected(doEncryption);
+        toggleEncryption_.setText(ENCRYPTION_OFF_);
         talkArea_.requestFocus();
         theirHandle_ = theirHandle;
         myHandle_ = myHandle;
@@ -108,10 +96,15 @@ public class WhisperIM extends JFrame{
 
         jDialog1_ = new JDialog();
         jDialog2_ = new JDialog();
-        messageArea_ = new java.awt.TextArea();
+        messageArea_ = new JTextArea();
+        messageArea_.setLineWrap(true);
+        messageArea_.setWrapStyleWord(true);
+        messageAreaScroll_ = new JScrollPane(messageArea_);
         sendBtn_ = new JButton();
-        jScrollPane1_ = new JScrollPane();
+        talkAreaScroll_ = new JScrollPane();
         talkArea_ = new JTextArea();
+        talkArea_.setLineWrap(true);
+        talkArea_.setWrapStyleWord(true);
         buddyName_ = new JLabel();
         toggleEncryption_ = new JToggleButton();
         sendKeyBtn_ = new JButton();
@@ -139,7 +132,7 @@ public class WhisperIM extends JFrame{
         );
 
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        setMinimumSize(new java.awt.Dimension(470, 315));
+        setMinimumSize(new Dimension(470, 315));
         addWindowListener(new WindowAdapter() {
             public void windowClosed(WindowEvent evt) {
                 formWindowClosed(evt);
@@ -162,9 +155,17 @@ public class WhisperIM extends JFrame{
             }
         });
 
+        messageArea_.setColumns(20);
+        messageAreaScroll_.setViewportView(messageArea_);      
+        messageAreaScroll_.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        messageAreaScroll_.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        
         talkArea_.setColumns(20);
         talkArea_.setRows(5);
-        jScrollPane1_.setViewportView(talkArea_);
+        talkArea_.setEditable(false);
+        talkAreaScroll_.setViewportView(talkArea_);
+        talkAreaScroll_.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        talkAreaScroll_.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
         buddyName_.setText("jLabel1");
 
@@ -181,31 +182,28 @@ public class WhisperIM extends JFrame{
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(GroupLayout.LEADING)
-                    .add(layout.createSequentialGroup()
-                        .add(buddyName_, GroupLayout.PREFERRED_SIZE, 73, GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(LayoutStyle.RELATED, 200, Short.MAX_VALUE)
-                        .add(toggleEncryption_)
-                        .add(sendKeyBtn_))
-                    .add(jScrollPane1_, GroupLayout.DEFAULT_SIZE, 306, Short.MAX_VALUE)
+                    .add(buddyName_, GroupLayout.PREFERRED_SIZE, 73, GroupLayout.PREFERRED_SIZE)
+                    //.add(talkArea_, GroupLayout.DEFAULT_SIZE, 306, Short.MAX_VALUE)
+                    .add(talkAreaScroll_, GroupLayout.DEFAULT_SIZE, 306, Short.MAX_VALUE)
                     .add(messageArea_, GroupLayout.DEFAULT_SIZE, 306, Short.MAX_VALUE)
-                    .add(sendBtn_))
-                .addContainerGap())
-        );
+                    .add(layout.createSequentialGroup()
+                    		.add(toggleEncryption_)                    		.addContainerGap()                    		.add(sendBtn_)                    )                )            .addContainerGap()            )        );
         layout.setVerticalGroup(
             layout.createParallelGroup(GroupLayout.LEADING)
             .add(GroupLayout.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .add(layout.createParallelGroup(GroupLayout.LEADING)
-                    .add(buddyName_, GroupLayout.PREFERRED_SIZE, 18, GroupLayout.PREFERRED_SIZE)
-                    .add(toggleEncryption_)
-                    .add(sendKeyBtn_))
+                .add(buddyName_, GroupLayout.PREFERRED_SIZE, 18, GroupLayout.PREFERRED_SIZE)                .addPreferredGap(LayoutStyle.RELATED)
+                //.add(talkArea_, GroupLayout.PREFERRED_SIZE, 153, Short.MAX_VALUE)
                 .addPreferredGap(LayoutStyle.RELATED)
-                .add(jScrollPane1_, GroupLayout.PREFERRED_SIZE, 153, GroupLayout.PREFERRED_SIZE)
+                .add(talkAreaScroll_, GroupLayout.PREFERRED_SIZE, 153, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(LayoutStyle.RELATED, 20, Short.MAX_VALUE)
                 .add(messageArea_, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(LayoutStyle.RELATED)
-                .add(sendBtn_)
-                .add(42, 42, 42))
+                .add(layout.createParallelGroup()
+                		.add(toggleEncryption_)
+                		.add(sendBtn_))
+                .addContainerGap()
+            )
         );
         
         
@@ -228,11 +226,11 @@ public class WhisperIM extends JFrame{
     private void toggleEncryptionActionPerformed(ActionEvent evt) {
         if (doEncryption) {
             doEncryption = false;
-            toggleEncryption_.setText("Encryption: Off");
+            toggleEncryption_.setText(ENCRYPTION_OFF_);
         }
         else {
             doEncryption = true;
-            toggleEncryption_.setText("Encryption: On");
+            toggleEncryption_.setText(ENCRYPTION_ON_);
         }
 }
 
@@ -317,8 +315,9 @@ public class WhisperIM extends JFrame{
     private JLabel buddyName_;
     private JDialog jDialog1_;
     private JDialog jDialog2_;
-    private JScrollPane jScrollPane1_;
-    private TextArea messageArea_;
+    private JScrollPane talkAreaScroll_;
+    private JTextArea messageArea_;
+    private JScrollPane messageAreaScroll_;
     private JButton sendBtn_;
     private JTextArea talkArea_;
     private JToggleButton toggleEncryption_;
