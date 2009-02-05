@@ -24,6 +24,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import java.security.PrivateKey;
+import java.security.PublicKey;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -57,6 +58,7 @@ public class WhisperIM extends JFrame{
     private String theirHandle_;
     private String myHandle_;
     private WhisperClient myParent_;
+    private PrivateKey myKey_;
 
     /*
      * The logging portion should be toggled by the user.  Until the additional UI
@@ -71,7 +73,14 @@ public class WhisperIM extends JFrame{
     	super("Whisper IM Conversation with " + theirHandle);
     	initComponents();
         buddyName_.setText(theirHandle);
-        encrypt = new Encryptor(Encryptor.getPublicKeyForBuddy(theirHandle), myKey);
+        PublicKey theirKey = Encryptor.getPublicKeyForBuddy(theirHandle);
+        if (theirKey != null){
+        	encrypt = new Encryptor(theirKey, myKey);
+            
+        }else{
+        	toggleEncryption_.setEnabled(false);
+        }
+        myKey_ = myKey;
         toggleEncryption_.setSelected(doEncryption);
         toggleEncryption_.setText("Encryption: Off");
         talkArea_.requestFocus();
@@ -81,6 +90,14 @@ public class WhisperIM extends JFrame{
         
     }
 
+    
+    public void enableEncryption(PublicKey theirKey){
+    	if (theirKey != null){
+    		encrypt = new Encryptor(theirKey, myKey_);
+    		toggleEncryption_.setEnabled(true);
+    		talkArea_.append("Key received. Encryption is now available.\n");
+    	}
+    }
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -96,6 +113,7 @@ public class WhisperIM extends JFrame{
         talkArea_ = new JTextArea();
         buddyName_ = new JLabel();
         toggleEncryption_ = new JToggleButton();
+        sendKeyBtn_ = new JButton();
 
         GroupLayout jDialog1Layout = new GroupLayout(jDialog1_.getContentPane());
         jDialog1_.getContentPane().setLayout(jDialog1Layout);
@@ -136,6 +154,12 @@ public class WhisperIM extends JFrame{
                 sendBtnActionPerformed(evt);
             }
         });
+        sendKeyBtn_.setText("Send Key");
+        sendKeyBtn_.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                sendKeyBtnActionPerformed(evt);
+            }
+        });
 
         talkArea_.setColumns(20);
         talkArea_.setRows(5);
@@ -159,7 +183,8 @@ public class WhisperIM extends JFrame{
                     .add(layout.createSequentialGroup()
                         .add(buddyName_, GroupLayout.PREFERRED_SIZE, 73, GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(LayoutStyle.RELATED, 200, Short.MAX_VALUE)
-                        .add(toggleEncryption_))
+                        .add(toggleEncryption_)
+                        .add(sendKeyBtn_))
                     .add(jScrollPane1_, GroupLayout.DEFAULT_SIZE, 306, Short.MAX_VALUE)
                     .add(messageArea_, GroupLayout.DEFAULT_SIZE, 306, Short.MAX_VALUE)
                     .add(sendBtn_))
@@ -171,7 +196,8 @@ public class WhisperIM extends JFrame{
                 .addContainerGap()
                 .add(layout.createParallelGroup(GroupLayout.LEADING)
                     .add(buddyName_, GroupLayout.PREFERRED_SIZE, 18, GroupLayout.PREFERRED_SIZE)
-                    .add(toggleEncryption_))
+                    .add(toggleEncryption_)
+                    .add(sendKeyBtn_))
                 .addPreferredGap(LayoutStyle.RELATED)
                 .add(jScrollPane1_, GroupLayout.PREFERRED_SIZE, 153, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(LayoutStyle.RELATED, 20, Short.MAX_VALUE)
@@ -181,6 +207,8 @@ public class WhisperIM extends JFrame{
                 .add(42, 42, 42))
         );
         
+        
+
         messageArea_.addKeyListener (
         		new KeyAdapter() {
         			public void keyTyped(KeyEvent e) {
@@ -209,6 +237,19 @@ public class WhisperIM extends JFrame{
 
     private void sendBtnActionPerformed(ActionEvent evt) {
 		sendMsg();
+    }
+    
+    private void sendKeyBtnActionPerformed(ActionEvent evt){
+    	try{
+    		Message keyMsg = new Message(myHandle_, theirHandle_, "{!keyspec=" + encrypt.getMyPublicKey() + "!}", Calendar.getInstance().getTime());
+    		myParent_.sendMessage(keyMsg);
+    		talkArea_.append("Public key sent\n");
+    		
+    	}catch (Exception e){
+    		talkArea_.append("An error has occurred sending the key.\n");
+    	}
+    	
+    	
     }
 
     private void formWindowClosed(WindowEvent evt) {
@@ -280,5 +321,6 @@ public class WhisperIM extends JFrame{
     private JButton sendBtn_;
     private JTextArea talkArea_;
     private JToggleButton toggleEncryption_;
+    private JButton sendKeyBtn_;
 
 }

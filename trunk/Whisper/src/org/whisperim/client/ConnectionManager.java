@@ -101,13 +101,15 @@ public class ConnectionManager {
 
 		// Switch statement for strategies. 
 		switch(strategy){
-			case 0: 
-			{
-				System.out.println("Error: No strategy found!");
-			}
-			case 1:
+			case 0:
 			{
 				strategy_ = new AIMStrategy(this);
+				break;
+			}
+			default:
+			{
+				System.err.println("Error: No such strategy.");
+				break;
 			}
 		}
 

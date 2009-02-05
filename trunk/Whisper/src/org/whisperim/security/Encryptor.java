@@ -128,34 +128,47 @@ public class Encryptor {
 				for (int i = 0; i < buddies.getLength(); ++i){
 					Element temp = (Element)buddies.item(i);
 
-					if (temp.getAttribute(handle) == null){
-						//Not our buddy
-					}else {
+					if (temp.getAttribute("handle").equalsIgnoreCase(handle)){
 						//We found our buddy
-						buddy = (Element) buddies.item(i);
-
+						buddy = temp;
 						break;
 					}
 				}
+				if (buddy == null){
+					return null;
+				}
+				
+				NodeList children = buddy.getChildNodes();
+				Element key = null;
+				for (int i = 0; i < children.getLength(); ++i){
+					if (children.item(i).getNodeName().compareToIgnoreCase("Key") == 0){
+						key = (Element) children.item(i);
+						break;
+					}
+				}
+				if (key == null){
+					return null;
+				}
+				
+				String keyString = key.getTextContent();
+				X509EncodedKeySpec pubKeySpec = new X509EncodedKeySpec(Base64.decode(keyString.getBytes()));
+
+				KeyFactory rsaKeyFac = null;
+
+				try {
+					rsaKeyFac = KeyFactory.getInstance("RSA");
+					return rsaKeyFac.generatePublic(pubKeySpec);
+				} catch (NoSuchAlgorithmException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (InvalidKeySpecException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
 			}
 
-			NodeList children = buddy.getChildNodes();
 			
-			String keyString = buddy.getTextContent();
-			X509EncodedKeySpec pubKeySpec = new X509EncodedKeySpec(Base64.decode(keyString.getBytes()));
-
-			KeyFactory rsaKeyFac = null;
-
-			try {
-				rsaKeyFac = KeyFactory.getInstance("RSA");
-				return rsaKeyFac.generatePublic(pubKeySpec);
-			} catch (NoSuchAlgorithmException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (InvalidKeySpecException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 
 			return null;
 		} catch (SAXException ex) {
@@ -352,6 +365,20 @@ public class Encryptor {
 
 		return encryptedMessage;
 
+	}
+	
+	public String getMyPublicKey() throws ParserConfigurationException, SAXException, IOException{
+		File keyFile = new File(System.getProperty("user.home") + File.separator + "Whisper" + File.separator + "keys");
+		DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+		Document doc;
+		doc = docBuilder.parse(keyFile);
+		// normalize text representation
+		doc.getDocumentElement().normalize();
+		NodeList buddies = doc.getElementsByTagName("PublicKey");
+		
+		
+		return  buddies.item(0).getTextContent();
 	}
 
 	/**

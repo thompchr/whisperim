@@ -15,6 +15,11 @@
  **************************************************************************/
 
 package org.whisperim.client;
+import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
+import java.security.PublicKey;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -22,6 +27,9 @@ import java.util.TimerTask;
 import javax.swing.*;
 
 import org.whisperim.security.Encryptor;
+
+import com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingException;
+import com.sun.org.apache.xml.internal.security.utils.Base64;
 
 import java.util.HashMap;
 
@@ -222,12 +230,12 @@ public class WhisperClient extends javax.swing.JFrame {
 			//user.
 
 
-			if (message.getMessage().contains("keyspec")){
+			if (message.getMessage().contains("keyspec=")){
 				//A public key has been sent.
 
 				//Key information will be Base64 encoded to allow for easy transport
 				String keyText = message.getMessage().substring(
-						message.getMessage().indexOf("keyspec")+ 7, 
+						message.getMessage().indexOf("keyspec=")+ 8, 
 						message.getMessage().indexOf("!}"));
 
 				//Now we have the text of the key, pass it to the Encryptor
@@ -235,6 +243,36 @@ public class WhisperClient extends javax.swing.JFrame {
 				//fire some sort of event that allows the encryption to be
 				//enabled.
 				Encryptor.writeKeyToFile(keyText, message.getFrom() + ":" +message.getProtocol());
+
+
+				try {
+					X509EncodedKeySpec pubKeySpec = new X509EncodedKeySpec(Base64.decode(keyText.getBytes()));
+					KeyFactory rsaKeyFac = null;
+					rsaKeyFac = KeyFactory.getInstance("RSA");
+					final PublicKey recKey = rsaKeyFac.generatePublic(pubKeySpec);
+					if (windows.get(message.getFrom()) == null){
+						//There isn't currently a window associated with that buddy
+						final WhisperClient client = this;
+						java.awt.EventQueue.invokeLater(new Runnable() {
+							public void run() {
+								WhisperIM window = new WhisperIM(message.getFrom(), myHandle_, client, manager_.getPrivateKey());
+								window.setVisible(true);
+								windows.put(message.getFrom(), window);
+								window.enableEncryption(recKey);
+							}
+						});
+					}else{
+						windows.get(message.getFrom()).enableEncryption(recKey);
+					}
+					
+				} catch (NoSuchAlgorithmException e) {
+					e.printStackTrace();
+				} catch (Base64DecodingException e) {
+					e.printStackTrace();
+				} catch (InvalidKeySpecException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 
 
 			}
