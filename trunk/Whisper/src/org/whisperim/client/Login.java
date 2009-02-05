@@ -81,6 +81,7 @@ public class Login extends JFrame implements ActionListener {
         		} //end method
         	);
 		signOnButton.setText(SIGN_ON_);
+		signOnButton.setActionCommand(SIGN_ON_);
 		signOnButton.addActionListener(this);
 		signOnButton.addKeyListener (
         		new KeyAdapter() {
@@ -158,7 +159,7 @@ public class Login extends JFrame implements ActionListener {
 	
 	//Handles actions generated in login
 	public void actionPerformed(ActionEvent e) {
-		if (e.getActionCommand().equals(SIGN_ON_)) {
+		if (e.getActionCommand().equals(signOnButton.getActionCommand())) {
 			signOn();
 		}
 	}
