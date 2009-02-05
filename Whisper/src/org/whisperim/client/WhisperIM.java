@@ -23,7 +23,10 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.security.PrivateKey;
-import java.text.DateFormat;import java.util.Calendar;import java.util.Date;
+import java.security.PublicKey;
+import java.text.DateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -44,7 +47,7 @@ import org.whisperim.security.Encryptor;
  * 
  * @author Kirk Banks, Chris Thompson, John Dlugokecki, Cory Plastek
  */
-public class WhisperIM extends JFrame{
+public class WhisperIM extends JFrame {
     //Encryptor for the chat session
     private Encryptor encrypt;
     private boolean doEncryption = false;
@@ -53,6 +56,9 @@ public class WhisperIM extends JFrame{
     
     private static final String ENCRYPTION_OFF_ = "Encryption: Off";
     private static final String ENCRYPTION_ON_ = "Encryption: On";
+    private static final String SEND_ = "Send";
+    private static final String SEND_KEY_ = "Send Key";
+    private static final String TOGGLE_ENCRYPTION_ = "Toggle Encryption";
     
     private WhisperClient myParent_;
     private PrivateKey myKey_;
@@ -70,7 +76,14 @@ public class WhisperIM extends JFrame{
     	super("Whisper IM Conversation with " + theirHandle);
     	initComponents();
         buddyName_.setText(theirHandle);
-        PublicKey theirKey = Encryptor.getPublicKeyForBuddy(theirHandle);        if (theirKey != null){        	encrypt = new Encryptor(theirKey, myKey);                    }else{                	toggleEncryption_.setEnabled(false);        }        myKey_ = myKey;        toggleEncryption_.setSelected(doEncryption);
+        PublicKey theirKey = Encryptor.getPublicKeyForBuddy(theirHandle);        
+        if (theirKey != null){
+        	encrypt = new Encryptor(theirKey, myKey);
+        }else {
+        	toggleEncryption_.setEnabled(false);
+        }
+        myKey_ = myKey;
+        toggleEncryption_.setSelected(doEncryption);
         toggleEncryption_.setText(ENCRYPTION_OFF_);
         talkArea_.requestFocus();
         theirHandle_ = theirHandle;
@@ -142,13 +155,15 @@ public class WhisperIM extends JFrame{
             }
         });
 
-        sendBtn_.setText("Send");
+        sendBtn_.setText(SEND_);
+        sendBtn_.setActionCommand(SEND_);
         sendBtn_.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 sendBtnActionPerformed(evt);
             }
         });
-        sendKeyBtn_.setText("Send Key");
+        sendKeyBtn_.setText(SEND_KEY_);
+        sendKeyBtn_.setActionCommand(SEND_KEY_);
         sendKeyBtn_.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 sendKeyBtnActionPerformed(evt);
@@ -169,45 +184,54 @@ public class WhisperIM extends JFrame{
 
         buddyName_.setText("jLabel1");
 
+        toggleEncryption_.setActionCommand(TOGGLE_ENCRYPTION_);
         toggleEncryption_.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 toggleEncryptionActionPerformed(evt);
             }
         });
+        
 
         GroupLayout layout = new GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
-                .addContainerGap()
-                .add(layout.createParallelGroup(GroupLayout.LEADING)
-                    .add(buddyName_, GroupLayout.PREFERRED_SIZE, 73, GroupLayout.PREFERRED_SIZE)
-                    //.add(talkArea_, GroupLayout.DEFAULT_SIZE, 306, Short.MAX_VALUE)
-                    .add(talkAreaScroll_, GroupLayout.DEFAULT_SIZE, 306, Short.MAX_VALUE)
-                    .add(messageArea_, GroupLayout.DEFAULT_SIZE, 306, Short.MAX_VALUE)
-                    .add(layout.createSequentialGroup()
-                    		.add(toggleEncryption_)                    		.addContainerGap()                    		.add(sendBtn_)                    )                )            .addContainerGap()            )        );
+	            layout.createParallelGroup(GroupLayout.LEADING)
+	            .add(layout.createSequentialGroup()
+	            		.addContainerGap()
+		                .add(layout.createParallelGroup(GroupLayout.LEADING)
+			                    .add(buddyName_, GroupLayout.PREFERRED_SIZE, 73, GroupLayout.PREFERRED_SIZE)
+			                    .add(talkAreaScroll_, GroupLayout.DEFAULT_SIZE, 306, Short.MAX_VALUE)
+			                    .add(messageAreaScroll_, GroupLayout.DEFAULT_SIZE, 306, Short.MAX_VALUE)
+			                    .add(layout.createSequentialGroup()
+			                    		.add(toggleEncryption_)
+			                    		.add(42, 42, 42)
+			                    		.add(sendKeyBtn_)
+			                    		.add(42, 42, 42)
+			                    		.add(sendBtn_)
+			                    )
+			            )
+		                .addContainerGap()
+	             )
+        );
         layout.setVerticalGroup(
-            layout.createParallelGroup(GroupLayout.LEADING)
-            .add(GroupLayout.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .add(buddyName_, GroupLayout.PREFERRED_SIZE, 18, GroupLayout.PREFERRED_SIZE)                .addPreferredGap(LayoutStyle.RELATED)
-                //.add(talkArea_, GroupLayout.PREFERRED_SIZE, 153, Short.MAX_VALUE)
-                .addPreferredGap(LayoutStyle.RELATED)
-                .add(talkAreaScroll_, GroupLayout.PREFERRED_SIZE, 153, GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(LayoutStyle.RELATED, 20, Short.MAX_VALUE)
-                .add(messageArea_, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(LayoutStyle.RELATED)
-                .add(layout.createParallelGroup()
-                		.add(toggleEncryption_)
-                		.add(sendBtn_))
-                .addContainerGap()
-            )
+	            layout.createParallelGroup(GroupLayout.LEADING)
+	            .add(GroupLayout.TRAILING, layout.createSequentialGroup()
+		                .addContainerGap()
+		                .add(buddyName_, GroupLayout.PREFERRED_SIZE, 18, GroupLayout.PREFERRED_SIZE)                
+		                .addPreferredGap(LayoutStyle.RELATED)
+		                .addPreferredGap(LayoutStyle.RELATED)
+		                .add(talkAreaScroll_, GroupLayout.PREFERRED_SIZE, 153, GroupLayout.PREFERRED_SIZE)
+		                .addPreferredGap(LayoutStyle.RELATED, 20, Short.MAX_VALUE)
+                		.add(messageAreaScroll_, GroupLayout.PREFERRED_SIZE, 36, GroupLayout.PREFERRED_SIZE)
+		                .addPreferredGap(LayoutStyle.RELATED)
+		                .add(layout.createParallelGroup()
+		                		.add(toggleEncryption_)
+		                		.add(sendKeyBtn_)
+		                		.add(sendBtn_))
+		                .addContainerGap()
+	            )
         );
         
-        
-
         messageArea_.addKeyListener (
         		new KeyAdapter() {
         			public void keyTyped(KeyEvent e) {
@@ -223,6 +247,41 @@ public class WhisperIM extends JFrame{
         buddyName_.getAccessibleContext().setAccessibleName("Buddy");
     }
 
+    /*
+    public void actionPerformed(ActionEvent e) {
+    	String actionCommand = e.getActionCommand();
+    	if (actionCommand.equals(SEND_)) {
+    		sendMsg();
+    	}
+    	if(actionCommand.equals(ENCRYPTION_ON_) || actionCommand.equals(ENCRYPTION_OFF_)) {
+    		if (doEncryption) {
+                doEncryption = false;
+                toggleEncryption_.setText(ENCRYPTION_OFF_);
+            }
+            else {
+                doEncryption = true;
+                toggleEncryption_.setText(ENCRYPTION_ON_);
+            }
+    	}
+    	if (actionCommand.equals(SEND_KEY_)) {
+    		try{
+        		Message keyMsg = new Message(myHandle_, theirHandle_, "{!keyspec=" + Encryptor.getMyPublicKey() + "!}", Calendar.getInstance().getTime());
+        		myParent_.sendMessage(keyMsg);
+        		talkArea_.append("Public key sent\n");
+        		
+        	}catch (Exception ex){
+        		talkArea_.append("An error has occurred sending the key.\n");
+        	}
+    	}
+    	else {
+    		//problem with button interface
+    		//didn't listen to the right Action Command
+    		System.out.println("Problem with button interface");
+    	}
+    }
+    
+    */
+    
     private void toggleEncryptionActionPerformed(ActionEvent evt) {
         if (doEncryption) {
             doEncryption = false;
