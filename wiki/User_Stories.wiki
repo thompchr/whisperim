@@ -1,6 +1,12 @@
 #summary User stories for the Whisper IM project
 #labels Phase-Requirements
 
+=Build 3=
+ * User can set status. (Nick, John) (** DELAY PENDING OFFICE HOURS **)
+ * User can receive parsed rich text in conversation with an AIM user(Cory, Kirk) (Delayed)
+ * User can view File, etc. menus without problems (Cory) (Delayed for next build cycle - office hours)
+  * User can select "New IM" and be displayed a new window without selecting a buddy (Chris)
+
 =Build 2=
  * Ability to log conversations.  (Logan)
  * User can set status. (Nick, John) (** DELAY PENDING OFFICE HOURS **)
