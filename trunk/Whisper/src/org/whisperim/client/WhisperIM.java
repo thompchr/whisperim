@@ -252,8 +252,7 @@ public class WhisperIM extends JFrame implements ActionListener {
     	String actionCommand = e.getActionCommand();
     	if (actionCommand.equals(sendBtn_.getActionCommand())) {
     		sendMsg();
-    	}
-    	if(actionCommand.equals(toggleEncryption_.getActionCommand())) {
+    	}else if(actionCommand.equals(toggleEncryption_.getActionCommand())) {
     		if (doEncryption) {
                 doEncryption = false;
                 toggleEncryption_.setText(ENCRYPTION_OFF_);
@@ -262,8 +261,7 @@ public class WhisperIM extends JFrame implements ActionListener {
                 doEncryption = true;
                 toggleEncryption_.setText(ENCRYPTION_ON_);
             }
-    	}
-    	if (actionCommand.equals(sendKeyBtn_.getActionCommand())) {
+    	}else if (actionCommand.equals(sendKeyBtn_.getActionCommand())) {
     		try{
         		Message keyMsg = new Message(myHandle_, theirHandle_, "{!keyspec=" + Encryptor.getMyPublicKey() + "!}", Calendar.getInstance().getTime());
         		myParent_.sendMessage(keyMsg);
