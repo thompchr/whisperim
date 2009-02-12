@@ -2,6 +2,7 @@
 #labels Phase-Requirements
 
 =Build 3=
+ * User can enable "AIM Bot" for messaging. (Nick)
  * User can set status. (Nick, John) (** DELAY PENDING OFFICE HOURS **)
  * User can receive parsed rich text in conversation with an AIM user (Cory, Kirk) (Delayed)
  * User can view File, etc. menus without problems (Cory)
