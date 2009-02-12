@@ -41,3 +41,6 @@
   * User can select "New IM" and be displayed a new window without selecting a buddy
   * User will be notified of errors (exceptions) via dialog boxes unless they are fully handled by the software
   * User can send messages when not connected through an ad-hoc network and electing a server
+  * User can export private key and use remotely using a web interface
+  * User can Whisper as a remote shell client
+  * User can encrypt keys with passsword
