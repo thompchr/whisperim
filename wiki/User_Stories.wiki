@@ -7,6 +7,7 @@
  * User can receive parsed rich text in conversation with an AIM user (Cory, Kirk) (Delayed)
  * User can view File, etc. menus without problems (Cory)
  * User can identify which network their buddy is on by an icon next to their name in the buddy list and an icon in the chat window (Cory)
+ * User will be able to access the 'File' and 'Preferences' menus from the buddy list (Cory)
  * User can select "New IM" and be displayed a new window without selecting a buddy (Chris)
  * Whisper clients can identify if other client is using Whisper and disable special functionality to prevent bombarding buddy with garbage (Chris)
 
