@@ -40,3 +40,4 @@
   * User can initiate talk with anyone regardless of "buddy" status
   * User can select "New IM" and be displayed a new window without selecting a buddy
   * User will be notified of errors (exceptions) via dialog boxes unless they are fully handled by the software
+  * User can send messages when not connected through an ad-hoc network and electing a server
