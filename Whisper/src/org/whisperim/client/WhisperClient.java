@@ -69,6 +69,7 @@ public class WhisperClient extends JFrame {
 
 
 	private HashMap<String, WhisperIM> windows = new HashMap<String, WhisperIM>();
+	
 	/** Creates new form WhisperClient */
 	public WhisperClient(String handle, ConnectionManager manager) {
 		initComponents();
@@ -277,7 +278,7 @@ public class WhisperClient extends JFrame {
 							}
 						});
 					}else{
-						windows.get(message.getFrom()).enableEncryption(recKey);
+						windows.get(message.getFrom().toLowerCase().replace(" ", "")).enableEncryption(recKey);
 					}
 					
 				} catch (NoSuchAlgorithmException e) {
@@ -308,7 +309,7 @@ public class WhisperClient extends JFrame {
 				});
 
 			}else{
-				windows.get(message.getFrom()).receiveMsg(message);
+				windows.get(message.getFrom().toLowerCase().replace(" ", "")).receiveMsg(message);
 			}
 
 		}
