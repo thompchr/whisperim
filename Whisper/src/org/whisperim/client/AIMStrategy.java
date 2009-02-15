@@ -42,12 +42,10 @@ public class AIMStrategy implements ConnectionStrategy {
 		
 	}
 
-
 	@Override
 	public void receiveMessage(Message message) {
 		manager_.messageReceived(message);
 	}
-
 
 	@Override
 	public void sendMessage(Message message) {
@@ -79,7 +77,6 @@ public class AIMStrategy implements ConnectionStrategy {
     public void setAwayMessage(String message, boolean away){
     	session_.setAwayMessage(message, away);
     }
-
 
 	@Override
 	public String getProtocol() {
