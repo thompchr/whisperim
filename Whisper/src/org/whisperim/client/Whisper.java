@@ -146,7 +146,6 @@ public class Whisper {
 					myPublicKey_ = keyPair.getPublic();
 				
 				} catch (Exception e) {
-					// TODO: handle exception
 					e.printStackTrace();
 				}
 			}
