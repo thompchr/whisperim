@@ -47,7 +47,7 @@ public class ConnectionManagerTest extends TestCase {
 	 */
 	public void testAddToMap()
 	{
-		cm.addToMap(test, null);
+		cm.addStrategy(test, null);
 		assertTrue(cm.getStrategy(test) != null);
 	}
 	
