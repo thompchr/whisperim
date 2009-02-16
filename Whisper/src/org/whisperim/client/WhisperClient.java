@@ -17,14 +17,14 @@
 package org.whisperim.client;
 
 import java.awt.EventQueue;
-import java.awt.List;
 import java.awt.Menu;
 import java.awt.MenuBar;
 import java.awt.PopupMenu;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.security.KeyFactory;
@@ -38,11 +38,15 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.swing.JFrame;
+import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
+import javax.swing.ListModel;
 import javax.swing.WindowConstants;
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
 
 import org.jdesktop.layout.GroupLayout;
 import org.whisperim.security.Encryptor;
@@ -60,15 +64,29 @@ import com.sun.org.apache.xml.internal.security.utils.Base64;
  */
 public class WhisperClient extends JFrame {
 
-	private String[] buddyString_;
+	
 	private int numOfBuddies_ = 0;
 	private String myHandle_;
 	private Timer myTimer_;
 	private IdleTT myTaskTimer_;    
 	private ConnectionManager manager_;
+	private BuddyListModel blm_ = new BuddyListModel();
+	
 
+	private JList buddyList_;
+	private JMenu fileMenu_;
+	private JMenu editMenu_;
+	
+	private JMenuBar fileMenuBar_;
+	
+	private JMenuItem jMenuItem1;
+	private JMenuItem exitMenuItm_;
+	private PopupMenu popupMenu1;
 
-	private HashMap<String, WhisperIM> windows = new HashMap<String, WhisperIM>();
+	private HashMap<String, WhisperIM> windows_ = new HashMap<String, WhisperIM>();
+	private JPopupMenu jPopupMenu1;
+	private JPopupMenu jPopupMenu2;
+	private JPopupMenu jPopupMenu3;
 	
 	/** Creates new form WhisperClient */
 	public WhisperClient(String handle, ConnectionManager manager) {
@@ -84,6 +102,8 @@ public class WhisperClient extends JFrame {
 
 		this.setAwayMessage("Away put your weapons, I mean you no harm", true);
 	}
+	
+
 
 	private void resetTimer(int timeToIdle)
 	{
@@ -104,6 +124,7 @@ public class WhisperClient extends JFrame {
 	}
 
 	class IdleTT extends TimerTask {
+		@Override
 		public void run() {
 			setTitle("Whisper [Idle]");
 		}
@@ -120,96 +141,112 @@ public class WhisperClient extends JFrame {
 		jPopupMenu2 = new JPopupMenu();
 		jPopupMenu3 = new JPopupMenu();
 		popupMenu1 = new PopupMenu();
-		menuBar1 = new MenuBar();
-		menu1 = new Menu();
-		menu2 = new Menu();
-		menuBar2 = new MenuBar();
-		menu3 = new Menu();
-		menu4 = new Menu();
-		menuBar3 = new MenuBar();
-		menu5 = new Menu();
-		menu6 = new Menu();
-		jMenuBar2 = new JMenuBar();
-		jMenu3 = new JMenu();
-		jMenu4 = new JMenu();
-		Buddies = new List();
-		jMenuBar1 = new JMenuBar();
-		jMenu1 = new JMenu();
-		jMenuItem2 = new JMenuItem();
-		jMenu2 = new JMenu();
+		
+		buddyList_ = new JList(blm_);
+		fileMenuBar_ = new JMenuBar();
+		fileMenu_ = new JMenu();
+		exitMenuItm_ = new JMenuItem();
+		editMenu_ = new JMenu();
 		jMenuItem1 = new JMenuItem();
 
 		popupMenu1.setLabel("popupMenu1");
+		
+		blm_.addListDataListener(new ListDataListener(){
 
-		menu1.setLabel("File");
-		menuBar1.add(menu1);
+			@Override
+			public void contentsChanged(ListDataEvent e) {
+				if (e.getSource() instanceof ListModel){
+					buddyList_.setModel((ListModel) e.getSource());
+				}
+				
+			}
 
-		menu2.setLabel("Edit");
-		menuBar1.add(menu2);
+			@Override
+			public void intervalAdded(ListDataEvent e) {
+				
+			}
 
-		menu3.setLabel("File");
-		menuBar2.add(menu3);
+			@Override
+			public void intervalRemoved(ListDataEvent e) {
 
-		menu4.setLabel("Edit");
-		menuBar2.add(menu4);
+				
+			}
+			
+		});
+		
 
-		menu5.setLabel("File");
-		menuBar3.add(menu5);
+		fileMenu_.setText("File");
+		fileMenuBar_.add(fileMenu_);
 
-		menu6.setLabel("Edit");
-		menuBar3.add(menu6);
-
-		jMenu3.setText("File");
-		jMenuBar2.add(jMenu3);
-
-		jMenu4.setText("Edit");
-		jMenuBar2.add(jMenu4);
+		editMenu_.setText("Edit");
+		fileMenuBar_.add(editMenu_);
 
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		addWindowListener(new WindowAdapter() {
+			@Override
 			public void windowClosing(WindowEvent evt) {
 				formWindowClosing(evt);
 			}
 		});
 
-		Buddies.addComponentListener(new ComponentAdapter() {
+		buddyList_.addComponentListener(new ComponentAdapter() {
+			@Override
 			public void componentShown(ComponentEvent evt) {
 				BuddiesComponentShown(evt);
 			}
 		});
-		Buddies.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				BuddiesActionPerformed(evt);
+
+		buddyList_.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent mouseEvent) {
+				//WhisperClient.this.BuddiesActionPerformed(mouseEvent);
+				JList Buddies = (JList) mouseEvent.getSource();
+				if (mouseEvent.getClickCount() == 2) {
+					int index = Buddies.locationToIndex(mouseEvent.getPoint());
+					if (index >= 0) {
+						final String o = (String)Buddies.getModel().getElementAt(index).toString();
+						//need to start new chat window
+						//
+						final WhisperClient client = WhisperClient.this;						
+						EventQueue.invokeLater(new Runnable() {
+							public void run() {
+								WhisperIM window = new WhisperIM(o, myHandle_, client, manager_.getPrivateKey());
+								window.setVisible(true);
+								windows_.put(o.toLowerCase().replace(" ", ""), window);
+							}
+						});
+					}
+				}
 			}
 		});
 
-		jMenu1.setText("File");
+		fileMenu_.setText("File");
 
-		jMenuItem2.setText("Quit");
-		jMenu1.add(jMenuItem2);
+		exitMenuItm_.setText("Quit");
+		fileMenu_.add(exitMenuItm_);
 
-		jMenuBar1.add(jMenu1);
+		fileMenuBar_.add(fileMenu_);
 
-		jMenu2.setText("Preferences");
+		editMenu_.setText("Preferences");
 
 		jMenuItem1.setText("Encryption");
-		jMenu2.add(jMenuItem1);
+		editMenu_.add(jMenuItem1);
 
-		jMenuBar1.add(jMenu2);
+		fileMenuBar_.add(editMenu_);
 
-		setJMenuBar(jMenuBar1);
+		setJMenuBar(fileMenuBar_);
 
 		GroupLayout layout = new GroupLayout(getContentPane());
 		getContentPane().setLayout(layout);
 		layout.setHorizontalGroup(
 				layout.createParallelGroup(GroupLayout.LEADING)
-				.add(Buddies, GroupLayout.DEFAULT_SIZE, 182, Short.MAX_VALUE)
+				.add(buddyList_, GroupLayout.DEFAULT_SIZE, 182, Short.MAX_VALUE)
 		);
 		layout.setVerticalGroup(
 				layout.createParallelGroup(GroupLayout.LEADING)
 				.add(GroupLayout.TRAILING, layout.createSequentialGroup()
 						.addContainerGap()
-						.add(Buddies, GroupLayout.DEFAULT_SIZE, 294, Short.MAX_VALUE))
+						.add(buddyList_, GroupLayout.DEFAULT_SIZE, 294, Short.MAX_VALUE))
 		);
 
 		pack();
@@ -222,7 +259,7 @@ public class WhisperClient extends JFrame {
 			public void run() {
 				WhisperIM window = new WhisperIM(evt.getActionCommand(), myHandle_, client, manager_.getPrivateKey());
 				window.setVisible(true);
-				windows.put(evt.getActionCommand(), window);
+				windows_.put(evt.getActionCommand(), window);
 			}
 		});
 	}
@@ -266,19 +303,19 @@ public class WhisperClient extends JFrame {
 					KeyFactory rsaKeyFac = null;
 					rsaKeyFac = KeyFactory.getInstance("RSA");
 					final PublicKey recKey = rsaKeyFac.generatePublic(pubKeySpec);
-					if (windows.get(message.getFrom()) == null){
+					if (windows_.get(message.getFrom()) == null){
 						//There isn't currently a window associated with that buddy
 						final WhisperClient client = this;
 						java.awt.EventQueue.invokeLater(new Runnable() {
 							public void run() {
 								WhisperIM window = new WhisperIM(message.getFrom(), myHandle_, client, manager_.getPrivateKey());
 								window.setVisible(true);
-								windows.put(message.getFrom(), window);
+								windows_.put(message.getFrom(), window);
 								window.enableEncryption(recKey);
 							}
 						});
 					}else{
-						windows.get(message.getFrom().toLowerCase().replace(" ", "")).enableEncryption(recKey);
+						windows_.get(message.getFrom().toLowerCase().replace(" ", "")).enableEncryption(recKey);
 					}
 					
 				} catch (NoSuchAlgorithmException e) {
@@ -296,20 +333,20 @@ public class WhisperClient extends JFrame {
 			//It would be really great if we could allow system messages to be passed around
 			//That is, if the Whisper program could alert the user of things by adding messages
 			//to the chat window.
-			if (windows.get(message.getFrom()) == null){
+			if (windows_.get(message.getFrom()) == null){
 				//There isn't currently a window associated with that buddy
 				final WhisperClient client = this;
 				EventQueue.invokeLater(new Runnable() {
 					public void run() {
 						WhisperIM window = new WhisperIM(message.getFrom(), myHandle_, client, manager_.getPrivateKey());
 						window.setVisible(true);
-						windows.put(message.getFrom(), window);
+						windows_.put(message.getFrom(), window);
 						window.receiveMsg(message);
 					}
 				});
 
 			}else{
-				windows.get(message.getFrom().toLowerCase().replace(" ", "")).receiveMsg(message);
+				windows_.get(message.getFrom().toLowerCase().replace(" ", "")).receiveMsg(message);
 			}
 
 		}
@@ -323,44 +360,35 @@ public class WhisperClient extends JFrame {
 	}
 
 
+	/**
+	 * This method will update the buddy list with a new list.
+	 * All buddies in the list must be associated with the same session.
+	 * @param 
+	 * 		newBuddies - The list of buddies to be added
+	 */
 	public void updateBuddyList(ArrayList<Buddy> newBuddies)
 	{
-		numOfBuddies_ = newBuddies.size();
-
-		for(int i=0; i<newBuddies.size(); i++)
-		{
-			Buddies.add(newBuddies.get(i).getHandle());
+		if (newBuddies.size() == 0)
+			return;
+		
+		if (blm_.getSize() == 0){
+			//List is empty, we don't need to check anything
+			blm_.addBuddies(newBuddies);
+		}else{
+			//We will need to see what changed
+			String protocol = newBuddies.get(0).getProtocolID();
+			String assocHandle = newBuddies.get(0).getAssociatedLocalHandle();
+			
+			blm_.removeBuddies(protocol, assocHandle);
+			blm_.addBuddies(newBuddies);
 		}
 
 	}
 
 	public void onWindowClose(String handle){
-		windows.remove(handle);
+		windows_.remove(handle);
 	}
 
-
-	private List Buddies;
-	private JMenu jMenu1;
-	private JMenu jMenu2;
-	private JMenu jMenu3;
-	private JMenu jMenu4;
-	private JMenuBar jMenuBar1;
-	private JMenuBar jMenuBar2;
-	private JMenuItem jMenuItem1;
-	private JMenuItem jMenuItem2;
-	private JPopupMenu jPopupMenu1;
-	private JPopupMenu jPopupMenu2;
-	private JPopupMenu jPopupMenu3;
-	private Menu menu1;
-	private Menu menu2;
-	private Menu menu3;
-	private Menu menu4;
-	private Menu menu5;
-	private Menu menu6;
-	private MenuBar menuBar1;
-	private MenuBar menuBar2;
-	private MenuBar menuBar3;
-	private PopupMenu popupMenu1;
 
 	private void setAwayMessage(String message, boolean away){
 		manager_.setAwayMessage(message, away);
