@@ -240,7 +240,7 @@ public class WhisperClient extends JFrame {
 		//First we need to check to see if it contains
 		//information that is intended for the client
 		//to interpret (key file, etc.)
-		if (message.getMessage().startsWith("{!")){
+		if (message.getMessage().startsWith("<whisperim")){
 			//This is an instruction to the client, we need to parse it
 			//and then we'll swallow it or print out a message to the
 			//user.
@@ -252,7 +252,7 @@ public class WhisperClient extends JFrame {
 				//Key information will be Base64 encoded to allow for easy transport
 				String keyText = message.getMessage().substring(
 						message.getMessage().indexOf("keyspec=")+ 8, 
-						message.getMessage().indexOf("!}"));
+						message.getMessage().indexOf("--"));
 
 				//Now we have the text of the key, pass it to the Encryptor
 				//to parse it and store it.  We will also probably want to
@@ -323,13 +323,13 @@ public class WhisperClient extends JFrame {
 	}
 
 
-	public void updateBuddyList(ArrayList<String> newBuddies)
+	public void updateBuddyList(ArrayList<Buddy> newBuddies)
 	{
 		numOfBuddies_ = newBuddies.size();
 
 		for(int i=0; i<newBuddies.size(); i++)
 		{
-			Buddies.add(newBuddies.get(i));
+			Buddies.add(newBuddies.get(i).getHandle());
 		}
 
 	}

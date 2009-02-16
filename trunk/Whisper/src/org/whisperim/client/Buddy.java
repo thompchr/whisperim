@@ -25,37 +25,34 @@ package org.whisperim.client;
 public class Buddy {
 
 	private String handle_;
-	private int managerID_;
-	private int windowID_;
-	
-	//TODO Add an exception for a null value passed to this constructor
-	public Buddy(String handle, int managerID, int windowID){
+	private String protocolID_;
+	private String buddyIconLoc_;
+		
+	public Buddy(String handle, String protocol){
 		handle_ = handle;
-		managerID_ = managerID;
-		windowID_ = windowID;
+		protocolID_ = protocol;
 	}
 	
 	public String getHandle(){
 		return handle_;
 	}
 	
-	public int getManagerID(){
-		return managerID_;
-	}
-	
-	public int getWindowID_(){
-		return windowID_;
-	}
-	
 	public void setHandle (String handle){
 		handle_ = handle;
 	}
-	
-	public void setManagerID(int managerID){
-		managerID_ = managerID;
+
+	public String getProtocolID_() {
+		return protocolID_;
+	}
+
+	public void setProtocolID_(String protocol) {
+		protocolID_ = protocol;
 	}
 	
-	public void setWindowID(int windowID){
-		windowID_ = windowID;
+	@Override
+	public String toString(){
+		return handle_;
 	}
+	
+	
 }

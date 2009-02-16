@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 import org.whisperim.client.AIMStrategy;
+import org.whisperim.client.Buddy;
 import org.whisperim.client.Message;
 
 import com.aol.acc.AccAlert;
@@ -138,6 +139,9 @@ public class AIMSession implements AccEvents, Runnable {
 	@Override
 	public void OnBuddyAdded(AccSession arg0, AccGroup arg1, AccUser arg2,
 			int arg3, AccResult arg4) {
+		System.out.println("In OnBuddyAdded");
+		System.out.println("  " + arg1.toString());
+		System.out.println("  " + arg2.toString());
 	}
 
 	@Override
@@ -148,8 +152,8 @@ public class AIMSession implements AccEvents, Runnable {
 	 */
 	public void OnBuddyListChange(AccSession arg0, AccBuddyList arg1,
 			AccBuddyListProp arg2) {
-		
-		ArrayList<String> buddyList = new ArrayList<String>();
+		System.out.println("In OnBuddyListChange");
+		ArrayList<Buddy> buddyList = new ArrayList<Buddy>();
 		
 		try {
 			int groups = arg1.getGroupCount();
@@ -161,7 +165,7 @@ public class AIMSession implements AccEvents, Runnable {
 
 					if (buddy.getState() != AccUserState.Offline) {
 						//Add the buddy to the list of online users
-						buddyList.add(buddy.getName());
+						buddyList.add(new Buddy(buddy.getName(), "aol"));
 					}
 				}
 			}
@@ -170,8 +174,7 @@ public class AIMSession implements AccEvents, Runnable {
 				strategy_.receiveBuddies(buddyList);
 			}
 
-		} catch (AccException e) {
-			// TODO Auto-generated catch block
+		} catch (AccException e) {		
 			e.printStackTrace();
 		}
 
@@ -181,11 +184,17 @@ public class AIMSession implements AccEvents, Runnable {
 	@Override
 	public void OnBuddyMoved(AccSession arg0, AccUser arg1, AccGroup arg2,
 			int arg3, AccGroup arg4, int arg5, AccResult arg6) {
+		System.out.println("In OnBuddyMoved");
+		System.out.println("  " + arg1.toString());
+		System.out.println("  " + arg2.toString());
 	}
 
 	@Override
 	public void OnBuddyRemoved(AccSession arg0, AccGroup arg1, AccUser arg2,
 			AccResult arg3) {
+		System.out.println("In OnBuddyRemoved");
+		System.out.println("  " + arg1.toString());
+		System.out.println("  " + arg2.toString());
 	}
 
 	@Override

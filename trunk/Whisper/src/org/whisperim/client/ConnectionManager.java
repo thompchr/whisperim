@@ -162,7 +162,7 @@ public class ConnectionManager {
 	/*
 	 * Updates buddy list when buddy shows up.
 	 */
-	public void receiveBuddies(ArrayList<String> buddies){
+	public void receiveBuddies(ArrayList<Buddy> buddies){
 		client_.updateBuddyList(buddies);
 	}
 
