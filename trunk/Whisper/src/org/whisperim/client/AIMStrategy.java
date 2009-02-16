@@ -34,6 +34,7 @@ public class AIMStrategy implements ConnectionStrategy {
 	ConnectionManager manager_;
 	String protocol_ = "aol";
 
+
 	
 	public AIMStrategy(ConnectionManager manager){
 
@@ -62,6 +63,7 @@ public class AIMStrategy implements ConnectionStrategy {
 	public void signOn(String username, String password) {
 
 		session_.addOperation(AIMOperation.createSignIn(username, password));
+		session_.setLocalHandle(username);
 	}
 	
 	@Override

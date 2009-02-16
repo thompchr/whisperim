@@ -84,6 +84,7 @@ public class AIMSession implements AccEvents, Runnable {
 	private Thread listenThread_;
 	private boolean running_ = true;
 	private AIMStrategy strategy_;
+	private String localHandle_;
 
 	private LinkedList<AIMOperation> operations_ = new LinkedList<AIMOperation>();
 
@@ -98,6 +99,10 @@ public class AIMSession implements AccEvents, Runnable {
 		strategy_ = strategy;
 		listenThread_ = new Thread(this);
 		listenThread_.start();
+	}
+	
+	public void setLocalHandle(String handle){
+		localHandle_ = handle;
 	}
 
 	@Override
@@ -165,7 +170,7 @@ public class AIMSession implements AccEvents, Runnable {
 
 					if (buddy.getState() != AccUserState.Offline) {
 						//Add the buddy to the list of online users
-						buddyList.add(new Buddy(buddy.getName(), "aol"));
+						buddyList.add(new Buddy(buddy.getName(), localHandle_, "aol"));
 					}
 				}
 			}
