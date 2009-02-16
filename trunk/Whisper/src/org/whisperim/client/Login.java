@@ -41,6 +41,7 @@ public class Login extends JFrame implements ActionListener {
 	private static final String PASSWORD_ = "Password:";
 	private static final String SIGN_ON_ = "Sign On";
 	private static final String INVALID_USERNAME_OR_PASSWORD_ = "Invalid Username or Password";
+	private static final String ERROR_ = "Error";
 	private static final String SIGNED_IN_ = "Signed In";
 	
     /** Creates new form Login */
@@ -176,7 +177,7 @@ public class Login extends JFrame implements ActionListener {
             this.dispose();
         }
         if (status.equalsIgnoreCase(INVALID_USERNAME_OR_PASSWORD_)){
-        	JOptionPane.showMessageDialog(this, status, "Error", JOptionPane.ERROR_MESSAGE);
+        	JOptionPane.showMessageDialog(this, status, ERROR_, JOptionPane.ERROR_MESSAGE);
         	setVisibility(true);
         }
     }
