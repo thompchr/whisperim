@@ -28,7 +28,7 @@ public interface ConnectionStrategy {
 	
 	public void receiveMessage(Message message);
 	
-	public void receiveBuddies(ArrayList<String> buddies);
+	public void receiveBuddies(ArrayList<Buddy> buddies);
 
     public void statusUpdate(String status);
     

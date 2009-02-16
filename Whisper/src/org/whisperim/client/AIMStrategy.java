@@ -65,7 +65,7 @@ public class AIMStrategy implements ConnectionStrategy {
 	}
 	
 	@Override
-	public void receiveBuddies(ArrayList<String> buddies){
+	public void receiveBuddies(ArrayList<Buddy> buddies){
 		manager_.receiveBuddies(buddies);
 	}
 
