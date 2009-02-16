@@ -20,6 +20,7 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 /**
  * This class manages connections and ties them to local buddy handles. 
@@ -30,12 +31,11 @@ import java.util.HashMap;
  */
 public class ConnectionManager {
 
-	/*
+	/**
 	 * This section defines private member variables. 
 	 * Each title holds data for the session connection.
 	 */
 	private ConnectionStrategy strategy_;
-	private String localHandle_;
 	private Login login_;
 	private WhisperClient client_ = null;
 	private PrivateKey myPrivateKey_;
@@ -44,12 +44,12 @@ public class ConnectionManager {
 
 	public static final int AIM_SESSION = 0; 
 
-	/*
+	/**
 	 * Hashmap strategies_ holds session strategies.
 	 */
 	private HashMap<String, ConnectionStrategy> strategies_ = new HashMap<String, ConnectionStrategy>();
 
-	/*
+	/**
 	 * Returns true if Hashmap strategies_ is empty.
 	 */
 	public boolean isHashEmpty()
@@ -57,7 +57,7 @@ public class ConnectionManager {
 		return (strategies_.isEmpty());
 	}
 	
-	/*
+	/**
 	 * Returns strategies from Hashmap strategies_.
 	 * @param strategy is the strategy title to be retrieved from strategies_. 
 	 */
@@ -66,7 +66,7 @@ public class ConnectionManager {
 		return strategies_.get(strategy);
 	}
 
-	/*
+	/**
 	 * Removes strategies from Hashmap strategies_.
 	 * @param strategy is the strategy title to be removed from strategies_. 
 	 */
@@ -80,17 +80,19 @@ public class ConnectionManager {
 		}
 	}
 
-	/*
+	/**
 	 * Adds strategies to Hashmap strategies_.
-	 * @param strategy is the strategy title to be added to strategies_.
-	 * @param is the key for strategies_. 
+	 * @param 
+	 * 		strategy - strategy object to be added to the collection. 
+	 * @param 
+	 * 		name - the unique identifier for the strategy. 
 	 */
-	public void addToMap(String name, ConnectionStrategy strategy)
+	public void addStrategy(String name, ConnectionStrategy strategy)
 	{
 		strategies_.put(name, strategy);
 	}
 
-	/*
+	/**
 	 * Constructor for Connection Manager.
 	 */
 	public ConnectionManager(int strategy, String handle, String password, Login login, PrivateKey privKey, PublicKey pubKey) throws IllegalArgumentException{
@@ -98,17 +100,19 @@ public class ConnectionManager {
 			throw new IllegalArgumentException();
 		}
 
-
+		ConnectionStrategy cs;
 		// Switch statement for strategies. 
 		switch(strategy){
 			case 0:
 			{
-				strategy_ = new AIMStrategy(this);
+				cs = new AIMStrategy(this);
+				strategies_.put(cs.getProtocol() + ":" + handle, cs);
 				break;
 			}
 			default:
 			{
 				System.err.println("Error: No such strategy.");
+				cs = null;
 				break;
 			}
 		}
@@ -116,19 +120,12 @@ public class ConnectionManager {
 		myPrivateKey_ = privKey;
 		myPublicKey_ = pubKey;
 		login_ = login;
-		localHandle_ = handle;
-		strategy_.signOn(handle, password);
+		cs.signOn(handle, password);
 
 	}
 
-	/*
-	 * Returns strategy_.
-	 */
-	public ConnectionStrategy getStrategy(){
-		return strategy_;
-	}
 
-	/*
+	/**
 	 * Set client_ to specified chat client
 	 * @param client is the chat client. 
 	 */
@@ -136,37 +133,30 @@ public class ConnectionManager {
 		client_ = client;
 	}
 
-	/*
-	 * Return localHandle_.
-	 */
-	public String getHandle(){
-		return localHandle_;
-	}
-
-	/*
+	/**
 	 * Action taken when message is received from client.
 	 */
 	public void messageReceived(Message message){
-		System.out.println("Received message: " + message.getMessage());
+		//System.out.println("Received message: " + message.getMessage());
 		client_.recieveMessage(message);
 
 	}
 
-	/*
+	/**
 	 * Updates status.
 	 */
 	public void statusUpdate (String status){
 		login_.statusUpdate(status);
 	}
 
-	/*
+	/**
 	 * Updates buddy list when buddy shows up.
 	 */
 	public void receiveBuddies(ArrayList<Buddy> buddies){
 		client_.updateBuddyList(buddies);
 	}
 
-	/*
+	/**
 	 * Action to send message.
 	 */
 	public void sendMessage(Message message){
@@ -174,32 +164,50 @@ public class ConnectionManager {
 		strategy_.sendMessage(message);
 	}
 	
-	/*
-	 * Sign off strategy.
+	/**
+	 * Sign off all connections.
+	 * Used when the application terminates.
 	 */
 	public void signOff(){
-		strategy_.signOff();
+		 for (Entry<String, ConnectionStrategy> entry:strategies_.entrySet()){
+			 entry.getValue().signOff();
+		 }
+	}
+	
+
+	/**
+	 * This method signs off a specific session.
+	 * @param 
+	 * 		handle - The local username
+	 * @param 
+	 * 		protocol - The protocol identifier
+	 */
+	public void signOff(String handle, String protocol){
+		strategies_.get(protocol + ":" + handle).signOff();
 	}
 
-	/*
+	/**
 	 * Get Private key for encryption.
 	 */
 	public PrivateKey getPrivateKey(){
 		return myPrivateKey_;
 	}
 
-	/*
+	/**
 	 *  Get public key for encryption.
 	 */
 	public PublicKey getPublicKey(){
 		return myPublicKey_;
 	}
 
-	/*
+	/**
 	 *  Set status to away.
 	 */
 	 public void setAwayMessage(String message, boolean away){
-		 strategy_.setAwayMessage(message, away);
+		 for (Entry<String, ConnectionStrategy> entry:strategies_.entrySet()){
+			 entry.getValue().setAwayMessage(message, away);
+		 }
+		 
 	 }
 
 
