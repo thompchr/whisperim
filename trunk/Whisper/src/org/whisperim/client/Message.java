@@ -26,9 +26,9 @@ import java.util.Date;
 
 public class Message {
 
-	private String from_;
+	private Buddy from_;
 	
-	private String to_;
+	private Buddy to_;
 	
 	private String message_;
 	
@@ -47,7 +47,7 @@ public class Message {
 	 * @param message
 	 * @param date
 	 */
-	public Message(String from, String to, String message, Date date){
+	public Message(Buddy from, Buddy to, String message, Date date){
 		from_ = from;
 		to_ = to;
 		message_ = message;
@@ -62,7 +62,7 @@ public class Message {
 	 * @param timeSent
 	 * @param other
 	 */
-	public Message(String from, String to, String message, Date timeSent, String other){
+	public Message(Buddy from, Buddy to, String message, Date timeSent, String other){
 		from_ = from;
 		to_ = to;
 		message_ = message;
@@ -71,11 +71,11 @@ public class Message {
 	}
 	
 	public String getFrom(){
-		return from_;
+		return from_.getHandle();
 	}
 	
 	public String getTo(){
-		return to_;
+		return to_.getHandle();
 	}
 	
 	public String getMessage(){

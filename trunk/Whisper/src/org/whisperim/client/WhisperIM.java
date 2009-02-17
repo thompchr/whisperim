@@ -57,7 +57,7 @@ public class WhisperIM extends JFrame implements ActionListener {
     private boolean doEncryption = false;
     private String theirHandle_;
     private String myHandle_;
-    
+    private Buddy buddy_;
     private static final String ENCRYPTION_OFF_ = "Encryption: Off";
     private static final String ENCRYPTION_ON_ = "Encryption: On";
     private static final String SEND_ = "Send";
@@ -83,7 +83,7 @@ public class WhisperIM extends JFrame implements ActionListener {
     	super("Whisper IM Conversation with " + buddy.getHandle());
     	
     	initComponents();
-        
+        buddy_ = buddy;
     	if (buddy.getProtocolID().equals("aol")) {
 		      //buddy is on aim
 		      serviceIcon_ =  aimIcon_;
@@ -284,7 +284,10 @@ public class WhisperIM extends JFrame implements ActionListener {
             }
     	}else if (actionCommand.equals(sendKeyBtn_.getActionCommand())) {
     		try{
-        		Message keyMsg = new Message(myHandle_, theirHandle_, "<whisperim keyspec=" + Encryptor.getMyPublicKey() + "--", Calendar.getInstance().getTime());
+        		Message keyMsg = new Message(new Buddy(myHandle_, myHandle_, buddy_.getProtocolID()), 
+        				new Buddy(theirHandle_, myHandle_, buddy_.getProtocolID()), 
+        				"<whisperim keyspec=" + Encryptor.getMyPublicKey() + "--", 
+        				Calendar.getInstance().getTime());
         		myParent_.sendMessage(keyMsg);
         		talkArea_.append("Public key sent\n");
         		
@@ -369,7 +372,9 @@ public class WhisperIM extends JFrame implements ActionListener {
 	            messageText = messageArea_.getText();
 	        }
 	
-	        Message message = new Message(myHandle_, theirHandle_, messageText, Calendar.getInstance().getTime());
+	        Message message = new Message(new Buddy(myHandle_, myHandle_, buddy_.getProtocolID()), 
+    				new Buddy(theirHandle_, myHandle_, buddy_.getProtocolID()), 
+    				messageText, Calendar.getInstance().getTime());
 	        
 	        myParent_.sendMessage(message);
 	        messageArea_.setText("");

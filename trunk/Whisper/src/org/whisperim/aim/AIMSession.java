@@ -85,6 +85,7 @@ public class AIMSession implements AccEvents, Runnable {
 	private boolean running_ = true;
 	private AIMStrategy strategy_;
 	private String localHandle_;
+	private String protocol_ = "aol";
 
 	private LinkedList<AIMOperation> operations_ = new LinkedList<AIMOperation>();
 
@@ -326,7 +327,9 @@ public class AIMSession implements AccEvents, Runnable {
 	public void OnImReceived(AccSession accSession, AccImSession accIMSession,
 			AccParticipant participant, AccIm im) {
 		try {
-			Message message = new Message(participant.getName(), accSession.getIdentity(), im.getText(), im.getTimestamp());
+			Message message = new Message(
+					new Buddy(participant.getName(), localHandle_, protocol_), new Buddy(accSession.getIdentity(), localHandle_, protocol_), im.getText(), im.getTimestamp());
+			message.setProtocol(protocol_);
 			strategy_.receiveMessage(message);
 		} catch (AccException e) {
 			e.printStackTrace();
