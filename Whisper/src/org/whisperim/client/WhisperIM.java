@@ -27,6 +27,7 @@ import java.security.PublicKey;
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.regex.Pattern;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -308,19 +309,35 @@ public class WhisperIM extends JFrame implements ActionListener {
     	log_.close();
     	myParent_.onWindowClose(theirHandle_);
     }
+
+    public static String clearHTMLTags(String strHTML, int doWork){
+    	
+    	Pattern pattern = null;
+	   	String htmlChars;
+	   	String strTagLess = null; 
+    	strTagLess = strHTML; 
+    	
+    	if(doWork == -1)
+  		{
+  			htmlChars = "<[^>]*>";
+			pattern = Pattern.compile(htmlChars);
+			strTagLess = pattern.matcher(strTagLess).replaceAll(""); 
+		}
+		
+		return strTagLess; 
+    }
+    
     public void receiveMsg(Message message)
     {
-    	
-    	
     	DateFormat d = DateFormat.getTimeInstance(DateFormat.MEDIUM);
     	talkArea_.append("(" + d.format(message.getTimeSent()) + ") ");
     	talkArea_.append(message.getFrom() + ": ");
         
     	if (!doEncryption || !message.getMessage().contains("<key>")){
-    		talkArea_.append(message.getMessage());
+    		talkArea_.append(clearHTMLTags(message.getMessage(), -1));
     	}else{
     		
-    		talkArea_.append("(Encrypted Message) " + encrypt.decryptMessage(message.getMessage()));
+    		talkArea_.append("(Encrypted Message) " + clearHTMLTags(encrypt.decryptMessage(message.getMessage()), -1));
     	}
         
     	if (toggleLogging)
