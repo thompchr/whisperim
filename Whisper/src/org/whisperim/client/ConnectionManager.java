@@ -35,7 +35,7 @@ public class ConnectionManager {
 	 * This section defines private member variables. 
 	 * Each title holds data for the session connection.
 	 */
-	private ConnectionStrategy strategy_;
+	
 	private Login login_;
 	private WhisperClient client_ = null;
 	private PrivateKey myPrivateKey_;
@@ -161,7 +161,7 @@ public class ConnectionManager {
 	 */
 	public void sendMessage(Message message){
 		System.out.println("Sending message: " + message.getMessage());
-		strategy_.sendMessage(message);
+		strategies_.get(message.getProtocol() + ":" + message.getFrom()).sendMessage(message);
 	}
 	
 	/**
