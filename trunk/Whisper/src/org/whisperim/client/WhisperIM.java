@@ -66,8 +66,8 @@ public class WhisperIM extends JFrame implements ActionListener {
     private WhisperClient myParent_;
     private PrivateKey myKey_;
     
-    private ImageIcon defaultIcon_ = new ImageIcon("D:\\cory\\Desktop\\default.ico");
-	private ImageIcon aimIcon_ = new ImageIcon("D:\\cory\\Desktop\\aim_icon_small.png");
+    private ImageIcon defaultIcon_ = new ImageIcon("..\\images\\default.ico");
+	private ImageIcon aimIcon_ = new ImageIcon("..\\images\\aim_icon_small.png");
 
     /*
      * The logging portion should be toggled by the user.  Until the additional UI
