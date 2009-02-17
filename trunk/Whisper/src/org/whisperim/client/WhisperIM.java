@@ -27,6 +27,8 @@ import java.security.PublicKey;
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
+
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -34,6 +36,7 @@ import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JToggleButton;
+import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 
 import org.jdesktop.layout.GroupLayout;
@@ -62,6 +65,9 @@ public class WhisperIM extends JFrame implements ActionListener {
     
     private WhisperClient myParent_;
     private PrivateKey myKey_;
+    
+    private ImageIcon defaultIcon_ = new ImageIcon("D:\\cory\\Desktop\\default.ico");
+	private ImageIcon aimIcon_ = new ImageIcon("D:\\cory\\Desktop\\aim_icon_small.png");
 
     /*
      * The logging portion should be toggled by the user.  Until the additional UI
@@ -72,11 +78,19 @@ public class WhisperIM extends JFrame implements ActionListener {
     private boolean toggleLogging = false;
 
     /** Creates new form WhisperIM */
-    public WhisperIM(String theirHandle, String myHandle, WhisperClient myParent, PrivateKey myKey) {
-    	super("Whisper IM Conversation with " + theirHandle);
+    public WhisperIM(Buddy buddy, String myHandle, WhisperClient myParent, PrivateKey myKey) {
+    	super("Whisper IM Conversation with " + buddy.getHandle());
+    	
     	initComponents();
-        buddyName_.setText(theirHandle);
-        PublicKey theirKey = Encryptor.getPublicKeyForBuddy(theirHandle);        
+        
+    	if (buddy.getProtocolID().equals("aol")) {
+		      //buddy is on aim
+		      serviceIcon_ =  aimIcon_;
+		} else {
+		      serviceIcon_ = defaultIcon_;
+		}
+    	buddyName_ = new JLabel(buddy.getHandle(), serviceIcon_, SwingConstants.RIGHT);
+        PublicKey theirKey = Encryptor.getPublicKeyForBuddy(buddy.getHandle());        
         if (theirKey != null){
         	encrypt = new Encryptor(theirKey, myKey);
         }else {
@@ -86,7 +100,7 @@ public class WhisperIM extends JFrame implements ActionListener {
         toggleEncryption_.setSelected(doEncryption);
         toggleEncryption_.setText(ENCRYPTION_OFF_);
         talkArea_.requestFocus();
-        theirHandle_ = theirHandle;
+        theirHandle_ = buddy.getHandle();
         myHandle_ = myHandle;
         myParent_ = myParent;
         
@@ -109,17 +123,23 @@ public class WhisperIM extends JFrame implements ActionListener {
 
         jDialog1_ = new JDialog();
         jDialog2_ = new JDialog();
+        
         messageArea_ = new JTextArea();
         messageArea_.setLineWrap(true);
         messageArea_.setWrapStyleWord(true);
         messageAreaScroll_ = new JScrollPane(messageArea_);
+        
         sendBtn_ = new JButton();
+        
         talkAreaScroll_ = new JScrollPane();
         talkArea_ = new JTextArea();
         talkArea_.setLineWrap(true);
         talkArea_.setWrapStyleWord(true);
+        
         buddyName_ = new JLabel();
+        
         toggleEncryption_ = new JToggleButton();
+        
         sendKeyBtn_ = new JButton();
 
         GroupLayout jDialog1Layout = new GroupLayout(jDialog1_.getContentPane());
@@ -199,7 +219,7 @@ public class WhisperIM extends JFrame implements ActionListener {
 	            .add(layout.createSequentialGroup()
 	            		.addContainerGap()
 		                .add(layout.createParallelGroup(GroupLayout.LEADING)
-			                    .add(buddyName_, GroupLayout.PREFERRED_SIZE, 73, GroupLayout.PREFERRED_SIZE)
+		                		.add(buddyName_, GroupLayout.PREFERRED_SIZE, 150, GroupLayout.PREFERRED_SIZE)
 			                    .add(talkAreaScroll_, GroupLayout.DEFAULT_SIZE, 306, Short.MAX_VALUE)
 			                    .add(messageAreaScroll_, GroupLayout.DEFAULT_SIZE, 306, Short.MAX_VALUE)
 			                    .add(layout.createSequentialGroup()
@@ -338,7 +358,9 @@ public class WhisperIM extends JFrame implements ActionListener {
 	        messageArea_.setText("");
     	}
     }
+    
 
+    private ImageIcon serviceIcon_;
     private JLabel buddyName_;
     private JDialog jDialog1_;
     private JDialog jDialog2_;

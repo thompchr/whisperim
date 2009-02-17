@@ -43,6 +43,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.ListModel;
+import javax.swing.ListSelectionModel;
 import javax.swing.WindowConstants;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
@@ -85,11 +86,11 @@ public class WhisperClient extends JFrame implements ActionListener {
 	private static final String WHISPER_ = "Whisper";
 	private static final String WHISPER_IDLE_ = "Whisper [Idle]";
 	
-	//first menu
+	//first menu\\
 	private static final String FILE_ = "File"; //menu 1 header
 	private static final String QUIT_ = "Quit"; //menu 1 first item
 	
-	//second menu
+	//second menu\\
 	private static final String PREFERENCES_ = "Preferences"; //menu 2 header
 	private static final String ENCRYPTION_ = "Encryption"; //menu 2 first item
 
@@ -186,6 +187,10 @@ public class WhisperClient extends JFrame implements ActionListener {
 		*/
 		
 		buddyList_ = new JList(blm_);
+		buddyList_.setSelectionMode(ListSelectionModel.SINGLE_SELECTION );
+		
+		BuddyListRenderer buddyListRenderer_ = new BuddyListRenderer();
+		buddyList_.setCellRenderer(buddyListRenderer_);
 		
 		buddyListScroll_ = new JScrollPane(buddyList_);
 		buddyListScroll_.setViewportView(buddyList_);      
@@ -239,14 +244,14 @@ public class WhisperClient extends JFrame implements ActionListener {
 				if (mouseEvent.getClickCount() == 2) {
 					int index = Buddies.locationToIndex(mouseEvent.getPoint());
 					if (index >= 0) {
-						final String o = (String)Buddies.getModel().getElementAt(index).toString();
+						final Buddy selectedBuddy_ = (Buddy) Buddies.getModel().getElementAt(index);
 						//need to start new chat window
 						final WhisperClient client = WhisperClient.this;						
 						EventQueue.invokeLater(new Runnable() {
 							public void run() {
-								WhisperIM window = new WhisperIM(o, myHandle_, client, manager_.getPrivateKey());
+								WhisperIM window = new WhisperIM(selectedBuddy_, myHandle_, client, manager_.getPrivateKey());
 								window.setVisible(true);
-								windows_.put(o.toLowerCase().replace(" ", ""), window);
+								windows_.put(selectedBuddy_.getHandle().toLowerCase().replace(" ", ""), window);
 							}
 						});
 					}
@@ -257,8 +262,8 @@ public class WhisperClient extends JFrame implements ActionListener {
 		GroupLayout layout = new GroupLayout(getContentPane());
 		getContentPane().setLayout(layout);
 		layout.setHorizontalGroup(
-				layout.createParallelGroup(GroupLayout.LEADING, false)
-				.add(buddyListScroll_, GroupLayout.DEFAULT_SIZE, 182, 182)
+				layout.createParallelGroup(GroupLayout.LEADING)
+				.add(buddyListScroll_, 100, 182, Short.MAX_VALUE)
 		);
 		layout.setVerticalGroup(
 				layout.createParallelGroup(GroupLayout.LEADING)
@@ -313,6 +318,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 						final WhisperClient client = this;
 						java.awt.EventQueue.invokeLater(new Runnable() {
 							public void run() {
+								//needs to go to an buddy object version
 								WhisperIM window = new WhisperIM(message.getFrom(), myHandle_, client, manager_.getPrivateKey());
 								window.setVisible(true);
 								windows_.put(message.getFrom(), window);
@@ -343,6 +349,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 				final WhisperClient client = this;
 				EventQueue.invokeLater(new Runnable() {
 					public void run() {
+						//needs to go to an buddy object version
 						WhisperIM window = new WhisperIM(message.getFrom(), myHandle_, client, manager_.getPrivateKey());
 						window.setVisible(true);
 						windows_.put(message.getFrom(), window);
