@@ -65,10 +65,10 @@ public class Login extends JFrame implements ActionListener {
 			//Do nothing  
 		}  
     	
-    	usernameLbl = new JLabel();
-    	usernameLbl.setText(USERNAME_);
-		usernameTxtBox = new JTextField();
-        usernameTxtBox.addKeyListener (
+    	usernameLbl_ = new JLabel();
+    	usernameLbl_.setText(USERNAME_);
+		usernameTxtBox_ = new JTextField();
+        usernameTxtBox_.addKeyListener (
         		new KeyAdapter() {
         			public void keyTyped(KeyEvent e) {
         	            if (e.getKeyChar() == '\n') signOn();
@@ -76,10 +76,10 @@ public class Login extends JFrame implements ActionListener {
         		}
         	);
         
-        passwordLbl = new JLabel();
-        passwordLbl.setText(PASSWORD_);
-        passwordTxtBox = new JPasswordField();
-        passwordTxtBox.addKeyListener (
+        passwordLbl_ = new JLabel();
+        passwordLbl_.setText(PASSWORD_);
+        passwordTxtBox_ = new JPasswordField();
+        passwordTxtBox_.addKeyListener (
         		new KeyAdapter() {
         			public void keyTyped(KeyEvent e) {
         	            if (e.getKeyChar() == '\n') signOn();
@@ -87,11 +87,11 @@ public class Login extends JFrame implements ActionListener {
         		}
         	);
         
-		signOnButton = new JButton();
-		signOnButton.setText(SIGN_ON_);
-		signOnButton.setActionCommand(SIGN_ON_);
-		signOnButton.addActionListener(this);
-		signOnButton.addKeyListener (
+		signOnButton_ = new JButton();
+		signOnButton_.setText(SIGN_ON_);
+		signOnButton_.setActionCommand(SIGN_ON_);
+		signOnButton_.addActionListener(this);
+		signOnButton_.addKeyListener (
         		new KeyAdapter() {
         			public void keyTyped(KeyEvent e) {
         	            if (e.getKeyChar() == '\n') signOn();
@@ -99,7 +99,7 @@ public class Login extends JFrame implements ActionListener {
         		}
         	);
 		
-		statusLbl = new JLabel();
+		statusLbl_ = new JLabel();
         
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
@@ -111,32 +111,32 @@ public class Login extends JFrame implements ActionListener {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                        .addComponent(usernameTxtBox, GroupLayout.DEFAULT_SIZE, 151, Short.MAX_VALUE)
-                        .addComponent(usernameLbl)
-                        .addComponent(passwordLbl)
-                        .addComponent(passwordTxtBox, GroupLayout.DEFAULT_SIZE, 151, Short.MAX_VALUE))
-                    .addComponent(signOnButton))
+                        .addComponent(usernameTxtBox_, GroupLayout.DEFAULT_SIZE, 151, Short.MAX_VALUE)
+                        .addComponent(usernameLbl_)
+                        .addComponent(passwordLbl_)
+                        .addComponent(passwordTxtBox_, GroupLayout.DEFAULT_SIZE, 151, Short.MAX_VALUE))
+                    .addComponent(signOnButton_))
                 .addContainerGap(28, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addGap(43, 43, 43)
-                .addComponent(statusLbl, GroupLayout.PREFERRED_SIZE, 95, GroupLayout.PREFERRED_SIZE)
+                .addComponent(statusLbl_, GroupLayout.PREFERRED_SIZE, 95, GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(51, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(28, 28, 28)
-                .addComponent(usernameLbl)
+                .addComponent(usernameLbl_)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(usernameTxtBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                .addComponent(usernameTxtBox_, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                 .addGap(4, 4, 4)
-                .addComponent(statusLbl)
+                .addComponent(statusLbl_)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(passwordLbl)
+                .addComponent(passwordLbl_)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(passwordTxtBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                .addComponent(passwordTxtBox_, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                 .addGap(38, 38, 38)
-                .addComponent(signOnButton)
+                .addComponent(signOnButton_)
                 .addContainerGap(25, Short.MAX_VALUE))
         );
         
@@ -146,7 +146,7 @@ public class Login extends JFrame implements ActionListener {
 
     private void signOn() {
     	setVisibility(false);
-        manager_ = new ConnectionManager(ConnectionManager.AIM_SESSION, usernameTxtBox.getText(), new String(passwordTxtBox.getPassword()), this, myPrivate_, myPublic_);
+        manager_ = new ConnectionManager(ConnectionManager.AIM_SESSION, usernameTxtBox_.getText(), new String(passwordTxtBox_.getPassword()), this, myPrivate_, myPublic_);
     }
 
 	/**
@@ -158,30 +158,30 @@ public class Login extends JFrame implements ActionListener {
 	 * 					
 	 */
 	private void setVisibility(boolean visible) {
-		usernameLbl.setVisible(visible);
-        passwordLbl.setVisible(visible);
-        usernameTxtBox.setVisible(visible);
-        passwordTxtBox.setVisible(visible);
-        signOnButton.setVisible(visible);
+		usernameLbl_.setVisible(visible);
+        passwordLbl_.setVisible(visible);
+        usernameTxtBox_.setVisible(visible);
+        passwordTxtBox_.setVisible(visible);
+        signOnButton_.setVisible(visible);
         
         //The status label is opposite the others.
         //It is only visible when the others are not.
-        statusLbl.setVisible(!visible);
+        statusLbl_.setVisible(!visible);
 	}
 	
 	//Handles actions generated in login
 	public void actionPerformed(ActionEvent e) {
-		if (e.getActionCommand().equals(signOnButton.getActionCommand())) {
+		if (e.getActionCommand().equals(signOnButton_.getActionCommand())) {
 			signOn();
 		}
 	}
 
     public void statusUpdate (String status){
-        statusLbl.setText(status);
+        statusLbl_.setText(status);
         if (status.equalsIgnoreCase(SIGNED_IN_)){
         	EventQueue.invokeLater(new Runnable() {
         		public void run() {
-        			WhisperClient client = new WhisperClient(usernameTxtBox.getText(), manager_);
+        			WhisperClient client = new WhisperClient(usernameTxtBox_.getText(), manager_);
         			client.setVisible(true);
         		}
         	});
@@ -190,14 +190,16 @@ public class Login extends JFrame implements ActionListener {
         if (status.equalsIgnoreCase(INVALID_USERNAME_OR_PASSWORD_)){
         	JOptionPane.showMessageDialog(this, status, ERROR_, JOptionPane.ERROR_MESSAGE);
         	setVisibility(true);
+        	passwordTxtBox_.requestFocus();
+        	passwordTxtBox_.select(0, new String(passwordTxtBox_.getPassword()).length());
         }
     }
     	
-    private JLabel passwordLbl;
-    private JPasswordField passwordTxtBox;
-    private JButton signOnButton;
-    private JLabel statusLbl;
-    private JLabel usernameLbl;
-    private JTextField usernameTxtBox;
+    private JLabel passwordLbl_;
+    private JPasswordField passwordTxtBox_;
+    private JButton signOnButton_;
+    private JLabel statusLbl_;
+    private JLabel usernameLbl_;
+    private JTextField usernameTxtBox_;
 
 }
