@@ -71,7 +71,7 @@ public class Whisper {
 	 */
 	public static void main(String[] args) {
 
-		Whisper main = new Whisper();
+		new Whisper();
 
 	}
 	

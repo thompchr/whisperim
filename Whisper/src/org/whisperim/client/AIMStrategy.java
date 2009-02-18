@@ -33,14 +33,12 @@ public class AIMStrategy implements ConnectionStrategy {
 	AIMSession session_;
 	ConnectionManager manager_;
 	String protocol_ = "aol";
-
-
+	String localHandle_;
 	
-	public AIMStrategy(ConnectionManager manager){
-
+	public AIMStrategy(ConnectionManager manager, String handle){
 		manager_ = manager;
 		session_ = new AIMSession (this);
-		
+		localHandle_ = handle;
 	}
 
 	@Override
@@ -55,13 +53,11 @@ public class AIMStrategy implements ConnectionStrategy {
 
 	@Override
 	public void signOff() {
-		
 		session_.addOperation(AIMOperation.createSignOut());
 	}
 
 	@Override
 	public void signOn(String username, String password) {
-
 		session_.addOperation(AIMOperation.createSignIn(username, password));
 		session_.setLocalHandle(username);
 	}
@@ -83,5 +79,10 @@ public class AIMStrategy implements ConnectionStrategy {
 	@Override
 	public String getProtocol() {
 		return protocol_;
+	}
+
+	@Override
+	public String getIdentifier() {
+		return protocol_ + ":" + localHandle_.toLowerCase().replace(" ", "");
 	}
 }

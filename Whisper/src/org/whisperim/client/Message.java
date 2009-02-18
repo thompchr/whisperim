@@ -47,11 +47,12 @@ public class Message {
 	 * @param message
 	 * @param date
 	 */
-	public Message(Buddy from, Buddy to, String message, Date date){
+	public Message(Buddy from, Buddy to, String message, String protocol, Date date){
 		from_ = from;
 		to_ = to;
 		message_ = message;
 		timeSent_ = date;
+		protocolID_ = protocol;
 	}
 	
 	/**
@@ -62,7 +63,7 @@ public class Message {
 	 * @param timeSent
 	 * @param other
 	 */
-	public Message(Buddy from, Buddy to, String message, Date timeSent, String other){
+	public Message(Buddy from, Buddy to, String message, Date timeSent, String protocol, String other){
 		from_ = from;
 		to_ = to;
 		message_ = message;

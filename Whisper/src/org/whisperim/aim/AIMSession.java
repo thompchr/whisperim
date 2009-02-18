@@ -328,7 +328,7 @@ public class AIMSession implements AccEvents, Runnable {
 			AccParticipant participant, AccIm im) {
 		try {
 			Message message = new Message(
-					new Buddy(participant.getName(), localHandle_, protocol_), new Buddy(accSession.getIdentity(), localHandle_, protocol_), im.getText(), im.getTimestamp());
+					new Buddy(participant.getName(), localHandle_, protocol_), new Buddy(accSession.getIdentity(), localHandle_, protocol_), im.getText(), protocol_, im.getTimestamp());
 			message.setProtocol(protocol_);
 			strategy_.receiveMessage(message);
 		} catch (AccException e) {
