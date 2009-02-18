@@ -31,13 +31,13 @@ import java.util.regex.Pattern;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
+import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 
 import org.jdesktop.layout.GroupLayout;
@@ -120,6 +120,15 @@ public class WhisperIM extends JFrame implements ActionListener {
      */
     private void initComponents() {
         
+    	//set native look and feel
+		try  {  
+			//Tell the UIManager to use the platform look and feel  
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());  
+		}  
+		catch(Exception e) {  
+			//Do nothing  
+		}  
+    	
     	
         if (buddy_.getProtocolID().equals(AOL_)) {
 		      //buddy is on aim
@@ -239,7 +248,7 @@ public class WhisperIM extends JFrame implements ActionListener {
 	            )
         );
         
-        //buddyName_.getAccessibleContext().setAccessibleName("Buddy");
+        buddyName_.getAccessibleContext().setAccessibleName("Buddy");
     }
 
     

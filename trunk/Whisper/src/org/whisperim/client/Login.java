@@ -56,41 +56,52 @@ public class Login extends JFrame implements ActionListener {
      */
     private void initComponents() {
 
+    	//set native look and feel
+		try  {  
+			//Tell the UIManager to use the platform look and feel  
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());  
+		}  
+		catch(Exception e) {  
+			//Do nothing  
+		}  
+    	
     	usernameLbl = new JLabel();
+    	usernameLbl.setText(USERNAME_);
 		usernameTxtBox = new JTextField();
-		passwordTxtBox = new JPasswordField();
-		passwordLbl = new JLabel();
-		signOnButton = new JButton();
-		statusLbl = new JLabel();
-        
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-
-        usernameLbl.setText(USERNAME_);
         usernameTxtBox.addKeyListener (
         		new KeyAdapter() {
-        			public void keyPressed(KeyEvent e) {
-        	            if (e.getKeyCode() == KeyEvent.VK_ENTER) signOn();
-        	    	} //end anonymous class
-        		} //end method
+        			public void keyTyped(KeyEvent e) {
+        	            if (e.getKeyChar() == '\n') signOn();
+        			}
+        		}
         	);
+        
+        passwordLbl = new JLabel();
         passwordLbl.setText(PASSWORD_);
+        passwordTxtBox = new JPasswordField();
         passwordTxtBox.addKeyListener (
         		new KeyAdapter() {
-        			public void keyPressed(KeyEvent e) {
-        	            if (e.getKeyCode() == KeyEvent.VK_ENTER) signOn();
-        	    	} //end anonymous class
-        		} //end method
+        			public void keyTyped(KeyEvent e) {
+        	            if (e.getKeyChar() == '\n') signOn();
+        			}
+        		}
         	);
+        
+		signOnButton = new JButton();
 		signOnButton.setText(SIGN_ON_);
 		signOnButton.setActionCommand(SIGN_ON_);
 		signOnButton.addActionListener(this);
 		signOnButton.addKeyListener (
         		new KeyAdapter() {
-        			public void keyPressed(KeyEvent e) {
-        	            if (e.getKeyCode() == KeyEvent.VK_ENTER) signOn();
-        	    	} //end anonymous class
-        		} //end method
+        			public void keyTyped(KeyEvent e) {
+        	            if (e.getKeyChar() == '\n') signOn();
+        			}
+        		}
         	);
+		
+		statusLbl = new JLabel();
+        
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         GroupLayout layout = new GroupLayout(getContentPane());
         getContentPane().setLayout(layout);

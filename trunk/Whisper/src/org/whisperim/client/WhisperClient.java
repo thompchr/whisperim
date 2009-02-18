@@ -44,6 +44,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
+import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
@@ -74,7 +75,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 	
 	private JList buddyList_;
 	private JScrollPane buddyListScroll_;
-	private JMenu fileMenu_;
+	private JMenu whisperMenu_;
 	private JMenu preferencesMenu_;
 	
 	private JMenuBar menuBar_;
@@ -84,11 +85,11 @@ public class WhisperClient extends JFrame implements ActionListener {
 	private JMenuItem newIm_;
 	private PopupMenu popupMenu1;
 	
-	private static final String WHISPER_ = "Whisper";
-	private static final String WHISPER_IDLE_ = "Whisper [Idle]";
+	private static final String BUDDY_LIST_ = "Buddy List";
+	private static final String BUDDY_LIST_IDLE_ = "Buddy List [Idle]";
 	
 	//first menu\\
-	private static final String FILE_ = "File"; //menu 1 header
+	private static final String WHISPER_ = "Whisper"; //menu 1 header
 	private static final String NEWIM_ = "New Instant Message"; //menu 1 first item
 	private static final String QUIT_ = "Quit"; //menu 1 second item
 	
@@ -97,6 +98,8 @@ public class WhisperClient extends JFrame implements ActionListener {
 	private static final String PREFERENCES_ = "Preferences"; //menu 2 header
 	private static final String ENCRYPTION_ = "Encryption"; //menu 2 first item
 
+	//end menus\\
+	
 	private HashMap<String, WhisperIM> windows_ = new HashMap<String, WhisperIM>();
 	
 	/** Creates new form WhisperClient */
@@ -120,7 +123,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 	{
 		if(myTaskTimer_ != null)
 		{
-			this.setTitle(WHISPER_);
+			this.setTitle(BUDDY_LIST_);
 
 			myTaskTimer_.cancel();
 			myTaskTimer_ = new IdleTT();
@@ -137,7 +140,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 	class IdleTT extends TimerTask {
 		@Override
 		public void run() {
-			setTitle(WHISPER_IDLE_);
+			setTitle(BUDDY_LIST_IDLE_);
 		}
 	}
 
@@ -145,6 +148,15 @@ public class WhisperClient extends JFrame implements ActionListener {
 	 * initialize the form.
 	 */
 	private void initComponents() {
+		
+		//set native look and feel
+		try  {  
+			//Tell the UIManager to use the platform look and feel  
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());  
+		}  
+		catch(Exception e) {  
+			//Do nothing  
+		}  
 		
 		//create the menu bar
 		menuBar_ = new JMenuBar();
@@ -154,21 +166,21 @@ public class WhisperClient extends JFrame implements ActionListener {
 		//File
 			//New IM
 			//Quit
-		fileMenu_ = new JMenu();
-		fileMenu_.setText(FILE_);
-		menuBar_.add(fileMenu_);
+		whisperMenu_ = new JMenu();
+		whisperMenu_.setText(WHISPER_);
+		menuBar_.add(whisperMenu_);
 		
 		newIm_ = new JMenuItem();
 		newIm_.setText(NEWIM_);
 		newIm_.setActionCommand(NEWIM_);
 		newIm_.addActionListener(this);
-		fileMenu_.add(newIm_);
+		whisperMenu_.add(newIm_);
 		
 		quit_ = new JMenuItem();
 		quit_.setText(QUIT_);
 		quit_.setActionCommand(QUIT_);
 		quit_.addActionListener(this);
-		fileMenu_.add(quit_);
+		whisperMenu_.add(quit_);
 		
 		
 		//second menu\\
