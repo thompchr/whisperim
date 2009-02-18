@@ -304,6 +304,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 		final WhisperClient client = WhisperClient.this;
 		WhisperIM window = new WhisperIM(selectedBuddy_, myHandle_, client, manager_.getPrivateKey());
 		window.setVisible(true);
+		String windowID = selectedBuddy_.getHandle().toLowerCase().replace(" ", "");
 		windows_.put(selectedBuddy_.getHandle().toLowerCase().replace(" ", ""), window);
 		return window;
 	}
@@ -347,7 +348,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 					KeyFactory rsaKeyFac = null;
 					rsaKeyFac = KeyFactory.getInstance("RSA");
 					final PublicKey recKey = rsaKeyFac.generatePublic(pubKeySpec);
-					if (windows_.get(message.getFrom()) == null){
+					if (windows_.get(message.getFrom().toLowerCase().replace(" ", "")) == null){
 						//There isn't currently a window associated with that buddy
 						java.awt.EventQueue.invokeLater(new Runnable() {
 							public void run() {
@@ -374,7 +375,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 			//It would be really great if we could allow system messages to be passed around
 			//That is, if the Whisper program could alert the user of things by adding messages
 			//to the chat window.
-			if (windows_.get(message.getFrom()) == null){
+			if (windows_.get(message.getFrom().toLowerCase().replace(" ", "")) == null){
 				//There isn't currently a window associated with that buddy
 				
 				EventQueue.invokeLater(new Runnable() {
