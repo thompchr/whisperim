@@ -434,12 +434,12 @@ public class WhisperClient extends JFrame implements ActionListener {
 		//Quit
 		if (actionCommand.equals(quit_.getActionCommand())) {
 			processWindowEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
-
 		}
-		//New blank IM window
-		if (actionCommand.equals(newIm_.getActionCommand())) {
-			
-
+		if (actionCommand.equals(encryption_.getActionCommand())) {
+			WhisperPref prefs = new WhisperPref();
+			prefs.setSize(150, 150);
+			prefs.setLayout(getLayout());
+			prefs.setVisible(true);
 		}
 	}
 
