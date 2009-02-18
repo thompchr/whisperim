@@ -54,7 +54,7 @@ import org.whisperim.security.Encryptor;
 public class WhisperIM extends JFrame implements ActionListener {
     //Encryptor for the chat session
     private Encryptor encrypt;
-    private boolean doEncryption = false;
+    private boolean doEncryption_ = false;
     private String theirHandle_;
     private String myHandle_;
     
@@ -66,6 +66,16 @@ public class WhisperIM extends JFrame implements ActionListener {
     private static final String SEND_ = "Send";
     private static final String SEND_KEY_ = "Send Key";
     private static final String TOGGLE_ENCRYPTION_ = "Toggle Encryption";
+    
+    private ImageIcon serviceIcon_;
+    private JLabel buddyName_;
+    private JScrollPane talkAreaScroll_;
+    private JTextArea messageArea_;
+    private JScrollPane messageAreaScroll_;
+    private JButton sendBtn_;
+    private JTextArea talkArea_;
+    private JToggleButton toggleEncryption_;
+    private JButton sendKeyBtn_;
     
     private WhisperClient myParent_;
     private PrivateKey myKey_;
@@ -96,7 +106,7 @@ public class WhisperIM extends JFrame implements ActionListener {
         	toggleEncryption_.setEnabled(false);
         }
         myKey_ = myKey;
-        toggleEncryption_.setSelected(doEncryption);
+        toggleEncryption_.setSelected(doEncryption_);
         toggleEncryption_.setText(ENCRYPTION_OFF_);
         talkArea_.requestFocus();
         theirHandle_ = buddy.getHandle();
@@ -256,12 +266,12 @@ public class WhisperIM extends JFrame implements ActionListener {
     	if (actionCommand.equals(sendBtn_.getActionCommand())) {
     		sendMsg();
     	}else if(actionCommand.equals(toggleEncryption_.getActionCommand())) {
-    		if (doEncryption) {
-                doEncryption = false;
+    		if (doEncryption_) {
+                doEncryption_ = false;
                 toggleEncryption_.setText(ENCRYPTION_OFF_);
             }
             else {
-                doEncryption = true;
+                doEncryption_ = true;
                 toggleEncryption_.setText(ENCRYPTION_ON_);
             }
     	}else if (actionCommand.equals(sendKeyBtn_.getActionCommand())) {
@@ -318,7 +328,7 @@ public class WhisperIM extends JFrame implements ActionListener {
     	talkArea_.append("(" + d.format(message.getTimeSent()) + ") ");
     	talkArea_.append(message.getFrom() + ": ");
         
-    	if (!doEncryption || !message.getMessage().contains("<key>")){
+    	if (!doEncryption_ || !message.getMessage().contains("<key>")){
     		talkArea_.append(clearHTMLTags(message.getMessage(), -1));
     	}else{
     		
@@ -344,7 +354,7 @@ public class WhisperIM extends JFrame implements ActionListener {
 	        Calendar now = Calendar.getInstance();
 	        Date d = now.getTime();
 	        DateFormat df1 = DateFormat.getTimeInstance(DateFormat.MEDIUM);
-	        if (doEncryption) {
+	        if (doEncryption_) {
 	            //Message will be encrypted
 	        	talkArea_.append("(" + df1.format(d) + ") " + myHandle_ + ":  (Ecrypted Message) " + messageArea_.getText() + "\n");
 	            messageText = encrypt.generateCipherText(messageArea_.getText());
@@ -363,14 +373,4 @@ public class WhisperIM extends JFrame implements ActionListener {
     	}
     }
     
-    private ImageIcon serviceIcon_;
-    private JLabel buddyName_;
-    private JScrollPane talkAreaScroll_;
-    private JTextArea messageArea_;
-    private JScrollPane messageAreaScroll_;
-    private JButton sendBtn_;
-    private JTextArea talkArea_;
-    private JToggleButton toggleEncryption_;
-    private JButton sendKeyBtn_;
-
 }
