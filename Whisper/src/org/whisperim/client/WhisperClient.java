@@ -17,7 +17,6 @@
 package org.whisperim.client;
 
 import java.awt.EventQueue;
-import java.awt.PopupMenu;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
@@ -66,7 +65,7 @@ import com.sun.org.apache.xml.internal.security.utils.Base64;
 public class WhisperClient extends JFrame implements ActionListener {
 
 
-	private int numOfBuddies_ = 0;
+	
 	private String myHandle_;
 	private Timer myTimer_;
 	private IdleTT myTaskTimer_;    
@@ -83,7 +82,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 	private JMenuItem encryption_;
 	private JMenuItem quit_;
 	private JMenuItem newIm_;
-	private PopupMenu popupMenu1;
+	//private PopupMenu popupMenu1;
 
 	private static final String BUDDY_LIST_ = "Buddy List";
 	private static final String BUDDY_LIST_IDLE_ = "Buddy List [Idle]";
@@ -302,7 +301,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 		final WhisperClient client = WhisperClient.this;
 		WhisperIM window = new WhisperIM(selectedBuddy_, myHandle_, client, manager_.getPrivateKey());
 		window.setVisible(true);
-		String windowID = selectedBuddy_.getHandle().toLowerCase().replace(" ", "");
+		
 		windows_.put(selectedBuddy_.getHandle().toLowerCase().replace(" ", ""), window);
 		return window;
 	}
