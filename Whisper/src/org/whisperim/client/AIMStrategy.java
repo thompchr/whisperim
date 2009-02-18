@@ -85,4 +85,9 @@ public class AIMStrategy implements ConnectionStrategy {
 	public String getIdentifier() {
 		return protocol_ + ":" + localHandle_.toLowerCase().replace(" ", "");
 	}
+	
+	@Override
+	public String toString(){
+		return protocol_ + ":" + localHandle_;
+	}
 }

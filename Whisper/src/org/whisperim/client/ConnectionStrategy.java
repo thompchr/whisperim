@@ -38,4 +38,6 @@ public interface ConnectionStrategy {
     
     public String getIdentifier();
     
+    public String toString();
+    
 }
