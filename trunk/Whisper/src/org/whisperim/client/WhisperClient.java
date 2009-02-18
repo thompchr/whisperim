@@ -266,18 +266,19 @@ public class WhisperClient extends JFrame implements ActionListener {
 					if (index >= 0) {
 						final Buddy selectedBuddy_ = (Buddy) Buddies.getModel().getElementAt(index);
 						//need to start new chat window
-						final WhisperClient client = WhisperClient.this;						
+												
 						EventQueue.invokeLater(new Runnable() {
 							public void run() {
-								WhisperIM window = new WhisperIM(selectedBuddy_, myHandle_, client, manager_.getPrivateKey());
-								window.setVisible(true);
-								windows_.put(selectedBuddy_.getHandle().toLowerCase().replace(" ", ""), window);
+								newIMWindow(selectedBuddy_);
 							}
+
+
 						});
 					}
 				}
 			}
 		});
+
 
 		GroupLayout layout = new GroupLayout(getContentPane());
 		getContentPane().setLayout(layout);
@@ -294,6 +295,19 @@ public class WhisperClient extends JFrame implements ActionListener {
 		pack();
 	}
 
+	/**
+	 * This is a helper method to generate a new IM window.
+	 * @param selectedBuddy_
+	 * @param client
+	 */
+	public WhisperIM newIMWindow(final Buddy selectedBuddy_) {
+		final WhisperClient client = WhisperClient.this;
+		WhisperIM window = new WhisperIM(selectedBuddy_, myHandle_, client, manager_.getPrivateKey());
+		window.setVisible(true);
+		windows_.put(selectedBuddy_.getHandle().toLowerCase().replace(" ", ""), window);
+		return window;
+	}
+	
 	private void BuddiesComponentShown(ComponentEvent evt) {
 
 
@@ -335,15 +349,10 @@ public class WhisperClient extends JFrame implements ActionListener {
 					final PublicKey recKey = rsaKeyFac.generatePublic(pubKeySpec);
 					if (windows_.get(message.getFrom()) == null){
 						//There isn't currently a window associated with that buddy
-						final WhisperClient client = this;
 						java.awt.EventQueue.invokeLater(new Runnable() {
 							public void run() {
 								//needs to go to an buddy object version
-								WhisperIM window = new WhisperIM(new Buddy(message.getFrom(), myHandle_, message.getProtocol()), 
-										myHandle_, client, manager_.getPrivateKey());
-								window.setVisible(true);
-								windows_.put(message.getFrom(), window);
-								window.enableEncryption(recKey);
+								newIMWindow(new Buddy(message.getFrom(), myHandle_, message.getProtocol())).enableEncryption(recKey);
 							}
 						});
 					}else{
@@ -367,15 +376,11 @@ public class WhisperClient extends JFrame implements ActionListener {
 			//to the chat window.
 			if (windows_.get(message.getFrom()) == null){
 				//There isn't currently a window associated with that buddy
-				final WhisperClient client = this;
+				
 				EventQueue.invokeLater(new Runnable() {
 					public void run() {
 						//needs to go to an buddy object version
-						WhisperIM window = new WhisperIM(new Buddy(message.getFrom(), myHandle_, message.getProtocol()), 
-								myHandle_, client, manager_.getPrivateKey());
-						window.setVisible(true);
-						windows_.put(message.getFrom(), window);
-						window.receiveMsg(message);
+						newIMWindow(new Buddy(message.getFrom(), myHandle_, message.getProtocol())).receiveMsg(message);
 					}
 				});
 
@@ -438,9 +443,10 @@ public class WhisperClient extends JFrame implements ActionListener {
 		
 		//New blank IM window
 		if (actionCommand.equals(newIm_.getActionCommand())) {
+			final WhisperClient wc = WhisperClient.this;
 			EventQueue.invokeLater(new Runnable() {
 				public void run() {
-					new WhisperNewIMWindow(manager_);
+					new WhisperNewIMWindow(manager_, wc);
 				}
 			});
 

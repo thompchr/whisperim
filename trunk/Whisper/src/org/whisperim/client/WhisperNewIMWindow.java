@@ -20,6 +20,8 @@ package org.whisperim.client;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Map.Entry;
 
 import javax.swing.JButton;
@@ -29,15 +31,27 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 
-public class WhisperNewIMWindow extends JFrame{
+public class WhisperNewIMWindow extends JFrame implements ActionListener{
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1685855175306987312L;
+	private static final String SCREEN_NAME_ = "Screen Name: ";
+	private static final String OK_ = "OK";
+	private static final String CANCEL_ = "Cancel";
+	private static final String WINDOW_TITLE_ = "New Instant Message";
 
 	private JTextField foreignHandleBox_ = new JTextField();
 	private JComboBox protocolSelector_ = new JComboBox();
-	private JLabel foreignHandleLbl_ = new JLabel("Screen Name: ");
-	private JButton okBtn_ = new JButton("Ok");
-	private JButton cancelBtn_ = new JButton("Cancel");
-	
-	public WhisperNewIMWindow(ConnectionManager manager){
+	private JLabel foreignHandleLbl_ = new JLabel(SCREEN_NAME_);
+	private JButton okBtn_ = new JButton(OK_);
+	private JButton cancelBtn_ = new JButton(CANCEL_);
+	private WhisperClient parent_;
+		
+	public WhisperNewIMWindow(ConnectionManager manager, WhisperClient parent){
+		parent_ = parent;
+		
 		SpringLayout sl = new SpringLayout();
 		Container cp = getContentPane();
 		cp.setLayout(sl);
@@ -54,10 +68,12 @@ public class WhisperNewIMWindow extends JFrame{
 		okBtn_.setMinimumSize(new Dimension(75, 26));
 		okBtn_.setMaximumSize(new Dimension(75, 26));
 		okBtn_.setPreferredSize(new Dimension(75, 26));
+		okBtn_.addActionListener(this);
 		
 		cancelBtn_.setMinimumSize(new Dimension(75, 26));
 		cancelBtn_.setMaximumSize(new Dimension(75, 26));
 		cancelBtn_.setPreferredSize(new Dimension(75, 26));
+		cancelBtn_.addActionListener(this);
 		
 		foreignHandleBox_.setMinimumSize(new Dimension(150, 23));
 		foreignHandleBox_.setMaximumSize(new Dimension(150, 23));
@@ -67,8 +83,12 @@ public class WhisperNewIMWindow extends JFrame{
 		protocolSelector_.setMaximumSize(new Dimension(240, 30));
 		protocolSelector_.setPreferredSize(new Dimension(240, 30));
 		
-		setTitle("New Instant Message");
+		setTitle(WINDOW_TITLE_);
+		okBtn_.setActionCommand(OK_);
+		cancelBtn_.setActionCommand(CANCEL_);
 		
+		ProtocolRenderer renderer = new ProtocolRenderer();
+		protocolSelector_.setRenderer(renderer);
 		
 		//Constraints
 		sl.putConstraint(SpringLayout.WEST, foreignHandleLbl_, 20, SpringLayout.WEST, cp);
@@ -89,13 +109,37 @@ public class WhisperNewIMWindow extends JFrame{
 		
 		for (Entry<String, ConnectionStrategy> entry:manager.getStrategies().entrySet()){
 			ConnectionStrategy cs = (ConnectionStrategy)entry.getValue();
-			protocolSelector_.addItem(cs.getIdentifier());
+			protocolSelector_.addItem(cs);
 		}
 		
 		
 		pack();
 		setVisible(true);
 		
+		
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent evt) {
+		String ac = evt.getActionCommand();
+		if (ac.equals(OK_)){
+			final WhisperClient temp = parent_;
+			final String foreign = foreignHandleBox_.getText();
+			final ConnectionStrategy cs = (ConnectionStrategy) protocolSelector_.getSelectedItem();
+			EventQueue.invokeLater(new Runnable(){
+
+				@Override
+				public void run() {
+					temp.newIMWindow(new Buddy(foreign, cs.getIdentifier().substring(cs.getIdentifier().lastIndexOf(":") + 1), cs.getProtocol()));
+				}
+				
+			});
+			dispose();
+		}
+		
+		if(ac.equals(CANCEL_)){
+			dispose();
+		}
 		
 	}
 	
