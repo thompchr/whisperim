@@ -87,9 +87,9 @@ public class ConnectionManager {
 	 * @param 
 	 * 		name - the unique identifier for the strategy. 
 	 */
-	public void addStrategy(String name, ConnectionStrategy strategy)
+	public void addStrategy(ConnectionStrategy strategy)
 	{
-		strategies_.put(name, strategy);
+		strategies_.put(strategy.getIdentifier(), strategy);
 	}
 
 	/**
@@ -105,8 +105,8 @@ public class ConnectionManager {
 		switch(strategy){
 			case 0:
 			{
-				cs = new AIMStrategy(this);
-				strategies_.put(cs.getProtocol() + ":" + handle, cs);
+				cs = new AIMStrategy(this, handle);
+				strategies_.put(cs.getIdentifier(), cs);
 				break;
 			}
 			default:
@@ -161,7 +161,8 @@ public class ConnectionManager {
 	 */
 	public void sendMessage(Message message){
 		System.out.println("Sending message: " + message.getMessage());
-		strategies_.get(message.getProtocol() + ":" + message.getFrom()).sendMessage(message);
+		String identifier = message.getProtocol() + ":" + message.getFrom().toLowerCase().replace(" ","");
+		strategies_.get(identifier).sendMessage(message);
 	}
 	
 	/**

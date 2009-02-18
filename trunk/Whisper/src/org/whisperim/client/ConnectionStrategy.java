@@ -36,4 +36,6 @@ public interface ConnectionStrategy {
     
     public String getProtocol();
     
+    public String getIdentifier();
+    
 }

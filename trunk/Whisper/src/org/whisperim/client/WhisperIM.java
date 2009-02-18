@@ -269,7 +269,7 @@ public class WhisperIM extends JFrame implements ActionListener {
     		try{
         		Message keyMsg = new Message(new Buddy(myHandle_, myHandle_, buddy_.getProtocolID()), 
         				new Buddy(theirHandle_, myHandle_, buddy_.getProtocolID()), 
-        				"<whisperim keyspec=" + Encryptor.getMyPublicKey() + "--", 
+        				"<whisperim keyspec=" + Encryptor.getMyPublicKey() + "--", buddy_.getProtocolID(),
         				Calendar.getInstance().getTime());
         		myParent_.sendMessage(keyMsg);
         		talkArea_.append("Public key sent\n");
@@ -357,7 +357,7 @@ public class WhisperIM extends JFrame implements ActionListener {
 	
 	        Message message = new Message(new Buddy(myHandle_, myHandle_, buddy_.getProtocolID()), 
     				new Buddy(theirHandle_, myHandle_, buddy_.getProtocolID()), 
-    				messageText, Calendar.getInstance().getTime());
+    				messageText, buddy_.getProtocolID(),Calendar.getInstance().getTime());
 	        
 	        myParent_.sendMessage(message);
 	        messageArea_.setText("");
