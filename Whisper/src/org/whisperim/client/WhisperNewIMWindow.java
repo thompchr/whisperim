@@ -18,6 +18,9 @@ package org.whisperim.client;
 
 
 import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.EventQueue;
+import java.util.Map.Entry;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -31,10 +34,10 @@ public class WhisperNewIMWindow extends JFrame{
 	private JTextField foreignHandleBox_ = new JTextField();
 	private JComboBox protocolSelector_ = new JComboBox();
 	private JLabel foreignHandleLbl_ = new JLabel("Screen Name: ");
-	private JButton okBtn_ = new JButton("OK");
+	private JButton okBtn_ = new JButton("Ok");
 	private JButton cancelBtn_ = new JButton("Cancel");
 	
-	public WhisperNewIMWindow(){
+	public WhisperNewIMWindow(ConnectionManager manager){
 		SpringLayout sl = new SpringLayout();
 		Container cp = getContentPane();
 		cp.setLayout(sl);
@@ -45,16 +48,57 @@ public class WhisperNewIMWindow extends JFrame{
 		cp.add(okBtn_);
 		cp.add(cancelBtn_);
 		
+		setMinimumSize(new Dimension(350, 175));
+		setMaximumSize(new Dimension(350, 175));
+		
+		okBtn_.setMinimumSize(new Dimension(75, 26));
+		okBtn_.setMaximumSize(new Dimension(75, 26));
+		okBtn_.setPreferredSize(new Dimension(75, 26));
+		
+		cancelBtn_.setMinimumSize(new Dimension(75, 26));
+		cancelBtn_.setMaximumSize(new Dimension(75, 26));
+		cancelBtn_.setPreferredSize(new Dimension(75, 26));
+		
+		foreignHandleBox_.setMinimumSize(new Dimension(150, 23));
+		foreignHandleBox_.setMaximumSize(new Dimension(150, 23));
+		foreignHandleBox_.setPreferredSize(new Dimension(150, 23));
+		
+		protocolSelector_.setMinimumSize(new Dimension(240, 30));
+		protocolSelector_.setMaximumSize(new Dimension(240, 30));
+		protocolSelector_.setPreferredSize(new Dimension(240, 30));
+		
+		setTitle("New Instant Message");
+		
+		
 		//Constraints
-		sl.putConstraint(SpringLayout.WEST, foreignHandleLbl_, 10, SpringLayout.WEST, cp);
+		sl.putConstraint(SpringLayout.WEST, foreignHandleLbl_, 20, SpringLayout.WEST, cp);
+		sl.putConstraint(SpringLayout.NORTH, foreignHandleLbl_, 20, SpringLayout.NORTH, cp);
+		
 		sl.putConstraint(SpringLayout.WEST, foreignHandleBox_, 5, SpringLayout.EAST, foreignHandleLbl_);
-		sl.putConstraint(SpringLayout.NORTH, protocolSelector_, 20, SpringLayout.NORTH, cp);
+		sl.putConstraint(SpringLayout.NORTH, foreignHandleBox_, 17, SpringLayout.NORTH, cp);
+		
+		sl.putConstraint(SpringLayout.NORTH, protocolSelector_, 50, SpringLayout.NORTH, cp);
+		sl.putConstraint(SpringLayout.WEST, protocolSelector_, 60, SpringLayout.WEST, cp);
+		
+		sl.putConstraint(SpringLayout.NORTH, cancelBtn_, 50, SpringLayout.NORTH, protocolSelector_);
+		sl.putConstraint(SpringLayout.WEST, cancelBtn_, 20, SpringLayout.EAST, okBtn_);
+		
+		sl.putConstraint(SpringLayout.WEST, okBtn_, 90, SpringLayout.WEST, cp);
+		sl.putConstraint(SpringLayout.NORTH, okBtn_, 50, SpringLayout.NORTH, protocolSelector_);
+		
+		
+		for (Entry<String, ConnectionStrategy> entry:manager.getStrategies().entrySet()){
+			ConnectionStrategy cs = (ConnectionStrategy)entry.getValue();
+			protocolSelector_.addItem(cs.getIdentifier());
+		}
+		
 		
 		pack();
 		setVisible(true);
 		
 		
 	}
+	
 	
 	
 	

@@ -186,6 +186,10 @@ public class ConnectionManager {
 	public void signOff(String handle, String protocol){
 		strategies_.get(protocol + ":" + handle).signOff();
 	}
+	
+	public HashMap<String, ConnectionStrategy> getStrategies(){
+		return strategies_;
+	}
 
 	/**
 	 * Get Private key for encryption.

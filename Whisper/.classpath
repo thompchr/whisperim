@@ -14,5 +14,6 @@
 	<classpathentry kind="lib" path="lib/xmlParserAPIs.jar"/>
 	<classpathentry kind="lib" path="lib/swing-layout-1.0.3.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
+	<classpathentry kind="con" path="org.dyno.visual.swing.VS_LIBRARY/layoutext"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
