@@ -1,5 +1,5 @@
 /**************************************************************************
- * Copyright 2009 Nick Krieble                                         *
+ * Copyright 2009 Cory Plastek                                         *
  *                                                                         *
  * Licensed under the Apache License, Version 2.0 (the "License");         *
  * you may not use this file except in compliance with the License.        *
@@ -22,26 +22,23 @@
 
 package org.whisperim.client;
 
-import java.awt.Checkbox;
-
 import javax.swing.GroupLayout;
+import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 
 /**
  *
- * @author bankskp, Cory Plastek
+ * @author Cory Plastek
  */
 public class WhisperPref extends JPanel {
+	
+	private static final String ENCRYPT_ = "Encrypt";
 
     /** Creates new form WhisperPref */
     public WhisperPref() {
-        initComponents();
-    }
 
-    private void initComponents() {
-
-    	//set native look and feel
+		//set native look and feel
 		try  {  
 			//Tell the UIManager to use the platform look and feel  
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());  
@@ -49,25 +46,29 @@ public class WhisperPref extends JPanel {
 		catch(Exception e) {  
 			//Do nothing  
 		}
-    	
-        Encrypt = new Checkbox();
-        Encrypt.setLabel("Encrypt");
-
-        GroupLayout layout = new GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-        		layout.createSequentialGroup()
-                	.addContainerGap(20, Short.MAX_VALUE)
-                	.addComponent(Encrypt, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                	.addContainerGap()
-         );
-        layout.setVerticalGroup(
-            layout.createParallelGroup()
-            .addComponent(Encrypt, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-        );
+		
+	    Encrypt = new JCheckBox();
+	    Encrypt.setText(ENCRYPT_);
+	
+	    GroupLayout layout = new GroupLayout(this);
+	    this.setLayout(layout);
+	    layout.setHorizontalGroup(
+	    		layout.createSequentialGroup()
+	            	.addContainerGap()
+	            	.addComponent(Encrypt, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+	            	.addContainerGap()
+	     );
+	    layout.setVerticalGroup(
+	        layout.createParallelGroup()
+	        	.addGroup(layout.createSequentialGroup()
+	        			.addContainerGap()
+	        			.addComponent(Encrypt, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+	        			.addContainerGap()
+	        	)
+	    );
+	    pack();
     }
 
-
-    private Checkbox Encrypt;
+    private JCheckBox Encrypt;
 
 }

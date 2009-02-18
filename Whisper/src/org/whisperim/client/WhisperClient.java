@@ -36,6 +36,7 @@ import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.swing.GroupLayout;
 import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JMenu;
@@ -49,7 +50,6 @@ import javax.swing.WindowConstants;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
-import org.jdesktop.layout.GroupLayout;
 import org.whisperim.security.Encryptor;
 
 import com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingException;
@@ -94,7 +94,6 @@ public class WhisperClient extends JFrame implements ActionListener {
 	private static final String QUIT_ = "Quit"; //menu 1 second item
 
 	//second menu\\
-
 	private static final String PREFERENCES_ = "Preferences"; //menu 2 header
 	private static final String ENCRYPTION_ = "Encryption"; //menu 2 first item
 
@@ -283,13 +282,12 @@ public class WhisperClient extends JFrame implements ActionListener {
 		GroupLayout layout = new GroupLayout(getContentPane());
 		getContentPane().setLayout(layout);
 		layout.setHorizontalGroup(
-				layout.createParallelGroup(GroupLayout.LEADING)
-				.add(buddyListScroll_, 100, 182, Short.MAX_VALUE)
+				layout.createParallelGroup()
+				.addComponent(buddyListScroll_, 100, 182, Short.MAX_VALUE)
 		);
 		layout.setVerticalGroup(
-				layout.createParallelGroup(GroupLayout.LEADING)
-				.add(GroupLayout.TRAILING, layout.createSequentialGroup()
-						.add(buddyListScroll_, GroupLayout.DEFAULT_SIZE, 294, Short.MAX_VALUE))
+				layout.createParallelGroup()
+				.addComponent(buddyListScroll_, GroupLayout.DEFAULT_SIZE, 294, Short.MAX_VALUE)
 		);
 
 		pack();
@@ -450,16 +448,16 @@ public class WhisperClient extends JFrame implements ActionListener {
 					new WhisperNewIMWindow(manager_, wc);
 				}
 			});
-
-			//Preferences
-			if (actionCommand.equals(encryption_.getActionCommand())) {
-				WhisperPref prefs = new WhisperPref();
-				prefs.setSize(150, 150);
-				prefs.setLayout(getLayout());
-				prefs.setVisible(true);
-
-			}
 		}
+		
+		//Preferences
+		if (actionCommand.equals(encryption_.getActionCommand())) {
+			WhisperPref prefs = new WhisperPref();
+			prefs.setSize(150, 150);
+			prefs.setLocation(20,20);
+			prefs.setLayout(getLayout());
+			prefs.setVisible(true);
+		}
+		
 	}
-
 }

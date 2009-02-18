@@ -30,6 +30,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
+import javax.swing.UIManager;
 
 public class WhisperNewIMWindow extends JFrame implements ActionListener{
 	
@@ -44,6 +45,7 @@ public class WhisperNewIMWindow extends JFrame implements ActionListener{
 
 	private JTextField foreignHandleBox_ = new JTextField();
 	private JComboBox protocolSelector_ = new JComboBox();
+
 	private JLabel foreignHandleLbl_ = new JLabel(SCREEN_NAME_);
 	private JButton okBtn_ = new JButton(OK_);
 	private JButton cancelBtn_ = new JButton(CANCEL_);
@@ -52,9 +54,20 @@ public class WhisperNewIMWindow extends JFrame implements ActionListener{
 	public WhisperNewIMWindow(ConnectionManager manager, WhisperClient parent){
 		parent_ = parent;
 		
+		//set native look and feel
+		try  {  
+			//Tell the UIManager to use the platform look and feel  
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());  
+		}  
+		catch(Exception e) {  
+			//Do nothing  
+		}
+		
 		SpringLayout sl = new SpringLayout();
 		Container cp = getContentPane();
 		cp.setLayout(sl);
+		
+		setTitle("New Instant Message");
 		
 		cp.add(foreignHandleLbl_);
 		cp.add(foreignHandleBox_);
@@ -68,11 +81,13 @@ public class WhisperNewIMWindow extends JFrame implements ActionListener{
 		okBtn_.setMinimumSize(new Dimension(75, 26));
 		okBtn_.setMaximumSize(new Dimension(75, 26));
 		okBtn_.setPreferredSize(new Dimension(75, 26));
+		okBtn_.setActionCommand(OK_);
 		okBtn_.addActionListener(this);
 		
 		cancelBtn_.setMinimumSize(new Dimension(75, 26));
 		cancelBtn_.setMaximumSize(new Dimension(75, 26));
 		cancelBtn_.setPreferredSize(new Dimension(75, 26));
+		cancelBtn_.setActionCommand(CANCEL_);
 		cancelBtn_.addActionListener(this);
 		
 		foreignHandleBox_.setMinimumSize(new Dimension(150, 23));
@@ -84,11 +99,11 @@ public class WhisperNewIMWindow extends JFrame implements ActionListener{
 		protocolSelector_.setPreferredSize(new Dimension(240, 30));
 		
 		setTitle(WINDOW_TITLE_);
-		okBtn_.setActionCommand(OK_);
-		cancelBtn_.setActionCommand(CANCEL_);
+		
 		
 		ProtocolRenderer renderer = new ProtocolRenderer();
 		protocolSelector_.setRenderer(renderer);
+		
 		
 		//Constraints
 		sl.putConstraint(SpringLayout.WEST, foreignHandleLbl_, 20, SpringLayout.WEST, cp);
@@ -115,8 +130,6 @@ public class WhisperNewIMWindow extends JFrame implements ActionListener{
 		
 		pack();
 		setVisible(true);
-		
-		
 	}
 
 	@Override
@@ -142,8 +155,5 @@ public class WhisperNewIMWindow extends JFrame implements ActionListener{
 		}
 		
 	}
-	
-	
-	
 	
 }
