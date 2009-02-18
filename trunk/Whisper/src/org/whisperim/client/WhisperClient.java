@@ -65,43 +65,43 @@ import com.sun.org.apache.xml.internal.security.utils.Base64;
  */
 public class WhisperClient extends JFrame implements ActionListener {
 
-	
+
 	private int numOfBuddies_ = 0;
 	private String myHandle_;
 	private Timer myTimer_;
 	private IdleTT myTaskTimer_;    
 	private ConnectionManager manager_;
 	private BuddyListModel blm_ = new BuddyListModel();
-	
+
 	private JList buddyList_;
 	private JScrollPane buddyListScroll_;
 	private JMenu whisperMenu_;
 	private JMenu preferencesMenu_;
-	
+
 	private JMenuBar menuBar_;
-	
+
 	private JMenuItem encryption_;
 	private JMenuItem quit_;
 	private JMenuItem newIm_;
 	private PopupMenu popupMenu1;
-	
+
 	private static final String BUDDY_LIST_ = "Buddy List";
 	private static final String BUDDY_LIST_IDLE_ = "Buddy List [Idle]";
-	
+
 	//first menu\\
 	private static final String WHISPER_ = "Whisper"; //menu 1 header
 	private static final String NEWIM_ = "New Instant Message"; //menu 1 first item
 	private static final String QUIT_ = "Quit"; //menu 1 second item
-	
+
 	//second menu\\
 
 	private static final String PREFERENCES_ = "Preferences"; //menu 2 header
 	private static final String ENCRYPTION_ = "Encryption"; //menu 2 first item
 
 	//end menus\\
-	
+
 	private HashMap<String, WhisperIM> windows_ = new HashMap<String, WhisperIM>();
-	
+
 	/** Creates new form WhisperClient */
 	public WhisperClient(String handle, ConnectionManager manager) {
 		initComponents();
@@ -116,7 +116,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 
 		this.setAwayMessage("Away put your weapons, I mean you no harm", true);
 	}
-	
+
 
 
 	private void resetTimer(int timeToIdle)
@@ -148,7 +148,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 	 * initialize the form.
 	 */
 	private void initComponents() {
-		
+
 		//set native look and feel
 		try  {  
 			//Tell the UIManager to use the platform look and feel  
@@ -157,68 +157,68 @@ public class WhisperClient extends JFrame implements ActionListener {
 		catch(Exception e) {  
 			//Do nothing  
 		}  
-		
+
 		//create the menu bar
 		menuBar_ = new JMenuBar();
-		
-		
+
+
 		//first menu\\
 		//File
-			//New IM
-			//Quit
+		//New IM
+		//Quit
 		whisperMenu_ = new JMenu();
 		whisperMenu_.setText(WHISPER_);
 		menuBar_.add(whisperMenu_);
-		
+
 		newIm_ = new JMenuItem();
 		newIm_.setText(NEWIM_);
 		newIm_.setActionCommand(NEWIM_);
 		newIm_.addActionListener(this);
 		whisperMenu_.add(newIm_);
-		
+
 		quit_ = new JMenuItem();
 		quit_.setText(QUIT_);
 		quit_.setActionCommand(QUIT_);
 		quit_.addActionListener(this);
 		whisperMenu_.add(quit_);
-		
-		
+
+
 		//second menu\\
 		//Preferences
-			//Encryption
+		//Encryption
 		preferencesMenu_ = new JMenu();
 		preferencesMenu_.setText(PREFERENCES_);
 		menuBar_.add(preferencesMenu_);
-		
+
 		encryption_ = new JMenuItem();
 		encryption_.setText(ENCRYPTION_);
 		encryption_.setActionCommand(ENCRYPTION_);
 		encryption_.addActionListener(this);
 		preferencesMenu_.add(encryption_);
 
-		
+
 		setJMenuBar(menuBar_);
-		
+
 		/* popup menus do right-click stuff
 		 * we don't need this right now, implement later
 		popupMenu1 = new PopupMenu();
 		popupMenu1.setLabel("popupMenu1");
 		popupMenu1.addActionListener(this);
-		*/
-		
+		 */
+
 		buddyList_ = new JList(blm_);
 		buddyList_.setSelectionMode(ListSelectionModel.SINGLE_SELECTION );
-		
+
 		BuddyListRenderer buddyListRenderer_ = new BuddyListRenderer();
 		buddyList_.setCellRenderer(buddyListRenderer_);
-		
+
 		buddyListScroll_ = new JScrollPane(buddyList_);
 		buddyListScroll_.setViewportView(buddyList_);      
 		buddyListScroll_.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		buddyListScroll_.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		
-		
-		
+
+
+
 		blm_.addListDataListener(new ListDataListener(){
 
 			@Override
@@ -226,22 +226,22 @@ public class WhisperClient extends JFrame implements ActionListener {
 				if (e.getSource() instanceof ListModel){
 					buddyList_.setModel((ListModel) e.getSource());
 				}
-				
+
 			}
 
 			@Override
 			public void intervalAdded(ListDataEvent e) {
-				
+
 			}
 
 			@Override
 			public void intervalRemoved(ListDataEvent e) {
 
-				
+
 			}
-			
+
 		});
-		
+
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		addWindowListener(new WindowAdapter() {
 			@Override
@@ -349,7 +349,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 					}else{
 						windows_.get(message.getFrom().toLowerCase().replace(" ", "")).enableEncryption(recKey);
 					}
-					
+
 				} catch (NoSuchAlgorithmException e) {
 					e.printStackTrace();
 				} catch (Base64DecodingException e) {
@@ -404,7 +404,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 	{
 		if (newBuddies.size() == 0)
 			return;
-		
+
 		if (blm_.getSize() == 0){
 			//List is empty, we don't need to check anything
 			blm_.addBuddies(newBuddies);
@@ -412,7 +412,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 			//We will need to see what changed
 			String protocol = newBuddies.get(0).getProtocolID();
 			String assocHandle = newBuddies.get(0).getAssociatedLocalHandle();
-			
+
 			blm_.removeBuddies(protocol, assocHandle);
 			blm_.addBuddies(newBuddies);
 		}
@@ -435,11 +435,23 @@ public class WhisperClient extends JFrame implements ActionListener {
 		if (actionCommand.equals(quit_.getActionCommand())) {
 			processWindowEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
 		}
-		if (actionCommand.equals(encryption_.getActionCommand())) {
-			WhisperPref prefs = new WhisperPref();
-			prefs.setSize(150, 150);
-			prefs.setLayout(getLayout());
-			prefs.setVisible(true);
+
+		//New blank IM window
+		if (actionCommand.equals(newIm_.getActionCommand())) {
+			EventQueue.invokeLater(new Runnable() {
+				public void run() {
+					new WhisperNewIMWindow();
+				}
+			});
+
+			//Preferences
+			if (actionCommand.equals(encryption_.getActionCommand())) {
+				WhisperPref prefs = new WhisperPref();
+				prefs.setSize(150, 150);
+				prefs.setLayout(getLayout());
+				prefs.setVisible(true);
+
+			}
 		}
 	}
 
