@@ -48,9 +48,9 @@ import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
+import javax.swing.GroupLayout;
+import javax.swing.LayoutStyle;
 
-import org.jdesktop.layout.GroupLayout;
-import org.jdesktop.layout.LayoutStyle;
 import org.whisperim.security.Encryptor;
 
 /**
