@@ -58,7 +58,7 @@ import org.whisperim.security.Encryptor;
  * components. The primary method of interest is the WhisperIM constructor that
  * is called from WhisperClient.java
  * 
- * @author Kirk Banks, Chris Thompson, John Dlugokecki, Cory Plastek
+ * @author Kirk Banks, Chris Thompson, John Dlugokecki, Cory Plastek, Nick Krieble
  */
 public class WhisperIM extends JFrame implements ActionListener {
     //Encryptor for the chat session
@@ -67,6 +67,7 @@ public class WhisperIM extends JFrame implements ActionListener {
     private String theirHandle_;
     private String myHandle_;
     private boolean doLogging_ = false;
+    private boolean doWhisperBot_ = false;
     
     private Buddy buddy_;
     
@@ -76,6 +77,14 @@ public class WhisperIM extends JFrame implements ActionListener {
     private static final String SEND_ = "Send";
     private static final String SEND_KEY_ = "Send Key";
     private static final String TOGGLE_ENCRYPTION_ = "Toggle Encryption";
+    
+    /* 
+     * WhisperBot GUI setup for enable/disable.
+     */
+    private static final String WHISPERBOT_OFF_ = "WhisperBot: Off.";
+    private static final String WHISPERBOT_ON_ = "WhisperBot: On.";
+    private static final String TOGGLE_WHISPERBOT_ = "Toggle WhisperBot.";
+    
     
     private ImageIcon serviceIcon_;
     private JLabel buddyName_;
@@ -90,6 +99,8 @@ public class WhisperIM extends JFrame implements ActionListener {
 	private JMenu fileMenu_, optionsMenu_;
 	private JMenuItem exit_, about_;
 	private JCheckBoxMenuItem logging_;
+private JToggleButton toggleWhisperBot_;
+	
     
     private WhisperClient myParent_;
     private PrivateKey myKey_;
@@ -143,6 +154,13 @@ public class WhisperIM extends JFrame implements ActionListener {
     		talkArea_.append("Key received. Encryption is now available.\n");
     	}
     }
+    
+    public void enableWhisperBot()
+    {
+    	toggleWhisperBot_.setEnabled(true);
+    	talkArea_.append("WhisperBot is now Active.\n");
+    }
+    
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -275,6 +293,7 @@ public class WhisperIM extends JFrame implements ActionListener {
                 		.add(messageAreaScroll_, GroupLayout.PREFERRED_SIZE, 42, GroupLayout.PREFERRED_SIZE)
 		                .addPreferredGap(LayoutStyle.RELATED)
 		                .add(layout.createParallelGroup()
+		                		.add(toggleWhisperBot_)
 		                		.add(toggleEncryption_)
 		                		.add(sendKeyBtn_)
 		                		.add(sendBtn_))
@@ -302,6 +321,16 @@ public class WhisperIM extends JFrame implements ActionListener {
                 doEncryption_ = true;
                 toggleEncryption_.setText(ENCRYPTION_ON_);
             }
+    	}else if(actionCommand.equals(toggleWhisperBot_.getActionCommand()))
+    	{
+    		if (doWhisperBot_)
+    		{
+    			doWhisperBot_ = false;
+    			toggleWhisperBot_.setText(WHISPERBOT_OFF_);
+    		}else{
+    			doWhisperBot_ = true;
+    			toggleWhisperBot_.setText(WHISPERBOT_ON_);
+    		}
     	}else if (actionCommand.equals(sendKeyBtn_.getActionCommand())) {
     		try{
         		Message keyMsg = new Message(new Buddy(myHandle_, myHandle_, buddy_.getProtocolID()), 
