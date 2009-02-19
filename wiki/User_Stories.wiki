@@ -2,7 +2,7 @@
 #labels Phase-Requirements
 
 =Build 3=
- * User can enable "Bot" for messaging. (Nick)
+ * User can enable "Bot" for messaging. (Nick, John)
  * User can set status. (Nick, John) (On Hold)
  * User can receive parsed rich text in conversation with an AIM user (Cory, Kirk) (Delayed)
  * User can view File, etc. menus without problems (Cory)
