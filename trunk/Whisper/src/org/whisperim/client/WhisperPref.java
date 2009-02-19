@@ -22,18 +22,20 @@
 
 package org.whisperim.client;
 
-import javax.swing.GroupLayout;
+import java.awt.Container;
+import java.awt.FlowLayout;
+
 import javax.swing.JCheckBox;
-import javax.swing.JPanel;
+import javax.swing.JFrame;
 import javax.swing.UIManager;
 
 /**
  *
  * @author Cory Plastek
  */
-public class WhisperPref extends JPanel {
+public class WhisperPref extends JFrame {
 	
-	private static final String ENCRYPT_ = "Encrypt";
+	private static final String ENCRYPTION_ = "Encryption";
 
     /** Creates new form WhisperPref */
     public WhisperPref() {
@@ -47,28 +49,15 @@ public class WhisperPref extends JPanel {
 			//Do nothing  
 		}
 		
-	    Encrypt = new JCheckBox();
-	    Encrypt.setText(ENCRYPT_);
-	
-	    GroupLayout layout = new GroupLayout(this);
-	    this.setLayout(layout);
-	    layout.setHorizontalGroup(
-	    		layout.createSequentialGroup()
-	            	.addContainerGap()
-	            	.addComponent(Encrypt, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-	            	.addContainerGap()
-	     );
-	    layout.setVerticalGroup(
-	        layout.createParallelGroup()
-	        	.addGroup(layout.createSequentialGroup()
-	        			.addContainerGap()
-	        			.addComponent(Encrypt, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-	        			.addContainerGap()
-	        	)
-	    );
-	    pack();
-    }
+		setTitle("Encryption Preferences");
+		
+		Container content = getContentPane();
+		content.setLayout(new FlowLayout());
+		
+		JCheckBox Encrypt = new JCheckBox();
+	    Encrypt.setText(ENCRYPTION_);
 
-    private JCheckBox Encrypt;
+	    content.add(Encrypt);
+    }
 
 }

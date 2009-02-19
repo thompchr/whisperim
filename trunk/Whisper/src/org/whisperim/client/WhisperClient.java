@@ -454,7 +454,6 @@ public class WhisperClient extends JFrame implements ActionListener {
 			WhisperPref prefs = new WhisperPref();
 			prefs.setSize(150, 150);
 			prefs.setLocation(20,20);
-			prefs.setLayout(getLayout());
 			prefs.setVisible(true);
 		}
 		

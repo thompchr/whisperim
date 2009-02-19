@@ -40,6 +40,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
@@ -280,8 +281,7 @@ public class WhisperIM extends JFrame implements ActionListener {
 		                .addContainerGap()
 	            )
         );
-        
-        
+
         buddyName_.getAccessibleContext().setAccessibleName("Buddy");
         
         newPanel_.setLayout(layout);
@@ -324,10 +324,7 @@ public class WhisperIM extends JFrame implements ActionListener {
     		if (log_ == null)
     			log_ = new Logger(); 
     			
-    	}
-			
-    	
-    	else {
+    	} else {
     		//problem with button interface
     		//didn't listen to the right Action Command
     		System.out.println("Problem with button interface");
@@ -391,6 +388,20 @@ public class WhisperIM extends JFrame implements ActionListener {
 		return strTagLess; 
     }
     
+    public void autoScroll() {
+    	//this code implements autoscroll if the scroll bar is at the end of the box
+    	//not what we want it to do in this context
+    	//save for preferences
+    	
+    	//find position of the scroll bar
+    	//JScrollBar bar = talkAreaScroll_.getVerticalScrollBar();
+    	//boolean autoScroll = ((bar.getValue() + bar.getVisibleAmount()) == bar.getMaximum());
+
+    	// now scroll if we were already at the bottom.
+    	//if(autoScroll)
+    	talkArea_.setCaretPosition(talkArea_.getDocument().getLength());
+    }
+    
     public void receiveMsg(Message message)
     {
     	DateFormat d = DateFormat.getTimeInstance(DateFormat.MEDIUM);
@@ -398,7 +409,7 @@ public class WhisperIM extends JFrame implements ActionListener {
     	talkArea_.append(message.getFrom() + ": ");
         
     	if (!doEncryption_ || !message.getMessage().contains("<key>")){
-    		talkArea_.append(clearHTMLTags(message.getMessage(), -1));
+    		talkArea_.append(clearHTMLTags(message.getMessage(), -1));    		
     	}else{
     		
     		talkArea_.append("(Encrypted Message) " + clearHTMLTags(encrypt.decryptMessage(message.getMessage()), -1));
@@ -408,12 +419,13 @@ public class WhisperIM extends JFrame implements ActionListener {
         	log_.write(message, message.getFrom());
         	
         talkArea_.append("\n");
+        autoScroll();
     }
 
     public void sendMsg()
     {
     	//if the message is empty, do nothing
-    	if (messageArea_.getText().equalsIgnoreCase("")) {
+    	if (messageArea_.getText().trim().equals("")) {
     		//do nothing
     	
     	//else send message
@@ -438,6 +450,8 @@ public class WhisperIM extends JFrame implements ActionListener {
     				messageText, buddy_.getProtocolID(),Calendar.getInstance().getTime());
 	        
 	        myParent_.sendMessage(message);
+	        
+	        autoScroll();
 	        
 	    	if (doLogging_)
 	        	log_.write(message, myHandle_);
