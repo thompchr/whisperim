@@ -11,6 +11,7 @@
  * User will be able to access the 'Preferences' menu from the buddy menu (Cory)
  * User can select "New IM" and be displayed a new window without selecting a buddy (Chris)
  * Whisper clients can identify if other client is using Whisper and disable special functionality to prevent bombarding buddy with garbage (Chris - Delayed because Chris is an idiot and broke the build)
+ * User can view multiple conversations in a tabbed interface (Logan)
 
 =Build 2=
  * Ability to log conversations.  (Logan)
