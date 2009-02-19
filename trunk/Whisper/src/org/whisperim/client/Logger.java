@@ -12,7 +12,10 @@ package org.whisperim.client;
  */
 
 
-import java.io.*;
+
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -30,6 +33,7 @@ public class Logger{
 		try{				
 			//Appends to the file if it exists
 			writer_ = new BufferedWriter(new FileWriter(filename_.format(date) + ".txt",true));
+			
 		}		
 		catch (IOException e){
 			System.err.println("Failed to create log file: " + e.getMessage());
