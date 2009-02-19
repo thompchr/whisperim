@@ -82,25 +82,24 @@ public class Whisper {
 		
 		
 		if (dir.exists()){
-			//Directory exists, check to see if file exists
+			// Directory exists, check to see if file exists.
 			if (!keyFile.exists()){
-				//Key store does not exist, create it
+				// Key store does not exist, create it.
 				try {
 					keyFile.createNewFile();
 					
 					generateXML(keyFile);
 
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
 			
-			//Determine if the file has been properly constructed as an XML file
+			// Determine if the file has been properly constructed as an XML file.
 			
 			
 		}else{
-			//Directory does not exist, create it and the file
+			// Directory does not exist, create it and the file.
 			try{
 				dir.mkdir();
 				keyFile.createNewFile();
@@ -112,7 +111,7 @@ public class Whisper {
 			}
 		}
 
-		//Make sure that a keypair has been generated
+		// Make sure that a keypair has been generated.
 		try { 	
 			DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
@@ -120,7 +119,7 @@ public class Whisper {
 
 			doc = docBuilder.parse (keyFile);
 
-			// normalize text representation
+			// Normalize text representation.
 			doc.getDocumentElement ().normalize ();
 			
 
@@ -128,14 +127,13 @@ public class Whisper {
 			
 							
 			if (myKeys.getLength() == 0){
-				//KeyPair hasn't been generated
-				//Something is wrong with the file
-				
-
+				/*KeyPair hasn't been generated,
+				 *Something is wrong with the file.
+				 */
 			}else{
 				try {
 					
-					//KeyPair has been generated
+					// KeyPair has been generated.
 					Element myKeysElement = (Element) myKeys.item(0);
 					String keys[] = new String[2];
 					keys[0] = getTextValue(myKeysElement, "PublicKey");
@@ -156,7 +154,6 @@ public class Whisper {
 
 			e.printStackTrace();
 		} catch (ParserConfigurationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}		
 		java.awt.EventQueue.invokeLater(new Runnable() {
@@ -199,10 +196,10 @@ public class Whisper {
 		Document dom = null;
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		try {
-		//get an instance of builder
+		// Get an instance of builder.
 		DocumentBuilder db = dbf.newDocumentBuilder();
 
-		//create an instance of DOM
+		// Create an instance of DOM.
 		dom = db.newDocument();
 
 		}catch(ParserConfigurationException pce) {
@@ -210,7 +207,7 @@ public class Whisper {
 			return;
 		}
 		
-		//Write the xml header
+		// Write the xml header.
 		Element root = dom.createElement("Keys");
 		dom.appendChild(root);
 		
@@ -237,7 +234,7 @@ public class Whisper {
 		
 		try
 		{
-			//Set output formatting
+			// Set output formatting.
 			OutputFormat format = new OutputFormat(dom);
 			format.setIndenting(true);
 
