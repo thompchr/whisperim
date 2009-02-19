@@ -466,7 +466,7 @@ private JToggleButton toggleWhisperBot_;
 	        DateFormat df1 = DateFormat.getTimeInstance(DateFormat.MEDIUM);
 	        if (doEncryption_) {
 	            //Message will be encrypted
-	        	talkArea_.append("(" + df1.format(d) + ") " + myHandle_ + ":  (Ecrypted Message) " + messageArea_.getText() + "\n");
+	        	talkArea_.append("(" + df1.format(d) + ") " + myHandle_ + ":  (Encrypted Message) " + messageArea_.getText() + "\n");
 	            messageText = encrypt.generateCipherText(messageArea_.getText());
 	        }
 	        else {
