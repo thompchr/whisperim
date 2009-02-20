@@ -48,9 +48,9 @@ import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
-import javax.swing.GroupLayout;
-import javax.swing.LayoutStyle;
 
+import org.jdesktop.layout.GroupLayout;
+import org.jdesktop.layout.LayoutStyle;
 import org.whisperim.security.Encryptor;
 
 /**
@@ -81,9 +81,9 @@ public class WhisperIM extends JFrame implements ActionListener {
     /* 
      * WhisperBot GUI setup for enable/disable.
      */
-    private static final String WHISPERBOT_OFF_ = "WhisperBot: Off.";
-    private static final String WHISPERBOT_ON_ = "WhisperBot: On.";
-    private static final String TOGGLE_WHISPERBOT_ = "Toggle WhisperBot.";
+    private static final String WHISPERBOT_OFF_ = "WhisperBot: Off";
+    private static final String WHISPERBOT_ON_ = "WhisperBot: On";
+    private static final String TOGGLE_WHISPERBOT_ = "Toggle WhisperBot";
     
     
     private ImageIcon serviceIcon_;
@@ -99,7 +99,7 @@ public class WhisperIM extends JFrame implements ActionListener {
 	private JMenu fileMenu_, optionsMenu_;
 	private JMenuItem exit_, about_;
 	private JCheckBoxMenuItem logging_;
-private JToggleButton toggleWhisperBot_;
+	private JToggleButton toggleWhisperBot_;
 	
     
     private WhisperClient myParent_;
@@ -191,7 +191,7 @@ private JToggleButton toggleWhisperBot_;
 		}
         buddyName_ = new JLabel(buddy_.getHandle(), serviceIcon_, SwingConstants.LEFT);
         
-        
+        toggleWhisperBot_ = new JToggleButton(TOGGLE_WHISPERBOT_);
         talkArea_ = new JTextArea();
         talkArea_.setColumns(20);
         talkArea_.setRows(5);
@@ -272,6 +272,7 @@ private JToggleButton toggleWhisperBot_;
 			                    .add(talkAreaScroll_, GroupLayout.DEFAULT_SIZE, 306, Short.MAX_VALUE)
 			                    .add(messageAreaScroll_, GroupLayout.DEFAULT_SIZE, 306, Short.MAX_VALUE)
 			                    .add(layout.createSequentialGroup()
+			                    		.add(toggleWhisperBot_)
 			                    		.add(toggleEncryption_)
 			                    		.addPreferredGap(LayoutStyle.RELATED)
 			                    		.add(sendKeyBtn_)
