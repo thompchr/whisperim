@@ -1,5 +1,9 @@
 #summary User stories for the Whisper IM project
-#labels Phase-Requirements
+#labels Phase-Requirements,Featured,Phase-Design
+
+=Build 4=
+ * User can load custom plug-in modules (including protocols) (Chris)
+ * Whisper clients can identify if other client is using Whisper and disable special functionality to prevent bombarding buddy with garbage (Chris)
 
 =Build 3=
  * User can see "enable Bot" for messaging. Bot is simple echo bot. (Nick, John) (Bot/GUI disconnected pending pattern agreement)
