@@ -5,7 +5,7 @@
  * User will be able to interface with a 'system tray' icon for Whisper (Kirk)
  * User can load custom plug-in modules (including protocols) (Chris)
  * Whisper clients can identify if other client is using Whisper and disable special functionality to prevent bombarding buddy with garbage (Chris)
- * User will be able to access a preferences menu to change program-wide settings (Cory, Nick)
+ * User will be able to access a preferences menu to change program-wide settings (connects in bot from previous build) (Cory, Nick)
  * User will be able to 'lock' their session requiring a password to view buddy list or send/receive messages (Cory)
  * User will be able to view logs (Cory)
  * User will be able to view HTML chat instead of plain text (Cory)
