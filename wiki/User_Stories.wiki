@@ -8,11 +8,15 @@
  * User will be able to access a preferences menu to change program-wide settings (Cory, Nick)
  * User will be able to 'lock' their session requiring a password to view buddy list or send/receive messages (Cory)
  * User will be able to view logs (Cory)
+ * User will be able to view HTML chat instead of plain text (Cory)
+ * User will be able to identify buddy using AIM buddy 'alias' (Cory)
+ * User will be able to identify buddy using AIM buddy icon in buddy list (Cory)
+ * User will be able to identify buddy using AIM buddy icon in chat window (Cory)
 
 =Build 3=
  * User can see "enable Bot" for messaging. Bot is simple echo bot. (Nick, John) (Bot/GUI disconnected pending pattern agreement)
  * User can set status. (Nick, John) (On Hold)
- * User can enable/disable logging
+ * User can enable/disable logging (Logan)
  * User can receive parsed rich text in conversation with an AIM user (Cory, Kirk) 
  * User can view File, etc. menus without problems (Cory)
  * User can identify which network their buddy is on by an icon next to their name in the buddy list and an icon in the chat window (Cory)
@@ -54,4 +58,3 @@
   * User can encrypt keys with password
   * User can select different themes to use
   * User can use multiple im/chat networks
-  * User will be able to 'lock' Wisper so that a password is needed to view or send messages
