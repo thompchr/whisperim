@@ -58,3 +58,8 @@
   * User can encrypt keys with password
   * User can select different themes to use
   * User can use multiple im/chat networks
+  * User can securely transfer files
+  * User can start or answer a video chat using aim or gtalk protocols
+  * User can sort buddies by status, name, alias, network, or group
+  * User can set unique buddy icons to be displayed instead of their icon
+  * User can use Whisper on Mac OSX and Linux
