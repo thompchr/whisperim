@@ -65,6 +65,9 @@ import com.sun.org.apache.xml.internal.security.utils.Base64;
 public class WhisperClient extends JFrame implements ActionListener {
 
 
+	//Enums used for plugin identifcation
+	public static final int CONNECTION = 0;
+	public static final int LOOK_AND_FEEL = 1;
 	
 	private String myHandle_;
 	private Timer myTimer_;
@@ -457,5 +460,28 @@ public class WhisperClient extends JFrame implements ActionListener {
 			prefs.setVisible(true);
 		}
 		
+	}
+	
+	/**
+	 * This method will be used to register a loaded plugin.  The WhisperClient
+	 * object will keep track of all currently running plugins and hand them off to
+	 * the appropriate objects that need them.
+	 * @param name
+	 * @param type
+	 */
+	public void registerPlugin(String name, int type, Class c){
+		switch (type){
+		
+		case CONNECTION:
+			//Stuff for loading a connection
+			manager_.registerConnection(name, (Class<ConnectionStrategy>) c);
+			break;
+		case LOOK_AND_FEEL:
+			//Stuff for loading a look and feel
+			break;
+		default:
+			//Handle a plugin that doesn't conform
+			break;
+		}
 	}
 }

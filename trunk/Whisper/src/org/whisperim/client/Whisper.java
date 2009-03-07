@@ -155,7 +155,9 @@ public class Whisper {
 			e.printStackTrace();
 		} catch (ParserConfigurationException e) {
 			e.printStackTrace();
-		}		
+		}
+		
+		
 		java.awt.EventQueue.invokeLater(new Runnable() {
 	           public void run() {
 	               Login client = new Login(myPublicKey_, myPrivateKey_);
@@ -196,11 +198,11 @@ public class Whisper {
 		Document dom = null;
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		try {
-		// Get an instance of builder.
-		DocumentBuilder db = dbf.newDocumentBuilder();
+			// Get an instance of builder.
+			DocumentBuilder db = dbf.newDocumentBuilder();
 
-		// Create an instance of DOM.
-		dom = db.newDocument();
+			// Create an instance of DOM.
+			dom = db.newDocument();
 
 		}catch(ParserConfigurationException pce) {
 			pce.printStackTrace();

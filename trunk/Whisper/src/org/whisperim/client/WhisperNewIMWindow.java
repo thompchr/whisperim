@@ -22,6 +22,8 @@ import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.Map.Entry;
 
 import javax.swing.JButton;
@@ -53,10 +55,30 @@ public class WhisperNewIMWindow extends JFrame implements ActionListener{
 		
 	public WhisperNewIMWindow(ConnectionManager manager, WhisperClient parent){
 		parent_ = parent;
-		
+		foreignHandleBox_.addKeyListener(new KeyListener(){
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == '\n'){
+					//Enter key
+					actionPerformed(new ActionEvent(foreignHandleBox_, Integer.MAX_VALUE, OK_));
+				}
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+
+			}
+
+			@Override
+			public void keyTyped(KeyEvent e) {
+			}
+		});
+			
 		//set native look and feel
 		try  {  
 			//Tell the UIManager to use the platform look and feel  
+			//This should be added to a global prefs registry
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());  
 		}  
 		catch(Exception e) {  
@@ -136,6 +158,10 @@ public class WhisperNewIMWindow extends JFrame implements ActionListener{
 	public void actionPerformed(ActionEvent evt) {
 		String ac = evt.getActionCommand();
 		if (ac.equals(OK_)){
+			if (foreignHandleBox_.getText().equalsIgnoreCase("")){
+				foreignHandleBox_.requestFocus();
+				return;
+			}
 			final WhisperClient temp = parent_;
 			final String foreign = foreignHandleBox_.getText();
 			final ConnectionStrategy cs = (ConnectionStrategy) protocolSelector_.getSelectedItem();
@@ -155,5 +181,6 @@ public class WhisperNewIMWindow extends JFrame implements ActionListener{
 		}
 		
 	}
+	
 	
 }
