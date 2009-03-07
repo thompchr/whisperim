@@ -13,60 +13,78 @@
  * See the License for the specific language governing permissions and     *
  * limitations under the License.                                          *
  **************************************************************************/
+
 package org.whisperim.client;
-
-
 
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.Map.Entry;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import javax.swing.JButton;
-import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import javax.swing.Spring;
 import javax.swing.SpringLayout;
 import javax.swing.UIManager;
 
-public class WhisperNewIMWindow extends JFrame implements ActionListener{
+import org.whisperim.plugins.PluginLoader;
+
+public class LoadPluginWindow extends JFrame implements ActionListener {
+
+	/**
+	 * What does this? Makes Eclipse shut up, that's what...
+	 */
+	private static final long serialVersionUID = -6394784624437418361L;
+
+
 	/**
 	 * Look and feel declaration
 	 */
 	private static final String LOOK_AND_FEEL_ = UIManager.getSystemLookAndFeelClassName();
 	
 	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1685855175306987312L;
-	private static final String SCREEN_NAME_ = "Screen Name: ";
+	private static final String LOCATION_ = "Location: ";
 	private static final String OK_ = "OK";
 	private static final String CANCEL_ = "Cancel";
-	private static final String WINDOW_TITLE_ = "New Instant Message";
+	private static final String WINDOW_TITLE_ = "Load Plugin";
+	private static final String FILE_CHOOSER_ACCEPT_ = "Load Plugin";
+	private static final String ERROR_OCCURRED_MESSAGE = "An error has occurred while attempting to load the plugin.";
+	private static final String FILE_NOT_FOUND_MESSAGE = "The selected file could not be found.";
+	
+	private static final String ERROR_ = "Error";
+	private static final String BROWSE_ = "Browse";
 
-	private JTextField foreignHandleBox_ = new JTextField();
-	private JComboBox protocolSelector_ = new JComboBox();
+	private JTextField locationBox_ = new JTextField();
+	
 
-	private JLabel foreignHandleLbl_ = new JLabel(SCREEN_NAME_);
+	private JLabel locationLbl_ = new JLabel(LOCATION_);
 	private JButton okBtn_ = new JButton(OK_);
 	private JButton cancelBtn_ = new JButton(CANCEL_);
-	private WhisperClient parent_;
+	private JButton browseBtn_ = new JButton(BROWSE_);
+	
+	
+	private PluginLoader pm_;
+	
 		
-	public WhisperNewIMWindow(ConnectionManager manager, WhisperClient parent){
-		parent_ = parent;
-		foreignHandleBox_.addKeyListener(new KeyListener(){
+	public LoadPluginWindow(PluginLoader pl){
+		
+		pm_ = pl;
+		
+		locationBox_.addKeyListener(new KeyListener(){
 
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == '\n'){
 					//Enter key
-					actionPerformed(new ActionEvent(foreignHandleBox_, Integer.MAX_VALUE, OK_));
+					actionPerformed(new ActionEvent(locationBox_, Integer.MAX_VALUE, OK_));
 				}
 			}
 
@@ -96,14 +114,15 @@ public class WhisperNewIMWindow extends JFrame implements ActionListener{
 		
 		setTitle(WINDOW_TITLE_);
 		
-		cp.add(foreignHandleLbl_);
-		cp.add(foreignHandleBox_);
-		cp.add(protocolSelector_);
+		cp.add(locationLbl_);
+		cp.add(locationBox_);
+		cp.add(browseBtn_);
 		cp.add(okBtn_);
 		cp.add(cancelBtn_);
 		
-		setMinimumSize(new Dimension(350, 175));
-		setMaximumSize(new Dimension(350, 175));
+		
+		setMinimumSize(new Dimension(350, 130));
+		setMaximumSize(new Dimension(350, 130));
 		
 		okBtn_.setMinimumSize(new Dimension(75, 26));
 		okBtn_.setMaximumSize(new Dimension(75, 26));
@@ -117,42 +136,37 @@ public class WhisperNewIMWindow extends JFrame implements ActionListener{
 		cancelBtn_.setActionCommand(CANCEL_);
 		cancelBtn_.addActionListener(this);
 		
-		foreignHandleBox_.setMinimumSize(new Dimension(150, 23));
-		foreignHandleBox_.setMaximumSize(new Dimension(150, 23));
-		foreignHandleBox_.setPreferredSize(new Dimension(150, 23));
+		browseBtn_.setMinimumSize(new Dimension(75, 26));
+		browseBtn_.setMaximumSize(new Dimension(75, 26));
+		browseBtn_.setPreferredSize(new Dimension(75, 26));
+		browseBtn_.setActionCommand(BROWSE_);
+		browseBtn_.addActionListener(this);
 		
-		protocolSelector_.setMinimumSize(new Dimension(240, 30));
-		protocolSelector_.setMaximumSize(new Dimension(240, 30));
-		protocolSelector_.setPreferredSize(new Dimension(240, 30));
+		
+		locationBox_.setMinimumSize(new Dimension(150, 23));
+		locationBox_.setMaximumSize(new Dimension(150, 23));
+		locationBox_.setPreferredSize(new Dimension(150, 23));
+		
+
 		
 		setTitle(WINDOW_TITLE_);
 		
 		
-		ProtocolRenderer renderer = new ProtocolRenderer();
-		protocolSelector_.setRenderer(renderer);
-		
-		
 		//Constraints
-		sl.putConstraint(SpringLayout.WEST, foreignHandleLbl_, 20, SpringLayout.WEST, cp);
-		sl.putConstraint(SpringLayout.NORTH, foreignHandleLbl_, 20, SpringLayout.NORTH, cp);
+		sl.putConstraint(SpringLayout.WEST, locationLbl_, 20, SpringLayout.WEST, cp);
+		sl.putConstraint(SpringLayout.NORTH, locationLbl_, 20, SpringLayout.NORTH, cp);
 		
-		sl.putConstraint(SpringLayout.WEST, foreignHandleBox_, 5, SpringLayout.EAST, foreignHandleLbl_);
-		sl.putConstraint(SpringLayout.NORTH, foreignHandleBox_, 17, SpringLayout.NORTH, cp);
+		sl.putConstraint(SpringLayout.WEST, locationBox_, 5, SpringLayout.EAST, locationLbl_);
+		sl.putConstraint(SpringLayout.NORTH, locationBox_, 17, SpringLayout.NORTH, cp);
 		
-		sl.putConstraint(SpringLayout.NORTH, protocolSelector_, 50, SpringLayout.NORTH, cp);
-		sl.putConstraint(SpringLayout.WEST, protocolSelector_, 60, SpringLayout.WEST, cp);
-		
-		sl.putConstraint(SpringLayout.NORTH, cancelBtn_, 50, SpringLayout.NORTH, protocolSelector_);
+		sl.putConstraint(SpringLayout.NORTH, cancelBtn_, 25, SpringLayout.NORTH, locationBox_);
 		sl.putConstraint(SpringLayout.WEST, cancelBtn_, 20, SpringLayout.EAST, okBtn_);
 		
 		sl.putConstraint(SpringLayout.WEST, okBtn_, 90, SpringLayout.WEST, cp);
-		sl.putConstraint(SpringLayout.NORTH, okBtn_, 50, SpringLayout.NORTH, protocolSelector_);
+		sl.putConstraint(SpringLayout.NORTH, okBtn_, 25, SpringLayout.NORTH, locationBox_);
 		
-		
-		for (Entry<String, ConnectionStrategy> entry:manager.getStrategies().entrySet()){
-			ConnectionStrategy cs = (ConnectionStrategy)entry.getValue();
-			protocolSelector_.addItem(cs);
-		}
+		sl.putConstraint(SpringLayout.WEST, browseBtn_, 15, SpringLayout.EAST, locationBox_);
+		sl.putConstraint(SpringLayout.NORTH, browseBtn_, 16, SpringLayout.NORTH, cp);
 		
 		
 		pack();
@@ -163,22 +177,34 @@ public class WhisperNewIMWindow extends JFrame implements ActionListener{
 	public void actionPerformed(ActionEvent evt) {
 		String ac = evt.getActionCommand();
 		if (ac.equals(OK_)){
-			if (foreignHandleBox_.getText().equalsIgnoreCase("")){
-				foreignHandleBox_.requestFocus();
+			if (locationBox_.getText().equalsIgnoreCase("")){
+				locationBox_.requestFocus();
 				return;
 			}
-			final WhisperClient temp = parent_;
-			final String foreign = foreignHandleBox_.getText();
-			final ConnectionStrategy cs = (ConnectionStrategy) protocolSelector_.getSelectedItem();
-			EventQueue.invokeLater(new Runnable(){
-
-				@Override
-				public void run() {
-					temp.newIMWindow(new Buddy(foreign, cs.getIdentifier().substring(cs.getIdentifier().lastIndexOf(":") + 1), cs.getProtocol()));
-				}
-				
-			});
+			
+			try{
+				pm_.loadPluginFromExtLoc(locationBox_.getText());
+			}catch(Exception e){
+				JOptionPane.showMessageDialog(this, ERROR_OCCURRED_MESSAGE, ERROR_, JOptionPane.ERROR_MESSAGE);
+			}
 			dispose();
+		}
+		
+		if(ac.equals(BROWSE_)){
+			JFileChooser fc = new JFileChooser(System.clearProperty("user.home"));
+			fc.setFileFilter(new XMLFilter());
+			//fc.setAcceptAllFileFilterUsed(false);
+			int returnval = fc.showDialog(LoadPluginWindow.this, FILE_CHOOSER_ACCEPT_);
+			if (returnval == JFileChooser.APPROVE_OPTION){
+				try {
+					locationBox_.setText(fc.getSelectedFile().getCanonicalPath());
+				} catch (IOException e) {
+					JOptionPane.showMessageDialog(this, ERROR_OCCURRED_MESSAGE, ERROR_, JOptionPane.ERROR_MESSAGE);
+					e.printStackTrace();
+				}
+			}
+			
+			
 		}
 		
 		if(ac.equals(CANCEL_)){
@@ -188,4 +214,5 @@ public class WhisperNewIMWindow extends JFrame implements ActionListener{
 	}
 	
 	
+
 }
