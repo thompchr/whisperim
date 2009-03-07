@@ -49,6 +49,7 @@ import javax.swing.WindowConstants;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
+import org.whisperim.plugins.PluginLoader;
 import org.whisperim.security.Encryptor;
 
 import com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingException;
@@ -75,6 +76,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 	private ConnectionManager manager_;
 	private BuddyListModel blm_ = new BuddyListModel();
 
+	private PluginLoader pluginLoader_;
 	private JList buddyList_;
 	private JScrollPane buddyListScroll_;
 	private JMenu whisperMenu_;
@@ -85,6 +87,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 	private JMenuItem encryption_;
 	private JMenuItem quit_;
 	private JMenuItem newIm_;
+	private JMenuItem plugins_;
 	//private PopupMenu popupMenu1;
 
 	private static final String BUDDY_LIST_ = "Buddy List";
@@ -93,7 +96,8 @@ public class WhisperClient extends JFrame implements ActionListener {
 	//first menu\\
 	private static final String WHISPER_ = "Whisper"; //menu 1 header
 	private static final String NEWIM_ = "New Instant Message"; //menu 1 first item
-	private static final String QUIT_ = "Quit"; //menu 1 second item
+	private static final String PLUGINS_ = "Plugins"; //menu 1 second item
+	private static final String QUIT_ = "Quit"; //menu 1 third item
 
 	//second menu\\
 	private static final String PREFERENCES_ = "Preferences"; //menu 2 header
@@ -106,6 +110,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 	/** Creates new form WhisperClient */
 	public WhisperClient(String handle, ConnectionManager manager) {
 		initComponents();
+		pluginLoader_ = new PluginLoader(this);
 		manager_ = manager;
 		manager_.setClient(this);
 		myHandle_ = handle;
@@ -164,9 +169,10 @@ public class WhisperClient extends JFrame implements ActionListener {
 
 
 		//first menu\\
-		//File
-		//New IM
-		//Quit
+			//File
+			//New IM
+			//Plugins
+			//Quit
 		whisperMenu_ = new JMenu();
 		whisperMenu_.setText(WHISPER_);
 		menuBar_.add(whisperMenu_);
@@ -176,6 +182,12 @@ public class WhisperClient extends JFrame implements ActionListener {
 		newIm_.setActionCommand(NEWIM_);
 		newIm_.addActionListener(this);
 		whisperMenu_.add(newIm_);
+		
+		plugins_ = new JMenuItem();
+		plugins_.setText(PLUGINS_);
+		plugins_.setActionCommand(PLUGINS_);
+		plugins_.addActionListener(this);
+		whisperMenu_.add(plugins_);
 
 		quit_ = new JMenuItem();
 		quit_.setText(QUIT_);
@@ -185,8 +197,8 @@ public class WhisperClient extends JFrame implements ActionListener {
 
 
 		//second menu\\
-		//Preferences
-		//Encryption
+			//Preferences
+			//Encryption
 		preferencesMenu_ = new JMenu();
 		preferencesMenu_.setText(PREFERENCES_);
 		menuBar_.add(preferencesMenu_);
@@ -448,6 +460,16 @@ public class WhisperClient extends JFrame implements ActionListener {
 			EventQueue.invokeLater(new Runnable() {
 				public void run() {
 					new WhisperNewIMWindow(manager_, wc);
+				}
+			});
+		}
+		
+		//Open the plugins window
+		if (actionCommand.equals(plugins_.getActionCommand())){
+			final WhisperClient temp = WhisperClient.this;
+			EventQueue.invokeLater(new Runnable() {
+				public void run() {
+					new WhisperPluginManagerWindow(temp, pluginLoader_);
 				}
 			});
 		}
