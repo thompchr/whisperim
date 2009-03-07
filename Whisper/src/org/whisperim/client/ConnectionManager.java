@@ -45,14 +45,30 @@ public class ConnectionManager {
 	public static final int AIM_SESSION = 0; 
 
 	/**
-	 * Hashmap strategies_ holds session strategies.
+	 * This data member holds currently active sessions.
 	 */
 	private HashMap<String, ConnectionStrategy> strategies_ = new HashMap<String, ConnectionStrategy>();
 
+	
 	/**
-	 * Returns true if Hashmap strategies_ is empty.
+	 * This data member will serve as a registry for the connection strategies that
+	 * are available, but potentially not loaded.
 	 */
-	public boolean isHashEmpty()
+	private HashMap<String, Class<ConnectionStrategy> > registeredStrategies_ = new HashMap<String, Class<ConnectionStrategy> > ();
+	
+	/**
+	 * This method registers a class that implements the ConnectionStrategy interface
+	 * @param cs - Class<ConnectionStrategy> The strategy to be 
+	 * @param name -  Name of the connection type (AOL, GTalk, etc.) to be 
+	 * 					displayed when the "New Account" window is displayed.
+	 */
+	public void registerConnection(String name, Class<ConnectionStrategy> cs){
+		registeredStrategies_.put(name, cs);
+	}
+	/**
+	 * Returns true if strategies_ is empty.
+	 */
+	public boolean isStrategiesEmpty()
 	{
 		return (strategies_.isEmpty());
 	}
