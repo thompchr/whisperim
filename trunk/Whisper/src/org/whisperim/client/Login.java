@@ -113,6 +113,11 @@ public class Login extends JFrame implements ActionListener {
         		}
         	);
 		
+		cancelButton_ = new JButton();
+		cancelButton_.setText("Cancel");
+		cancelButton_.addActionListener(this);
+		
+		
 		statusLbl_ = new JLabel();
         
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -129,7 +134,8 @@ public class Login extends JFrame implements ActionListener {
                         .addComponent(usernameLbl_)
                         .addComponent(passwordLbl_)
                         .addComponent(passwordTxtBox_, GroupLayout.DEFAULT_SIZE, 151, Short.MAX_VALUE))
-                    .addComponent(signOnButton_))
+                    .addComponent(signOnButton_)
+                    .addComponent(cancelButton_))
                 .addContainerGap(28, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addGap(43, 43, 43)
@@ -151,10 +157,12 @@ public class Login extends JFrame implements ActionListener {
                 .addComponent(passwordTxtBox_, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                 .addGap(38, 38, 38)
                 .addComponent(signOnButton_)
+                .addComponent(cancelButton_)
                 .addContainerGap(25, Short.MAX_VALUE))
         );
         
         pack();
+        setVisibility(true);
         
     }
 
@@ -181,12 +189,20 @@ public class Login extends JFrame implements ActionListener {
         //The status label is opposite the others.
         //It is only visible when the others are not.
         statusLbl_.setVisible(!visible);
+        cancelButton_.setVisible(!visible);
+        if (!visible){
+        	cancelButton_.requestFocus();
+        }
 	}
 	
 	//Handles actions generated in login
 	public void actionPerformed(ActionEvent e) {
 		if (e.getActionCommand().equals(signOnButton_.getActionCommand())) {
 			signOn();
+		}
+		else if (e.getActionCommand().equals(cancelButton_.getActionCommand())){
+			//Might need some additional connection killing stuff..
+			setVisibility(true);
 		}
 	}
 
@@ -215,5 +231,6 @@ public class Login extends JFrame implements ActionListener {
     private JLabel statusLbl_;
     private JLabel usernameLbl_;
     private JTextField usernameTxtBox_;
-
+    private JButton cancelButton_;
+    
 }
