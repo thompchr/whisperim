@@ -313,12 +313,22 @@ public class WhisperClient extends JFrame implements ActionListener {
 	 * @param client
 	 */
 	public WhisperIM newIMWindow(final Buddy selectedBuddy_) {
-		final WhisperClient client = WhisperClient.this;
-		WhisperIM window = new WhisperIM(selectedBuddy_, myHandle_, client, manager_.getPrivateKey());
-		window.setVisible(true);
+		if (windows_.isEmpty()){
+			//final WhisperClient client = WhisperClient.this;
+			WhisperIM window = new WhisperIM(selectedBuddy_, myHandle_, this, manager_.getPrivateKey());
+			window.setVisible(true);
 		
-		windows_.put(selectedBuddy_.getHandle().toLowerCase().replace(" ", ""), window);
-		return window;
+			windows_.put(selectedBuddy_.getHandle().toLowerCase().replace(" ", ""), window);
+			return window;
+		}
+		else
+		{
+			WhisperIM window = windows_.values().iterator().next();
+			window.addPanel(selectedBuddy_, new WhisperIMPanel(selectedBuddy_, window, manager_.getPrivateKey()));
+			windows_.put(selectedBuddy_.getHandle(), window);
+			return window;
+		}
+		
 	}
 	
 	private void BuddiesComponentShown(ComponentEvent evt) {
@@ -365,11 +375,11 @@ public class WhisperClient extends JFrame implements ActionListener {
 						java.awt.EventQueue.invokeLater(new Runnable() {
 							public void run() {
 								//needs to go to an buddy object version
-								newIMWindow(new Buddy(message.getFrom(), myHandle_, message.getProtocol())).enableEncryption(recKey);
+								newIMWindow(new Buddy(message.getFrom(), myHandle_, message.getProtocol())).getTab(message.getFrom()).enableEncryption(recKey);
 							}
 						});
 					}else{
-						windows_.get(message.getFrom().toLowerCase().replace(" ", "")).enableEncryption(recKey);
+						windows_.get(message.getFrom().toLowerCase().replace(" ", "")).getTab(message.getFrom()).enableEncryption(recKey);
 					}
 
 				} catch (NoSuchAlgorithmException e) {
@@ -393,12 +403,12 @@ public class WhisperClient extends JFrame implements ActionListener {
 				EventQueue.invokeLater(new Runnable() {
 					public void run() {
 						//needs to go to an buddy object version
-						newIMWindow(new Buddy(message.getFrom(), myHandle_, message.getProtocol())).receiveMsg(message);
+						newIMWindow(new Buddy(message.getFrom(), myHandle_, message.getProtocol())).getTab(message.getFrom()).receiveMsg(message);
 					}
 				});
 
 			}else{
-				windows_.get(message.getFrom().toLowerCase().replace(" ", "")).receiveMsg(message);
+				windows_.get(message.getFrom().toLowerCase().replace(" ", "")).getTab(message.getFrom()).receiveMsg(message);
 			}
 
 		}
