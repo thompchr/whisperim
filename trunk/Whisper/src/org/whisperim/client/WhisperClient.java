@@ -70,7 +70,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 	public static final int CONNECTION = 0;
 	public static final int LOOK_AND_FEEL = 1;
 	
-	private String myHandle_;
+	
 	private Timer myTimer_;
 	private IdleTT myTaskTimer_;    
 	private ConnectionManager manager_;
@@ -107,13 +107,13 @@ public class WhisperClient extends JFrame implements ActionListener {
 
 	private HashMap<String, WhisperIM> windows_ = new HashMap<String, WhisperIM>();
 
-	/** Creates new form WhisperClient */
-	public WhisperClient(String handle, ConnectionManager manager) {
+	/** Creates new WhisperClient instance */
+	public WhisperClient(ConnectionManager manager) {
 		initComponents();
 		pluginLoader_ = new PluginLoader(this);
 		manager_ = manager;
 		manager_.setClient(this);
-		myHandle_ = handle;
+		
 		this.setTitle(WHISPER_);
 		resetTimer(5000);   
 
@@ -312,22 +312,33 @@ public class WhisperClient extends JFrame implements ActionListener {
 	 * @param selectedBuddy_
 	 * @param client
 	 */
-	public WhisperIM newIMWindow(final Buddy selectedBuddy_) {
+	public WhisperIMPanel newIMWindow(final Buddy selectedBuddy_) {
+			
+		WhisperIM window;
+		WhisperIMPanel panel;
+		
 		if (windows_.isEmpty()){
-			//final WhisperClient client = WhisperClient.this;
-			WhisperIM window = new WhisperIM(selectedBuddy_, myHandle_, this, manager_.getPrivateKey());
+			
+			
+			window = new WhisperIM(manager_.getPrivateKey());
+			panel = new WhisperIMPanel(selectedBuddy_, window, manager_.getPrivateKey());
+			window.addPanel(selectedBuddy_, panel);
 			window.setVisible(true);
 		
 			windows_.put(selectedBuddy_.getHandle().toLowerCase().replace(" ", ""), window);
-			return window;
+			
 		}
 		else
 		{
-			WhisperIM window = windows_.values().iterator().next();
-			window.addPanel(selectedBuddy_, new WhisperIMPanel(selectedBuddy_, window, manager_.getPrivateKey()));
+			//As is, this randomly chooses an open window to put the panel in
+			window = windows_.values().iterator().next();
+			panel = new WhisperIMPanel(selectedBuddy_, window, manager_.getPrivateKey());
+			window.addPanel(selectedBuddy_, panel);
 			windows_.put(selectedBuddy_.getHandle(), window);
-			return window;
+			
 		}
+		
+		return panel;
 		
 	}
 	
@@ -375,7 +386,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 						java.awt.EventQueue.invokeLater(new Runnable() {
 							public void run() {
 								//needs to go to an buddy object version
-								newIMWindow(new Buddy(message.getFrom(), myHandle_, message.getProtocol())).getTab(message.getFrom()).enableEncryption(recKey);
+								newIMWindow(new Buddy(message.getFrom(), message.getTo(), message.getProtocol())).enableEncryption(recKey);
 							}
 						});
 					}else{
@@ -403,7 +414,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 				EventQueue.invokeLater(new Runnable() {
 					public void run() {
 						//needs to go to an buddy object version
-						newIMWindow(new Buddy(message.getFrom(), myHandle_, message.getProtocol())).getTab(message.getFrom()).receiveMsg(message);
+						newIMWindow(new Buddy(message.getFrom(), message.getTo(), message.getProtocol())).receiveMsg(message);
 					}
 				});
 
@@ -476,10 +487,10 @@ public class WhisperClient extends JFrame implements ActionListener {
 		
 		//Open the plugins window
 		if (actionCommand.equals(plugins_.getActionCommand())){
-			final WhisperClient temp = WhisperClient.this;
+			
 			EventQueue.invokeLater(new Runnable() {
 				public void run() {
-					new WhisperPluginManagerWindow(temp, pluginLoader_);
+					new WhisperPluginManagerWindow(pluginLoader_);
 				}
 			});
 		}
@@ -498,8 +509,9 @@ public class WhisperClient extends JFrame implements ActionListener {
 	 * This method will be used to register a loaded plugin.  The WhisperClient
 	 * object will keep track of all currently running plugins and hand them off to
 	 * the appropriate objects that need them.
-	 * @param name
-	 * @param type
+	 * @param name - The string name of the plugin
+	 * @param type - Enum for the type of the plugin
+	 * @param c - The "Class" object representing the plugin
 	 */
 	public void registerPlugin(String name, int type, Class c){
 		switch (type){

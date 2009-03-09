@@ -20,9 +20,8 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import javax.swing.JButton;
@@ -31,7 +30,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
-import javax.swing.Spring;
 import javax.swing.SpringLayout;
 import javax.swing.UIManager;
 
@@ -40,7 +38,7 @@ import org.whisperim.plugins.PluginLoader;
 public class LoadPluginWindow extends JFrame implements ActionListener {
 
 	/**
-	 * What does this? Makes Eclipse shut up, that's what...
+	 * What does this do? Makes Eclipse shut up, that's what...
 	 */
 	private static final long serialVersionUID = -6394784624437418361L;
 
@@ -78,7 +76,7 @@ public class LoadPluginWindow extends JFrame implements ActionListener {
 		
 		pm_ = pl;
 		
-		locationBox_.addKeyListener(new KeyListener(){
+		locationBox_.addKeyListener(new KeyAdapter(){
 
 			@Override
 			public void keyPressed(KeyEvent e) {
@@ -86,15 +84,6 @@ public class LoadPluginWindow extends JFrame implements ActionListener {
 					//Enter key
 					actionPerformed(new ActionEvent(locationBox_, Integer.MAX_VALUE, OK_));
 				}
-			}
-
-			@Override
-			public void keyReleased(KeyEvent e) {
-
-			}
-
-			@Override
-			public void keyTyped(KeyEvent e) {
 			}
 		});
 			

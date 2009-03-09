@@ -42,7 +42,7 @@ public class WhisperPluginManagerWindow extends JFrame implements
 	private static final String LOOK_AND_FEEL_ = UIManager.getSystemLookAndFeelClassName();
 	
 	private PluginLoader pm_;
-	private WhisperClient parent_;
+	
 	
 	private JList activePlugins_;
 	private JMenuBar menuBar_;
@@ -74,10 +74,9 @@ public class WhisperPluginManagerWindow extends JFrame implements
 	/**
 	 * Constructor
 	 */
-	public WhisperPluginManagerWindow(WhisperClient wc, PluginLoader loader){
+	public WhisperPluginManagerWindow(PluginLoader loader){
 		
 		pm_ = loader;
-		parent_ = wc;
 		
 		closeBtn_ = new JButton(CLOSE_);
 		pluginsMenu_ = new JMenu(PLUGIN_);
@@ -153,6 +152,18 @@ public class WhisperPluginManagerWindow extends JFrame implements
 			
 		}
 
+	}
+	
+	public static void main(String[] args){
+		EventQueue.invokeLater(new Runnable(){
+
+			@Override
+			public void run() {
+				new WhisperPluginManagerWindow(new PluginLoader(null));
+				
+			}
+			
+		});
 	}
 	
 

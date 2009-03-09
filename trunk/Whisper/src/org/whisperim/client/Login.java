@@ -211,7 +211,7 @@ public class Login extends JFrame implements ActionListener {
         if (status.equalsIgnoreCase(SIGNED_IN_)){
         	EventQueue.invokeLater(new Runnable() {
         		public void run() {
-        			WhisperClient client = new WhisperClient(usernameTxtBox_.getText(), manager_);
+        			WhisperClient client = new WhisperClient(manager_);
         			client.setVisible(true);
         		}
         	});

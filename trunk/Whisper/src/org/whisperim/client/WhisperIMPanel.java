@@ -105,7 +105,7 @@ public class WhisperIMPanel extends JPanel implements ActionListener {
         toggleEncryption_.setText(ENCRYPTION_OFF_);
         talkArea_.requestFocus();
         theirHandle_ = buddy.getHandle();
-        myHandle_ = window.getMyHandle();
+        myHandle_ = buddy.getAssociatedLocalHandle();
         myParent_ = window.getMyParent();
 		
         addTab();

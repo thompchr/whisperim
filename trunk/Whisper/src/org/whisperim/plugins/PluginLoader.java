@@ -43,6 +43,12 @@ public class PluginLoader {
 		client_ = client;
 	}
 	
+
+	public WhisperClient getClient() {
+		return client_;
+	}
+
+
 	/**
 	 * This method will load all plugins from the plugins directory
 	 * that are not currently loaded and running.
