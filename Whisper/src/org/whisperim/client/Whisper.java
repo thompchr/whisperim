@@ -15,40 +15,26 @@
  **************************************************************************/
 
 package org.whisperim.client;
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import javax.swing.SwingUtilities;
-
-import java.io.BufferedReader;
-import java.io.DataInputStream;
+import java.awt.EventQueue;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.BufferedWriter;
-import java.io.InputStreamReader;
 import java.security.KeyPair;
-import java.security.PublicKey;
 import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.util.ArrayList;
 
-//XML Imports
-import java.io.File;
-import org.w3c.dom.*;
-import org.whisperim.keys.*;
-import org.whisperim.security.Encryptor;
-import org.apache.xml.serialize.*;
-import org.xml.sax.*;
-import org.xml.sax.helpers.*;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.xml.serialize.OutputFormat;
+import org.apache.xml.serialize.XMLSerializer;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.whisperim.security.Encryptor;
 import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException; 
-
 
 import com.sun.org.apache.xml.internal.security.utils.Base64;
 
@@ -158,7 +144,7 @@ public class Whisper {
 		}
 		
 		
-		java.awt.EventQueue.invokeLater(new Runnable() {
+		EventQueue.invokeLater(new Runnable() {
 	           public void run() {
 	               Login client = new Login(myPublicKey_, myPrivateKey_);
 	               client.setVisible(true);
@@ -234,8 +220,7 @@ public class Whisper {
 		
 		myKeys.appendChild(myPrivate);
 		
-		try
-		{
+		try{
 			// Set output formatting.
 			OutputFormat format = new OutputFormat(dom);
 			format.setIndenting(true);

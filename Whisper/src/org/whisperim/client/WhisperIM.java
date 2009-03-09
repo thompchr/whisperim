@@ -16,42 +16,30 @@
 package org.whisperim.client;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.security.PrivateKey;
-import java.security.PublicKey;
-import java.text.DateFormat;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.regex.Pattern;
 
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JToggleButton;
-import javax.swing.SwingConstants;
-import javax.swing.UIManager;
-import javax.swing.WindowConstants;
 
-import org.jdesktop.layout.GroupLayout;
-import org.jdesktop.layout.LayoutStyle;
 import org.whisperim.security.Encryptor;
 
 /**
@@ -120,47 +108,26 @@ public class WhisperIM extends JFrame implements ActionListener {
    
 
     /** Creates new form WhisperIM */
-    public WhisperIM(Buddy buddy, String myHandle, WhisperClient myParent, PrivateKey myKey) {
+    public WhisperIM(PrivateKey myKey) {
     	
     	//Create frame, its menu, and the TabbedPane 
     	super("Whisper IM Conversation");
     	createMenu();    	
     	mainPain_ = new JTabbedPane();
-    	
-    	buddy_ = buddy;
-        theirHandle_ = buddy.getHandle();
-        myHandle_ = myHandle;
-        myParent_ = myParent;
+
         myKey_ = myKey;
     	
-    	//Create tab for initial 'calling' buddy, then add the Pane to the Frame
-    	WhisperIMPanel newBuddy = new WhisperIMPanel(buddy, this, myKey);
+    	
         add(mainPain_, BorderLayout.CENTER);
-    	
-    	
-        myKey_ = myKey;
-//        toggleEncryption_.setSelected(doEncryption_);
-//        toggleEncryption_.setText(ENCRYPTION_OFF_);
-//        talkArea_.requestFocus();
+
+        //We should add a small version of their buddy icon into the "null" value here
+        //mainPain_.addTab(buddy.getHandle(), null, panel, "Conversation with " + buddy.getHandle());
+        //tabHash_.put(buddy.getHandle(), panel);
 
         setMinimumSize(new Dimension(470, 315));
     }
 
-    /*
-    public void enableEncryption(PublicKey theirKey){
-    	if (theirKey != null){
-    		encrypt = new Encryptor(theirKey, myKey_);
-    		toggleEncryption_.setEnabled(true);
-    		talkArea_.append("Key received. Encryption is now available.\n");
-    	}
-    }
-    
-    public void enableWhisperBot()
-    {
-    	toggleWhisperBot_.setEnabled(true);
-    	talkArea_.append("WhisperBot is now Active.\n");
-    }
-    */
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -204,10 +171,6 @@ public class WhisperIM extends JFrame implements ActionListener {
 		setJMenuBar(mb);
 		
 	}
-    
-    private void formWindowClosed(WindowEvent evt) {
-
-    }
 
     private void formWindowClosing(WindowEvent evt) {
     	System.out.println("Window closing");
@@ -228,7 +191,7 @@ public class WhisperIM extends JFrame implements ActionListener {
     
     
     public void addPanel(Buddy buddy, WhisperIMPanel panel){
-    	mainPain_.addTab(buddy.getHandle(), null, panel, "This is who you are talking to...");
+    	mainPain_.addTab(buddy.getHandle(), null, panel, "Conversation with " + buddy.getHandle());
     	tabHash_.put(buddy.getHandle(),panel);
     	
     }
