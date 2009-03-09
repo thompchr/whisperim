@@ -205,25 +205,8 @@ public class WhisperIMPanel extends JPanel implements ActionListener {
 	        sendBtn_.setText(SEND_);
 	        sendBtn_.setActionCommand(SEND_);
 	        sendBtn_.addActionListener(this); 
-	        //{
-	        //    public void actionPerformed(ActionEvent evt) {
-	        //        WhisperIMPanel.this.actionPerformed(evt);
-	        //    }
-	        //});
-	        
-	        //setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-	        
-	        //addWindowListener(new WindowAdapter() {
-	        //    public void windowClosed(WindowEvent evt) {
-	        //        formWindowClosed(evt);
-	        //    }
-	        //    public void windowClosing(WindowEvent evt) {
-	        //        formWindowClosing(evt);
-	        ///    }
-	        //});
 
-	       
-	        //getContentPane().setLayout(layout);
+	  
 	        layout.setHorizontalGroup(
 		            layout.createParallelGroup(GroupLayout.LEADING)
 		            .add(layout.createSequentialGroup()
@@ -264,6 +247,9 @@ public class WhisperIMPanel extends JPanel implements ActionListener {
 	        );
 
 	        buddyName_.getAccessibleContext().setAccessibleName("Buddy");
+	        
+	        //Set tab close button and hotkey
+
 	        
 	        this.setLayout(layout);
 	        return this;
@@ -307,19 +293,7 @@ public class WhisperIMPanel extends JPanel implements ActionListener {
 	        		talkArea_.append("An error has occurred sending the key.\n");
 	        	}
 	    	}
-    	//WhisperIM should handle this...
-    	/*
-    	else if (e.getSource() == exit_){
-    		dispose();
-    	}
-    	
-    	else if (e.getSource() == logging_){
-    		doLogging_ = logging_.getState();
-    		if (log_ == null)
-    			log_ = new Logger(); 
-    			
-    	}
-    	*/
+
     	
     		else {
     			//problem with button interface
