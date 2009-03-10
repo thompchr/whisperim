@@ -23,6 +23,7 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.security.KeyFactory;
@@ -320,8 +321,8 @@ public class WhisperClient extends JFrame implements ActionListener {
 		if (windows_.isEmpty()){
 			
 			
-			window = new WhisperIM(manager_.getPrivateKey());
-			panel = new WhisperIMPanel(selectedBuddy_, window, manager_.getPrivateKey(),this);
+			window = new WhisperIM(this, manager_.getPrivateKey());
+			panel = new WhisperIMPanel(selectedBuddy_, window, manager_.getPrivateKey());
 			window.addPanel(selectedBuddy_, panel);
 			window.setVisible(true);
 		
@@ -332,7 +333,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 		{
 			//As is, this randomly chooses an open window to put the panel in
 			window = windows_.values().iterator().next();
-			panel = new WhisperIMPanel(selectedBuddy_, window, manager_.getPrivateKey(),this);
+			panel = new WhisperIMPanel(selectedBuddy_, window, manager_.getPrivateKey());
 			window.addPanel(selectedBuddy_, panel);
 			windows_.put(selectedBuddy_.getHandle().toLowerCase().replace(" ", ""), window);
 
