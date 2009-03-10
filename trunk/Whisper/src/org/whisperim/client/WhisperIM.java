@@ -61,16 +61,9 @@ import org.whisperim.security.Encryptor;
 public class WhisperIM extends JFrame implements ActionListener {
     //Encryptor for the chat session
   
-    private String theirHandle_;
-    private String myHandle_;
-    private boolean doLogging_ = false;
-    private KeyStroke W_;
     
-    private Buddy buddy_;
-    
-    private static final String AOL_ = "aol";
-     
-    /* 
+
+     /* 
      * WhisperBot GUI setup for enable/disable.
      */
      
@@ -85,7 +78,7 @@ public class WhisperIM extends JFrame implements ActionListener {
     private WhisperClient myParent_;
     private PrivateKey myKey_;
     private Logger log_;
-    
+    private boolean doLogging_;
     private HashMap<String, WhisperIMPanel> tabHash_ = new HashMap<String,WhisperIMPanel>();
     
     private ImageIcon defaultIcon_ = new ImageIcon("..\\images\\default.ico");
@@ -94,13 +87,13 @@ public class WhisperIM extends JFrame implements ActionListener {
     
 
     /** Creates new form WhisperIM */
-    public WhisperIM(PrivateKey myKey) {
+    public WhisperIM(WhisperClient parent, PrivateKey myKey) {
     	
     	//Create frame, its menu, and the TabbedPane 
     	super("Whisper IM Conversation");
     	createMenu();    	
     	mainPain_ = new JTabbedPane();
-
+    	myParent_ = parent;
         myKey_ = myKey;
     	
     	
@@ -184,17 +177,14 @@ public class WhisperIM extends JFrame implements ActionListener {
     	//Close the open file
     	if (log_ != null)
     		log_.close();
-    	myParent_.onWindowClose(theirHandle_);
+    	myParent_.onWindowClose(null);
     }
 
     public WhisperClient getMyParent(){
     	return myParent_;
     }
     
-    public String getMyHandle()
-    {
-    	return myHandle_;
-    }
+
     
     
     public void addPanel(Buddy buddy, WhisperIMPanel panel){
