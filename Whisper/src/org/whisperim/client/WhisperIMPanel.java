@@ -75,7 +75,7 @@ public class WhisperIMPanel extends JPanel implements ActionListener {
 	private JToggleButton toggleWhisperBot_;
 	
 	
-    private WhisperClient myParent_;
+
     private Logger log_;
     private PrivateKey myKey_;
     
@@ -83,14 +83,14 @@ public class WhisperIMPanel extends JPanel implements ActionListener {
 	private ImageIcon aimIcon_ = new ImageIcon("..\\images\\aim_icon_small.png");
 
 	
-	public WhisperIMPanel (Buddy buddy, WhisperIM window, PrivateKey myKey, WhisperClient parent){
+	public WhisperIMPanel (Buddy buddy, WhisperIM window, PrivateKey myKey){
 
 		super(true);
 		buddy_ = buddy;
 		window_ = window;
         theirHandle_ = buddy.getHandle();
         myHandle_ = buddy.getAssociatedLocalHandle();
-        myParent_ = parent;
+        
         myKey_ = myKey;
         
 		initComponents();
@@ -287,7 +287,7 @@ public class WhisperIMPanel extends JPanel implements ActionListener {
 	        				new Buddy(theirHandle_, myHandle_, buddy_.getProtocolID()), 
 	        				"<whisperim keyspec=" + Encryptor.getMyPublicKey() + "--", buddy_.getProtocolID(),
 	        				Calendar.getInstance().getTime());
-	        		myParent_.sendMessage(keyMsg);
+	        		window_.getMyParent().sendMessage(keyMsg);
 	        		talkArea_.append("Public key sent\n");
 	        		
 	        	}catch (Exception ex){
@@ -388,10 +388,10 @@ public class WhisperIMPanel extends JPanel implements ActionListener {
 	    				new Buddy(theirHandle_, myHandle_, buddy_.getProtocolID()), 
 	    				messageText, buddy_.getProtocolID(),Calendar.getInstance().getTime());
 		        
-		        if (myParent_ == null)
+		        if (window_.getMyParent() == null)
 		        	System.out.println("This needs to not print...");
 		        else
-		        	myParent_.sendMessage(message);
+		        	window_.getMyParent().sendMessage(message);
 		        
 		        autoScroll();
 		        
