@@ -334,8 +334,8 @@ public class WhisperClient extends JFrame implements ActionListener {
 			window = windows_.values().iterator().next();
 			panel = new WhisperIMPanel(selectedBuddy_, window, manager_.getPrivateKey());
 			window.addPanel(selectedBuddy_, panel);
-			windows_.put(selectedBuddy_.getHandle(), window);
-			
+			windows_.put(selectedBuddy_.getHandle().toLowerCase().replace(" ", ""), window);
+
 		}
 		
 		return panel;
@@ -459,7 +459,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 	}
 
 	public void onWindowClose(String handle){
-		windows_.remove(handle);
+		windows_.remove(handle.toLowerCase().replace(" ", ""));
 	}
 
 

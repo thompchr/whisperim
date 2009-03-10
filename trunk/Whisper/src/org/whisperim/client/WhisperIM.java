@@ -144,7 +144,9 @@ public class WhisperIM extends JFrame implements ActionListener {
     	}
     	
     	else if (e.getSource() == closeTab_){
-    		mainPain_.remove(mainPain_.getSelectedComponent());
+    		tabHash_.remove(mainPain_.getSelectedComponent().getName().toLowerCase().replace(" ", ""));
+    		myParent_.onWindowClose(mainPain_.getSelectedComponent().getName().toLowerCase().replace(" ", ""));
+    		mainPain_.remove(mainPain_.getSelectedComponent());	
     		}
     }
     
