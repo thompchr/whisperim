@@ -1,4 +1,4 @@
- /**************************************************************************
+/**************************************************************************
  * Copyright 2009 Chris Thompson                                           *
  *                                                                         *
  * Licensed under the Apache License, Version 2.0 (the "License");         *
@@ -32,17 +32,23 @@ import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 import org.whisperim.client.ConnectionStrategy;
 import org.whisperim.client.WhisperClient;
+import org.xml.sax.SAXException;
 
 public class PluginLoader {
-	
+
+	private static final String REGISTRY_ = System.getProperty("user.home") + File.separator + "Whisper" 
+						+ File.separator + "plugins" + File.separator + "plugins.xml";
+
 	private WhisperClient client_;
 	
+
 	public PluginLoader (WhisperClient client){
 		client_ = client;
 	}
-	
+
 
 	public WhisperClient getClient() {
 		return client_;
@@ -52,11 +58,86 @@ public class PluginLoader {
 	/**
 	 * This method will load all plugins from the plugins directory
 	 * that are not currently loaded and running.
+	 * 
+	 * It also will be called when the program initializes.
+	 * 
+	 * If no registry file exists
+	 * @throws Exception - Thrown if the plugin could not be loaded correctly
 	 */
-	public void loadPlugins(){
-		
+	public void loadPlugins() throws Exception{
+		try {
+			File registry = new File(REGISTRY_);
+			
+			if (!registry.exists()){
+				generatePluginFile();
+				return;
+			}
+
+
+			Document dom = DocumentBuilderFactory
+							.newInstance()
+							.newDocumentBuilder()
+							.parse(registry);
+			
+			NodeList connections = ((Element)dom.getElementsByTagName("connection")).getElementsByTagName("plugin");
+			
+			for (int i = 0; i < connections.getLength(); ++i){
+				
+				Element curElement = (Element)connections.item(i);
+				String name = ((Element)curElement.getElementsByTagName("name")).getAttribute("value");
+				String location = ((Element)curElement.getElementsByTagName("location")).getAttribute("value");
+				String entryClass = ((Element)curElement.getElementsByTagName("class")).getAttribute("value");
+				
+				ClassLoader cl = DynamicClassLoader.getExtendedClassLoader(Thread
+						.currentThread().getContextClassLoader(), ".." + location);
+				Class c; 
+				try{
+					c = cl.loadClass(entryClass);
+				}catch(Exception e){
+					throw new Exception("Plugin could not be loaded");
+				}
+				
+				client_.registerPlugin(name, WhisperClient.CONNECTION, c);
+				
+			}
+			
+			NodeList lookAndFeel = ((Element)dom.getElementsByTagName("lookandfeel")).getElementsByTagName("plugin");
+			
+			for (int i = 0; i < lookAndFeel.getLength(); ++i){
+				
+				Element curElement = (Element)lookAndFeel.item(i);
+				String name = ((Element)curElement.getElementsByTagName("name")).getAttribute("value");
+				String location = ((Element)curElement.getElementsByTagName("location")).getAttribute("value");
+				String entryClass = ((Element)curElement.getElementsByTagName("class")).getAttribute("value");
+				
+				ClassLoader cl = DynamicClassLoader.getExtendedClassLoader(Thread
+						.currentThread().getContextClassLoader(), ".." + location);
+				Class c; 
+				try{
+					c = cl.loadClass(entryClass);
+				}catch(Exception e){
+					throw new Exception("Plugin could not be loaded");
+				}
+				
+				client_.registerPlugin(name, WhisperClient.LOOK_AND_FEEL, c);
+				
+			}
+			
+			
+		} catch (SAXException e) {
+
+			e.printStackTrace();
+		} catch (IOException e) {
+			
+			e.printStackTrace();
+		} catch (ParserConfigurationException e) {
+			
+			e.printStackTrace();
+		}
+
+
 	}
-	
+
 	/**
 	 * This method will load in a plugin from a foreign location.
 	 * It will first copy all necessary files (itemized in the xml file)
@@ -76,11 +157,11 @@ public class PluginLoader {
 		//We have a manifest file, we now need to parse it to determine the 
 		//entry point class and the type of plugin to use (as well as the
 		//location of the jar file)
-		
+
 		//The type of plugin will dictate the interface that is used to access it
-		
+
 		try{
-			
+
 
 			DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
@@ -103,18 +184,18 @@ public class PluginLoader {
 					((Element)manifestElement.getElementsByTagName("entrypoint"))
 					.getElementsByTagName("location"))
 					.getAttribute("value");
-			
+
 			//Make sure that we are using the correct directory separator for the
 			//current OS
 			location = location.replace("/", File.separator);
 			location = location.replace("\\", File.separator);
-			
-			
+
+
 			if (!location.startsWith(File.separator) || !url.endsWith(File.separator)){
 				//We need to make it into a valid url
 				location = File.separator + location;
 			}
-			
+
 			if (location.startsWith(File.separator) && url.endsWith(File.separator)){
 				location = location.replaceFirst(File.separator, "");
 			}
@@ -123,14 +204,14 @@ public class PluginLoader {
 					((Element)manifestElement.getElementsByTagName("entrypoint"))
 					.getElementsByTagName("class"))
 					.getAttribute("value");
-			
+
 			String name = ((Element)(
 					manifestElement)
 					.getElementsByTagName("name"))
 					.getAttribute("value");
-			
+
 			//Load in the class
-			
+
 			//This needs to be modified, we need to figure out some way 
 			//to have operating-system-independent directory separators
 			ClassLoader cl = DynamicClassLoader.getExtendedClassLoader(Thread
@@ -141,35 +222,65 @@ public class PluginLoader {
 			}catch(Exception e){
 				throw new Exception("Plugin could not be loaded");
 			}
-			
+
 			if (type.equalsIgnoreCase("connection")){
 				Class<ConnectionStrategy> cast = (Class<ConnectionStrategy>) c;
 				client_.registerPlugin(name, WhisperClient.CONNECTION, cast);
 			}
-			
+
 			copyDirectory(new File(url + location), new File(System.getProperty("user.home") + File.separator + "Whisper" 
 					+ File.separator + "plugins" + File.separator + name));
-			
-			
-	
-		
+
+			//We then need to add the plugin information to the local registry file
+			File registry = new File(REGISTRY_);
+
+			Document dom = DocumentBuilderFactory
+			.newInstance()
+			.newDocumentBuilder()
+			.parse(registry);
+
+			NodeList types = dom.getElementsByTagName(type);
+			Element curPlugin = dom.createElement("plugin");
+			Element nameElement = dom.createElement("name");
+			Element locationElement = dom.createElement("location");
+			Element classElement = dom.createElement("class");
+
+			locationElement.setAttribute("value", File.separator + name + location);
+			classElement.setAttribute("value", entryClass);
+			nameElement.setAttribute("value", name);
+
+			curPlugin.appendChild(nameElement);
+			curPlugin.appendChild(locationElement);
+			curPlugin.appendChild(classElement);
+
+			((Element)types.item(0)).appendChild(curPlugin);
+
+
+			OutputFormat format = new OutputFormat(dom);
+			format.setIndenting(true);
+
+			XMLSerializer serializer = new XMLSerializer(
+					new FileOutputStream(registry), format);
+
+			serializer.serialize(dom);
+
+
 		}catch(Exception e){
 			//Need better exception handling
 			e.printStackTrace();
 		}
 	}
-	
-	
+
+
 	/**
 	 * This static utility method will be used to generate a plugin registry file
 	 * if one does not already exist.
 	 */
 	public static void generatePluginFile(){
-		File pluginFile = new File(System.getProperty("user.home") + File.separator + "Whisper" 
-					+ File.separator + "plugins" + File.separator + "plugins.xml");
-		
+		File pluginFile = new File(REGISTRY_);
+
 		try {
-			
+
 			pluginFile.createNewFile();
 			Document dom = null;
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -179,36 +290,36 @@ public class PluginLoader {
 
 			// Create an instance of DOM.
 			dom = db.newDocument();
-			
+
 			Element root = dom.createElement("Plugins");
 			dom.appendChild(root);
-			
+
 			Element connectionsRoot = dom.createElement("Connections");
 			dom.appendChild(connectionsRoot);
-			
+
 			Element lafRoot = dom.createElement("LookAndFeels");
 			dom.appendChild(lafRoot);
-			
+
 			OutputFormat format = new OutputFormat(dom);
 			format.setIndenting(true);
 
 			XMLSerializer serializer = new XMLSerializer(
-			new FileOutputStream(pluginFile), format);
+					new FileOutputStream(pluginFile), format);
 
 			serializer.serialize(dom);
 
 
 		} catch (IOException e) {
-			
+
 			e.printStackTrace();
 		} catch (ParserConfigurationException e) {
-			
+
 			e.printStackTrace();
 		}
-		
+
 	}
-	
-	
+
+
 	/**
 	 * This helper method will be used to copy the files in the external
 	 * plugin directory to the Whisper plugin directory.
