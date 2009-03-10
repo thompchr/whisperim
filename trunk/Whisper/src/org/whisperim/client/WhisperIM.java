@@ -200,12 +200,12 @@ public class WhisperIM extends JFrame implements ActionListener {
     public void addPanel(Buddy buddy, WhisperIMPanel panel){
     	//We should add a small version of their buddy icon into the "null" value here
     	mainPain_.addTab(buddy.getHandle(), null, panel, "Conversation with " + buddy.getHandle());
-    	tabHash_.put(buddy.getHandle(),panel);
+    	tabHash_.put(buddy.getHandle().toLowerCase().replace(" ", ""),panel);
     	
     }
     
     public WhisperIMPanel getTab(String buddy){
-    	return tabHash_.get(buddy);
+    	return tabHash_.get(buddy.toLowerCase().replace(" ", ""));
     }
     
     

@@ -312,7 +312,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 	 * @param selectedBuddy_
 	 * @param client
 	 */
-	public WhisperIMPanel newIMWindow(final Buddy selectedBuddy_) {
+	public WhisperIM newIMWindow(final Buddy selectedBuddy_) {
 			
 		WhisperIM window;
 		WhisperIMPanel panel;
@@ -321,7 +321,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 			
 			
 			window = new WhisperIM(manager_.getPrivateKey());
-			panel = new WhisperIMPanel(selectedBuddy_, window, manager_.getPrivateKey());
+			panel = new WhisperIMPanel(selectedBuddy_, window, manager_.getPrivateKey(),this);
 			window.addPanel(selectedBuddy_, panel);
 			window.setVisible(true);
 		
@@ -332,13 +332,13 @@ public class WhisperClient extends JFrame implements ActionListener {
 		{
 			//As is, this randomly chooses an open window to put the panel in
 			window = windows_.values().iterator().next();
-			panel = new WhisperIMPanel(selectedBuddy_, window, manager_.getPrivateKey());
+			panel = new WhisperIMPanel(selectedBuddy_, window, manager_.getPrivateKey(),this);
 			window.addPanel(selectedBuddy_, panel);
 			windows_.put(selectedBuddy_.getHandle().toLowerCase().replace(" ", ""), window);
 
 		}
-		
-		return panel;
+		panel.requestFocus();
+		return window;
 		
 	}
 	
@@ -386,7 +386,8 @@ public class WhisperClient extends JFrame implements ActionListener {
 						java.awt.EventQueue.invokeLater(new Runnable() {
 							public void run() {
 								//needs to go to an buddy object version
-								newIMWindow(new Buddy(message.getFrom(), message.getTo(), message.getProtocol())).enableEncryption(recKey);
+								newIMWindow(new Buddy(message.getFrom(), message.getTo(), message.getProtocol()));
+								windows_.get(message.getFrom().toLowerCase().replace(" ", "")).getTab(message.getFrom().toLowerCase().replace(" ", "")).enableEncryption(recKey);
 							}
 						});
 					}else{
@@ -414,7 +415,8 @@ public class WhisperClient extends JFrame implements ActionListener {
 				EventQueue.invokeLater(new Runnable() {
 					public void run() {
 						//needs to go to an buddy object version
-						newIMWindow(new Buddy(message.getFrom(), message.getTo(), message.getProtocol())).receiveMsg(message);
+						newIMWindow(new Buddy(message.getFrom(), message.getTo(), message.getProtocol()));
+						windows_.get(message.getFrom().toLowerCase().replace(" ", "")).getTab(message.getFrom().toLowerCase().replace(" ", "")).receiveMsg(message);
 					}
 				});
 
