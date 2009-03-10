@@ -108,18 +108,31 @@ public class WhisperPluginManagerWindow extends JFrame implements
 		loadPluginMenu_.setActionCommand(LOAD_NEW_PLUGIN_);
 		loadPluginMenu_.addActionListener(this);
 		
+		setJMenuBar(menuBar_);
+		
 		try{
 			UIManager.setLookAndFeel(LOOK_AND_FEEL_);
 		}catch(Exception e){
 			//totally hosed...
 		}
 		
-		SpringLayout s1 = new SpringLayout();
+		SpringLayout sl = new SpringLayout();
 		Container cp = getContentPane();
-		cp.setLayout(s1);
-		cp.add(menuBar_);
+		cp.setLayout(sl);
+		
 		cp.add(activePlugins_);
 		cp.add(closeBtn_);
+		
+		//Constraints
+		sl.putConstraint(SpringLayout.NORTH, activePlugins_, 50, SpringLayout.NORTH, cp);
+		sl.putConstraint(SpringLayout.WEST, activePlugins_, 15, SpringLayout.WEST, cp);
+		sl.putConstraint(SpringLayout.EAST, activePlugins_, -15, SpringLayout.EAST, cp);
+		sl.putConstraint(SpringLayout.SOUTH, activePlugins_, -50, SpringLayout.SOUTH, cp);
+		
+		
+		sl.putConstraint(SpringLayout.SOUTH, closeBtn_, -10, SpringLayout.SOUTH, cp);
+		sl.putConstraint(SpringLayout.EAST, closeBtn_, -15, SpringLayout.EAST, cp);
+		
 		
 		
 		

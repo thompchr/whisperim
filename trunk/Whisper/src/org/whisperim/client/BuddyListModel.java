@@ -152,7 +152,7 @@ public class BuddyListModel implements ListModel {
 	
 	private void notifyListeners(){
 		for (ListDataListener ldl:ld_){
-			ldl.contentsChanged(new ListDataEvent(ldl, ListDataEvent.CONTENTS_CHANGED, 0, ld_.size()));
+			ldl.contentsChanged(new ListDataEvent(buddies_, ListDataEvent.CONTENTS_CHANGED, 0, buddies_.size()));
 		}
 	}
 
