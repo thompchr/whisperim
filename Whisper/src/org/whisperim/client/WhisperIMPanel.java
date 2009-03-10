@@ -83,12 +83,16 @@ public class WhisperIMPanel extends JPanel implements ActionListener {
 	private ImageIcon aimIcon_ = new ImageIcon("..\\images\\aim_icon_small.png");
 
 	
-	public WhisperIMPanel (Buddy buddy, WhisperIM window, PrivateKey myKey){
+	public WhisperIMPanel (Buddy buddy, WhisperIM window, PrivateKey myKey, WhisperClient parent){
 
 		super(true);
 		buddy_ = buddy;
 		window_ = window;
-
+        theirHandle_ = buddy.getHandle();
+        myHandle_ = buddy.getAssociatedLocalHandle();
+        myParent_ = parent;
+        myKey_ = myKey;
+        
 		initComponents();
         toggleEncryption_.setSelected(doEncryption_);
         toggleEncryption_.setText(ENCRYPTION_OFF_);
@@ -100,13 +104,10 @@ public class WhisperIMPanel extends JPanel implements ActionListener {
         	toggleEncryption_.setEnabled(false);
         }
    
-        myKey_ = myKey;
         toggleEncryption_.setSelected(doEncryption_);
         toggleEncryption_.setText(ENCRYPTION_OFF_);
         talkArea_.requestFocus();
-        theirHandle_ = buddy.getHandle();
-        myHandle_ = buddy.getAssociatedLocalHandle();
-        myParent_ = window.getMyParent();
+
 		
         addTab();
         
@@ -388,7 +389,7 @@ public class WhisperIMPanel extends JPanel implements ActionListener {
 	    				messageText, buddy_.getProtocolID(),Calendar.getInstance().getTime());
 		        
 		        if (myParent_ == null)
-		        	messageArea_.setText("");
+		        	System.out.println("This needs to not print...");
 		        else
 		        	myParent_.sendMessage(message);
 		        
