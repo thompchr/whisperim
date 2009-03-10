@@ -47,6 +47,10 @@ import com.sun.org.apache.xml.internal.security.utils.Base64;
 
 public class Whisper {  
 
+	private static final String WHISPER_HOME_DIR_ = System.getProperty("user.home") + File.separator + "Whisper";
+
+	private static final String KEY_FILE_ = WHISPER_HOME_DIR_ + File.separator + "keys";
+
 	private ArrayList<Buddy> buddies_ = new ArrayList<Buddy>();
 	
 	private PrivateKey myPrivateKey_;
@@ -63,8 +67,8 @@ public class Whisper {
 	
 	public Whisper(){
 		
-		File dir = new File(System.getProperty("user.home") + File.separator + "Whisper");
-		File keyFile = new File(System.getProperty("user.home") + File.separator + "Whisper" + File.separator + "keys");
+		File dir = new File(WHISPER_HOME_DIR_);
+		File keyFile = new File(KEY_FILE_);
 		
 		
 		if (dir.exists()){
