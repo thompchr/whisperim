@@ -41,6 +41,9 @@ public class PluginLoader {
 
 	private static final String REGISTRY_ = System.getProperty("user.home") + File.separator + "Whisper" 
 						+ File.separator + "plugins" + File.separator + "plugins.xml";
+	
+	private static final String PLUGIN_DIR_ = System.getProperty("user.home") + File.separator + "Whisper" 
+						+ File.separator + "plugins";
 
 	private WhisperClient client_;
 	
@@ -89,7 +92,7 @@ public class PluginLoader {
 				String entryClass = ((Element)curElement.getElementsByTagName("class")).getAttribute("value");
 				
 				ClassLoader cl = DynamicClassLoader.getExtendedClassLoader(Thread
-						.currentThread().getContextClassLoader(), ".." + location);
+						.currentThread().getContextClassLoader(), PLUGIN_DIR_ + location);
 				Class c; 
 				try{
 					c = cl.loadClass(entryClass);
@@ -111,7 +114,7 @@ public class PluginLoader {
 				String entryClass = ((Element)curElement.getElementsByTagName("class")).getAttribute("value");
 				
 				ClassLoader cl = DynamicClassLoader.getExtendedClassLoader(Thread
-						.currentThread().getContextClassLoader(), ".." + location);
+						.currentThread().getContextClassLoader(), PLUGIN_DIR_ + location);
 				Class c; 
 				try{
 					c = cl.loadClass(entryClass);
