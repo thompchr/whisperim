@@ -27,8 +27,8 @@ public class LookAndFeelContext {
 		 metalState_ = new metalState();     
 		 state_ = null; 
 	}  
-	public String getStatus() 
-	{   return state_.getStatus(); 
+	public String getState() 
+	{   return state_.getState(); 
 	} 
 	
 	public void setState(State state)
