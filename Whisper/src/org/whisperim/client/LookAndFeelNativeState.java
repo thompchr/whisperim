@@ -26,7 +26,7 @@ public class LookAndFeelNativeState implements LookAndFeelState {
 	 }
 
 	public String getState() {
-		   return "native";
+		   return "nativeState";
 	 }
 	
 }
