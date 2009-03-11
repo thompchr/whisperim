@@ -1,5 +1,5 @@
 /**************************************************************************
- * Copyright 2009 Cory Plastek                                             *
+ * Copyright 2009 Nick Krieble                                             *
  *                                                                         *
  * Licensed under the Apache License, Version 2.0 (the "License");         *
  * you may not use this file except in compliance with the License.        *
@@ -17,28 +17,40 @@
 package org.whisperim.client;
 
 public class LookAndFeelContext {
-	state.grantPermission(this);
-}
-
-public String getStatus() {
-  return state.getStatus();
-}
-
-public void setState(State state) {
-  this.state = state;
-}
-
-public State getAcceptedState() {
-  return acceptedState;
-}
-
-public State getGrantedState() {
-  return grantedState;
-}
-
-public State getRequestedState() {
-  return requestedState;
-}
-
-}
+	 private State nativeState_;
+	 private State metalState_; 
+	 private State state_; 
+	 
+	public StateContext() 
+	{   
+		 nativeState_ = new nativeState();   
+		 metalState_ = new metalState();     
+		 state_ = null; 
+	}  
+	public String getStatus() 
+	{   return state_.getStatus(); 
+	} 
+	
+	public void setState(State state)
+	{   
+		state_ = state; 
+	}
+	
+	public void setNativeState() 
+	{  
+		state_ = nativeState; 
+	} 
+	
+	public void setMetalState()
+	{
+		state_ = metalState;
+	}
+	public State getNativeState() 
+	{  
+		return nativeState_; 
+	} 
+	
+	public State getmetalState() 
+	{   return metalState_; 
+	} 
 }
