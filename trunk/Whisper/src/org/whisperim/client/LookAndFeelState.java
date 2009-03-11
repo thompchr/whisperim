@@ -17,6 +17,6 @@
 package org.whisperim.client;
 
 public interface LookAndFeelState {
-	public void setState(StateContext ctx);
+	public void setState(LookAndFeelStateContext ctx);
 	public String getState();
 }

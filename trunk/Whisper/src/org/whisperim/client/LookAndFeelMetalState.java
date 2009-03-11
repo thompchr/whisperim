@@ -20,7 +20,7 @@ import javax.swing.UIManager;
 
 public class LookAndFeelMetalState implements LookAndFeelState {
 	
-	public void setState(LookAndFeelContext ctx) {
+	public void setState(LookAndFeelStateContext ctx) {
 		   System.out.println("Setting metal look and feel");
 		   try {
 			   UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());

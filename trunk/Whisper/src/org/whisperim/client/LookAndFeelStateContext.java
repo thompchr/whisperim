@@ -16,41 +16,41 @@
 
 package org.whisperim.client;
 
-public class LookAndFeelContext {
-	 private State nativeState_;
-	 private State metalState_; 
-	 private State state_; 
+public class LookAndFeelStateContext {
+	 private LookAndFeelState nativeState_;
+	 private LookAndFeelState metalState_; 
+	 private LookAndFeelState state_; 
 	 
-	public StateContext() 
+	public void StateContext() 
 	{   
-		 nativeState_ = new nativeState();   
-		 metalState_ = new metalState();     
+		 //nativeState_ = new nativeState();   
+		 //metalState_ = new metalState();     
 		 state_ = null; 
 	}  
 	public String getState() 
 	{   return state_.getState(); 
 	} 
 	
-	public void setState(State state)
+	public void setState(LookAndFeelState state)
 	{   
 		state_ = state; 
 	}
 	
 	public void setNativeState() 
 	{  
-		state_ = nativeState; 
+		state_ = nativeState_; 
 	} 
 	
 	public void setMetalState()
 	{
-		state_ = metalState;
+		state_ = metalState_;
 	}
-	public State getNativeState() 
+	public LookAndFeelState  getNativeState() 
 	{  
 		return nativeState_; 
 	} 
 	
-	public State getmetalState() 
+	public LookAndFeelState getmetalState() 
 	{   return metalState_; 
 	} 
 }
