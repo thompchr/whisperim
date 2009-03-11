@@ -26,7 +26,7 @@ public class LookAndFeelMetalState implements LookAndFeelState {
 	 }
 
 	public String getState() {
-		   return "metal";
+		   return "metalState";
 	 }
 	
 }
