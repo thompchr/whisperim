@@ -20,7 +20,7 @@ import javax.swing.UIManager;
 
 public class LookAndFeelNativeState implements LookAndFeelState {
 	
-	public void setState(LookAndFeelContext ctx) {
+	public void setState(LookAndFeelStateContext ctx) {
 		   System.out.println("Setting native look and feel");
 		   try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
