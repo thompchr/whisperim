@@ -86,14 +86,15 @@ public class WhisperClient extends JFrame implements ActionListener {
 	private JList buddyList_;
 	private JScrollPane buddyListScroll_;
 	private JMenu whisperMenu_;
-	private JMenu preferencesMenu_;
+	//private JMenu preferencesMenu_;
 
 	private JMenuBar menuBar_;
 
-	private JMenuItem encryption_;
-	private JMenuItem quit_;
+	//private JMenuItem encryption_;
 	private JMenuItem newIm_;
 	private JMenuItem plugins_;
+	private JMenuItem preferences_;
+	private JMenuItem quit_;
 	//private PopupMenu popupMenu1;
 
 	private static final String BUDDY_LIST_ = "Buddy List";
@@ -103,11 +104,12 @@ public class WhisperClient extends JFrame implements ActionListener {
 	private static final String WHISPER_ = "Whisper"; //menu 1 header
 	private static final String NEWIM_ = "New Instant Message"; //menu 1 first item
 	private static final String PLUGINS_ = "Plugins"; //menu 1 second item
-	private static final String QUIT_ = "Quit"; //menu 1 third item
+	private static final String PREFERENCES_ = "Preferences"; //menu 1 third item
+	private static final String QUIT_ = "Quit"; //menu 1 fourth item
 
-	//second menu\\
-	private static final String PREFERENCES_ = "Preferences"; //menu 2 header
-	private static final String ENCRYPTION_ = "Encryption"; //menu 2 first item
+	//second menu\\ - not used!
+	//menu 2 header
+	//private static final String ENCRYPTION_ = "Encryption"; //menu 2 first item
 
 	//end menus\\
 
@@ -178,6 +180,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 			//File
 			//New IM
 			//Plugins
+			//Preferences
 			//Quit
 		whisperMenu_ = new JMenu();
 		whisperMenu_.setText(WHISPER_);
@@ -194,7 +197,13 @@ public class WhisperClient extends JFrame implements ActionListener {
 		plugins_.setActionCommand(PLUGINS_);
 		plugins_.addActionListener(this);
 		whisperMenu_.add(plugins_);
-
+		
+		preferences_ = new JMenuItem();
+		preferences_.setText(PREFERENCES_);
+		preferences_.setActionCommand(PREFERENCES_);
+		preferences_.addActionListener(this);
+		whisperMenu_.add(preferences_);
+		
 		quit_ = new JMenuItem();
 		quit_.setText(QUIT_);
 		quit_.setActionCommand(QUIT_);
@@ -202,9 +211,10 @@ public class WhisperClient extends JFrame implements ActionListener {
 		whisperMenu_.add(quit_);
 
 
-		//second menu\\
+		//second menu\\ - not used
 			//Preferences
 			//Encryption
+		/*
 		preferencesMenu_ = new JMenu();
 		preferencesMenu_.setText(PREFERENCES_);
 		menuBar_.add(preferencesMenu_);
@@ -214,7 +224,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 		encryption_.setActionCommand(ENCRYPTION_);
 		encryption_.addActionListener(this);
 		preferencesMenu_.add(encryption_);
-
+		*/
 
 		setJMenuBar(menuBar_);
 
@@ -505,9 +515,9 @@ public class WhisperClient extends JFrame implements ActionListener {
 		}
 		
 		//Preferences
-		if (actionCommand.equals(encryption_.getActionCommand())) {
-			WhisperPref prefs = new WhisperPref();
-			prefs.setSize(150, 150);
+		if (actionCommand.equals(preferences_.getActionCommand())) {
+			Preferences prefs = new Preferences();
+			prefs.setSize(400, 500);
 			prefs.setLocation(20,20);
 			prefs.setVisible(true);
 		}
