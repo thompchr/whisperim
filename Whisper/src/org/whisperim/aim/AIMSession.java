@@ -19,7 +19,6 @@ package org.whisperim.aim;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
-import org.whisperim.client.AIMStrategy;
 import org.whisperim.client.Buddy;
 import org.whisperim.client.Message;
 

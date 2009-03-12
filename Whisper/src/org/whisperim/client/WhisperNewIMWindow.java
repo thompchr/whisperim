@@ -35,6 +35,8 @@ import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 import javax.swing.UIManager;
 
+import org.whisperim.renderers.ProtocolRenderer;
+
 public class WhisperNewIMWindow extends JFrame implements ActionListener{
 	/**
 	 * Look and feel declaration

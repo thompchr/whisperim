@@ -1,5 +1,5 @@
- /**************************************************************************
- * Copyright 2009 Chris Thompson                                           *
+/**************************************************************************
+ * Copyright 2009 Cory Plastek                                             *
  *                                                                         *
  * Licensed under the Apache License, Version 2.0 (the "License");         *
  * you may not use this file except in compliance with the License.        *
@@ -13,25 +13,27 @@
  * See the License for the specific language governing permissions and     *
  * limitations under the License.                                          *
  **************************************************************************/
-package org.whisperim.client;
+package org.whisperim.renderers;
 
 import java.awt.Component;
+import java.util.Hashtable;
 
 import javax.swing.DefaultListCellRenderer;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 
+import org.whisperim.client.Buddy;
+
 /**
- * 
- * @author Chris Thompson
+ * @author Cory Plastek
  *
  */
-public class ProtocolRenderer implements ListCellRenderer {
-	
+public class BuddyListRenderer implements ListCellRenderer {
 	protected DefaultListCellRenderer defaultRenderer = new DefaultListCellRenderer();
-
+	
 	/** Returns an ImageIcon, or null if the path was invalid. */
 	protected ImageIcon createImageIcon(String path, String description) {
 		java.net.URL imgURL = getClass().getResource(path);
@@ -47,19 +49,17 @@ public class ProtocolRenderer implements ListCellRenderer {
 	private ImageIcon aimIcon_ = new ImageIcon("..\\images\\aim_icon_small.png");
 	
 		
-	public Component getListCellRendererComponent(JList list, Object protocol, int index, boolean isSelected, boolean hasFocus) {
+	public Component getListCellRendererComponent(JList list, Object buddy, int index, boolean isSelected, boolean hasFocus) {
 
-		JLabel renderer = (JLabel) defaultRenderer.getListCellRendererComponent(list, protocol, index, isSelected, hasFocus);
+		JLabel renderer = (JLabel) defaultRenderer.getListCellRendererComponent(list, buddy, index, isSelected, hasFocus);
 
-		    if (((ConnectionStrategy) protocol).getIdentifier().startsWith("aol")) {
+		    if (((Buddy) buddy).getProtocolID().equals("aol")) {
 		      //buddy is on aim
 		      serviceIcon_ =  aimIcon_;
 		    } else {
 		      //use default service icon
 		    }
 		    renderer.setIcon(serviceIcon_);
-		    renderer.setText(((ConnectionStrategy) protocol).toString().substring(((ConnectionStrategy) protocol).toString().indexOf(":") + 1));
 		    return renderer;
 	}
-
 }

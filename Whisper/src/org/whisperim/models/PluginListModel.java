@@ -14,7 +14,7 @@
  * limitations under the License.                                          *
  **************************************************************************/
 
-package org.whisperim.client;
+package org.whisperim.models;
 
 import java.util.ArrayList;
 
@@ -35,6 +35,14 @@ public class PluginListModel implements ListModel {
 	
 	private ArrayList<ListDataListener> ld_ = new ArrayList<ListDataListener>();
 	private ArrayList<Plugin> plugins_ = new ArrayList<Plugin>();
+	
+	
+	/**
+	 * Constructor
+	 */
+	public PluginListModel(){
+		
+	}
 
 	@Override
 	public void addListDataListener(ListDataListener l) {
@@ -66,6 +74,14 @@ public class PluginListModel implements ListModel {
 		for (ListDataListener l:ld_){
 			l.contentsChanged(new ListDataEvent(plugins_, ListDataEvent.CONTENTS_CHANGED, 0, plugins_.size()));
 			
+		}
+	}
+	
+	public boolean contains(Plugin plugin){
+		if (plugins_.contains(plugin)){
+			return true;
+		}else{
+			return false;
 		}
 	}
 

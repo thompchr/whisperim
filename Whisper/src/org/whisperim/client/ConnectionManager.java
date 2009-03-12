@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import org.whisperim.aim.AIMStrategy;
+
 /**
  * This class manages connections and ties them to local buddy handles. 
  * This allows for multiple handles on the same service running concurrently.

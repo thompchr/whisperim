@@ -50,7 +50,9 @@ import javax.swing.WindowConstants;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
+import org.whisperim.models.BuddyListModel;
 import org.whisperim.plugins.PluginLoader;
+import org.whisperim.renderers.BuddyListRenderer;
 import org.whisperim.security.Encryptor;
 
 import com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingException;
