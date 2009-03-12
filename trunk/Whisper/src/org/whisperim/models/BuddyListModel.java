@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and     *
  * limitations under the License.                                          *
  **************************************************************************/
-package org.whisperim.client;
+package org.whisperim.models;
 
 import java.util.ArrayList;
 
 import javax.swing.ListModel;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
+
+import org.whisperim.client.Buddy;
 
 /**
  * This class is an implementation of the ListModel interface.

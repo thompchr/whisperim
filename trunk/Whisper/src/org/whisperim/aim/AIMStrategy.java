@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and     *
  * limitations under the License.                                          *
  **************************************************************************/
-package org.whisperim.client;
+package org.whisperim.aim;
 
 
 import java.util.ArrayList;
 
-import org.whisperim.aim.AIMOperation;
-import org.whisperim.aim.AIMSession;
+import org.whisperim.client.Buddy;
+import org.whisperim.client.ConnectionManager;
+import org.whisperim.client.ConnectionStrategy;
+import org.whisperim.client.Message;
 
 
 /**

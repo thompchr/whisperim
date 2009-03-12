@@ -29,9 +29,13 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JScrollPane;
+import javax.swing.ListModel;
 import javax.swing.SpringLayout;
 import javax.swing.UIManager;
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
 
+import org.whisperim.models.PluginListModel;
 import org.whisperim.plugins.PluginLoader;
 
 public class WhisperPluginManagerWindow extends JFrame implements
@@ -41,7 +45,8 @@ public class WhisperPluginManagerWindow extends JFrame implements
 	 */
 	private static final String LOOK_AND_FEEL_ = UIManager.getSystemLookAndFeelClassName();
 	
-	private PluginLoader pm_;
+	private PluginLoader pl_;
+	private PluginListModel plm_;
 	
 	
 	private JList activePlugins_;
@@ -76,7 +81,33 @@ public class WhisperPluginManagerWindow extends JFrame implements
 	 */
 	public WhisperPluginManagerWindow(PluginLoader loader){
 		
-		pm_ = loader;
+		pl_ = loader;
+		plm_ = new PluginListModel();
+		
+		plm_.addListDataListener(new ListDataListener(){
+
+			@Override
+			public void contentsChanged(ListDataEvent e) {
+				if (e.getSource() instanceof ListModel){
+					activePlugins_.setModel((ListModel)e.getSource());
+				}
+				
+			}
+
+			@Override
+			public void intervalAdded(ListDataEvent e) {
+				
+				
+			}
+
+			@Override
+			public void intervalRemoved(ListDataEvent e) {
+				
+				
+			}
+			
+		});
+		
 		
 		closeBtn_ = new JButton(CLOSE_);
 		pluginsMenu_ = new JMenu(PLUGIN_);
@@ -85,7 +116,7 @@ public class WhisperPluginManagerWindow extends JFrame implements
 		
 		setTitle(WINDOW_TITLE_);
 		
-		activePlugins_ = new JList();
+		activePlugins_ = new JList(plm_);
 		pluginScroll_ = new JScrollPane(activePlugins_);
 		
 		menuBar_.add(pluginsMenu_);
@@ -156,7 +187,7 @@ public class WhisperPluginManagerWindow extends JFrame implements
 
 				@Override
 				public void run() {
-					final PluginLoader temp = pm_;
+					final PluginLoader temp = pl_;
 					new LoadPluginWindow(temp);
 					
 				}
