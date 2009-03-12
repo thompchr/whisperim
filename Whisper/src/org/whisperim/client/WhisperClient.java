@@ -113,8 +113,9 @@ public class WhisperClient extends JFrame implements ActionListener {
 
 	//end menus\\
 
-	private HashMap<String, WhisperIM> windows_ = new HashMap<String, WhisperIM>();
-
+	private HashMap<String, WhisperIM> openBuddies_ = new HashMap<String, WhisperIM>();
+	private WhisperIM[] openWindows_;
+	
 	/** Creates new WhisperClient instance */
 	public WhisperClient(ConnectionManager manager) {
 		initComponents();
@@ -334,27 +335,27 @@ public class WhisperClient extends JFrame implements ActionListener {
 		WhisperIM window;
 		WhisperIMPanel panel;
 		
-		if (windows_.isEmpty()){
-			
+		if (openBuddies_.isEmpty()){
+			//There is no window
 			
 			window = new WhisperIM(this, manager_.getPrivateKey());
 			panel = new WhisperIMPanel(selectedBuddy_, window, manager_.getPrivateKey());
 			window.addPanel(selectedBuddy_, panel);
 			window.setVisible(true);
 		
-			windows_.put(selectedBuddy_.getHandle().toLowerCase().replace(" ", ""), window);
+			openBuddies_.put(selectedBuddy_.getHandle().toLowerCase().replace(" ", ""), window);
 			
 		}
 		else
 		{
 			//As is, this randomly chooses an open window to put the panel in
-			window = windows_.values().iterator().next();
+			window = openBuddies_.values().iterator().next();
 			panel = new WhisperIMPanel(selectedBuddy_, window, manager_.getPrivateKey());
 			window.addPanel(selectedBuddy_, panel);
-			windows_.put(selectedBuddy_.getHandle().toLowerCase().replace(" ", ""), window);
+			openBuddies_.put(selectedBuddy_.getHandle().toLowerCase().replace(" ", ""), window);
 
 		}
-		panel.requestFocus();
+		window.requestFocus();
 		return window;
 		
 	}
@@ -398,17 +399,17 @@ public class WhisperClient extends JFrame implements ActionListener {
 					KeyFactory rsaKeyFac = null;
 					rsaKeyFac = KeyFactory.getInstance("RSA");
 					final PublicKey recKey = rsaKeyFac.generatePublic(pubKeySpec);
-					if (windows_.get(message.getFrom().toLowerCase().replace(" ", "")) == null){
+					if (openBuddies_.get(message.getFrom().toLowerCase().replace(" ", "")) == null){
 						//There isn't currently a window associated with that buddy
 						java.awt.EventQueue.invokeLater(new Runnable() {
 							public void run() {
 								//needs to go to an buddy object version
 								newIMWindow(new Buddy(message.getFrom(), message.getTo(), message.getProtocol()));
-								windows_.get(message.getFrom().toLowerCase().replace(" ", "")).getTab(message.getFrom().toLowerCase().replace(" ", "")).enableEncryption(recKey);
+								openBuddies_.get(message.getFrom().toLowerCase().replace(" ", "")).getTab(message.getFrom().toLowerCase().replace(" ", "")).enableEncryption(recKey);
 							}
 						});
 					}else{
-						windows_.get(message.getFrom().toLowerCase().replace(" ", "")).getTab(message.getFrom()).enableEncryption(recKey);
+						openBuddies_.get(message.getFrom().toLowerCase().replace(" ", "")).getTab(message.getFrom()).enableEncryption(recKey);
 					}
 
 				} catch (NoSuchAlgorithmException e) {
@@ -426,19 +427,19 @@ public class WhisperClient extends JFrame implements ActionListener {
 			//It would be really great if we could allow system messages to be passed around
 			//That is, if the Whisper program could alert the user of things by adding messages
 			//to the chat window.
-			if (windows_.get(message.getFrom().toLowerCase().replace(" ", "")) == null){
+			if (openBuddies_.get(message.getFrom().toLowerCase().replace(" ", "")) == null){
 				//There isn't currently a window associated with that buddy
 				
 				EventQueue.invokeLater(new Runnable() {
 					public void run() {
 						//needs to go to an buddy object version
 						newIMWindow(new Buddy(message.getFrom(), message.getTo(), message.getProtocol()));
-						windows_.get(message.getFrom().toLowerCase().replace(" ", "")).getTab(message.getFrom().toLowerCase().replace(" ", "")).receiveMsg(message);
+						openBuddies_.get(message.getFrom().toLowerCase().replace(" ", "")).getTab(message.getFrom().toLowerCase().replace(" ", "")).receiveMsg(message);
 					}
 				});
 
 			}else{
-				windows_.get(message.getFrom().toLowerCase().replace(" ", "")).getTab(message.getFrom()).receiveMsg(message);
+				openBuddies_.get(message.getFrom().toLowerCase().replace(" ", "")).getTab(message.getFrom()).receiveMsg(message);
 			}
 
 		}
@@ -478,7 +479,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 	}
 
 	public void onWindowClose(String handle){
-		windows_.remove(handle.toLowerCase().replace(" ", ""));
+		openBuddies_.remove(handle.toLowerCase().replace(" ", ""));
 	}
 
 

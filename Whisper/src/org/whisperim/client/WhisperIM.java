@@ -24,8 +24,11 @@ import java.awt.Graphics;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.security.PrivateKey;
 import java.util.HashMap;
 
@@ -58,7 +61,7 @@ import org.whisperim.security.Encryptor;
  * 
  * @author Kirk Banks, Chris Thompson, John Dlugokecki, Cory Plastek, Nick Krieble
  */
-public class WhisperIM extends JFrame implements ActionListener {
+public class WhisperIM extends JFrame implements ActionListener, WindowListener,FocusListener {
     //Encryptor for the chat session
   
     
@@ -84,7 +87,7 @@ public class WhisperIM extends JFrame implements ActionListener {
     private ImageIcon defaultIcon_ = new ImageIcon("..\\images\\default.ico");
 	private ImageIcon aimIcon_ = new ImageIcon("..\\images\\aim_icon_small.png");
 
-    
+
 
     /** Creates new form WhisperIM */
     public WhisperIM(WhisperClient parent, PrivateKey myKey) {
@@ -103,7 +106,8 @@ public class WhisperIM extends JFrame implements ActionListener {
 
         //We should add a small version of their buddy icon into the "null" value here
 
-
+        addWindowListener(this);
+		mainPain_.addFocusListener(this);
         setMinimumSize(new Dimension(470, 315));
     }
 
@@ -137,9 +141,13 @@ public class WhisperIM extends JFrame implements ActionListener {
     	}
     	
     	else if (e.getSource() == closeTab_){
+
     		tabHash_.remove(mainPain_.getSelectedComponent().getName().toLowerCase().replace(" ", ""));
     		myParent_.onWindowClose(mainPain_.getSelectedComponent().getName().toLowerCase().replace(" ", ""));
-    		mainPain_.remove(mainPain_.getSelectedComponent());	
+    		mainPain_.remove(mainPain_.getSelectedComponent());
+    		if (mainPain_.getTabCount() == 0)
+    			dispose();
+    		
     		}
     }
     
@@ -172,12 +180,13 @@ public class WhisperIM extends JFrame implements ActionListener {
 		
 	}
 
-    private void formWindowClosing(WindowEvent evt) {
+    public void windowClosing(WindowEvent evt) {
     	System.out.println("Window closing");
     	//Close the open file
     	if (log_ != null)
     		log_.close();
-    	myParent_.onWindowClose(null);
+    	for (String key : tabHash_.keySet())
+    		myParent_.onWindowClose(key);
     }
 
     public WhisperClient getMyParent(){
@@ -191,12 +200,71 @@ public class WhisperIM extends JFrame implements ActionListener {
     	//We should add a small version of their buddy icon into the "null" value here
     	mainPain_.addTab(buddy.getHandle(), null, panel, "Conversation with " + buddy.getHandle());
     	tabHash_.put(buddy.getHandle().toLowerCase().replace(" ", ""),panel);
-    	
+    	panel.setName(buddy.getHandle());
+    	panel.requestFocus();
     }
     
     public WhisperIMPanel getTab(String buddy){
     	return tabHash_.get(buddy.toLowerCase().replace(" ", ""));
     }
+
+
+	@Override
+	public void windowActivated(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void windowClosed(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+
+	@Override
+	public void windowDeactivated(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void windowDeiconified(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void windowIconified(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void windowOpened(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void focusGained(FocusEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void focusLost(FocusEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
     
     
 }
