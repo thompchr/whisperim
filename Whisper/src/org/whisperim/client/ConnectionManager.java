@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 
 import org.whisperim.aim.AIMStrategy;
+import org.whisperim.plugins.Plugin;
 
 /**
  * This class manages connections and ties them to local buddy handles. 
@@ -56,7 +57,7 @@ public class ConnectionManager {
 	 * This data member will serve as a registry for the connection strategies that
 	 * are available, but potentially not loaded.
 	 */
-	private HashMap<String, Class<ConnectionStrategy> > registeredStrategies_ = new HashMap<String, Class<ConnectionStrategy> > ();
+	private HashMap<String, ConnectionStrategy> registeredStrategies_ = new HashMap<String, ConnectionStrategy> ();
 	
 	/**
 	 * This method registers a class that implements the ConnectionStrategy interface
@@ -64,8 +65,8 @@ public class ConnectionManager {
 	 * @param name -  Name of the connection type (AOL, GTalk, etc.) to be 
 	 * 					displayed when the "New Account" window is displayed.
 	 */
-	public void registerConnection(String name, Class<ConnectionStrategy> cs){
-		registeredStrategies_.put(name, cs);
+	public void registerConnection(String name, Plugin p){
+		registeredStrategies_.put(name, (ConnectionStrategy) p);
 	}
 	/**
 	 * Returns true if strategies_ is empty.
@@ -109,6 +110,19 @@ public class ConnectionManager {
 	{
 		strategies_.put(strategy.getIdentifier(), strategy);
 	}
+	
+	/**
+	 * Loads a connection and opens the connection based on the
+	 * strategy initially defined
+	 * @param name - Identifier originally used when the connection was stored
+	 * @param username - Username for the account associated with that connection
+	 * @param password - Password for the account
+	 */
+	public void loadConnection(String name, String username, String password){
+		ConnectionStrategy cs = registeredStrategies_.get(name);
+		cs.signOn(this, username, password);
+		strategies_.put(cs.getIdentifier(), cs);
+	}
 
 	/**
 	 * Constructor for Connection Manager.
@@ -138,7 +152,8 @@ public class ConnectionManager {
 		myPrivateKey_ = privKey;
 		myPublicKey_ = pubKey;
 		login_ = login;
-		cs.signOn(handle, password);
+		cs.signOn(this, handle, password);
+		registeredStrategies_.put(cs.getProtocol(), cs);
 
 	}
 

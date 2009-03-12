@@ -37,6 +37,7 @@ import javax.swing.event.ListDataListener;
 
 import org.whisperim.models.PluginListModel;
 import org.whisperim.plugins.PluginLoader;
+import org.whisperim.renderers.PluginRenderer;
 
 public class WhisperPluginManagerWindow extends JFrame implements
 		ActionListener {
@@ -79,10 +80,10 @@ public class WhisperPluginManagerWindow extends JFrame implements
 	/**
 	 * Constructor
 	 */
-	public WhisperPluginManagerWindow(PluginLoader loader){
+	public WhisperPluginManagerWindow(PluginLoader loader, PluginListModel plm){
 		
 		pl_ = loader;
-		plm_ = new PluginListModel();
+		plm_ = plm;
 		
 		plm_.addListDataListener(new ListDataListener(){
 
@@ -117,6 +118,7 @@ public class WhisperPluginManagerWindow extends JFrame implements
 		setTitle(WINDOW_TITLE_);
 		
 		activePlugins_ = new JList(plm_);
+		activePlugins_.setCellRenderer(new PluginRenderer());
 		pluginScroll_ = new JScrollPane(activePlugins_);
 		
 		menuBar_.add(pluginsMenu_);
@@ -140,6 +142,7 @@ public class WhisperPluginManagerWindow extends JFrame implements
 		loadPluginMenu_.addActionListener(this);
 		
 		setJMenuBar(menuBar_);
+		
 		
 		try{
 			UIManager.setLookAndFeel(LOOK_AND_FEEL_);
@@ -203,7 +206,7 @@ public class WhisperPluginManagerWindow extends JFrame implements
 
 			@Override
 			public void run() {
-				new WhisperPluginManagerWindow(new PluginLoader(null));
+				new WhisperPluginManagerWindow(new PluginLoader(null), null);
 				
 			}
 			

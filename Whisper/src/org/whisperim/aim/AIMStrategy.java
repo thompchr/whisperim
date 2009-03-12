@@ -59,7 +59,7 @@ public class AIMStrategy implements ConnectionStrategy {
 	}
 
 	@Override
-	public void signOn(String username, String password) {
+	public void signOn(ConnectionManager cm, String username, String password) {
 		session_.addOperation(AIMOperation.createSignIn(username, password));
 		session_.setLocalHandle(username);
 	}
@@ -92,4 +92,6 @@ public class AIMStrategy implements ConnectionStrategy {
 	public String toString(){
 		return protocol_ + ":" + localHandle_;
 	}
+
+
 }
