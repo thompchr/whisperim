@@ -2,7 +2,7 @@
 #labels Phase-Requirements,Featured,Phase-Design
 
 =Build 4=
- * User will be able to interface with a 'system tray' icon for Whisper (Kirk, John)
+ * User will be able to interface with a 'system tray' icon for Whisper (Kirk, John) **Delayed**
  * User can load custom plug-in modules (including protocols) (Chris)
  * Whisper clients can identify if other client is using Whisper and disable special functionality to prevent bombarding buddy with garbage (Chris)
  * User will be able to access a preferences menu to change program-wide settings (connects in bot from previous build) (Cory, Nick)
