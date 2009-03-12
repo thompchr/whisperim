@@ -7,10 +7,12 @@
 
 =Build 6=
  * User can utilize Whisper as a secure tunnel to the command line on a remote host (Chris)
+ * User will be able to set an away message (Kirk)
 
 =Build 5=
  * User will be displayed an account management window when starting the program for the first time (Chris)
  * User will be able to save account information (Chris)
+ * User will be able to interface with a 'system tray' icon for Whisper (Kirk, John) 
 
 =Build 4=
  * User will be able to interface with a 'system tray' icon for Whisper (Kirk, John) ------Delayed-
