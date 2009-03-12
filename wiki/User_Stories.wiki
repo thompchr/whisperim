@@ -7,6 +7,7 @@
  * Whisper clients can identify if other client is using Whisper and disable special functionality to prevent bombarding buddy with garbage (Chris)
  * User will be able to access a preferences menu to change program-wide settings (connects in bot from previous build) (Cory, Nick)
  * User will be disappointed by the features Cory will not be able to implement (Cory)
+ * User is displayed account setup screen when starting program for first time (Delayed, John)
 =Build 3=
  * User can see "enable Bot" for messaging. Bot is simple echo bot. (Nick, John) (Bot/GUI disconnected pending pattern agreement)
  * User can set status. (Nick, John) (On Hold)
