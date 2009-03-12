@@ -89,7 +89,10 @@ public class PluginLoader {
 				Element curElement = (Element)connections.item(i);
 				String name = ((Element)curElement.getElementsByTagName("name")).getAttribute("value");
 				String location = ((Element)curElement.getElementsByTagName("location")).getAttribute("value");
+				String iconLocation = ((Element)curElement.getElementsByTagName("iconLocation")).getAttribute("value");
 				String entryClass = ((Element)curElement.getElementsByTagName("class")).getAttribute("value");
+				
+				
 				
 				ClassLoader cl = DynamicClassLoader.getExtendedClassLoader(Thread
 						.currentThread().getContextClassLoader(), PLUGIN_DIR_ + location);
@@ -99,8 +102,11 @@ public class PluginLoader {
 				}catch(Exception e){
 					throw new Exception("Plugin could not be loaded");
 				}
+				Plugin p = (Plugin) c.newInstance();
+				p.setIconLocation(iconLocation);
+				p.setPluginName(name);
 				
-				client_.registerPlugin(name, WhisperClient.CONNECTION, c);
+				client_.registerPlugin(name, WhisperClient.CONNECTION, p);
 				
 			}
 			
@@ -121,8 +127,8 @@ public class PluginLoader {
 				}catch(Exception e){
 					throw new Exception("Plugin could not be loaded");
 				}
-				
-				client_.registerPlugin(name, WhisperClient.LOOK_AND_FEEL, c);
+				Plugin p = (Plugin)c.newInstance();
+				client_.registerPlugin(p.getPluginName(), WhisperClient.LOOK_AND_FEEL, p);
 				
 			}
 			
@@ -182,6 +188,11 @@ public class PluginLoader {
 					manifestElement)
 					.getElementsByTagName("type"))
 					.getAttribute("value");
+			
+			String iconLocation = ((Element)(
+					manifestElement)
+					.getElementsByTagName("iconLocation"))
+					.getAttribute("value");
 
 			String location = ((Element)
 					((Element)manifestElement.getElementsByTagName("entrypoint"))
@@ -225,10 +236,13 @@ public class PluginLoader {
 			}catch(Exception e){
 				throw new Exception("Plugin could not be loaded");
 			}
+			
+			Plugin p = (Plugin) c.newInstance();
+			p.setIconLocation(iconLocation);
+			p.setPluginName(name);
 
 			if (type.equalsIgnoreCase("connection")){
-				Class<ConnectionStrategy> cast = (Class<ConnectionStrategy>) c;
-				client_.registerPlugin(name, WhisperClient.CONNECTION, cast);
+				client_.registerPlugin(name, WhisperClient.CONNECTION, p);
 			}
 
 			copyDirectory(new File(url + location), new File(System.getProperty("user.home") + File.separator + "Whisper" 

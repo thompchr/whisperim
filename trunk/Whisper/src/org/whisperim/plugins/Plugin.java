@@ -18,4 +18,15 @@ package org.whisperim.plugins;
 
 public interface Plugin {
 
+	public String getPluginName();
+	
+	public String getPluginIconLocation();
+	
+	public void setIconLocation(String location);
+	
+	public void setPluginName(String name);
+	
+	public String toString();
+	
+	
 }

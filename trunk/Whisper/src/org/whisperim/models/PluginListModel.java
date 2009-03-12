@@ -53,6 +53,11 @@ public class PluginListModel implements ListModel {
 		plugins_.add(p);
 		notifyListeners();
 	}
+	
+	public void removePlugin(Plugin p){
+		plugins_.remove(p);
+		notifyListeners();
+	}
 
 	@Override
 	public Object getElementAt(int arg0) {

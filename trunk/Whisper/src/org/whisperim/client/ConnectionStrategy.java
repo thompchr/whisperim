@@ -20,7 +20,7 @@ import java.util.ArrayList;
 
 public interface ConnectionStrategy {
 
-	public void signOn(String username, String password);
+	public void signOn(ConnectionManager cm, String username, String password);
 	
 	public void signOff();
 	

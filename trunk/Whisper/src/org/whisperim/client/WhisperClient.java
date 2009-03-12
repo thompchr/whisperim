@@ -23,7 +23,6 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.security.KeyFactory;
@@ -51,6 +50,8 @@ import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
 import org.whisperim.models.BuddyListModel;
+import org.whisperim.models.PluginListModel;
+import org.whisperim.plugins.Plugin;
 import org.whisperim.plugins.PluginLoader;
 import org.whisperim.renderers.BuddyListRenderer;
 import org.whisperim.security.Encryptor;
@@ -72,6 +73,8 @@ public class WhisperClient extends JFrame implements ActionListener {
 	//Enums used for plugin identifcation
 	public static final int CONNECTION = 0;
 	public static final int LOOK_AND_FEEL = 1;
+	
+	private PluginListModel plm_;
 	
 	
 	private Timer myTimer_;
@@ -233,6 +236,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 		buddyListScroll_.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		buddyListScroll_.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
+		plm_ = new PluginListModel();
 
 
 		blm_.addListDataListener(new ListDataListener(){
@@ -495,7 +499,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 			
 			EventQueue.invokeLater(new Runnable() {
 				public void run() {
-					new WhisperPluginManagerWindow(pluginLoader_);
+					new WhisperPluginManagerWindow(pluginLoader_, plm_);
 				}
 			});
 		}
@@ -518,12 +522,14 @@ public class WhisperClient extends JFrame implements ActionListener {
 	 * @param type - Enum for the type of the plugin
 	 * @param c - The "Class" object representing the plugin
 	 */
-	public void registerPlugin(String name, int type, Class c){
+	public void registerPlugin(String name, int type, Plugin p){
+		
+		plm_.addPlugin(p);
 		switch (type){
 		
 		case CONNECTION:
 			//Stuff for loading a connection
-			manager_.registerConnection(name, (Class<ConnectionStrategy>) c);
+			manager_.registerConnection(name, p);
 			break;
 		case LOOK_AND_FEEL:
 			//Stuff for loading a look and feel

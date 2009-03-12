@@ -19,6 +19,7 @@ package org.whisperim.plugins;
 import java.util.ArrayList;
 
 import org.whisperim.client.Buddy;
+import org.whisperim.client.ConnectionManager;
 import org.whisperim.client.ConnectionStrategy;
 import org.whisperim.client.Message;
 
@@ -37,9 +38,19 @@ import org.whisperim.client.Message;
  */
 public abstract class ConnectionPluginAdapter implements Plugin, ConnectionStrategy {
 
+	/**
+	 * This method can use data members initialized after construction.
+	 * For instance, one identifier might use a combination of the 
+	 * handle and the protocol.  The handle will not be initialized 
+	 * until signOn() is called.
+	 */
 	@Override
 	public abstract String getIdentifier();
 
+	/**
+	 * This method must never cause a null pointer exception.
+	 * The data members it accesses must be initialized with the class.
+	 */
 	@Override
 	public abstract String getProtocol();
 
@@ -74,7 +85,7 @@ public abstract class ConnectionPluginAdapter implements Plugin, ConnectionStrat
 	}
 
 	@Override
-	public void signOn(String username, String password) {
+	public void signOn(ConnectionManager cm, String username, String password) {
 		// TODO Auto-generated method stub
 
 	}
