@@ -1,6 +1,13 @@
 #summary User stories for the Whisper IM project
 #labels Phase-Requirements,Featured,Phase-Design
 
+
+=Build 7=
+
+=Build 6=
+
+=Build 5=
+
 =Build 4=
  * User will be able to interface with a 'system tray' icon for Whisper (Kirk, John) ------Delayed-
  * User can load custom plug-in modules (including protocols) (Chris)
