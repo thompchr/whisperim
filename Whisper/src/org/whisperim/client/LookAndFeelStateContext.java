@@ -21,7 +21,8 @@ public class LookAndFeelStateContext {
 	 private LookAndFeelState metalState_; 
 	 private LookAndFeelState state_; 
 	 
-	public void StateContext() 
+	//Shouldn't this be a constructor?
+	 public void StateContext() 
 	{   
 		 //nativeState_ = new nativeState();   
 		 //metalState_ = new metalState();     
