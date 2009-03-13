@@ -12,7 +12,10 @@
 =Build 5=
  * User will be displayed an account management window when starting the program for the first time (Chris)
  * User will be able to save account information (Chris)
- * User will be able to interface with a 'system tray' icon for Whisper (Kirk, John) 
+ * User will be able to interface with a 'system tray' icon for Whisper (Kirk, John)
+ * Roll over story from previous cycle ( connecting pref., bot(s) {possibly as plugins TBD} enhancement (Nick, Cory)
+ * User will have preference states saved by outputing to an XML file. (Nick, Cory)
+ * Super secret story outlined by Jules. (Nick and others that failed miserably in the previous cycle.)
 
 =Build 4=
  * User will be able to interface with a 'system tray' icon for Whisper (Kirk, John) ------Delayed-
