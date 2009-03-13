@@ -107,4 +107,10 @@ public class Preferences extends JFrame implements ListSelectionListener {
 	    */
     }
 
+	@Override
+	public void valueChanged(ListSelectionEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
