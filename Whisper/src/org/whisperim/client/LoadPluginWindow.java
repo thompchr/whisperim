@@ -53,7 +53,7 @@ public class LoadPluginWindow extends JFrame implements ActionListener {
 	private static final String OK_ = "OK";
 	private static final String CANCEL_ = "Cancel";
 	private static final String WINDOW_TITLE_ = "Load Plugin";
-	private static final String FILE_CHOOSER_ACCEPT_ = "Load Plugin";
+	private static final String FILE_CHOOSER_ACCEPT_ = "Open";
 	private static final String ERROR_OCCURRED_MESSAGE = "An error has occurred while attempting to load the plugin.";
 	private static final String FILE_NOT_FOUND_MESSAGE = "The selected file could not be found.";
 	
