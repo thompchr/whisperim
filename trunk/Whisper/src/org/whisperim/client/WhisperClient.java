@@ -134,17 +134,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 		this.setTitle(WHISPER_);
 		resetTimer(5000);   
 		
-		/**
-		 * Method to test the plugin loader
-		 */
 		
-		try {
-			pluginLoader_.loadPluginFromExtLoc(".." + File.separator + "testplugin" + File.separator + "manifest.xml");
-			manager_.loadConnection("Test Connection", "Username", "BLAAAAH");
-		} catch (FileNotFoundException e1) {
-			
-			e1.printStackTrace();
-		}
 
 
 
