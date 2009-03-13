@@ -25,6 +25,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
@@ -120,11 +122,30 @@ public class WhisperClient extends JFrame implements ActionListener {
 	public WhisperClient(ConnectionManager manager) {
 		initComponents();
 		pluginLoader_ = new PluginLoader(this);
+		try {
+			pluginLoader_.loadPlugins();
+		} catch (Exception e) {
+			
+			e.printStackTrace();
+		}
 		manager_ = manager;
 		manager_.setClient(this);
 		
 		this.setTitle(WHISPER_);
 		resetTimer(5000);   
+		
+		/**
+		 * Method to test the plugin loader
+		 */
+		
+		try {
+			pluginLoader_.loadPluginFromExtLoc(".." + File.separator + "testplugin" + File.separator + "manifest.xml");
+			manager_.loadConnection("Test Connection", "Username", "BLAAAAH");
+		} catch (FileNotFoundException e1) {
+			
+			e1.printStackTrace();
+		}
+
 
 
 		//this.setAwayMessage("Away!!!", true);
@@ -321,8 +342,11 @@ public class WhisperClient extends JFrame implements ActionListener {
 				layout.createParallelGroup()
 				.addComponent(buddyListScroll_, GroupLayout.DEFAULT_SIZE, 294, Short.MAX_VALUE)
 		);
+		
 
 		pack();
+		
+		
 	}
 
 	/**
