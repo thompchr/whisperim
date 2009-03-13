@@ -5,19 +5,23 @@
 =Build 7=
  * Bug fixes etc.
 
+
 =Build 6=
  * User can utilize Whisper as a secure tunnel to the command line on a remote host (Chris)
  * User will be able to set an away message (Kirk)
+ * User will have peer to peer ability with jmdns (thanks javassonne). (Nick)
 
 =Build 5=
  * User will be displayed an account management window for accounts saved in Whisper program and implemented as part of the Java GUI when starting the program for the first time (Chris)
  * User will be able to save account information such as username, password, buddy icon, logon status, etc for each account that is enabled on Whisper.  This will allow for auto logins (Chris)
  * User will be able to interface with a 'system tray' icon for Whisper (Kirk, John)
- * Roll over story from previous cycle ( connecting pref., bot(s) {possibly as plugins TBD} enhancement (Nick, Cory)
- * User will have preference states saved by outputing to an XML file. (Nick, Cory)
- * Super secret story outlined by Jules. (Nick and others that failed miserably in the previous cycle.)
  * Tabs that aren't focused will flash on receiving message (Logan)
-
+ * Roll over story from previous cycle; Change preferences via gui(Nick)
+ * User will have preference states saved by outputing to an XML file. (Nick)
+ * User will be able to transfer files with a file transfer bot. (Nick)
+ * User will be able to toggle bots with preferences. (Nick)
+ * User will be able to transfer the file with the bot as an encrypted file. (Nick)
+ * User will be able to check a flickr or similar social networking website with an open API to pull down updates via a Bot. (social site TBD) (Nick)
 
 =Build 4=
  * User will be able to interface with a 'system tray' icon for Whisper (Kirk, John) ------Delayed-
