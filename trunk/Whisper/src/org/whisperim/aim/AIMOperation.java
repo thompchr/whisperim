@@ -31,6 +31,10 @@ public class AIMOperation {
 	public final static int SEND_MESSAGE = 3;
 	public final static int SET_STATUS = 4;
 	
+	public final static int STATUS_IDLE = 1;
+	public final static int STATUS_INVISIBLE = 2;
+	public final static int STATUS_AWAY = 3;
+	
 	private Integer operation_;
 	private Object[] arguments_;
 	
@@ -110,6 +114,14 @@ public class AIMOperation {
 		AIMOperation op = new AIMOperation();
 		op.operation_ = SEND_MESSAGE;
 		Object[] args = { handle, message }; 
+		op.arguments_ = args;
+		return op;
+	}
+	
+	public static AIMOperation createSatusChange(int type, String message){
+		AIMOperation op = new AIMOperation();
+		op.operation_ = SET_STATUS;
+		Object[] args = { type, message };
 		op.arguments_ = args;
 		return op;
 	}

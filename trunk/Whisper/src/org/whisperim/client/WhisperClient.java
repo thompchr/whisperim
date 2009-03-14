@@ -132,7 +132,11 @@ public class WhisperClient extends JFrame implements ActionListener {
 		
 		//this.setAwayMessage("Away!!!", true);
 
-		this.setAwayMessage("Away put your weapons, I mean you no harm", true);
+		//Sets you away
+		setAwayMessage("Away put your weapons, I mean you no harm");
+		
+		//Sets you as here
+		setAwayMessage("");
 		
 		//This must be called last
 		pluginLoader_ = new PluginLoader(this);
@@ -498,8 +502,8 @@ public class WhisperClient extends JFrame implements ActionListener {
 	}
 
 
-	private void setAwayMessage(String message, boolean away){
-		manager_.setAwayMessage(message, away);
+	private void setAwayMessage(String message){
+		manager_.setAwayMessage(message);
 	}
 
 

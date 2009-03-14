@@ -28,10 +28,19 @@ public class Buddy {
 	private String protocolID_;
 	private String buddyIconLoc_;
 	private String associatedLocalHandle_;
+	private String alias_;
 		
 	public Buddy(String handle, String localHandle, String protocol){
 		handle_ = handle;
 		protocolID_ = protocol;
+		associatedLocalHandle_ = localHandle;
+		alias_ = handle;
+	}
+	
+	public Buddy(String handle, String localHandle, String protocol, String alias){
+		handle_ = handle;
+		protocolID_ = protocol;
+		alias_ = alias;
 		associatedLocalHandle_ = localHandle;
 	}
 	
@@ -41,6 +50,14 @@ public class Buddy {
 	
 	public void setHandle (String handle){
 		handle_ = handle;
+	}
+	
+	public String getAlias(){
+		return alias_;
+	}
+	
+	public void setAlias(String alias){
+		alias_ = alias; 
 	}
 
 	public String getProtocolID() {
@@ -53,7 +70,7 @@ public class Buddy {
 	
 	@Override
 	public String toString(){
-		return handle_;
+		return alias_;
 	}
 
 	public String getAssociatedLocalHandle() {

@@ -241,9 +241,9 @@ public class ConnectionManager {
 	/**
 	 *  Set status to away.
 	 */
-	 public void setAwayMessage(String message, boolean away){
+	 public void setAwayMessage(String message){
 		 for (Entry<String, ConnectionStrategy> entry:strategies_.entrySet()){
-			 entry.getValue().setAwayMessage(message, away);
+			 entry.getValue().setAwayMessage(message);
 		 }
 		 
 	 }

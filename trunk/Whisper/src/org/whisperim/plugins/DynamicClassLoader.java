@@ -65,7 +65,7 @@ public class DynamicClassLoader extends URLClassLoader {
 				try {
 					
 					//exturls[i] = new URL("jar", "", files[i].getCanonicalPath());
-					exturls[i] = files[i].toURL();
+					exturls[i] = files[i].toURI().toURL();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

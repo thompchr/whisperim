@@ -32,7 +32,7 @@ public interface ConnectionStrategy {
 
     public void statusUpdate(String status);
     
-    public void setAwayMessage(String message, boolean away);
+    public void setAwayMessage(String message);
     
     public String getProtocol();
     

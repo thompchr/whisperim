@@ -170,7 +170,15 @@ public class AIMSession implements AccEvents, Runnable {
 
 					if (buddy.getState() != AccUserState.Offline) {
 						//Add the buddy to the list of online users
-						buddyList.add(new Buddy(buddy.getName(), localHandle_, "aol"));
+						try{
+							//Throwing an exception when the friendly name isn't set IS AN AWFUL IDEA
+							//but AOL did it anyway
+							buddyList.add(new Buddy(buddy.getName(), localHandle_, "aol", buddy.getFriendlyName()));
+						}catch(AccException ae){
+							//System.err.println(ae.getMessage());
+							buddyList.add(new Buddy(buddy.getName(), localHandle_, "aol"));
+						}
+						
 					}
 				}
 			}
@@ -327,7 +335,7 @@ public class AIMSession implements AccEvents, Runnable {
 			AccParticipant participant, AccIm im) {
 		try {
 			Message message = new Message(
-					new Buddy(participant.getName(), localHandle_, protocol_), new Buddy(accSession.getIdentity(), localHandle_, protocol_), im.getText(), protocol_, im.getTimestamp());
+					new Buddy(participant.getName(), localHandle_, protocol_, participant.getUser().getFriendlyName()), new Buddy(accSession.getIdentity(), localHandle_, protocol_), im.getText(), protocol_, im.getTimestamp());
 			message.setProtocol(protocol_);
 			strategy_.receiveMessage(message);
 		} catch (AccException e) {
@@ -656,10 +664,34 @@ public class AIMSession implements AccEvents, Runnable {
 			String userName = (String) operation.getArguments()[0];
 			String message = (String) operation.getArguments()[1];
 			AccIm im = session_.createIm(message, null);
-			AccImSession imSession = session_.createImSession(userName, AccImSessionType.Im);
-			imSession.sendIm(im);
+			session_.createImSession(userName, AccImSessionType.Im).sendIm(im);
+			
 
 			break;
+		}
+		case AIMOperation.SET_STATUS:
+		{
+			Class[] types = {Integer.class, String.class};
+			this.checkArgs(operation, types);
+			switch (((int)(Integer)operation.getArguments()[0])){
+			
+			case AIMOperation.STATUS_AWAY:{
+				session_.setAwayMessage(session_.createIm((String) operation.getArguments()[1], null));
+
+				break;
+			}
+			
+			case AIMOperation.STATUS_IDLE:{
+				session_.setSecondsRemainingUntilIdleState(0);
+				break;
+			}
+			
+			case AIMOperation.STATUS_INVISIBLE:{
+				session_.setAppearOffline(true);
+				break;
+			}
+			}
+			
 		}
 		
 		
@@ -727,17 +759,6 @@ public class AIMSession implements AccEvents, Runnable {
 		running_ = running;
 	}
 	
-	 public void setAwayMessage(String message, boolean away){
-		 System.out.println("Done.");
-		 AccIm im = null;
-		try {
-			/*im = session_.createIm("createIm Var1", "createIM Var2");
-			im.setSubject("Test setSubject");
-			im.setText("Test setText");
-			session_.setAwayMessage(im);*/
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	 }
+	 
 
 }
