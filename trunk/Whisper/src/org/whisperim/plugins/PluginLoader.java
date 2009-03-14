@@ -82,24 +82,62 @@ public class PluginLoader {
 			.newDocumentBuilder()
 			.parse(registry);
 
-			NodeList connections = ((Element)dom.getElementsByTagName("connection")).getElementsByTagName("plugin");
+			NodeList connections = ((Element)dom.getElementsByTagName("connection").item(0)).getElementsByTagName("plugin");
 
 			for (int i = 0; i < connections.getLength(); ++i){
 
 				Element curElement = (Element)connections.item(i);
-				String name = ((Element)curElement.getElementsByTagName("name").item(0)).getAttribute("value");
-				String location = ((Element)curElement.getElementsByTagName("location").item(0)).getAttribute("value");
-				String iconLocation = ((Element)curElement.getElementsByTagName("iconLocation").item(0)).getAttribute("value");
-				String entryClass = ((Element)curElement.getElementsByTagName("class").item(0)).getAttribute("value");
+				String name;
+				try{
+					name = ((Element)curElement.getElementsByTagName("name").item(0)).getAttribute("value");
+				}catch(NullPointerException e){
+					System.err.println("Name value was null and has not been set");
+					name = "";
+				}
+				
+				String location;
+				try{
+					location = ((Element)curElement.getElementsByTagName("location").item(0)).getAttribute("value");
+				}catch (NullPointerException e){
+					System.err.println("Location value was null, plugin cannot be loaded");
+					break;
+				}
+				location = location.replace("/", File.separator);
+				location = location.replace("\\", File.separator);
 
-
+				
+				String iconLocation;
+				try{
+					iconLocation = ((Element)curElement.getElementsByTagName("iconLocation").item(0)).getAttribute("value");
+				}catch (NullPointerException e){
+					System.err.println("IconLocation was null and has not been set");
+					iconLocation = "";
+				}
+				
+				String entryClass;
+				try{
+					entryClass = ((Element)curElement.getElementsByTagName("class").item(0)).getAttribute("value");
+				}catch(NullPointerException e){
+					System.err.println("Entry class was null, plugin cannot be loaded");
+					break;
+				}
+				
+				File dir = new File(location);
+				if (!dir.exists()){
+					System.err.println("File in registry doesn't exist");
+				}
+				if (dir.isDirectory()){
+					System.out.println("File is a directory");
+				}else{
+					System.out.println("File is not a directory");
+				}
 
 				ClassLoader cl = DynamicClassLoader.getExtendedClassLoader(Thread
-						.currentThread().getContextClassLoader(), PLUGIN_DIR_ + location);
-				Class c; 
+						.currentThread().getContextClassLoader(), location);
+				 
 				try{
-					c = cl.loadClass(entryClass);
-					Plugin p = (Plugin) c.newInstance();
+					
+					Plugin p = (Plugin) cl.loadClass(entryClass).newInstance();
 					p.setIconLocation(iconLocation);
 					p.setPluginName(name);
 
@@ -111,21 +149,23 @@ public class PluginLoader {
 
 			}
 
-			NodeList lookAndFeel = ((Element)dom.getElementsByTagName("lookandfeel")).getElementsByTagName("plugin");
+			NodeList lookAndFeel = ((Element)dom.getElementsByTagName("lookandfeel").item(0)).getElementsByTagName("plugin");
 
 			for (int i = 0; i < lookAndFeel.getLength(); ++i){
 
 				Element curElement = (Element)lookAndFeel.item(i);
-				String name = ((Element)curElement.getElementsByTagName("name")).getAttribute("value");
-				String location = ((Element)curElement.getElementsByTagName("location")).getAttribute("value");
-				String entryClass = ((Element)curElement.getElementsByTagName("class")).getAttribute("value");
+				String name = ((Element)curElement.getElementsByTagName("name").item(0)).getAttribute("value");
+				String location = ((Element)curElement.getElementsByTagName("location").item(0)).getAttribute("value");
+				String entryClass = ((Element)curElement.getElementsByTagName("class").item(0)).getAttribute("value");
 
 				ClassLoader cl = DynamicClassLoader.getExtendedClassLoader(Thread
-						.currentThread().getContextClassLoader(), PLUGIN_DIR_ + location);
-				Class c; 
+						.currentThread().getContextClassLoader(), location);
+				
 				try{
-					c = cl.loadClass(entryClass);
-					Plugin p = (Plugin)c.newInstance();
+
+					Plugin p = (Plugin)cl.loadClass(entryClass).newInstance();
+					p.setPluginName(name);
+					p.setIconLocation(location);
 					client_.registerPlugin(p.getPluginName(), WhisperClient.LOOK_AND_FEEL, p);
 				}catch(Exception e){
 					System.err.println(name + " could not be loaded.");
@@ -192,11 +232,8 @@ public class PluginLoader {
 			Element manifestElement = (Element)doc.getElementsByTagName("manifest").item(0);
 
 
-			//This is confusing, but we have to cast two objects to Elements
 			String type;
 			try{
-
-
 				type = ((Element)(manifestElement
 						.getElementsByTagName("type")).item(0))
 						.getAttribute("value");
@@ -271,6 +308,7 @@ public class PluginLoader {
 
 
 			//Load in the class
+			
 			ClassLoader cl = DynamicClassLoader.getExtendedClassLoader(Thread
 					.currentThread().getContextClassLoader(), url + location);
 			Class c; 
@@ -286,10 +324,13 @@ public class PluginLoader {
 
 			if (type.equalsIgnoreCase("connection")){
 				client_.registerPlugin(name, WhisperClient.CONNECTION, p);
+			}else if (type.equalsIgnoreCase("lookandfeel")){
+				client_.registerPlugin(name, WhisperClient.LOOK_AND_FEEL, p);
+			}else {
+				client_.registerPlugin(name, 0, p);
 			}
 
-			copyDirectory(new File(url + location), new File(System.getProperty("user.home") + File.separator + "Whisper" 
-					+ File.separator + "plugins" + File.separator + name));
+			copyDirectory(new File(url + location), new File(PLUGIN_DIR_ + File.separator + name + location));
 
 			//We then need to add the plugin information to the local registry file
 			File registry = new File(REGISTRY_);
@@ -310,7 +351,7 @@ public class PluginLoader {
 			Element locationElement = dom.createElement("location");
 			Element classElement = dom.createElement("class");
 
-			locationElement.setAttribute("value", File.separator + name + location);
+			locationElement.setAttribute("value", PLUGIN_DIR_ + File.separator + name + location);
 			classElement.setAttribute("value", entryClass);
 			nameElement.setAttribute("value", name);
 

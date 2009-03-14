@@ -27,18 +27,7 @@ public class XMLFilter extends FileFilter {
 		if (arg0.isDirectory())
 			return true;
 		
-		String ext = null;
-        String s = arg0.getName();
-        int i = s.lastIndexOf('.');
-        if (i < s.length() - 1) {
-            ext = s.substring(i+1).toLowerCase();
-        }
-
-		if (ext.equalsIgnoreCase("xml") || ext == null )
-			return true;
-		
-		return false;
-	
+		return arg0.getName().endsWith(".xml");	
 	}
 
 	@Override

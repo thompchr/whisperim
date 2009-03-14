@@ -17,6 +17,8 @@
 package org.whisperim.client;
 
 import java.awt.EventQueue;
+import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
@@ -25,8 +27,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
@@ -34,6 +34,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -121,6 +122,19 @@ public class WhisperClient extends JFrame implements ActionListener {
 	/** Creates new WhisperClient instance */
 	public WhisperClient(ConnectionManager manager) {
 		initComponents();
+		manager_ = manager;
+		manager_.setClient(this);
+		
+		this.setTitle(WHISPER_);
+		resetTimer(5000);   
+		
+		setLocation(new Point(Toolkit.getDefaultToolkit().getScreenSize().width / 3,Toolkit.getDefaultToolkit().getScreenSize().height / 4));
+		
+		//this.setAwayMessage("Away!!!", true);
+
+		this.setAwayMessage("Away put your weapons, I mean you no harm", true);
+		
+		//This must be called last
 		pluginLoader_ = new PluginLoader(this);
 		try {
 			pluginLoader_.loadPlugins();
@@ -128,21 +142,6 @@ public class WhisperClient extends JFrame implements ActionListener {
 			
 			e.printStackTrace();
 		}
-		manager_ = manager;
-		manager_.setClient(this);
-		
-		this.setTitle(WHISPER_);
-		resetTimer(5000);   
-		
-		
-		
-		
-
-
-
-		//this.setAwayMessage("Away!!!", true);
-
-		this.setAwayMessage("Away put your weapons, I mean you no harm", true);
 	}
 
 
