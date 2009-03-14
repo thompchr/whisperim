@@ -1,5 +1,5 @@
 #summary User stories for the Whisper IM project
-#labels Featured,Featured,Phase-Design
+#labels Featured,Phase-Requirements,Phase-Design
 
 
 =Build 7=
