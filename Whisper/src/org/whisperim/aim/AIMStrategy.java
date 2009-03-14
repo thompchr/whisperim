@@ -74,8 +74,8 @@ public class AIMStrategy implements ConnectionStrategy {
         manager_.statusUpdate(update);
     }
 
-    public void setAwayMessage(String message, boolean away){
-    	session_.setAwayMessage(message, away);
+    public void setAwayMessage(String message){
+    	session_.addOperation(AIMOperation.createSatusChange(AIMOperation.STATUS_AWAY, message));
     }
 
 	@Override

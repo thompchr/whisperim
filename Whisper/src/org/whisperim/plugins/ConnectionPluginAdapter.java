@@ -73,7 +73,7 @@ public abstract class ConnectionPluginAdapter implements Plugin, ConnectionStrat
 	}
 
 	@Override
-	public void setAwayMessage(String message, boolean away) {
+	public void setAwayMessage(String message) {
 		// TODO Auto-generated method stub
 
 	}
