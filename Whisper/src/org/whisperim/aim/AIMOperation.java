@@ -29,6 +29,7 @@ public class AIMOperation {
 	public final static int SIGNIN = 1;
 	public final static int SIGNOUT = 2;
 	public final static int SEND_MESSAGE = 3;
+	public final static int SET_STATUS = 4;
 	
 	private Integer operation_;
 	private Object[] arguments_;
@@ -112,7 +113,6 @@ public class AIMOperation {
 		op.arguments_ = args;
 		return op;
 	}
-
 
 }
 

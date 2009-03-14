@@ -661,6 +661,8 @@ public class AIMSession implements AccEvents, Runnable {
 
 			break;
 		}
+		
+		
 		}
 	}
 
