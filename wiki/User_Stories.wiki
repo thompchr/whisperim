@@ -6,10 +6,13 @@
  * Bug fixes etc.
 
 
+
 =Build 6=
  * User can utilize Whisper as a secure tunnel to the command line on a remote host (Chris)
  * User will be able to set an away message (Kirk)
  * User will have peer to peer ability with jmdns (thanks javassonne). (Nick)
+ * User can drag tabs.  (Logan)
+ * User can drag files to chat area to initiate file transfer (pending transfer ability).  (Logan)
 
 =Build 5=
  * User will be displayed an account management window for accounts saved in Whisper program and implemented as part of the Java GUI when starting the program for the first time (Chris)
@@ -22,6 +25,9 @@
  * User will be able to toggle bots with preferences. (Nick)
  * User will be able to transfer the file with the bot as an encrypted file. (Nick)
  * User will be able to check a flickr or similar social networking website with an open API to pull down updates via a Bot. (social site TBD) (Nick)
+ * User can close tabs via hotkeys, button on tabs. (Logan)
+ * User can choose how to open new conversations (new window, new tab, etc). (Logan)
+ * 
 
 =Build 4=
  * User will be able to interface with a 'system tray' icon for Whisper (Kirk, John) ------Delayed-
