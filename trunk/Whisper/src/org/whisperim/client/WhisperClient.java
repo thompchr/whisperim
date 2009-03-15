@@ -122,6 +122,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 	/** Creates new WhisperClient instance */
 	public WhisperClient(ConnectionManager manager) {
 		initComponents();
+		WhisperSystemTray.startSystemTray();
 		manager_ = manager;
 		manager_.setClient(this);
 		
