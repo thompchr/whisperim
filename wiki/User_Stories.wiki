@@ -28,7 +28,6 @@
  * User will be able to check a flickr or similar social networking website with an open API to pull down updates via a Bot. (social site TBD) (Nick)
  * User can close tabs via hotkeys, button on tabs. (Logan)
  * User can choose how to open new conversations (new window, new tab, etc). (Logan)
- * 
 
 =Build 4=
  * User will be able to interface with a 'system tray' icon for Whisper (Kirk, John) ------Delayed-
