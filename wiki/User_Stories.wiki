@@ -4,6 +4,7 @@
 
 =Build 7=
  * Bug fixes etc.
+ * User will be able to click tab to view email, initially gmail only. (Nick) 
 
 
 
