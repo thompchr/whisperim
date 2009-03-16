@@ -4,46 +4,54 @@
 
 =Build 7=
  * Bug fixes etc.
- * User will be able to click tab to view email, initially gmail only. (Nick)
- * User can send SMS text outside of AIM services to cell phones. (Kirk)
- * User can create a chatroom. (Kirk)
+ * User can protect account and key configuration files through encryption (Chris)
+ * User can use video chat on client networks where it is supported (Chris)
+ * User can encrypt video chat (Chris)
+ * User can implement penetration testing tools through Whisper (Cory)
+ * User can use gtalk (Cory)
  * User can receive notifications and integrate with Facebook. (John)
  * User's message will be auto-spell checked as it is typed. (John)
- * User can protect account and key configuration files through encryption (Chris)
+ * User can send SMS text outside of AIM services to cell phones. (Kirk)
+ * User can create a chatroom. (Kirk)
+ * User will be able to click tab to view email, initially gmail only. (Nick)
+ * User can check their buddies statistics (Nick)
+
 
 =Build 6=
- * Themes - GTK (Cory)
- * TOR integration (Cory)
- * User can Lock Session (Cory)
+ * User can utilize Whisper as a secure tunnel to the command line on a remote host (Chris)
+ * User can see Buddy Icon (Chris)
+ * User will be able to import GTK themes (Cory)
+ * User will be able to pass all traffic through the TOR network (Cory)
+ * User can lock session and can only be resumed using a password (Cory)
  * User can 'preview' links and links will be filtered for easy integration into Google Maps and other online services. (John)
  * Users can make themselves 'locatable' and share this information with buddies. (John)
  * User can use a webcam to take a picture of themselves and set it as their buddy icon. (John)
- * User can utilize Whisper as a secure tunnel to the command line on a remote host (Chris)
- * User will have peer to peer ability with jmdns (thanks javassonne). (Nick)
- * User can drag tabs.  (Logan)
- * User can drag files to chat area to initiate file transfer (pending transfer ability).  (Logan)
- * User can see Buddy Icon (Chris)
  * User can create a local profile and WYSIWYG edit it. (Kirk)
  * User can interface with WYSIWYG in IM window. (Kirk)
  * User can receive rich text in IM windows (Kirk)
+ * User can drag tabs.  (Logan)
+ * User can drag files to chat area to initiate file transfer (pending transfer ability).  (Logan)
+ * User will have peer to peer ability with jmdns (thanks javassonne). (Nick)
+
+
 =Build 5=
+ * User will be displayed an account management window for accounts saved in Whisper program and implemented as part of the Java GUI when starting the program for the first time (Chris)
+ * User will be able to save account information such as username, password, buddy icon, logon status, etc for each account that is enabled on Whisper.  This will allow for auto logins (Chris)
+ * Users can connect to digital whiteboard to create drawings collaboratively. (John)
+ * User can have their most recently played iTunes song show up in their away message. (John)
  * User can hear various customizable sounds for all actions whisper takes (Kirk)
  * User can view about page (Kirk)
  * User will be able to interface with a 'system tray' icon for Whisper (Kirk)
  * User can change status, hide buddy list, open account manager, blink with new message, hide system tray, mute all sounds from system tray (Kirk)
- * Users can connect to digital whiteboard to create drawings collaboratively. (John)
- * User can have their most recently played iTunes song show up in their away message. (John)
- * User will be displayed an account management window for accounts saved in Whisper program and implemented as part of the Java GUI when starting the program for the first time (Chris)
- * User will be able to save account information such as username, password, buddy icon, logon status, etc for each account that is enabled on Whisper.  This will allow for auto logins (Chris)
+ * User can close tabs via hotkeys, button on tabs. (Logan)
+ * User can choose how to open new conversations (new window, new tab, etc). (Logan)
+ * Tabs that aren't focused will flash on receiving message (Logan)
  * Roll over story from previous cycle; Change preferences via gui(Nick)
  * User will have preference states saved by outputing to an XML file. (Nick)
  * User will be able to transfer files with a file transfer bot. (Nick)
  * User will be able to toggle bots with preferences. (Nick)
  * User will be able to transfer the file with the bot as an encrypted file. (Nick)
  * User will be able to check a flickr or similar social networking website with an open API to pull down updates via a Bot. (social site TBD) (Nick)
- * User can close tabs via hotkeys, button on tabs. (Logan)
- * User can choose how to open new conversations (new window, new tab, etc). (Logan)
- * Tabs that aren't focused will flash on receiving message (Logan)
 
 =Build 4=
  * User will be able to interface with a 'system tray' icon for Whisper (Kirk, John)
@@ -108,3 +116,7 @@
  * User will be able to identify buddy using AIM buddy 'alias'
  * User will be able to identify buddy using AIM buddy icon in buddy list
  * User will be able to identify buddy using AIM buddy icon in chat window
+
+=Extra Ideas=
+ * yahoo
+ * msn
