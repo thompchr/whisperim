@@ -13,6 +13,7 @@
 =Build 6=
  * Themes - GTK (Cory)
  * TOR integration (Cory)
+ * User can Lock Session (Cory)
  * User can 'preview' links and links will be filtered for easy integration into Google Maps and other online services. (John)
  * Users can make themselves 'locatable' and share this information with buddies. (John)
  * User can use a webcam to take a picture of themselves and set it as their buddy icon. (John)
@@ -20,7 +21,6 @@
  * User will have peer to peer ability with jmdns (thanks javassonne). (Nick)
  * User can drag tabs.  (Logan)
  * User can drag files to chat area to initiate file transfer (pending transfer ability).  (Logan)
- * User can Lock Session. (Cory)
  * User can see Buddy Icon (Chris)
  * User can create a local profile and WYSIWYG edit it. (Kirk)
  * User can interface with WYSIWYG in IM window. (Kirk)
@@ -33,7 +33,6 @@
  * Users can connect to digital whiteboard to create drawings collaboratively.(John)
  * User will be displayed an account management window for accounts saved in Whisper program and implemented as part of the Java GUI when starting the program for the first time (Chris)
  * User will be able to save account information such as username, password, buddy icon, logon status, etc for each account that is enabled on Whisper.  This will allow for auto logins (Chris)
- * Tabs that aren't focused will flash on receiving message (Logan)
  * Roll over story from previous cycle; Change preferences via gui(Nick)
  * User will have preference states saved by outputing to an XML file. (Nick)
  * User will be able to transfer files with a file transfer bot. (Nick)
@@ -42,14 +41,15 @@
  * User will be able to check a flickr or similar social networking website with an open API to pull down updates via a Bot. (social site TBD) (Nick)
  * User can close tabs via hotkeys, button on tabs. (Logan)
  * User can choose how to open new conversations (new window, new tab, etc). (Logan)
+ * Tabs that aren't focused will flash on receiving message (Logan)
 
 =Build 4=
  * User will be able to interface with a 'system tray' icon for Whisper (Kirk, John)
  * User can load custom plug-in modules (including protocols) (Chris)
  * Whisper clients can identify if other client is using Whisper and disable special functionality to prevent bombarding buddy with garbage (Chris)
  * User will be able to access a preferences menu to change program-wide settings (connects in bot from previous build) (Cory, Nick)
- * User will be disappointed by the features Cory will not be able to implement (Cory)
  * User is displayed account setup screen when starting program for first time (Delayed, John)
+
 =Build 3=
  * User can see "enable Bot" for messaging. Bot is simple echo bot. (Nick, John) (Bot/GUI disconnected pending pattern agreement)
  * User can set status. (Nick, John) (On Hold)
