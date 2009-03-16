@@ -9,6 +9,7 @@
  * User can create a chatroom. (Kirk)
  * User can receive notifications and integrate with Facebook. (John)
  * User's message will be auto-spell checked as it is typed. (John)
+ * User can protect account and key configuration files through encryption (Chris)
 
 =Build 6=
  * Themes - GTK (Cory)
