@@ -4,18 +4,27 @@
 
 =Build 7=
  * Bug fixes etc.
- * User will be able to click tab to view email, initially gmail only. (Nick) 
-
-
+ * User will be able to click tab to view email, initially gmail only. (Nick)
+ * User can send SMS outside of AIM services. (Kirk)
+ * User can create a chatroom. (Kirk)
 
 =Build 6=
+ * Themes - GTK (Cory)
+ * TOR integration (Cory)
+ * Link Caching (John)
+ * Location awareness (John)
  * User can utilize Whisper as a secure tunnel to the command line on a remote host (Chris)
  * ~~User will be able to set an away message (Kirk)~~
  * User will have peer to peer ability with jmdns (thanks javassonne). (Nick)
  * User can drag tabs.  (Logan)
  * User can drag files to chat area to initiate file transfer (pending transfer ability).  (Logan)
-
+ * User can Lock Session. (Cory)
+ * User can see Buddy Icon (Chris)
+ * User can create a local profile and WYSIWYG edit it. (Kirk)
+ * WYSIWYG and Richtext in IM window. (Kirk)
 =Build 5=
+ * Sounds (KirK)
+ * Digital Whiteboard (John)
  * User will be displayed an account management window for accounts saved in Whisper program and implemented as part of the Java GUI when starting the program for the first time (Chris)
  * User will be able to save account information such as username, password, buddy icon, logon status, etc for each account that is enabled on Whisper.  This will allow for auto logins (Chris)
  * User will be able to interface with a 'system tray' icon for Whisper (Kirk, John)
