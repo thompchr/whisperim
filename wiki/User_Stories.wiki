@@ -88,35 +88,23 @@
  * User becomes idle after set amount of inactivity (Kirk, John)
  * 1/15: Developed skeleton code for IdleListener class
  * 1/19: Implemented solution to allow user to go idle.  
-  * Removed listeners to determine idle status
-  * Based Idle status on how recent a user has sent a message
+ * Removed listeners to determine idle status
+ * Based Idle status on how recent a user has sent a message
   * Idle status is updated in the title bar as: Whisper (Idle)
  * User can utilize the enter key in place of clicking the login button (Cory)
  * User will be notified and redirected when bad password is entered and given some way to correct problem (Chris)
 
 =Future=
-  * User can select buddy by left click and then  toggle block status using a button on   toolbar
-  * User will see updated buddy list when other users sign in or out
-  * User is displayed account setup screen when starting program for first time
-  * User will be notified of errors (exceptions) via dialog boxes unless they are fully handled by the software
-  * User can send messages when not connected through an ad-hoc network and electing a server
-  * User can export private key and use remotely using a web interface
-  * User can Whisper as a remote shell client
-  * User can encrypt keys with password
-  * User can select different themes to use
-  * User can use multiple im/chat networks
-  * User can securely transfer files
-  * User can start or answer a video chat using aim or gtalk protocols
-  * User can sort buddies by status, name, alias, network, or group
-  * User can set unique buddy icons to be displayed instead of their icon
-  * User can use Whisper on Mac OSX and Linux
- * User will be able to 'lock' their session requiring a password to view buddy list or send/receive messages
- * User will be able to view logs
- * User will be able to view HTML chat instead of plain text
- * User will be able to identify buddy using AIM buddy 'alias'
- * User will be able to identify buddy using AIM buddy icon in buddy list
- * User will be able to identify buddy using AIM buddy icon in chat window
-
-=Extra Ideas=
- * yahoo
- * msn
+ * User can select buddy by left click and then  toggle block status using a button on   toolbar 
+ * User will see updated buddy list when other users sign in or out
+ * User is displayed account setup screen when starting program for first time
+ * User will be notified of errors (exceptions) via dialog boxes unless they are fully handled by the software
+ * User can send messages when not connected through an ad-hoc network and electing a server
+ * User can export private key and use remotely using a web interface
+ * User can Whisper as a remote shell client
+ * User can sort buddies by status, name, alias, network, or group
+ * User can set unique buddy icons to be displayed instead of their icon
+ * User can use Whisper on Mac OSX and Linux
+ * User can chat using the yahoo protocol
+ * User can chat using the msn protocol
+ * User can set their status on twitter
