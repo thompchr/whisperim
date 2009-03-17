@@ -31,21 +31,16 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 public class WhisperSystemTray {
-
-	public static void startSystemTray(){
+	
+	public static void startSystemTray(WhisperClient client){
 		
+		final WhisperClient client_ = client;
 		final TrayIcon trayIcon;
 			
 		if (SystemTray.isSupported()) {
 		    SystemTray tray = SystemTray.getSystemTray();
-		    Image image = Toolkit.getDefaultToolkit().getImage("tray.jpg");
-		    /*BufferedImage image = null;
-		    try {
-		        image = ImageIO.read(new File("tray.jpg"));
-		    } catch (IOException e) {
-		    	System.out.println("Unable to read in image for system tray");
-		    }*/
-		  
+		    Image image = Toolkit.getDefaultToolkit().getImage("..\\images\\tray.jpg");
+	  
 		    MouseListener mouseListener = new MouseListener() {      
 		        public void mouseClicked(MouseEvent e) {}	
 		        public void mouseEntered(MouseEvent e) {}
@@ -57,7 +52,7 @@ public class WhisperSystemTray {
 		    //Exit Listener for menu
 		    ActionListener exitListener = new ActionListener() {
 		        public void actionPerformed(ActionEvent e) {
-		            System.out.println("Exiting");
+		            System.out.println("System Tray - Exiting");
 		            System.exit(0);
 		        }
 		    };
@@ -65,34 +60,32 @@ public class WhisperSystemTray {
 		    //New IM Listener for menu
 		    ActionListener newImListener = new ActionListener() {
 		        public void actionPerformed(ActionEvent e) {
-		            System.out.println("Creating new IM");
-		            //Create new IM window
-		            //**Need to add correct call to start a blank IM**
+		            System.out.println("System Tray - Creating new IM");
+		            client_.createNewIMWindow();
 		        }
 		    };
 		    
 		    //About Listener for menu
 		    ActionListener aboutListener = new ActionListener() {
 		        public void actionPerformed(ActionEvent e) {
-		            System.out.println("Opening About");
-		            //**Create about text file to be opened**
+		            System.out.println("System Tray - Opening About");
+		            client_.openAboutPage();
 		        }
 		    };
 		    
-		    //Whisper Listener for menu
+		    //Plugins Listener for menu
 		    ActionListener pluginsListener = new ActionListener() {
 		        public void actionPerformed(ActionEvent e) {
-		        	//Open plugins menu
+		        	client_.openPluginsPage();
 		        }
 		    };
-		    
+
 		    //Preferences Listener for menu
-		    ActionListener encrypListener = new ActionListener() {
+		    ActionListener prefListener = new ActionListener() {
 		        public void actionPerformed(ActionEvent e) {
-		        	//toggle encryption
+		        	client_.openPrefPage();
 		        }
 		    };
-		    
 		    
 		    //New IM option on Whisper menu
 		    MenuItem newImItem = new MenuItem("New Message");
@@ -113,8 +106,8 @@ public class WhisperSystemTray {
 		    Menu prefMenu = new Menu("Preferences");
 		    
 		    //Encryption option on Preference menu
-		    CheckboxMenuItem encrypItem = new CheckboxMenuItem("Encryption");
-		    encrypItem.addActionListener(encrypListener);
+		    MenuItem prefItem = new MenuItem("Preferences");
+		    prefItem.addActionListener(prefListener);
 		    
 		    //Plugins option on Whisper menu
 		    MenuItem pluginsItem = new MenuItem("Plugins");
@@ -132,7 +125,7 @@ public class WhisperSystemTray {
 	        whisperMenu.add(newImItem);
 	        whisperMenu.add(pluginsItem);
 	        popup.add(prefMenu);
-	        prefMenu.add(encrypItem);
+	        prefMenu.add(prefItem);
 	        popup.addSeparator();
 	        popup.add(exitItem);
 

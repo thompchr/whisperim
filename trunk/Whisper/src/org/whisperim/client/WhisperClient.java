@@ -27,6 +27,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
@@ -122,7 +123,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 	/** Creates new WhisperClient instance */
 	public WhisperClient(ConnectionManager manager) {
 		initComponents();
-		WhisperSystemTray.startSystemTray();
+		WhisperSystemTray.startSystemTray(this);
 		manager_ = manager;
 		manager_.setClient(this);
 		
@@ -378,6 +379,42 @@ public class WhisperClient extends JFrame implements ActionListener {
 		window.requestFocus();
 		return window;
 		
+	}
+	
+	//Simple method to create a new blank IM
+	public void createNewIMWindow()
+	{
+		new WhisperNewIMWindow(manager_, this);
+	}
+	
+	//Simple method to open about page
+	public void openAboutPage()
+	{
+		try{
+	        Runtime.getRuntime().exec("notepad ..\\images\\About.txt");
+	        }
+	        catch(IOException e){
+	        	System.out.println("Notepad not avaiable to open about page");
+	        }
+	}
+	
+	//Simple method to open preference page
+	public void openPrefPage()
+	{
+		Preferences prefs = new Preferences();
+		prefs.setSize(400, 500);
+		prefs.setLocation(20,20);
+		prefs.setVisible(true);
+	}
+	
+	//Simple method to open plugins page
+	public void openPluginsPage()
+	{
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				new WhisperPluginManagerWindow(pluginLoader_, plm_);
+			}
+		});
 	}
 	
 	private void BuddiesComponentShown(ComponentEvent evt) {
