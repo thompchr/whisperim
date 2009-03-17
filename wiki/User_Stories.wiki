@@ -11,7 +11,6 @@
  * User can use gtalk (Cory)
  * User can receive notifications and integrate with Facebook. (John)
  * User's message will be auto-spell checked as it is typed. (John)
- * User can send SMS text outside of AIM services to cell phones. (Kirk)
  * User can create a chatroom. (Kirk)
  * User will be able to click tab to view email, initially gmail only. (Nick)
  * User can check their buddies statistics (Nick)
