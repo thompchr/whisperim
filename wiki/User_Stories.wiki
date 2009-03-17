@@ -37,7 +37,9 @@
 =Build 5=
  * User will be displayed an account management window for accounts saved in Whisper program and implemented as part of the Java GUI when starting the program for the first time (Chris)
  * User will be able to save account information such as username, password, buddy icon, logon status, etc for each account that is enabled on Whisper.  This will allow for auto logins (Chris)
- * User will be able to 
+ * User will be able to change the theme from preferences (Cory)
+ * User will be able to right-click on a buddy to view options to send messages (Cory)
+ * User will be able to ... (Cory)
  * Users can connect to digital whiteboard to create drawings collaboratively. (John)
  * User can have their most recently played iTunes song show up in their away message. (John)
  * User can hear various customizable sounds for all actions whisper takes (Kirk)
