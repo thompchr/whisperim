@@ -39,13 +39,23 @@ public class WhiteboardCanvas extends Canvas{
 	  {
 		  try
 		  {
-			  BufferedImage image = new BufferedImage(470, 430, BufferedImage.TYPE_INT_ARGB);
-			  
-			  ImageIO.write(image, "PNG", f);
+			  	BufferedImage bi = canvasToImage(this);
+		        ImageIO.write(bi,"PNG",f);
 		  } 
 		  catch (IOException e) 
 		  {
 			  
 		  }
 	  }
+	  
+	  private BufferedImage canvasToImage(Canvas canvas) {
+	        BufferedImage image = new BufferedImage(canvas.getWidth(),
+	        		canvas.getHeight(),
+	        		BufferedImage.TYPE_BYTE_INDEXED);
+	        
+	        Graphics2D g2 = image.createGraphics();
+	        canvas.paint(g2);
+	        g2.dispose();
+	        return image;
+	    }
 }
