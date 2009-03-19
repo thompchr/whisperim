@@ -10,15 +10,36 @@ public class WhiteboardFileFilter extends FileFilter{
 		
 	}
 
-	@Override
-	public boolean accept(File f) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean accept(File f){     
+    	if(f != null) {
+    	    if(f.isDirectory()) 
+    	    {
+    	    	return true;
+    	    }
+    	    
+    	    String extension = getExtension(f);
+    	    
+    	    if(extension != null && extension.equalsIgnoreCase("png")) 
+    	    {
+    	    	return true;
+    	    }
+    	}
+    	return false;
 	}
+    
+	public String getDescription(){
+        return "PNG (Portable Network Graphics) *.png";
+     }
+     
+    public String getExtension(File f) {
+    		if(f != null) {
+    		    String filename = f.getName();
+    		    int i = filename.lastIndexOf('.');
+    		    if(i>0 && i<filename.length()-1) {
+    			return filename.substring(i+1).toLowerCase();
+    		    };
+    		}
+    	return null;
+    }
 
-	@Override
-	public String getDescription() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }
