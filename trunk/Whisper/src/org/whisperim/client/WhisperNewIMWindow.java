@@ -44,15 +44,16 @@ public class WhisperNewIMWindow extends JFrame implements ActionListener{
 	private static final String LOOK_AND_FEEL_ = UIManager.getSystemLookAndFeelClassName();
 	
 	
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1685855175306987312L;
+
+	//String constants
 	private static final String SCREEN_NAME_ = "Screen Name: ";
 	private static final String OK_ = "OK";
 	private static final String CANCEL_ = "Cancel";
 	private static final String WINDOW_TITLE_ = "New Instant Message";
 
+	//UI Elements
 	private JTextField foreignHandleBox_ = new JTextField();
 	private JComboBox protocolSelector_ = new JComboBox();
 
@@ -61,6 +62,12 @@ public class WhisperNewIMWindow extends JFrame implements ActionListener{
 	private JButton cancelBtn_ = new JButton(CANCEL_);
 	private WhisperClient parent_;
 		
+	
+	/**
+	 * Constructor
+	 * @param manager - The currently active ConnectionManager object
+	 * @param parent - The WhisperClient object that serves as the "parent"
+	 */
 	public WhisperNewIMWindow(ConnectionManager manager, WhisperClient parent){
 		parent_ = parent;
 		foreignHandleBox_.addKeyListener(new KeyListener(){
@@ -105,56 +112,78 @@ public class WhisperNewIMWindow extends JFrame implements ActionListener{
 		cp.add(okBtn_);
 		cp.add(cancelBtn_);
 		
+		
+		//Sizes\\
+		
+		//Set the window size
 		setMinimumSize(new Dimension(350, 175));
 		setMaximumSize(new Dimension(350, 175));
 		
+		//OK Button
 		okBtn_.setMinimumSize(new Dimension(75, 26));
 		okBtn_.setMaximumSize(new Dimension(75, 26));
 		okBtn_.setPreferredSize(new Dimension(75, 26));
-		okBtn_.setActionCommand(OK_);
-		okBtn_.addActionListener(this);
-		
+
+		//Cancel Button
 		cancelBtn_.setMinimumSize(new Dimension(75, 26));
 		cancelBtn_.setMaximumSize(new Dimension(75, 26));
 		cancelBtn_.setPreferredSize(new Dimension(75, 26));
-		cancelBtn_.setActionCommand(CANCEL_);
-		cancelBtn_.addActionListener(this);
 		
+		//Foreign Handle Box
 		foreignHandleBox_.setMinimumSize(new Dimension(150, 23));
 		foreignHandleBox_.setMaximumSize(new Dimension(150, 23));
 		foreignHandleBox_.setPreferredSize(new Dimension(150, 23));
 		
+		//Protocol Selector
 		protocolSelector_.setMinimumSize(new Dimension(240, 30));
 		protocolSelector_.setMaximumSize(new Dimension(240, 30));
 		protocolSelector_.setPreferredSize(new Dimension(240, 30));
 		
+		
+		//Set the window title
 		setTitle(WINDOW_TITLE_);
 		
 		
-		ProtocolRenderer renderer = new ProtocolRenderer();
-		protocolSelector_.setRenderer(renderer);
+		//Action Commands\\
+		
+		//OK Button
+		okBtn_.setActionCommand(OK_);
+		okBtn_.addActionListener(this);
+		
+		//Cancel Button
+		cancelBtn_.setActionCommand(CANCEL_);
+		cancelBtn_.addActionListener(this);
+		
+		//Set the renderer for the protocol picker
+		protocolSelector_.setRenderer(new ProtocolRenderer());
 		
 		
-		//Constraints
+		//Constraints\\
+		
+		//Foreign Handle Label
 		sl.putConstraint(SpringLayout.WEST, foreignHandleLbl_, 20, SpringLayout.WEST, cp);
 		sl.putConstraint(SpringLayout.NORTH, foreignHandleLbl_, 20, SpringLayout.NORTH, cp);
-		
+				
+		//Foreign Handle Box
 		sl.putConstraint(SpringLayout.WEST, foreignHandleBox_, 5, SpringLayout.EAST, foreignHandleLbl_);
 		sl.putConstraint(SpringLayout.NORTH, foreignHandleBox_, 17, SpringLayout.NORTH, cp);
 		
+		//Protocol Selector
 		sl.putConstraint(SpringLayout.NORTH, protocolSelector_, 50, SpringLayout.NORTH, cp);
 		sl.putConstraint(SpringLayout.WEST, protocolSelector_, 60, SpringLayout.WEST, cp);
 		
+		//Cancel Button
 		sl.putConstraint(SpringLayout.NORTH, cancelBtn_, 50, SpringLayout.NORTH, protocolSelector_);
 		sl.putConstraint(SpringLayout.WEST, cancelBtn_, 20, SpringLayout.EAST, okBtn_);
 		
+		//OK Button
 		sl.putConstraint(SpringLayout.WEST, okBtn_, 90, SpringLayout.WEST, cp);
 		sl.putConstraint(SpringLayout.NORTH, okBtn_, 50, SpringLayout.NORTH, protocolSelector_);
 		
 		
+		//Populate the protocol selector
 		for (Entry<String, ConnectionStrategy> entry:manager.getStrategies().entrySet()){
-			ConnectionStrategy cs = (ConnectionStrategy)entry.getValue();
-			protocolSelector_.addItem(cs);
+			protocolSelector_.addItem(entry.getValue());
 		}
 		
 		
