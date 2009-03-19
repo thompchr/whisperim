@@ -30,7 +30,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-//Things to do: User can change status, Mute all sounds, open account manager, minimize Whisper, Hide system Tray, *Blink with new IM*
+//Things to do: User can change status, Mute all sounds, open account manager, Hide system Tray, *Blink with new IM*
 
 public class WhisperSystemTray {
 	
@@ -95,7 +95,7 @@ public class WhisperSystemTray {
 		    ActionListener statusListener = new ActionListener() {
 		        public void actionPerformed(ActionEvent e) {
 		        	//Code to Change Status ****************
-		        	//Status Change not implemented by team yet
+		        	//Waiting for Chris to commit the status change options so I can implement them into the tray
 		        }
 		    };
 		    
@@ -109,31 +109,27 @@ public class WhisperSystemTray {
 		    //Minimize Whisper Client for menu
 		    ActionListener accountListener = new ActionListener() {
 		        public void actionPerformed(ActionEvent e) {
-		        	//Code to open Account Manager****************
+		        	//Waiting for Chris to commit code so I know what to call to open Account Manager     	
 		        }
 		    };
 		    
 		    //Minimize Whisper Client for menu
 		    ActionListener minimizeListener = new ActionListener() {
 		        public void actionPerformed(ActionEvent e) {
-		        	//Code to minimize Whisper Client****************
-		        	//How do I close whisper client without killing everything?
-		        	//client_.
+		        	client_.setVisible(false);
 		        }
 		    };
 		    
 		    //Open Whisper Client from menu
 		    ActionListener openWhisperListener = new ActionListener() {
 		        public void actionPerformed(ActionEvent e) {
-		        	//Code to open Whisper Client****************
-		        	//How do I access Whisper window?
+		        	client_.setVisible(true);
 		        }
 		    };
 		    
 		    //Hide System Tray Icon
 		    ActionListener hideTrayListener = new ActionListener() {
 		        public void actionPerformed(ActionEvent e) {
-		        	//Code to hide System Tray****************
 		        	//SystemTray.getSystemTray().remove(trayIcon);
 		        }
 		    };
