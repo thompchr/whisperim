@@ -78,6 +78,10 @@ import com.aol.acc.AccVariant;
  */
 public class AIMSession implements AccEvents, Runnable {
 
+	public static final String SERVICE_UNAVAILABLE = "Service Unavailable";
+	public static final String SIGNED_IN = "Signed In";
+	public static final String RATE_LIMITED = "Rate Limited";
+	public static final String INVALID_USERNAME_OR_PASSWORD = "Invalid Username or Password";
 	private AccSession session_;
 	private String key_ = "Key:cm13Hg1hwDNm_tow";
 	private Thread listenThread_;
@@ -147,6 +151,8 @@ public class AIMSession implements AccEvents, Runnable {
 		System.out.println("In OnBuddyAdded");
 		System.out.println("  " + arg1.toString());
 		System.out.println("  " + arg2.toString());
+		
+		
 	}
 
 	@Override
@@ -339,7 +345,18 @@ public class AIMSession implements AccEvents, Runnable {
 			message.setProtocol(protocol_);
 			strategy_.receiveMessage(message);
 		} catch (AccException e) {
-			e.printStackTrace();
+			Message message;
+			
+			try {
+				message = new Message(
+						new Buddy(participant.getName(), localHandle_, protocol_, participant.getUser().getName()), new Buddy(accSession.getIdentity(), localHandle_, protocol_), im.getText(), protocol_, im.getTimestamp());
+				message.setProtocol(protocol_);
+				strategy_.receiveMessage(message);
+			} catch (AccException e1) {
+				
+				e1.printStackTrace();
+			}
+
 		}
 
 
@@ -515,26 +532,31 @@ public class AIMSession implements AccEvents, Runnable {
 	@Override
 	public void OnStateChange(AccSession accSession, AccSessionState accSessionState,
 			AccResult result) {
-		System.out.println("In OnStateChange..." + result);
+		//System.out.println("In OnStateChange..." + result);
+		if (result == AccResult.ACC_E_FAIL){
+			strategy_.statusUpdate(SERVICE_UNAVAILABLE);
+		}
 		if (accSessionState == AccSessionState.Offline) {
 			//Kill the thread
-			System.out.print("offline...");
+			//System.out.print("offline...");
 			running_ = false;
 			if (result == AccResult.ACC_E_INVALID_KEY) {
 				//Bad client key
-				System.out.println("Bad client key");
+				//System.out.println("Bad client key");
 			}
 			if (result == AccResult.ACC_E_RATE_LIMITED) {
 				//Rate limited
+				strategy_.statusUpdate(RATE_LIMITED);
 			}
 			if (result == AccResult.ACC_E_RATE_LIMITED_KEY) {
 				//Key rate limited
+				
 			}
 			if (result == AccResult.ACC_E_INVALID_PASSWORD){
-				strategy_.statusUpdate("Invalid Username or Password");
+				strategy_.statusUpdate(INVALID_USERNAME_OR_PASSWORD);
 				return;
 			}
-			System.out.print(result.toString());
+			//System.out.print(result.toString());
 			//Signout
 			return;
 		}
@@ -551,7 +573,7 @@ public class AIMSession implements AccEvents, Runnable {
 			return;
 		}
 		if (accSessionState == AccSessionState.Online) {
-			strategy_.statusUpdate("Signed In");
+			strategy_.statusUpdate(SIGNED_IN);
 			return;
 		}
 
@@ -690,8 +712,16 @@ public class AIMSession implements AccEvents, Runnable {
 				session_.setAppearOffline(true);
 				break;
 			}
+			
+			case AIMOperation.STATUS_VISIBLE:{
+				session_.setAppearOffline(false);
+			}
 			}
 			
+		}
+		case AIMOperation.CREATE_VIDEO_SESSION:{
+			AccAvManager av = session_.getAudioVideoManager();
+			//av.setVideoInputDevice(av.getWi)
 		}
 		
 		

@@ -30,10 +30,12 @@ public class AIMOperation {
 	public final static int SIGNOUT = 2;
 	public final static int SEND_MESSAGE = 3;
 	public final static int SET_STATUS = 4;
+	public final static int CREATE_VIDEO_SESSION = 5;
 	
 	public final static int STATUS_IDLE = 1;
 	public final static int STATUS_INVISIBLE = 2;
 	public final static int STATUS_AWAY = 3;
+	public final static int STATUS_VISIBLE = 4;
 	
 	private Integer operation_;
 	private Object[] arguments_;
