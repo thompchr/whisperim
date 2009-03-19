@@ -169,6 +169,10 @@ public class Login extends JFrame implements ActionListener {
     private void signOn() {
     	setVisibility(false);
         manager_ = new ConnectionManager(ConnectionManager.AIM_SESSION, usernameTxtBox_.getText(), new String(passwordTxtBox_.getPassword()), this, myPrivate_, myPublic_);
+        WhisperClient temp = new WhisperClient(manager_);
+        manager_.setClient(temp);
+        temp.setVisible(true);
+        this.dispose();
     }
 
 	/**
