@@ -85,7 +85,20 @@ public class Whiteboard extends JFrame{
 	         JFileChooser fileChooser = new JFileChooser ();
 
 	         fileChooser.setCurrentDirectory (new File ("."));
-	         fileChooser.addChoosableFileFilter();
+	         fileChooser.addChoosableFileFilter(new FileFilter(){
+
+				@Override
+				public boolean accept(File f) {
+					
+					return true;
+				}
+
+				@Override
+				public String getDescription() {
+					return "ALL FILES TEMP";
+				}
+	        	 
+	         });
 
 	         int result = fileChooser.showSaveDialog(null);
 	         
