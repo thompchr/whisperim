@@ -18,7 +18,15 @@ package org.whisperim.client;
 
 import java.util.ArrayList;
 
-public interface ConnectionStrategy {
+import org.whisperim.plugins.Plugin;
+
+public interface ConnectionStrategy extends Plugin {
+	
+	public static final int OFFLINE = 0;
+	public static final int INVALID_PASSWORD = 1;
+	public static final int ACTIVE = 3;
+	public static final int RATE_LIMITED = 4;
+	public static final int SERVICE_UNAVAILABLE = 5;
 
 	public void signOn(ConnectionManager cm, String username, String password);
 	
@@ -34,10 +42,20 @@ public interface ConnectionStrategy {
     
     public void setAwayMessage(String message);
     
+    public void setIdle();
+    
+    public void setInvisible(boolean visible);
+    
     public String getProtocol();
     
     public String getIdentifier();
     
+    public void setHandle(String handle);
+    
+    public String getHandle();
+    
     public String toString();
+    
+    public int getStatus();
     
 }
