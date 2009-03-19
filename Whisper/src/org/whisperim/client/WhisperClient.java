@@ -58,6 +58,7 @@ import org.whisperim.models.BuddyListModel;
 import org.whisperim.models.PluginListModel;
 import org.whisperim.plugins.Plugin;
 import org.whisperim.plugins.PluginLoader;
+import org.whisperim.prefs.PreferencesWindow;
 import org.whisperim.renderers.BuddyListRenderer;
 import org.whisperim.security.Encryptor;
 
@@ -400,17 +401,18 @@ public class WhisperClient extends JFrame implements ActionListener {
 	        Runtime.getRuntime().exec("notepad ..\\images\\About.txt");
 	        }
 	        catch(IOException e){
-	        	System.out.println("Notepad not avaiable to open about page");
+	        	System.out.println("Notepad not available to open about page");
 	        }
 	}
 	
 	//Simple method to open preference page
-	public void openPrefPage()
+	public void openPreferencesWindow()
 	{
-		Preferences prefs = new Preferences();
-		prefs.setSize(400, 500);
-		prefs.setLocation(20,20);
-		prefs.setVisible(true);
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				new PreferencesWindow();
+			}
+		});
 	}
 	
 	//Simple method to open plugins page
@@ -424,7 +426,6 @@ public class WhisperClient extends JFrame implements ActionListener {
 	}
 	
 	private void BuddiesComponentShown(ComponentEvent evt) {
-
 
 	}
 
@@ -583,10 +584,11 @@ public class WhisperClient extends JFrame implements ActionListener {
 		
 		//Preferences
 		if (actionCommand.equals(preferences_.getActionCommand())) {
-			Preferences prefs = new Preferences();
-			prefs.setSize(400, 500);
-			prefs.setLocation(20,20);
-			prefs.setVisible(true);
+			EventQueue.invokeLater(new Runnable() {
+				public void run() {
+					new PreferencesWindow();
+				}
+			});
 		}
 		
 	}

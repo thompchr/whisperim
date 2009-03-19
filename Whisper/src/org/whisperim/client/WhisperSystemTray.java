@@ -87,7 +87,7 @@ public class WhisperSystemTray {
 		    ActionListener prefListener = new ActionListener() {
 		        public void actionPerformed(ActionEvent e) {
 		            System.out.println("System Tray - Opening Preferences");
-		        	client_.openPrefPage();
+		        	client_.openPreferencesWindow();
 		        }
 		    };	
 		
