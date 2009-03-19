@@ -35,6 +35,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -74,7 +75,7 @@ import com.sun.org.apache.xml.internal.security.utils.Base64;
 public class WhisperClient extends JFrame implements ActionListener {
 
 
-	//Enums used for plugin identifcation
+	//Enums used for plugin identification
 	public static final int CONNECTION = 0;
 	public static final int LOOK_AND_FEEL = 1;
 	
@@ -111,6 +112,9 @@ public class WhisperClient extends JFrame implements ActionListener {
 	private static final String PREFERENCES_ = "Preferences"; //menu 1 third item
 	private static final String QUIT_ = "Quit"; //menu 1 fourth item
 
+	//List of Listeners used by WhisperSystemTray
+	private List<ClientListener> clientListeners_ = new ArrayList<ClientListener>();
+	
 	//second menu\\ - not used!
 	//menu 2 header
 	//private static final String ENCRYPTION_ = "Encryption"; //menu 2 first item
@@ -381,6 +385,8 @@ public class WhisperClient extends JFrame implements ActionListener {
 		
 	}
 	
+	//  Methods for Whisper System Tray  \\
+	
 	//Simple method to create a new blank IM
 	public void createNewIMWindow()
 	{
@@ -468,7 +474,10 @@ public class WhisperClient extends JFrame implements ActionListener {
 					}else{
 						openBuddies_.get(message.getFrom().toLowerCase().replace(" ", "")).getTab(message.getFrom()).enableEncryption(recKey);
 					}
-
+					
+					//Listener to update SystemTray if IM is received
+					for(ClientListener l:clientListeners_){l.messageRec(message, message.getFrom());}
+				
 				} catch (NoSuchAlgorithmException e) {
 					e.printStackTrace();
 				} catch (Base64DecodingException e) {
@@ -606,5 +615,13 @@ public class WhisperClient extends JFrame implements ActionListener {
 			//Handle a plugin that doesn't conform
 			break;
 		}
+	}
+
+	public List<ClientListener> getClientListeners() {
+		return clientListeners_;
+	}
+
+	public void setClientListeners(List<ClientListener> clientListeners_) {
+		this.clientListeners_ = clientListeners_;
 	}
 }

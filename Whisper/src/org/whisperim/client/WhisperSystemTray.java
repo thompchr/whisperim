@@ -1,6 +1,6 @@
  /**************************************************************************
- * Copyright 2009
- * Kirk Banks   				                                       *
+ * Copyright 2009                                                          *
+ * Kirk Banks   				                                           *
  *                                                                         *
  * Licensed under the Apache License, Version 2.0 (the "License");         *
  * you may not use this file except in compliance with the License.        *
@@ -30,13 +30,15 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
+//Things to do: User can change status, Mute all sounds, open account manager, minimize Whisper, Hide system Tray, *Blink with new IM*
+
 public class WhisperSystemTray {
 	
 	public static void startSystemTray(WhisperClient client){
 		
 		final WhisperClient client_ = client;
 		final TrayIcon trayIcon;
-			
+					
 		if (SystemTray.isSupported()) {
 		    SystemTray tray = SystemTray.getSystemTray();
 		    Image image = Toolkit.getDefaultToolkit().getImage("..\\images\\tray.jpg");
@@ -47,8 +49,8 @@ public class WhisperSystemTray {
 		        public void mouseExited(MouseEvent e) {}
 		        public void mousePressed(MouseEvent e) {}
 		        public void mouseReleased(MouseEvent e) {}
-		    };
-		
+		    };		    
+		    
 		    //Exit Listener for menu
 		    ActionListener exitListener = new ActionListener() {
 		        public void actionPerformed(ActionEvent e) {
@@ -76,6 +78,7 @@ public class WhisperSystemTray {
 		    //Plugins Listener for menu
 		    ActionListener pluginsListener = new ActionListener() {
 		        public void actionPerformed(ActionEvent e) {
+		            System.out.println("System Tray - Opening Plugins");
 		        	client_.openPluginsPage();
 		        }
 		    };
@@ -83,9 +86,58 @@ public class WhisperSystemTray {
 		    //Preferences Listener for menu
 		    ActionListener prefListener = new ActionListener() {
 		        public void actionPerformed(ActionEvent e) {
+		            System.out.println("System Tray - Opening Preferences");
 		        	client_.openPrefPage();
 		        }
+		    };	
+		
+		    //Minimize Whisper Client for menu
+		    ActionListener statusListener = new ActionListener() {
+		        public void actionPerformed(ActionEvent e) {
+		        	//Code to Change Status ****************
+		        	//Status Change not implemented by team yet
+		        }
 		    };
+		    
+		    //Sound Listener for menu
+		    ActionListener soundListener = new ActionListener() {
+		        public void actionPerformed(ActionEvent e) {
+		        	//Code to toggle off sound***********************
+		        }
+		    };	
+		    
+		    //Minimize Whisper Client for menu
+		    ActionListener accountListener = new ActionListener() {
+		        public void actionPerformed(ActionEvent e) {
+		        	//Code to open Account Manager****************
+		        }
+		    };
+		    
+		    //Minimize Whisper Client for menu
+		    ActionListener minimizeListener = new ActionListener() {
+		        public void actionPerformed(ActionEvent e) {
+		        	//Code to minimize Whisper Client****************
+		        	//How do I close whisper client without killing everything?
+		        	//client_.
+		        }
+		    };
+		    
+		    //Open Whisper Client from menu
+		    ActionListener openWhisperListener = new ActionListener() {
+		        public void actionPerformed(ActionEvent e) {
+		        	//Code to open Whisper Client****************
+		        	//How do I access Whisper window?
+		        }
+		    };
+		    
+		    //Hide System Tray Icon
+		    ActionListener hideTrayListener = new ActionListener() {
+		        public void actionPerformed(ActionEvent e) {
+		        	//Code to hide System Tray****************
+		        	//SystemTray.getSystemTray().remove(trayIcon);
+		        }
+		    };
+		    
 		    
 		    //New IM option on Whisper menu
 		    MenuItem newImItem = new MenuItem("New Message");
@@ -99,8 +151,16 @@ public class WhisperSystemTray {
 		    MenuItem aboutItem = new MenuItem("About");
 		    aboutItem.addActionListener(aboutListener);
 		    
+		    //Change status on menu
+		    MenuItem statusItem = new MenuItem("Change Status");
+		    statusItem.addActionListener(statusListener);
+		    
+		    //Open account manager from menu
+		    MenuItem accountItem = new MenuItem("Account Manager");
+		    accountItem.addActionListener(accountListener);
+		    
 		    //Whisper menu
-		    Menu whisperMenu = new Menu("Whisper");
+		    Menu whisperMenu = new Menu("Options");
 		    
 		    //Preferences menu
 		    Menu prefMenu = new Menu("Preferences");
@@ -113,22 +173,63 @@ public class WhisperSystemTray {
 		    MenuItem pluginsItem = new MenuItem("Plugins");
 		    pluginsItem.addActionListener(pluginsListener);
 		    
+		    //Toggle sound off and on
+		    CheckboxMenuItem soundItem = new CheckboxMenuItem("Sound");
+		    soundItem.addActionListener(soundListener);
+		    
+		    //Minimize Whisper Client Option
+		    MenuItem minimizeItem = new MenuItem("Hide Whisper");
+		    minimizeItem.addActionListener(minimizeListener);
+		    
+		    //Open Whisper Client
+		    MenuItem openWhisperItem = new MenuItem("Whisper");
+		    openWhisperItem.addActionListener(openWhisperListener);
+		    
+		    //Hide System Tray
+		    MenuItem hideTrayItem = new MenuItem("Hide System Tray");
+		    hideTrayItem.addActionListener(hideTrayListener);
+		    
 		    PopupMenu popup = new PopupMenu();
 			trayIcon = new TrayIcon(image, "Whisper", popup);     
 		    trayIcon.setImageAutoSize(true);
 		    trayIcon.addMouseListener(mouseListener);
 		
-		    //Main system tray menu      
+		    //Main system tray menu     
 	        popup.add(aboutItem);
 	        popup.addSeparator();
+	        popup.add(openWhisperItem);
 	        popup.add(whisperMenu);
+	        whisperMenu.add(minimizeItem);
 	        whisperMenu.add(newImItem);
+	        whisperMenu.add(statusItem);
 	        whisperMenu.add(pluginsItem);
+	        whisperMenu.add(accountItem);
 	        popup.add(prefMenu);
 	        prefMenu.add(prefItem);
+	        prefMenu.add(soundItem);
+	        prefMenu.add(hideTrayItem);
 	        popup.addSeparator();
 	        popup.add(exitItem);
 
+		    //Handling of listeners located in WhisperClient
+		    client_.getClientListeners().add(new ClientListener() {
+			
+				@Override
+				public void messageRec(Message m, String recIM) {
+					Image recIMImage = Toolkit.getDefaultToolkit().getImage("..\\images\\newIM.jpg");
+					trayIcon.setImage(recIMImage);
+					trayIcon.setImageAutoSize(true);
+					String temp = "New IM from " + recIM;
+					trayIcon.displayMessage("New IM from ",temp, TrayIcon.MessageType.INFO);
+				}
+
+				@Override
+				public void statusChange() {
+					//Waiting for implementation of Status Change to implement this method
+					
+				}
+			});
+	        
 		    try {
 		        tray.add(trayIcon);
 		    } catch (AWTException e) {
