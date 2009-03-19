@@ -10,23 +10,27 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JToggleButton;
 import javax.swing.UIManager;
+import javax.swing.filechooser.FileFilter;
 
 import org.jdesktop.layout.GroupLayout;
 
@@ -69,7 +73,7 @@ public class Whiteboard extends JFrame{
 	  {
 	    public void actionPerformed(ActionEvent e)
 	    {
-	        //clear canvas
+	        canvas.clear();
 	    }
 	  }
 	  
@@ -77,7 +81,30 @@ public class Whiteboard extends JFrame{
 	  {
 	    public void actionPerformed(ActionEvent e)
 	    {
-	        System.exit(0);
+	         File file = null;
+	         JFileChooser fileChooser = new JFileChooser ();
+
+	         fileChooser.setCurrentDirectory (new File ("."));
+	         fileChooser.addChoosableFileFilter();
+
+	         int result = fileChooser.showSaveDialog(null);
+	         
+	         if (result == JFileChooser.APPROVE_OPTION) 
+	         {
+	             file = fileChooser.getSelectedFile();
+	             if (file.exists ()) 
+	             {
+	                 int response = JOptionPane.showConfirmDialog (null,
+	                   "Overwrite existing file?","Confirm Overwrite",
+	                    JOptionPane.OK_CANCEL_OPTION,
+	                    JOptionPane.QUESTION_MESSAGE);
+	             
+		             if(response == JOptionPane.OK_OPTION)
+		            	 canvas.save(file);
+	             }
+	             else
+	            	 canvas.save(file);
+	         }
 	    }
 	  }
 	  
