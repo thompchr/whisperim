@@ -83,28 +83,17 @@ public class Whiteboard extends JFrame{
 	    {
 	         File file = null;
 	         JFileChooser fileChooser = new JFileChooser ();
-
+	         WhiteboardFileFilter whiteboardFileFilter = new WhiteboardFileFilter();
+	         
 	         fileChooser.setCurrentDirectory (new File ("."));
-	         fileChooser.addChoosableFileFilter(new FileFilter(){
-
-				@Override
-				public boolean accept(File f) {
-					
-					return true;
-				}
-
-				@Override
-				public String getDescription() {
-					return "ALL FILES TEMP";
-				}
-	        	 
-	         });
-
+	         fileChooser.setFileFilter(whiteboardFileFilter);
+	               
 	         int result = fileChooser.showSaveDialog(null);
 	         
 	         if (result == JFileChooser.APPROVE_OPTION) 
 	         {
 	             file = fileChooser.getSelectedFile();
+	             		
 	             if (file.exists ()) 
 	             {
 	                 int response = JOptionPane.showConfirmDialog (null,
