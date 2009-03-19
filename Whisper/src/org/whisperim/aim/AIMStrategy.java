@@ -22,6 +22,7 @@ import org.whisperim.client.Buddy;
 import org.whisperim.client.ConnectionManager;
 import org.whisperim.client.ConnectionStrategy;
 import org.whisperim.client.Message;
+import org.whisperim.plugins.Plugin;
 
 
 /**
@@ -32,17 +33,19 @@ import org.whisperim.client.Message;
  */
 public class AIMStrategy implements ConnectionStrategy {
 	
-	AIMSession session_;
-	ConnectionManager manager_;
-	String protocol_ = "aol";
-	String localHandle_;
+	private AIMSession session_;
+	private ConnectionManager manager_;
+	private String protocol_ = "AIM";
+	private String localHandle_;
+	private String iconLocation_ = "..\\images\\aim_icon_small.png";
+	private String name_ = "AIM Connection";
+	private int status_ = ConnectionStrategy.OFFLINE;
 	
-	public AIMStrategy(ConnectionManager manager, String handle){
-		manager_ = manager;
-		session_ = new AIMSession (this);
-		localHandle_ = handle;
+	public AIMStrategy(){
+
 	}
 
+	
 	@Override
 	public void receiveMessage(Message message) {
 		manager_.messageReceived(message);
@@ -60,6 +63,9 @@ public class AIMStrategy implements ConnectionStrategy {
 
 	@Override
 	public void signOn(ConnectionManager cm, String username, String password) {
+		session_ = new AIMSession(this);
+		localHandle_ = username;
+		manager_ = cm;
 		session_.addOperation(AIMOperation.createSignIn(username, password));
 		session_.setLocalHandle(username);
 	}
@@ -71,7 +77,16 @@ public class AIMStrategy implements ConnectionStrategy {
 
     @Override
     public void statusUpdate(String update){
-        manager_.statusUpdate(update);
+        manager_.statusUpdate(update, getIdentifier());
+        if (update.equalsIgnoreCase(AIMSession.INVALID_USERNAME_OR_PASSWORD)){
+        	status_ = ConnectionStrategy.INVALID_PASSWORD;
+        }else if(update.equalsIgnoreCase(AIMSession.RATE_LIMITED)){
+        	status_ = ConnectionStrategy.RATE_LIMITED;
+        }else if (update.equalsIgnoreCase(AIMSession.SIGNED_IN)){
+        	status_ = ConnectionStrategy.ACTIVE;
+        }else if (update.equalsIgnoreCase(AIMSession.SERVICE_UNAVAILABLE)){
+        	status_ = ConnectionStrategy.SERVICE_UNAVAILABLE;
+        }
     }
 
     public void setAwayMessage(String message){
@@ -91,6 +106,63 @@ public class AIMStrategy implements ConnectionStrategy {
 	@Override
 	public String toString(){
 		return protocol_ + ":" + localHandle_;
+	}
+
+	@Override
+	public String getPluginIconLocation() {
+		return iconLocation_;
+	}
+
+	@Override
+	public String getPluginName() {
+		return name_;
+	}
+
+	@Override
+	public void setIconLocation(String location) {
+		iconLocation_ = location;
+	}
+
+	@Override
+	public void setPluginName(String name) {
+		name_ = name;
+	}
+	
+	@Override
+	public String getHandle() {
+		return localHandle_;
+	}
+
+
+	@Override
+	public int getStatus() {
+		return status_;
+	}
+
+
+	@Override
+	public void setHandle(String handle) {
+		localHandle_ = handle;
+		
+	}
+
+
+	@Override
+	public void setIdle() {
+		session_.addOperation(AIMOperation.createSatusChange(AIMOperation.STATUS_IDLE, ""));
+		
+	}
+
+
+	@Override
+	public void setInvisible(boolean visible) {
+		if (visible){
+			session_.addOperation(AIMOperation.createSatusChange(AIMOperation.STATUS_INVISIBLE, ""));
+		}else{
+			session_.addOperation(AIMOperation.createSatusChange(AIMOperation.STATUS_VISIBLE, ""));
+		}
+		
+		
 	}
 
 
