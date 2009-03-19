@@ -62,6 +62,8 @@ public class WhisperIMPanel extends JPanel implements ActionListener {
     private static final String WHISPERBOT_ON_ = "WhisperBot: On";
     private static final String TOGGLE_WHISPERBOT_ = "Toggle WhisperBot";
     
+    private static final String START_WHITEBOARD_ = "Start Whiteboard";
+    
     private ImageIcon serviceIcon_;
     private JLabel buddyName_;
     private JScrollPane talkAreaScroll_;
@@ -73,7 +75,7 @@ public class WhisperIMPanel extends JPanel implements ActionListener {
     private JButton sendKeyBtn_;
 	private JCheckBoxMenuItem logging_;
 	private JToggleButton toggleWhisperBot_;
-	
+	private JButton whiteboardBtn_;
 	
 
     private Logger log_;
@@ -207,7 +209,11 @@ public class WhisperIMPanel extends JPanel implements ActionListener {
 	        sendBtn_.setActionCommand(SEND_);
 	        sendBtn_.addActionListener(this); 
 
-	  
+	        whiteboardBtn_ = new JButton();
+	        whiteboardBtn_.setText(START_WHITEBOARD_);
+	        whiteboardBtn_.setActionCommand(START_WHITEBOARD_);
+	        whiteboardBtn_.addActionListener(this); 
+	        
 	        layout.setHorizontalGroup(
 		            layout.createParallelGroup(GroupLayout.LEADING)
 		            .add(layout.createSequentialGroup()
@@ -219,6 +225,7 @@ public class WhisperIMPanel extends JPanel implements ActionListener {
 				                    .add(layout.createSequentialGroup()
 				                    		.add(toggleWhisperBot_)
 				                    		.add(toggleEncryption_)
+				                    		.add(whiteboardBtn_)
 				                    		.addPreferredGap(LayoutStyle.RELATED)
 				                    		.add(sendKeyBtn_)
 				                    		.addPreferredGap(LayoutStyle.RELATED, GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
@@ -241,6 +248,7 @@ public class WhisperIMPanel extends JPanel implements ActionListener {
 			                .add(layout.createParallelGroup()
 			                		.add(toggleWhisperBot_)
 			                		.add(toggleEncryption_)
+			                		.add(whiteboardBtn_)
 			                		.add(sendKeyBtn_)
 			                		.add(sendBtn_))
 			                .addContainerGap()
@@ -294,7 +302,13 @@ public class WhisperIMPanel extends JPanel implements ActionListener {
 	        		talkArea_.append("An error has occurred sending the key.\n");
 	        	}
 	    	}
-
+	    	else if (actionCommand.equals(whiteboardBtn_.getActionCommand())) {
+	    		try{
+	        		Whiteboard w = new Whiteboard(buddy_.getHandle(),500,500);
+	        	}catch (Exception ex){
+	        		talkArea_.append("An error has occurred starting the whiteboard.\n");
+	        	}
+	    	}
     	
     		else {
     			//problem with button interface
