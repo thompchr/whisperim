@@ -5,6 +5,12 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.io.File;
+import java.io.IOException;
+import javax.imageio.ImageIO;
+import javax.swing.JFileChooser;
+
+import java.awt.image.BufferedImage;
 
 public class WhiteboardCanvas extends Canvas{
 	public WhiteboardCanvas()
@@ -22,13 +28,24 @@ public class WhiteboardCanvas extends Canvas{
 	    g2.drawString ("CANVAS!!!", 10, Height/2);
 	 }
 	
-	  void clear ()
-	  {
-		Rectangle r = new Rectangle();
-		
+	  public void clear()
+	  {		
 	    Graphics2D g2 = (Graphics2D) this.getGraphics();   
-	    canvas.setColor (getBackground());
-	    canvas.fillRect (r.x, rectangle.y,
-	                     rectangle.width, rectangle.height);
+	    g2.setColor (Color.WHITE);
+	    g2.fillRect (0,0,470,430);
+	  }
+	  
+	  public void save(File f)
+	  {
+		  try
+		  {
+			  BufferedImage image = new BufferedImage(470, 430, BufferedImage.TYPE_INT_ARGB);
+			  
+			  ImageIO.write(image, "PNG", f);
+		  } 
+		  catch (IOException e) 
+		  {
+			  
+		  }
 	  }
 }
