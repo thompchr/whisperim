@@ -137,8 +137,7 @@ public class ConnectionManager {
 		switch(strategy){
 			case 0:
 			{
-				cs = new AIMStrategy(this, handle);
-				strategies_.put(cs.getIdentifier(), cs);
+				cs = new AIMStrategy();
 				break;
 			}
 			default:
@@ -153,6 +152,7 @@ public class ConnectionManager {
 		myPublicKey_ = pubKey;
 		login_ = login;
 		cs.signOn(this, handle, password);
+		strategies_.put(cs.getIdentifier(), cs);
 		registeredStrategies_.put(cs.getProtocol(), cs);
 
 	}
