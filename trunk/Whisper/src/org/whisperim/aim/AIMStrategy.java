@@ -77,7 +77,7 @@ public class AIMStrategy implements ConnectionStrategy {
 
     @Override
     public void statusUpdate(String update){
-        manager_.statusUpdate(update, getIdentifier());
+        //manager_.statusUpdate(update, getIdentifier());
         if (update.equalsIgnoreCase(AIMSession.INVALID_USERNAME_OR_PASSWORD)){
         	status_ = ConnectionStrategy.INVALID_PASSWORD;
         }else if(update.equalsIgnoreCase(AIMSession.RATE_LIMITED)){
