@@ -15,7 +15,7 @@
  **************************************************************************/
 
 /*
- * PreferencesWindowSecurity.java
+ * PreferencesWindowAccounts.java
  */
 
 package org.whisperim.prefs;
@@ -25,14 +25,14 @@ import java.awt.Color;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-public class PreferencesWindowSecurity extends JPanel {
+public class PreferencesWindowAccounts extends JPanel {
 	
 	JButton label_;
 	
-	PreferencesWindowSecurity() {
+	PreferencesWindowAccounts() {
 		
 		setBackground(Color.white);
-		label_ = new JButton("security shit");
+		label_ = new JButton("accounts shit");
 		add(label_);	
 		
 	}

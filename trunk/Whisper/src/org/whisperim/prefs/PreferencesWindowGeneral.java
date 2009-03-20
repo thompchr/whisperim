@@ -23,6 +23,8 @@
 
 package org.whisperim.prefs;
 
+import java.awt.Color;
+
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
@@ -31,7 +33,8 @@ public class PreferencesWindowGeneral extends JPanel {
 	JButton label_;
 	
 	PreferencesWindowGeneral() {
-	
+		
+		setBackground(Color.white);
 		label_ = new JButton("prefs shit");
 		add(label_);	
 		

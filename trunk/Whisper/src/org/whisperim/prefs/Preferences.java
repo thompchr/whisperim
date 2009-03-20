@@ -14,27 +14,39 @@
  * limitations under the License.                                          *
  **************************************************************************/
 
+
 /*
- * PreferencesWindowSecurity.java
+ * Preferences.java
  */
 
 package org.whisperim.prefs;
 
-import java.awt.Color;
-
-import javax.swing.JButton;
-import javax.swing.JPanel;
-
-public class PreferencesWindowSecurity extends JPanel {
+/**
+ * @author Cory Plastek
+ * 
+ */
+class Preferences {
 	
-	JButton label_;
 	
-	PreferencesWindowSecurity() {
+	private static Preferences instance = null;
+	
+	protected Preferences() {
+	    
+		//load prefs from xml file
+		//if prefs doesn't exist, initialize prefs variables to defaults and store to xml file
 		
-		setBackground(Color.white);
-		label_ = new JButton("security shit");
-		add(label_);	
+		//on close of prefswindow should save all prefs to xml
 		
 	}
 	
+	public static Preferences getInstance() {
+		if(instance == null) {
+			instance = new Preferences();
+		}
+		return instance;
+	}
+	public Object clone() throws CloneNotSupportedException {
+		throw new CloneNotSupportedException();
+	}
+
 }

@@ -15,52 +15,52 @@
  **************************************************************************/
 package org.whisperim.renderers;
 
+import java.awt.Color;
 import java.awt.Component;
-import java.util.Hashtable;
+import java.awt.Dimension;
+import java.awt.Font;
 
 import javax.swing.DefaultListCellRenderer;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.ListCellRenderer;
-
-import org.whisperim.prefs.PreferencesWindow;
 
 /**
  * @author Cory Plastek
  *
  */
-public class PreferencesWindowCategoryRenderer implements ListCellRenderer {
-	protected DefaultListCellRenderer defaultRenderer = new DefaultListCellRenderer();
+@SuppressWarnings("serial")
+public class PreferencesWindowCategoryRenderer extends DefaultListCellRenderer {
+
+	final Font normalFont_ = new Font("Heletica", Font.PLAIN, 12);
+	final Font selectedFont_ = new Font("Helvetica", Font.BOLD, 12);
+	JLabel renderer_;
+	Dimension rendererSize_ = new Dimension(100,25);
 	
-	/** Returns an ImageIcon, or null if the path was invalid. */
-	protected ImageIcon createImageIcon(String path, String description) {
-		java.net.URL imgURL = getClass().getResource(path);
-		if (imgURL != null) {
-			return new ImageIcon(imgURL, description);
-		} else {
-			System.err.println("Couldn't find file: " + path);
-			return null;
-		}
+	public PreferencesWindowCategoryRenderer() {
+		super();
+		setOpaque(true);
+		setHorizontalAlignment(LEFT);
+		setVerticalAlignment(CENTER);
 	}
 	
-	/*
-	private ImageIcon serviceIcon_ = new ImageIcon("..\\images\\default.ico");
-	private ImageIcon aimIcon_ = new ImageIcon("..\\images\\aim_icon_small.png");
-	*/
+	public Component getListCellRendererComponent(JList list, Object category, int index, boolean isSelected, boolean hasFocus) {
+
+		renderer_ = (JLabel) super.getListCellRendererComponent(list, category, index, isSelected, hasFocus);
+		renderer_.setPreferredSize(rendererSize_);
+		renderer_.setMinimumSize(rendererSize_);
 		
-	public Component getListCellRendererComponent(JList list, Object buddy, int index, boolean isSelected, boolean hasFocus) {
-
-		JLabel renderer = (JLabel) defaultRenderer.getListCellRendererComponent(list, buddy, index, isSelected, hasFocus);
-
-		    if (((Buddy) buddy).getProtocolID().equals("aol")) {
-		      //buddy is on aim
-		      serviceIcon_ =  aimIcon_;
-		    } else {
-		      //use default service icon
-		    }
-		    renderer.setIcon(serviceIcon_);
-		    return renderer;
+		
+		list.setBackground(new Color(239,239,239));
+		list.setBorder(null);
+		list.setFont(normalFont_);
+		
+        if(isSelected) {
+        	setFont(selectedFont_);
+        	setBackground(Color.white);
+        	setForeground(Color.black);
+        	setBorder(noFocusBorder);
+        }
+		
+        return renderer_;
 	}
 }
