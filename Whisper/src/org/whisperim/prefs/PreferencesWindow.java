@@ -27,6 +27,7 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 
+import javax.swing.BoxLayout;
 import javax.swing.JApplet;
 import javax.swing.JFrame;
 import javax.swing.JList;
@@ -37,6 +38,8 @@ import javax.swing.ListSelectionModel;
 import javax.swing.UIManager;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+
+import org.whisperim.renderers.PreferencesWindowCategoryRenderer;
 
 /**
  *
@@ -53,14 +56,15 @@ public class PreferencesWindow extends JFrame implements ListSelectionListener {
 	private static final String SECURITY_ = "Security";
 	
 	
-	private static JList categories_;
-	private static JScrollPane categoriesScrollPane_;
+	private JList categories_;
+	private JScrollPane categoriesScrollPane_;
 	private JPanel generalPrefs_;
 	private JPanel accountPrefs_;
 	private JPanel securityPrefs_;
+	private JPanel mainContent_;
 	private JPanel content_;
-	private static JScrollPane contentScrollPane_;
-	private static JSplitPane splitPane_;
+	private Dimension categoriesSize_ = new Dimension(125,500);
+	private Dimension contentSize_ = new Dimension(550,500);
 	
 	private CardLayout contentLayout_;
 	
@@ -84,49 +88,47 @@ public class PreferencesWindow extends JFrame implements ListSelectionListener {
 		//accounts
 		//security
 		categories_ = new JList(categoriesList_);
+		
+		//use custom cell renderer
+		PreferencesWindowCategoryRenderer categoryRenderer = new PreferencesWindowCategoryRenderer();
+		categoryRenderer.setSize(categoriesSize_);
+		categories_.setCellRenderer(categoryRenderer);
 		categories_.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		categories_.setSelectedIndex(0);
-		categories_.setPreferredSize(new Dimension(150,500));
-		categories_.addListSelectionListener(this);
+		categories_.setMinimumSize(categoriesSize_);
+		categories_.setPreferredSize(categoriesSize_);
+		categories_.setAlignmentY(TOP_ALIGNMENT);
+		categories_.addListSelectionListener(this);	
 		
-		
-		/*do we really need a scroll pane? probably not now - possibly later if we add enough categories
+		//do we really need a scroll pane? not really, but its the easiest way to get it to look the way we want
 		categoriesScrollPane_ = new JScrollPane(categories_);
-		categoriesScrollPane_.setPreferredSize(new Dimension(100,500));
+		categoriesScrollPane_.setPreferredSize(categoriesSize_);
 		categoriesScrollPane_.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
 		categoriesScrollPane_.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		*/
+		categoriesScrollPane_.setBorder(null);
+		
 		
 		generalPrefs_ = new PreferencesWindowGeneral();
-		//accountPrefs_ = new PreferencesWindowAccounts();
+		accountPrefs_ = new PreferencesWindowAccounts();
 		securityPrefs_ = new PreferencesWindowSecurity();
 		
 		content_ = new JPanel(new CardLayout());
-		content_.setPreferredSize(new Dimension(550,500));
+		content_.setPreferredSize(contentSize_);
+		content_.setMinimumSize(contentSize_);
+		content_.setAlignmentY(CENTER_ALIGNMENT);
+		
 		content_.add(generalPrefs_, GENERAL_);
-		//content_.add(accountPrefs_, ACCOUNTS_);
+		content_.add(accountPrefs_, ACCOUNTS_);
 		content_.add(securityPrefs_, SECURITY_);
 		
 		contentLayout_ = (CardLayout)(content_.getLayout());
-		
 		showPrefs(GENERAL_);
 		
-		/*while the categories scroll pane is optional, the content scroll is not
-		//scroll pane is used so that if one section contains more options than the fixed preferences
-		//window can show, it can be viewed by scrolling
-		contentScrollPane_ = new JScrollPane(content_);
-		contentScrollPane_.setPreferredSize(new Dimension(500,600));
-		*/
-		
-		//organize the categories and content panes in a split pane
-		//categories on the left side
-		//content pane on the right side
-		splitPane_ = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, categories_, content_);
-		splitPane_.setDividerLocation(150);
-
-		
-		Container mainContent_ = getContentPane();
-		mainContent_.add(splitPane_);
+		mainContent_ = new JPanel();
+		mainContent_.setLayout(new BoxLayout(mainContent_, BoxLayout.LINE_AXIS));
+		mainContent_.add(categoriesScrollPane_);
+		mainContent_.add(content_);
+		this.add(mainContent_);
 		this.pack();
 		this.setVisible(true);
 		
