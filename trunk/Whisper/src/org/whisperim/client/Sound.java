@@ -16,37 +16,54 @@
  **************************************************************************/
 package org.whisperim.client;
 
-import sun.applet.Main;
+import java.io.File;
+import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
+import javax.sound.sampled.DataLine;
+import javax.sound.sampled.SourceDataLine;
 
 public class Sound implements ClientListener {
-
-	//This may not work, still working on implementing this
-	  public synchronized void playSound(final String url) {
-		    new Thread(new Runnable() {
-		      public void run() {
-		        try {
-		          Clip clip = AudioSystem.getClip();
-		          AudioInputStream inputStream = AudioSystem.getAudioInputStream(Main.class.getResourceAsStream("..\\images\\" + url));
-		          clip.open(inputStream);
-		          clip.start(); 
-		        } catch (Exception e) {
-		          System.err.println(e.getMessage());
-		        }
-		      }
-		    }).start();
-		  }	
 	
+	public void playSound(String name){
+		try{
+			File soundFile = new File("..\\sounds\\" + name);
+			AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(soundFile);
+			audioInputStream = AudioSystem.getAudioInputStream(soundFile);
+			AudioFormat audioFormat = audioInputStream.getFormat();
+			DataLine.Info dataLineInfo = new DataLine.Info(SourceDataLine.class, audioFormat);
+		
+			byte tempBuffer[] = new byte[100000];
+		    
+			try{
+		      SourceDataLine sourceDataLine = (SourceDataLine)AudioSystem.getLine(dataLineInfo);
+		      sourceDataLine.open();
+		      sourceDataLine.start();
+		      audioInputStream.read(tempBuffer,0,tempBuffer.length);
+		      sourceDataLine.write(tempBuffer, 0,tempBuffer.length);
+		      sourceDataLine.drain();
+		      sourceDataLine.close();
+		    }catch (Exception e) {
+		      System.err.println(e);
+		    }		  
+	    }catch (Exception e) {
+		      System.err.println(e);
+		}
+	}
+
 	@Override
 	public void messageRec(Message message, String from) {
-		playSound("receiveIM.mp3");	
+		playSound("IM.wav");
 	}
 
 	@Override
 	public void statusChange() {
 		// TODO Auto-generated method stub
 		
-	} 
+	}
+
+	@Override
+	public void sendMessage() {
+		playSound("IM.wav");
+	}
 }

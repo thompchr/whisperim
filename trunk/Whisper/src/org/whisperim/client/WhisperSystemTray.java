@@ -30,7 +30,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-//Things to do: User can change status, Mute all sounds, open account manager, *Blink with new IM*
+//Things to do: User can change status, Mute all sounds, open account manager
 
 public class WhisperSystemTray implements Runnable{
 	
@@ -133,10 +133,9 @@ public class WhisperSystemTray implements Runnable{
 		    //Hide System Tray Icon
 		    ActionListener hideTrayListener = new ActionListener() {
 		        public void actionPerformed(ActionEvent e) {
-		        	SystemTray.getSystemTray().remove(trayIcon);
+		            	SystemTray.getSystemTray().remove(trayIcon);
 		        }
 		    };
-		    
 		    
 		    //New IM option on Whisper menu
 		    MenuItem newImItem = new MenuItem("New Message");
@@ -229,6 +228,12 @@ public class WhisperSystemTray implements Runnable{
 					//Waiting for implementation of Status Change to implement this method
 					
 				}
+
+				@Override
+				public void sendMessage() {
+					// TODO Auto-generated method stub
+					
+				}
 			});
 	        
 		    try {
@@ -250,10 +255,10 @@ public class WhisperSystemTray implements Runnable{
   		    	try{
   		    			Thread.currentThread().sleep(800);
 		    	  }catch(Exception e){}
-		    	  trayIcon.setImage(trayIMImage);
+		    	trayIcon.setImage(trayIMImage);
 	  		    try{
   		    			Thread.currentThread().sleep(800);
 		    	  }catch(Exception e){}
 	    	}	
-	}  
+	} 
 }
