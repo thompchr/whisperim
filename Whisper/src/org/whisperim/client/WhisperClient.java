@@ -18,6 +18,7 @@ package org.whisperim.client;
 
 import java.awt.EventQueue;
 import java.awt.Point;
+import java.awt.SystemTray;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -136,8 +137,10 @@ public class WhisperClient extends JFrame implements ActionListener {
 		
 		this.setTitle(WHISPER_);
 		resetTimer(5000);   
-		
+				
 		setLocation(new Point(Toolkit.getDefaultToolkit().getScreenSize().width / 3,Toolkit.getDefaultToolkit().getScreenSize().height / 4));
+		
+		sound.playSound("Open.wav");
 		
 		//this.setAwayMessage("Away!!!", true);
 
@@ -515,8 +518,9 @@ public class WhisperClient extends JFrame implements ActionListener {
 	}
 
 	public void sendMessage (Message message){
+		//Listener to update sound if IM is received
+		//for(ClientListener l:clientListeners_){l.sendMessage();}
 		manager_.sendMessage(message);
-
 		resetTimer(5000);
 	}
 

@@ -21,6 +21,8 @@ public interface ClientListener {
 
 	public void messageRec(Message message, String from);
 	
+	public void sendMessage();
+	
 	public void statusChange();
 	
 }
