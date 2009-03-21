@@ -53,6 +53,7 @@ public class Sound implements ClientListener {
 
 	@Override
 	public void messageRec(Message message, String from) {
+		//if(true){};
 		playSound("IM.wav");
 	}
 
