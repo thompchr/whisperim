@@ -30,7 +30,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-//Things to do: User can change status, Mute all sounds, open account manager
+//Things to do: User can change status, Mute all sounds from tray, open account manager
 
 public class WhisperSystemTray implements Runnable{
 	
@@ -40,7 +40,7 @@ public class WhisperSystemTray implements Runnable{
 	
 	public static void startSystemTray(WhisperClient client){
 		
-		final WhisperClient client_ = client;
+		final WhisperClient client_= client;
 					
 		if (SystemTray.isSupported()) {
 		    SystemTray tray = SystemTray.getSystemTray();
@@ -119,14 +119,15 @@ public class WhisperSystemTray implements Runnable{
 		    //Mute all sounds from tray
 		    ActionListener soundListener = new ActionListener() {
 		        public void actionPerformed(ActionEvent e) {
-		        	//Code to mute all sounds
+					client_.toggleSound();
+					
 		        }
 		    };	
 		    
 		    //Open Account Listener from tray
 		    ActionListener accountListener = new ActionListener() {
 		        public void actionPerformed(ActionEvent e) {
-		        	//Waiting for code to be commited to know what to call to open Account Manager     	
+		        	client_.openAccountsPage();    	
 		        }
 		    };
 		    
@@ -202,7 +203,7 @@ public class WhisperSystemTray implements Runnable{
 		    //Toggle sound off and on
 		    CheckboxMenuItem soundItem = new CheckboxMenuItem("Sound");
 		    soundItem.addActionListener(soundListener);
-		    soundItem.setState(true);
+		    soundItem.setState(client_.getSound_());
 		    
 		    //Minimize Whisper Client Option
 		    MenuItem minimizeItem = new MenuItem("Hide Whisper");
@@ -245,7 +246,7 @@ public class WhisperSystemTray implements Runnable{
 		    client_.getClientListeners().add(new ClientListener() {
 			
 				@Override
-				public void messageRec(Message m, final String recIM) {    	
+				public void messageRec(WhisperClient client, Message m, final String recIM) {    	
 	  		    	String temp = "New IM from " + recIM;
 	  		    	trayIcon.displayMessage("New IM",temp, TrayIcon.MessageType.INFO);
 
@@ -261,7 +262,7 @@ public class WhisperSystemTray implements Runnable{
 				}
 
 				@Override
-				public void sentMessage() {
+				public void sentMessage(WhisperClient client) {
 					// TODO Auto-generated method stub
 					
 				}

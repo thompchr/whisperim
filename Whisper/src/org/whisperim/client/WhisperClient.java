@@ -143,7 +143,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 				
 		setLocation(new Point(Toolkit.getDefaultToolkit().getScreenSize().width / 3,Toolkit.getDefaultToolkit().getScreenSize().height / 4));
 		
-		sound.playSound("Open.wav");
+		sound.playSound(this, "Open.wav");
 		
 		//this.setAwayMessage("Away!!!", true);
 
@@ -294,7 +294,6 @@ public class WhisperClient extends JFrame implements ActionListener {
 				if (e.getSource() instanceof ListModel){
 					buddyList_.setModel((ListModel) e.getSource());
 				}
-
 			}
 
 			@Override
@@ -420,21 +419,19 @@ public class WhisperClient extends JFrame implements ActionListener {
 	//Simple method to open preference page
 	public void openPreferencesWindow()
 	{
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				new PreferencesWindow();
-			}
-		});
+		new PreferencesWindow();
 	}
 	
 	//Simple method to open plugins page
 	public void openPluginsPage()
 	{
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				new WhisperPluginManagerWindow(pluginLoader_, plm_);
-			}
-		});
+		new WhisperPluginManagerWindow(pluginLoader_, plm_);
+	}
+	
+	//Simple method to open Account Manager
+	public void openAccountsPage()
+	{
+		//Waiting for code to be commited to know what to call to open Account Manager 
 	}
 	
 	private void BuddiesComponentShown(ComponentEvent evt) {
@@ -490,7 +487,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 					}
 					
 					//Listener to update SystemTray if IM is received
-					for(ClientListener l:clientListeners_){l.messageRec(message, message.getFrom());}
+					for(ClientListener l:clientListeners_){l.messageRec(this, message, message.getFrom());}
 				
 				} catch (NoSuchAlgorithmException e) {
 					e.printStackTrace();
@@ -521,13 +518,13 @@ public class WhisperClient extends JFrame implements ActionListener {
 			}
 
 		//Listener to update SystemTray if IM is received
-		for(ClientListener l:clientListeners_){l.messageRec(message, message.getFrom());}
+		for(ClientListener l:clientListeners_){l.messageRec(this, message, message.getFrom());}
 		}
 	}
 
 	public void sendMessage (Message message){
 		//Listener to update sound if IM is received
-		for(ClientListener l:clientListeners_){l.sentMessage();}
+		for(ClientListener l:clientListeners_){l.sentMessage(this);}
 		manager_.sendMessage(message);
 		resetTimer(5000);
 	}
@@ -567,6 +564,14 @@ public class WhisperClient extends JFrame implements ActionListener {
 		manager_.setAwayMessage(message);
 	}
 
+	public void toggleSound(){
+		if(sound_.isSelected()){
+			sound_.setSelected(true);
+		}
+		else {
+			sound_.setSelected(false);
+		}
+	}
 
 	public void actionPerformed(ActionEvent e) {
 		String actionCommand = e.getActionCommand();
@@ -604,6 +609,11 @@ public class WhisperClient extends JFrame implements ActionListener {
 			});
 		}
 		
+		//Sound
+		if (actionCommand.equals(sound_.getActionCommand())) {
+			toggleSound();
+			
+		}
 	}
 	
 	/**
@@ -638,5 +648,13 @@ public class WhisperClient extends JFrame implements ActionListener {
 
 	public void setClientListeners(List<ClientListener> clientListeners_) {
 		this.clientListeners_ = clientListeners_;
+	}
+
+	public void setSound_(JCheckBoxMenuItem sound_) {
+		this.sound_ = sound_;
+	}
+
+	public boolean getSound_() {
+		return sound_.getState();
 	}
 }
