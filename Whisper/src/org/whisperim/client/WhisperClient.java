@@ -129,6 +129,8 @@ public class WhisperClient extends JFrame implements ActionListener {
 	public WhisperClient(ConnectionManager manager) {
 		initComponents();
 		WhisperSystemTray.startSystemTray(this);
+		Sound sound = new Sound();
+		getClientListeners().add(sound);
 		manager_ = manager;
 		manager_.setClient(this);
 		
@@ -487,8 +489,6 @@ public class WhisperClient extends JFrame implements ActionListener {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-
-
 			}
 		}else {   		
 			//It would be really great if we could allow system messages to be passed around
@@ -509,8 +509,9 @@ public class WhisperClient extends JFrame implements ActionListener {
 				openBuddies_.get(message.getFrom().toLowerCase().replace(" ", "")).getTab(message.getFrom()).receiveMsg(message);
 			}
 
+		//Listener to update SystemTray if IM is received
+		for(ClientListener l:clientListeners_){l.messageRec(message, message.getFrom());}
 		}
-
 	}
 
 	public void sendMessage (Message message){
