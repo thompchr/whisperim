@@ -24,7 +24,7 @@ import javax.sound.sampled.Clip;
 public class Sound implements ClientListener {
 
 	//This may not work, still working on implementing this
-	  public static synchronized void playSound(final String url) {
+	  public synchronized void playSound(final String url) {
 		    new Thread(new Runnable() {
 		      public void run() {
 		        try {
@@ -41,7 +41,7 @@ public class Sound implements ClientListener {
 	
 	@Override
 	public void messageRec(Message message, String from) {
-		Sound.playSound("receiveIM.mp3");	
+		playSound("receiveIM.mp3");	
 	}
 
 	@Override

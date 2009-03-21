@@ -30,14 +30,17 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-//Things to do: User can change status, Mute all sounds, open account manager, Hide system Tray, *Blink with new IM*
+//Things to do: User can change status, Mute all sounds, open account manager, *Blink with new IM*
 
-public class WhisperSystemTray {
+public class WhisperSystemTray implements Runnable{
+	
+	private static TrayIcon trayIcon = null;
+	final Image recIMImage = Toolkit.getDefaultToolkit().getImage("..\\images\\newIM.jpg");
+    final Image trayIMImage = Toolkit.getDefaultToolkit().getImage("..\\images\\tray.jpg");
 	
 	public static void startSystemTray(WhisperClient client){
 		
 		final WhisperClient client_ = client;
-		final TrayIcon trayIcon;
 					
 		if (SystemTray.isSupported()) {
 		    SystemTray tray = SystemTray.getSystemTray();
@@ -130,7 +133,7 @@ public class WhisperSystemTray {
 		    //Hide System Tray Icon
 		    ActionListener hideTrayListener = new ActionListener() {
 		        public void actionPerformed(ActionEvent e) {
-		        	//SystemTray.getSystemTray().remove(trayIcon);
+		        	SystemTray.getSystemTray().remove(trayIcon);
 		        }
 		    };
 		    
@@ -211,14 +214,16 @@ public class WhisperSystemTray {
 		    client_.getClientListeners().add(new ClientListener() {
 			
 				@Override
-				public void messageRec(Message m, String recIM) {
-					Image recIMImage = Toolkit.getDefaultToolkit().getImage("..\\images\\newIM.jpg");
-					trayIcon.setImage(recIMImage);
-					trayIcon.setImageAutoSize(true);
-					String temp = "New IM from " + recIM;
-					trayIcon.displayMessage("New IM from ",temp, TrayIcon.MessageType.INFO);
-				}
+				public void messageRec(Message m, final String recIM) {    	
+	  		    	String temp = "New IM from " + recIM;
+	  		    	trayIcon.displayMessage("New IM",temp, TrayIcon.MessageType.INFO);
 
+	  		      Runnable runnable = new WhisperSystemTray();
+	  		      Thread thread = new Thread(runnable);
+	  		      thread.start();
+	  		      Thread.yield();
+				}
+				
 				@Override
 				public void statusChange() {
 					//Waiting for implementation of Status Change to implement this method
@@ -236,4 +241,19 @@ public class WhisperSystemTray {
 		    //  System Tray not supported by OS
 		}
 	}
+
+	//Run method is used in a thread to blink tray icon on new message received
+	@Override
+	public void run() {
+	    	for(int i=0; i<5; i++){
+  		    	trayIcon.setImage(recIMImage);
+  		    	try{
+  		    			Thread.currentThread().sleep(800);
+		    	  }catch(Exception e){}
+		    	  trayIcon.setImage(trayIMImage);
+	  		    try{
+  		    			Thread.currentThread().sleep(800);
+		    	  }catch(Exception e){}
+	    	}	
+	}  
 }
