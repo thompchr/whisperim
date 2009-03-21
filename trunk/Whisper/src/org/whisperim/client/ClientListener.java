@@ -19,9 +19,9 @@ package org.whisperim.client;
 
 public interface ClientListener {
 
-	public void messageRec(Message message, String from);
+	public void messageRec(WhisperClient client, Message message, String from);
 	
-	public void sentMessage();
+	public void sentMessage(WhisperClient client);
 	
 	public void statusChange();
 	
