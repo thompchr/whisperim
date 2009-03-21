@@ -435,6 +435,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 	}
 
 	private void formWindowClosing(WindowEvent evt) {
+		WhisperSystemTray.closeTray();
 		manager_.signOff();
 	}
 
@@ -519,7 +520,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 
 	public void sendMessage (Message message){
 		//Listener to update sound if IM is received
-		//for(ClientListener l:clientListeners_){l.sendMessage();}
+		//for(ClientListener l:clientListeners_){l.sentMessage();}
 		manager_.sendMessage(message);
 		resetTimer(5000);
 	}
