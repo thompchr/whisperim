@@ -54,7 +54,7 @@ public class WhisperSystemTray implements Runnable{
 		        public void mouseReleased(MouseEvent e) {}
 		    };		    
 		    
-		    //Exit Listener for menu
+		    //Exit Listener for tray
 		    ActionListener exitListener = new ActionListener() {
 		        public void actionPerformed(ActionEvent e) {
 		            System.out.println("System Tray - Exiting");
@@ -62,7 +62,7 @@ public class WhisperSystemTray implements Runnable{
 		        }
 		    };
 		    
-		    //New IM Listener for menu
+		    //New IM Listener for tray
 		    ActionListener newImListener = new ActionListener() {
 		        public void actionPerformed(ActionEvent e) {
 		            System.out.println("System Tray - Creating new IM");
@@ -70,7 +70,7 @@ public class WhisperSystemTray implements Runnable{
 		        }
 		    };
 		    
-		    //About Listener for menu
+		    //About Listener for tray
 		    ActionListener aboutListener = new ActionListener() {
 		        public void actionPerformed(ActionEvent e) {
 		            System.out.println("System Tray - Opening About");
@@ -78,7 +78,7 @@ public class WhisperSystemTray implements Runnable{
 		        }
 		    };
 		    
-		    //Plugins Listener for menu
+		    //Plugins Listener for tray
 		    ActionListener pluginsListener = new ActionListener() {
 		        public void actionPerformed(ActionEvent e) {
 		            System.out.println("System Tray - Opening Plugins");
@@ -86,44 +86,58 @@ public class WhisperSystemTray implements Runnable{
 		        }
 		    };
 
-		    //Preferences Listener for menu
+		    //Preferences Listener for tray
 		    ActionListener prefListener = new ActionListener() {
 		        public void actionPerformed(ActionEvent e) {
 		            System.out.println("System Tray - Opening Preferences");
 		        	client_.openPreferencesWindow();
 		        }
 		    };	
-		
-		    //Minimize Whisper Client for menu
-		    ActionListener statusListener = new ActionListener() {
+		    
+		    //Available Status
+		    ActionListener statusAvailableListener = new ActionListener() {
 		        public void actionPerformed(ActionEvent e) {
-		        	//Code to Change Status ****************
-		        	//Waiting for Chris to commit the status change options so I can implement them into the tray
+		        	//Default Status
+		        	//Code to Change to Available Status
 		        }
 		    };
 		    
-		    //Sound Listener for menu
+		    //Away Status
+		    ActionListener statusAwayListener = new ActionListener() {
+		        public void actionPerformed(ActionEvent e) {
+		        	//Code to Change to Away Status
+		        }
+		    };
+		    
+		    //Invisible Status
+		    ActionListener statusInvisibleListener = new ActionListener() {
+		        public void actionPerformed(ActionEvent e) {
+		        	//Code to Change to Invisible Status
+		        }
+		    };
+		    
+		    //Mute all sounds from tray
 		    ActionListener soundListener = new ActionListener() {
 		        public void actionPerformed(ActionEvent e) {
-		        	//Code to toggle off sound***********************
+		        	//Code to mute all sounds
 		        }
 		    };	
 		    
-		    //Minimize Whisper Client for menu
+		    //Open Account Listener from tray
 		    ActionListener accountListener = new ActionListener() {
 		        public void actionPerformed(ActionEvent e) {
-		        	//Waiting for Chris to commit code so I know what to call to open Account Manager     	
+		        	//Waiting for code to be commited to know what to call to open Account Manager     	
 		        }
 		    };
 		    
-		    //Minimize Whisper Client for menu
+		    //Minimize Whisper Client from tray
 		    ActionListener minimizeListener = new ActionListener() {
 		        public void actionPerformed(ActionEvent e) {
 		        	client_.setVisible(false);
 		        }
 		    };
 		    
-		    //Open Whisper Client from menu
+		    //Open Whisper Client from tray
 		    ActionListener openWhisperListener = new ActionListener() {
 		        public void actionPerformed(ActionEvent e) {
 		        	client_.setVisible(true);
@@ -148,11 +162,7 @@ public class WhisperSystemTray implements Runnable{
 		    //About option on menu
 		    MenuItem aboutItem = new MenuItem("About");
 		    aboutItem.addActionListener(aboutListener);
-		    
-		    //Change status on menu
-		    MenuItem statusItem = new MenuItem("Change Status");
-		    statusItem.addActionListener(statusListener);
-		    
+		         
 		    //Open account manager from menu
 		    MenuItem accountItem = new MenuItem("Account Manager");
 		    accountItem.addActionListener(accountListener);
@@ -162,6 +172,24 @@ public class WhisperSystemTray implements Runnable{
 		    
 		    //Preferences menu
 		    Menu prefMenu = new Menu("Preferences");
+		    
+		    //About option on menu
+		    Menu statusMenu = new Menu("Status");
+		    
+		    //Available option on Status menu
+		    CheckboxMenuItem statusAvailableItem = new CheckboxMenuItem("Available");
+		    statusAvailableItem.addActionListener(statusAvailableListener);
+		    statusAvailableItem.setState(true);
+		    
+		    //Invisible option on Status menu
+		    CheckboxMenuItem statusInvisibleItem = new CheckboxMenuItem("Invisible");
+		    statusInvisibleItem.addActionListener(statusInvisibleListener);
+		    statusInvisibleItem.setState(false);
+		    	
+		    //Away option on Status menu
+		    CheckboxMenuItem statusAwayItem = new CheckboxMenuItem("Away");
+		    statusAwayItem.addActionListener(statusAwayListener);
+		    statusInvisibleItem.setState(false);
 		    
 		    //Encryption option on Preference menu
 		    MenuItem prefItem = new MenuItem("Preferences");
@@ -174,6 +202,7 @@ public class WhisperSystemTray implements Runnable{
 		    //Toggle sound off and on
 		    CheckboxMenuItem soundItem = new CheckboxMenuItem("Sound");
 		    soundItem.addActionListener(soundListener);
+		    soundItem.setState(true);
 		    
 		    //Minimize Whisper Client Option
 		    MenuItem minimizeItem = new MenuItem("Hide Whisper");
@@ -196,10 +225,13 @@ public class WhisperSystemTray implements Runnable{
 	        popup.add(aboutItem);
 	        popup.addSeparator();
 	        popup.add(openWhisperItem);
+	        popup.add(statusMenu);
+	        statusMenu.add(statusAvailableItem);	//default status 
+	        statusMenu.add(statusInvisibleItem);
+	        statusMenu.add(statusAwayItem);	        
 	        popup.add(whisperMenu);
 	        whisperMenu.add(minimizeItem);
 	        whisperMenu.add(newImItem);
-	        whisperMenu.add(statusItem);
 	        whisperMenu.add(pluginsItem);
 	        whisperMenu.add(accountItem);
 	        popup.add(prefMenu);
@@ -226,7 +258,6 @@ public class WhisperSystemTray implements Runnable{
 				@Override
 				public void statusChange() {
 					//Waiting for implementation of Status Change to implement this method
-					
 				}
 
 				@Override

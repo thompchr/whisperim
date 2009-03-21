@@ -42,6 +42,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.swing.GroupLayout;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JMenu;
@@ -101,6 +102,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 	private JMenuItem newIm_;
 	private JMenuItem plugins_;
 	private JMenuItem preferences_;
+	private JCheckBoxMenuItem sound_;
 	private JMenuItem quit_;
 	//private PopupMenu popupMenu1;
 
@@ -112,7 +114,8 @@ public class WhisperClient extends JFrame implements ActionListener {
 	private static final String NEWIM_ = "New Instant Message"; //menu 1 first item
 	private static final String PLUGINS_ = "Plugins"; //menu 1 second item
 	private static final String PREFERENCES_ = "Preferences"; //menu 1 third item
-	private static final String QUIT_ = "Quit"; //menu 1 fourth item
+	private static final String SOUND_ = "Sound"; //menu 1 fourth item
+	private static final String QUIT_ = "Quit"; //menu 1 fifth item
 
 	//List of Listeners used by WhisperSystemTray
 	private List<ClientListener> clientListeners_ = new ArrayList<ClientListener>();
@@ -233,13 +236,19 @@ public class WhisperClient extends JFrame implements ActionListener {
 		preferences_.addActionListener(this);
 		whisperMenu_.add(preferences_);
 		
+		sound_ = new JCheckBoxMenuItem();
+		sound_.setText(SOUND_);
+		sound_.setSelected(true);
+		sound_.setActionCommand(SOUND_);
+		sound_.addActionListener(this);
+		whisperMenu_.add(sound_);
+		
 		quit_ = new JMenuItem();
 		quit_.setText(QUIT_);
 		quit_.setActionCommand(QUIT_);
 		quit_.addActionListener(this);
 		whisperMenu_.add(quit_);
-
-
+		
 		//second menu\\ - not used
 			//Preferences
 			//Encryption
@@ -330,8 +339,6 @@ public class WhisperClient extends JFrame implements ActionListener {
 							public void run() {
 								newIMWindow(selectedBuddy_);
 							}
-
-
 						});
 					}
 				}
