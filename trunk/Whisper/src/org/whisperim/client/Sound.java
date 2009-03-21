@@ -63,7 +63,7 @@ public class Sound implements ClientListener {
 	}
 
 	@Override
-	public void sendMessage() {
+	public void sentMessage() {
 		playSound("IM.wav");
 	}
 }

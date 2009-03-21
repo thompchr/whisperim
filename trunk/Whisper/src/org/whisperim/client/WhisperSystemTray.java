@@ -133,7 +133,7 @@ public class WhisperSystemTray implements Runnable{
 		    //Hide System Tray Icon
 		    ActionListener hideTrayListener = new ActionListener() {
 		        public void actionPerformed(ActionEvent e) {
-		            	SystemTray.getSystemTray().remove(trayIcon);
+		        	closeTray();
 		        }
 		    };
 		    
@@ -220,7 +220,7 @@ public class WhisperSystemTray implements Runnable{
 	  		      Runnable runnable = new WhisperSystemTray();
 	  		      Thread thread = new Thread(runnable);
 	  		      thread.start();
-	  		      Thread.yield();
+	  		      thread.yield();
 				}
 				
 				@Override
@@ -230,7 +230,7 @@ public class WhisperSystemTray implements Runnable{
 				}
 
 				@Override
-				public void sendMessage() {
+				public void sentMessage() {
 					// TODO Auto-generated method stub
 					
 				}
@@ -261,4 +261,8 @@ public class WhisperSystemTray implements Runnable{
 		    	  }catch(Exception e){}
 	    	}	
 	} 
+	
+    public static void closeTray(){
+    	SystemTray.getSystemTray().remove(trayIcon);
+    }
 }
