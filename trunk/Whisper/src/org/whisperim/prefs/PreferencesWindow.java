@@ -230,6 +230,7 @@ public class PreferencesWindow extends JFrame implements ListSelectionListener,A
 			//save all prefs
 			//call update
 			//close window
+			this.dispose();
 		}
 	}
 
