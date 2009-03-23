@@ -36,9 +36,17 @@ import java.awt.event.MouseListener;
 
 public class WhisperSystemTray implements Runnable{
 	
+	private static final String NEW_IM_IMAGE_LOCATION_ = "..\\images\\newIM.jpg";
+	private static final String TRAY_ICON_LOCATION_ = "..\\images\\WhisperIMLogo-Small.png";
+
+
+
 	private static TrayIcon trayIcon = null;
-	final Image recIMImage = Toolkit.getDefaultToolkit().getImage("..\\images\\newIM.jpg");
-    final Image trayIMImage = Toolkit.getDefaultToolkit().getImage("..\\images\\WhisperIMLogo-Small.jpg");
+	
+	 
+	
+	private final Image recIMImage = Toolkit.getDefaultToolkit().getImage(NEW_IM_IMAGE_LOCATION_);
+    private final Image trayIMImage = Toolkit.getDefaultToolkit().getImage(TRAY_ICON_LOCATION_);
 	
 	public static void startSystemTray(WhisperClient client){
 		
@@ -46,7 +54,7 @@ public class WhisperSystemTray implements Runnable{
 					
 		if (SystemTray.isSupported()) {
 		    SystemTray tray = SystemTray.getSystemTray();
-		    Image image = Toolkit.getDefaultToolkit().getImage("..\\images\\WhisperIMLogo-Small.png");
+		    Image image = Toolkit.getDefaultToolkit().getImage(TRAY_ICON_LOCATION_);
 	  
 		    MouseListener mouseListener = new MouseListener() {      
 		        public void mouseClicked(MouseEvent e) {}	
@@ -270,7 +278,7 @@ public class WhisperSystemTray implements Runnable{
 					
 				}
 
-				@Override
+				
 				public void soundChange(WhisperClient client) {
 					if(client_.getSound_()){
 						soundItem.setState(true);
