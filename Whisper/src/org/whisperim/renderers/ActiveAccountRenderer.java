@@ -16,7 +16,6 @@
 package org.whisperim.renderers;
 
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
 
@@ -53,6 +52,7 @@ public class ActiveAccountRenderer implements TableCellRenderer {
 		JPanel frame = new JPanel();
 		
 		frame.setMinimumSize(new Dimension(100, 100));
+		
 
 		SpringLayout sl = new SpringLayout();
 
@@ -98,8 +98,8 @@ public class ActiveAccountRenderer implements TableCellRenderer {
 		//Add the components to the frame
 		frame.add(handleLbl);
 		frame.add(statusLbl);
-		frame.add(changeStateBtn_);
-		frame.add(deleteBtn);
+		//frame.add(changeStateBtn_);
+		//frame.add(deleteBtn);
 		
 		
 		
@@ -115,6 +115,8 @@ public class ActiveAccountRenderer implements TableCellRenderer {
 		
 		sl.putConstraint(SpringLayout.NORTH, changeStateBtn_, 5, SpringLayout.SOUTH, deleteBtn);
 		sl.putConstraint(SpringLayout.EAST, changeStateBtn_, -5, SpringLayout.EAST, frame);
+		
+		
 		
 		
 		frame.setVisible(true);
