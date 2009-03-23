@@ -616,7 +616,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 	//Simple method to open Account Manager
 	public void openAccountsPage()
 	{
-		//Waiting for code to be commited to know what to call to open Account Manager 
+		new AccountManagementWindow(manager_);
 	}
 	
 	private void BuddiesComponentShown(ComponentEvent evt) {
