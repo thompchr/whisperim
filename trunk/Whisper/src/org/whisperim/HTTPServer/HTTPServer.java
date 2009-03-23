@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and     *
  * limitations under the License.                                          *
  **************************************************************************/
-package HTTPServer;
+package org.whisperim.HTTPServer;
 import java.net.*;
 import java.io.*;
 import java.util.*;

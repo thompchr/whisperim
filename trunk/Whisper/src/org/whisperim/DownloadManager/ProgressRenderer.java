@@ -13,7 +13,7 @@
 	 * See the License for the specific language governing permissions and     *
 	 * limitations under the License.                                          *
 	 **************************************************************************/
-package DownloadManager;
+package org.whisperim.DownloadManager;
 
 import java.awt.*;
 import javax.swing.*;

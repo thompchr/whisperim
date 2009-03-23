@@ -693,7 +693,7 @@ public class AIMSession implements AccEvents, Runnable {
 		}
 		case AIMOperation.SET_STATUS:
 		{
-			Class[] types = {Integer.class, String.class};
+			Class[] types = {Integer.class, String.class };
 			this.checkArgs(operation, types);
 			switch (((int)(Integer)operation.getArguments()[0])){
 			
