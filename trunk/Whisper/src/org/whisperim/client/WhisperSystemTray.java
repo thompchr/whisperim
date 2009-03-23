@@ -36,7 +36,7 @@ public class WhisperSystemTray implements Runnable{
 	
 	private static TrayIcon trayIcon = null;
 	final Image recIMImage = Toolkit.getDefaultToolkit().getImage("..\\images\\newIM.jpg");
-    final Image trayIMImage = Toolkit.getDefaultToolkit().getImage("..\\images\\tray.jpg");
+    final Image trayIMImage = Toolkit.getDefaultToolkit().getImage("..\\images\\WhisperIMLogo-Small.jpg");
 	
 	public static void startSystemTray(WhisperClient client){
 		
@@ -44,7 +44,7 @@ public class WhisperSystemTray implements Runnable{
 					
 		if (SystemTray.isSupported()) {
 		    SystemTray tray = SystemTray.getSystemTray();
-		    Image image = Toolkit.getDefaultToolkit().getImage("..\\images\\tray.jpg");
+		    Image image = Toolkit.getDefaultToolkit().getImage("..\\images\\WhisperIMLogo-Small.png");
 	  
 		    MouseListener mouseListener = new MouseListener() {      
 		        public void mouseClicked(MouseEvent e) {}	
