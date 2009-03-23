@@ -27,10 +27,12 @@ import java.awt.Toolkit;
 import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-//Things to do: User can change status, Mute all sounds from tray, open account manager
+//Things to do: User can change status, Mute all sounds from tray
 
 public class WhisperSystemTray implements Runnable{
 	
@@ -112,16 +114,17 @@ public class WhisperSystemTray implements Runnable{
 		    //Invisible Status
 		    ActionListener statusInvisibleListener = new ActionListener() {
 		        public void actionPerformed(ActionEvent e) {
-		        	//Code to Change to Invisible Status
+		        	
 		        }
 		    };
 		    
 		    //Mute all sounds from tray
-		    ActionListener soundListener = new ActionListener() {
-		        public void actionPerformed(ActionEvent e) {
-					client_.toggleSound();
-					
-		        }
+		    ItemListener soundListener = new ItemListener() {
+				@Override
+				public void itemStateChanged(ItemEvent arg0) {
+					System.out.println("clicked");
+		        	client_.toggleSound();
+				}
 		    };	
 		    
 		    //Open Account Listener from tray
@@ -201,8 +204,8 @@ public class WhisperSystemTray implements Runnable{
 		    pluginsItem.addActionListener(pluginsListener);
 		    
 		    //Toggle sound off and on
-		    CheckboxMenuItem soundItem = new CheckboxMenuItem("Sound");
-		    soundItem.addActionListener(soundListener);
+		    final CheckboxMenuItem soundItem = new CheckboxMenuItem("Sound");
+		    soundItem.addItemListener(soundListener);
 		    soundItem.setState(client_.getSound_());
 		    
 		    //Minimize Whisper Client Option
@@ -265,6 +268,16 @@ public class WhisperSystemTray implements Runnable{
 				public void sentMessage(WhisperClient client) {
 					// TODO Auto-generated method stub
 					
+				}
+
+				@Override
+				public void soundChange(WhisperClient client) {
+					if(client_.getSound_()){
+						soundItem.setState(true);
+					}
+					else {
+						soundItem.setState(false);
+					}
 				}
 			});
 	        

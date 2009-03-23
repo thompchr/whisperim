@@ -572,7 +572,6 @@ public class WhisperClient extends JFrame implements ActionListener {
 			//We will need to see what changed
 			String protocol = newBuddies.get(0).getProtocolID();
 			String assocHandle = newBuddies.get(0).getAssociatedLocalHandle();
-
 			blm_.removeBuddies(protocol, assocHandle);
 			blm_.addBuddies(newBuddies);
 		}
@@ -589,6 +588,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 	}
 
 	public void toggleSound(){
+		for(ClientListener l:clientListeners_){l.soundChange(this);}
 		if(sound_.isSelected()){
 			sound_.setSelected(true);
 		}
@@ -636,7 +636,6 @@ public class WhisperClient extends JFrame implements ActionListener {
 		//Sound
 		if (actionCommand.equals(sound_.getActionCommand())) {
 			toggleSound();
-			
 		}
 	}
 	
