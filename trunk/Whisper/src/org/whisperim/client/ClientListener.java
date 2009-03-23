@@ -25,4 +25,6 @@ public interface ClientListener {
 	
 	public void statusChange();
 	
+	public void soundChange(WhisperClient client);
+	
 }
