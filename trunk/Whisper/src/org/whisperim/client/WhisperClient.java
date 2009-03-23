@@ -119,6 +119,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 
 	//private JMenuItem encryption_;
 	private JMenuItem newIm_;
+	private JCheckBoxMenuItem setStatus_;
 	private JMenuItem plugins_;
 	private JMenuItem preferences_;
 	private JMenuItem accounts_;
@@ -132,6 +133,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 	//first menu\\
 	private static final String WHISPER_ = "Whisper"; //menu 1 header
 	private static final String NEWIM_ = "New Instant Message"; //menu 1 first item
+	private static final String SET_STATUS_ = "Set Status to Last.fm"; //menu 1 second item
 	private static final String PLUGINS_ = "Plugins"; //menu 1 second item
 	private static final String ACCOUNTS_ = "Accounts";
 	private static final String PREFERENCES_ = "Preferences"; //menu 1 third item
@@ -384,6 +386,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 		//first menu\\
 		//File
 		//New IM
+		//Set Away
 		//Plugins
 		//Preferences
 		//Quit
@@ -396,6 +399,12 @@ public class WhisperClient extends JFrame implements ActionListener {
 		newIm_.setActionCommand(NEWIM_);
 		newIm_.addActionListener(this);
 		whisperMenu_.add(newIm_);
+		
+		setStatus_ = new JCheckBoxMenuItem();
+		setStatus_.setText(SET_STATUS_);
+		setStatus_.setActionCommand(SET_STATUS_);
+		setStatus_.addActionListener(this);
+		whisperMenu_.add(setStatus_);
 		
 		accounts_ = new JMenuItem();
 		accounts_.setText(ACCOUNTS_);
@@ -647,8 +656,9 @@ public class WhisperClient extends JFrame implements ActionListener {
 			//This is an instruction to the client, we need to parse it
 			//and then we'll swallow it or print out a message to the
 			//user.
-
-
+			
+			System.out.println(message.toString());
+				
 			if (message.getMessage().contains("keyspec=")){
 				//A public key has been sent.
 
@@ -669,6 +679,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 					KeyFactory rsaKeyFac = null;
 					rsaKeyFac = KeyFactory.getInstance("RSA");
 					final PublicKey recKey = rsaKeyFac.generatePublic(pubKeySpec);
+					
 					if (openBuddies_.get(message.getFrom().toLowerCase().replace(" ", "")) == null){
 						//There isn't currently a window associated with that buddy
 						java.awt.EventQueue.invokeLater(new Runnable() {
@@ -778,6 +789,21 @@ public class WhisperClient extends JFrame implements ActionListener {
 					new WhisperNewIMWindow(manager_, wc);
 				}
 			});
+		}
+		
+		//Set / Unset Status
+		if (actionCommand.equals(setStatus_.getActionCommand())){
+			if(setStatus_.isSelected())
+			{
+				//unset away status
+				manager_.setStatusMessage("");
+			}
+				
+			else
+			{
+				//set away status
+				manager_.setStatusMessage("john");
+			}
 		}
 
 		//Open the plugins window

@@ -241,9 +241,13 @@ public class ConnectionManager {
 		 for (Entry<String, ConnectionStrategy> entry:strategies_.entrySet()){
 			 entry.getValue().setAwayMessage(message);
 		 }
-		 
 	 }
-
+	 
+	 public void setStatusMessage(String message){
+		 for (Entry<String, ConnectionStrategy> entry:strategies_.entrySet()){
+			 entry.getValue().setStatusMessage(message);
+		 }
+	 }
 	 
 	 public void setState(int newState){
 		 

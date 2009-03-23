@@ -93,6 +93,10 @@ public class AIMStrategy implements ConnectionStrategy {
     	session_.addOperation(AIMOperation.createSatusChange(AIMOperation.STATUS_AWAY, message));
     }
 
+    public void setStatusMessage(String message){
+    	session_.addOperation(AIMOperation.setStatusMessage(message));
+    }
+    
 	@Override
 	public String getProtocol() {
 		return protocol_;
