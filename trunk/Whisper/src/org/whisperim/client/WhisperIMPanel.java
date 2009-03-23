@@ -358,12 +358,8 @@ public class WhisperIMPanel extends JPanel implements ActionListener {
 	    		talkArea_.append(clearHTMLTags(message.getMessage(), -1)); 
 	    	}else{
 	    		String decryptedMsg = encrypt.decryptMessage(message.getMessage());
-
-	    		if(isWhiteboardMsg(decryptedMsg) == false)
-	    		{    	    	
-	    	    	talkArea_.append("(Encrypted Message) " + clearHTMLTags(decryptedMsg, -1));
-	    		}
-	    			
+	    		boolean b = isWhiteboardMsg(decryptedMsg);  	    	
+	    	    talkArea_.append("(Encrypted Message) " + clearHTMLTags(decryptedMsg, -1));
 	    	}
 	        
 	    	if (doLogging_)
