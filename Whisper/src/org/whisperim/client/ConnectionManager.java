@@ -43,6 +43,10 @@ public class ConnectionManager {
 	private WhisperClient client_ = null;
 	private PrivateKey myPrivateKey_;
 	private PublicKey myPublicKey_;
+	
+	public static final int INVISIBLE = 0;
+	public static final int AVAILABLE = 1;
+	public static final int IDLE = 2;
 
 
 	public static final int AIM_SESSION = 0; 
@@ -245,6 +249,10 @@ public class ConnectionManager {
 		 for (Entry<String, ConnectionStrategy> entry:strategies_.entrySet()){
 			 entry.getValue().setAwayMessage(message);
 		 }
+		 
+	 }
+	 
+	 public void setState(int newState){
 		 
 	 }
 
