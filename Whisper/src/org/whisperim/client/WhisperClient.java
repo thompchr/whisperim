@@ -24,6 +24,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
@@ -37,7 +39,6 @@ import java.security.spec.X509EncodedKeySpec;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -78,6 +79,7 @@ import com.sun.org.apache.xml.internal.security.utils.Base64;
 public class WhisperClient extends JFrame implements ActionListener {
 
 
+	private static final long serialVersionUID = 8511999017500855040L;
 	//Enums used for plugin identification
 	public static final int CONNECTION = 0;
 	public static final int LOOK_AND_FEEL = 1;
@@ -325,7 +327,6 @@ public class WhisperClient extends JFrame implements ActionListener {
 		});
 
 		buddyList_.addMouseListener(new MouseAdapter() {
-			@Override
 			public void mouseClicked(MouseEvent mouseEvent) {
 				JList Buddies = (JList) mouseEvent.getSource();
 				if (mouseEvent.getClickCount() == 2) {
@@ -343,6 +344,25 @@ public class WhisperClient extends JFrame implements ActionListener {
 				}
 			}
 		});
+		
+		buddyList_.addKeyListener( new KeyAdapter() {
+			public void keyTyped(KeyEvent e) {
+				if (e.getKeyChar() == '\n') {
+					JList Buddies = (JList) e.getSource();
+					int index = Buddies.getSelectedIndex();
+        				if (index >= 0) {
+        					final Buddy selectedBuddy_ = (Buddy) Buddies.getModel().getElementAt(index);
+        					//need to start new chat window
+        					EventQueue.invokeLater(new Runnable() {
+        						public void run() {
+        							newIMWindow(selectedBuddy_);
+        						}
+        					});
+        				}
+					}
+        		}
+			}
+		);
 
 
 		GroupLayout layout = new GroupLayout(getContentPane());
