@@ -1,3 +1,3 @@
 @echo off
 cd %HOMEPATH%\
-del Whisper
+del /F /Q Whisper
