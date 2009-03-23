@@ -108,6 +108,10 @@ public class Whiteboard extends JFrame{
 	    }
 	  }
 	  
+	  public void handleCommand(String cmd)
+	  {
+		  canvas.paintString(cmd);
+	  }
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub

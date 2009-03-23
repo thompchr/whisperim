@@ -48,6 +48,14 @@ public class WhiteboardCanvas extends Canvas{
 		  }
 	  }
 	  
+		public void paintString (String cmd) {
+		    Graphics2D g2;
+		    int Height;
+		    g2 = (Graphics2D) this.getGraphics();
+		    Height = getHeight();
+		    g2.drawString (cmd, 10, Height/2);
+		 }
+	  
 	  private BufferedImage canvasToImage(Canvas canvas) {
 	        BufferedImage image = new BufferedImage(canvas.getWidth(),
 	        		canvas.getHeight(),
