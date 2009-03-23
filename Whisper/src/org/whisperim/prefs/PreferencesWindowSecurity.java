@@ -22,17 +22,18 @@ package org.whisperim.prefs;
 
 import java.awt.Color;
 
-import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class PreferencesWindowSecurity extends JPanel {
-	
-	JButton label_;
+
+	private static final long serialVersionUID = 5359436260113518838L;
+	private JLabel label_;
 	
 	PreferencesWindowSecurity() {
 		
 		setBackground(Color.white);
-		label_ = new JButton("security shit");
+		label_ = new JLabel("security shit");
 		add(label_);	
 		
 	}

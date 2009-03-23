@@ -28,13 +28,14 @@ import javax.swing.JList;
  * @author Cory Plastek
  *
  */
-@SuppressWarnings("serial")
 public class PreferencesWindowCategoryRenderer extends DefaultListCellRenderer {
-
+	
+	private static final long serialVersionUID = 1644490600602305546L;
+	
 	final Font normalFont_ = new Font("Heletica", Font.PLAIN, 12);
 	final Font selectedFont_ = new Font("Helvetica", Font.BOLD, 12);
 	JLabel renderer_;
-	Dimension rendererSize_ = new Dimension(100,25);
+	Dimension rendererSize_ = new Dimension(100,35);
 	
 	public PreferencesWindowCategoryRenderer() {
 		super();

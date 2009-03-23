@@ -30,7 +30,8 @@ import javax.swing.JPanel;
 
 public class PreferencesWindowGeneral extends JPanel {
 	
-	JButton label_;
+	private static final long serialVersionUID = 1843003640261951662L;
+	private JButton label_;
 	
 	PreferencesWindowGeneral() {
 		
