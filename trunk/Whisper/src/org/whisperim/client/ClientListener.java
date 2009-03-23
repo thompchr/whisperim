@@ -21,8 +21,5 @@ public interface ClientListener {
 
 	public void messageRec(WhisperClient client, Message message, String from);
 	
-	public void sentMessage(WhisperClient client);
-	
-	public void soundChange(WhisperClient client);
-	
+	public void sentMessage(WhisperClient client);	
 }

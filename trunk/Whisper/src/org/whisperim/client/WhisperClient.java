@@ -165,8 +165,6 @@ public class WhisperClient extends JFrame implements ActionListener {
 
 
 	private HashMap<String, WhisperIM> openBuddies_ = new HashMap<String, WhisperIM>();
-	
-
 	/**
 	 * Constructor.
 	 * @param manager - Connection manager to be associated with this instance
@@ -186,13 +184,9 @@ public class WhisperClient extends JFrame implements ActionListener {
 		resetTimer(5000);   
 
 		setLocation(new Point(Toolkit.getDefaultToolkit().getScreenSize().width / 3,Toolkit.getDefaultToolkit().getScreenSize().height / 4));
-				
-		
-		
+					
 		sound.playSound(this, "Open.wav");
 		
-
-
 		//This must be called after the manager_ member is set.
 		pluginLoader_ = new PluginLoader(this);
 		try {
@@ -422,9 +416,8 @@ public class WhisperClient extends JFrame implements ActionListener {
 		whisperMenu_.add(preferences_);
 
 		
-		sound_ = new JCheckBoxMenuItem();
-		sound_.setText(SOUND_);
-		sound_.setSelected(true);
+		sound_ = new JCheckBoxMenuItem(SOUND_);
+		sound_.setSelected(Preferences.getInstance().getSoundsEnabled());
 		sound_.setActionCommand(SOUND_);
 		sound_.addActionListener(this);
 		whisperMenu_.add(sound_);
@@ -767,13 +760,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 	}
 
 	public void toggleSound(){
-		for(ClientListener l:clientListeners_){l.soundChange(this);}
-		if(sound_.isSelected()){
-			sound_.setSelected(true);
-		}
-		else {
-			sound_.setSelected(false);
-		}
+		Preferences.getInstance().setSoundsEnabled(!Preferences.getInstance().getSoundsEnabled());
 	}
 
 	public void actionPerformed(ActionEvent e) {
