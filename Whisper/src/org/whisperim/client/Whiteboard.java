@@ -64,8 +64,6 @@ public class Whiteboard extends JFrame{
 	    pane.add(save);
 	    pane.add(canvas);
 	    
-	    setDefaultCloseOperation(EXIT_ON_CLOSE);
-	    
 	    setVisible(true);
 	  }
 	  // add inner class event handler for each button here
