@@ -16,6 +16,8 @@
  **************************************************************************/
 package org.whisperim.client;
 
+import org.whisperim.prefs.Preferences;
+
 import java.io.File;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
@@ -23,11 +25,12 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.SourceDataLine;
 
+
 public class Sound implements ClientListener {
 		
+	boolean playSound = Preferences.getInstance().getSoundsEnabled();
+	
 	public void playSound(WhisperClient client, String name){
-		final WhisperClient client_ = client;
-		boolean playSound = client_.getSound_();
 		if(playSound){
 			try{
 				File soundFile = new File("..\\sounds\\" + name);
@@ -63,11 +66,5 @@ public class Sound implements ClientListener {
 	@Override
 	public void sentMessage(WhisperClient client) {
 		playSound(client, "IM.wav");
-	}
-	
-	@Override
-	public void soundChange(WhisperClient client) {
-		// TODO Auto-generated method stub
-		
 	}
 }

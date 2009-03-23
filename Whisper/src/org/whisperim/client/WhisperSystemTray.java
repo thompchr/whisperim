@@ -16,6 +16,8 @@
  **************************************************************************/
 package org.whisperim.client;
 
+import org.whisperim.prefs.Preferences;
+
 import java.awt.AWTException;
 import java.awt.CheckboxMenuItem;
 import java.awt.Image;
@@ -151,7 +153,7 @@ public class WhisperSystemTray implements Runnable,ActionListener{
 		    //Toggle sound off and on
 		    final CheckboxMenuItem soundItem = new CheckboxMenuItem(SOUND_);
 		    soundItem.addItemListener(soundListener);
-		    soundItem.setState(client_.getSound_());
+		    soundItem.setState(Preferences.getInstance().getSoundsEnabled());
 		    
 		    //Minimize Whisper Client Option
 		    minimizeWhisperItem = new MenuItem(MINIMIZEWHISPER_);
@@ -208,15 +210,6 @@ public class WhisperSystemTray implements Runnable,ActionListener{
 				public void sentMessage(WhisperClient client) {
 					// TODO Auto-generated method stub
 					
-				}
-				
-				public void soundChange(WhisperClient client) {
-					if(client_.getSound_()){
-						soundItem.setState(true);
-					}
-					else {
-						soundItem.setState(false);
-					}
 				}
 			});
 	        
