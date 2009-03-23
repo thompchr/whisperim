@@ -1,13 +1,9 @@
 package org.whisperim.client;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.text.DateFormat;
@@ -19,20 +15,13 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JToggleButton;
-import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
-import javax.swing.WindowConstants;
 
 import org.jdesktop.layout.GroupLayout;
 import org.jdesktop.layout.LayoutStyle;
@@ -51,7 +40,9 @@ public class WhisperIMPanel extends JPanel implements ActionListener {
     private Buddy buddy_;
     private WhisperIM window_;
     
-    private static final String AOL_ = "aol";
+    //This needs to be changed to support using the icon associated with the plugin
+    //Perhaps store it in the buddy object
+    private static final String AOL_ = "AIM";
     private static final String ENCRYPTION_OFF_ = "Encryption: Off";
     private static final String ENCRYPTION_ON_ = "Encryption: On";
     private static final String SEND_ = "Send";
