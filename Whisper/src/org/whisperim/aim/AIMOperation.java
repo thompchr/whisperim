@@ -36,6 +36,7 @@ public class AIMOperation {
 	public final static int STATUS_INVISIBLE = 2;
 	public final static int STATUS_AWAY = 3;
 	public final static int STATUS_VISIBLE = 4;
+	public final static int SET_STATUS_MESSAGE = 6;
 	
 	private Integer operation_;
 	private Object[] arguments_;
@@ -124,6 +125,14 @@ public class AIMOperation {
 		AIMOperation op = new AIMOperation();
 		op.operation_ = SET_STATUS;
 		Object[] args = { type, message };
+		op.arguments_ = args;
+		return op;
+	}
+	
+	public static AIMOperation setStatusMessage(String message){
+		AIMOperation op = new AIMOperation();
+		op.operation_ = SET_STATUS_MESSAGE;
+		Object[] args = {message};
 		op.arguments_ = args;
 		return op;
 	}

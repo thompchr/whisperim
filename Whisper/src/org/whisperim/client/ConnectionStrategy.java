@@ -58,4 +58,5 @@ public interface ConnectionStrategy extends Plugin {
     
     public int getStatus();
     
+    public void setStatusMessage(String message);
 }

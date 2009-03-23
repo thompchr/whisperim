@@ -102,7 +102,7 @@ public class AIMSession implements AccEvents, Runnable {
 		super();
 		strategy_ = strategy;
 		listenThread_ = new Thread(this);
-		listenThread_.start();
+		listenThread_.start();	
 	}
 	
 	public void setLocalHandle(String handle){
@@ -643,7 +643,7 @@ public class AIMSession implements AccEvents, Runnable {
 				AIMOperation operation = this.getOperation();
 				if (operation != null) {
 					this.processOperation(operation);
-				}
+				}				
 				Thread.sleep(50);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -725,6 +725,10 @@ public class AIMSession implements AccEvents, Runnable {
 			
 		}
 		
+		case AIMOperation.SET_STATUS_MESSAGE:{
+			session_.setProperty(AccSessionProp.StatusText, new AccVariant((String)operation.getArguments()[0]));
+			System.out.println((String)operation.getArguments()[0]);
+		}
 		
 		}
 	}
