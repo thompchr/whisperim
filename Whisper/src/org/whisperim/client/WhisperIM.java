@@ -73,8 +73,15 @@ public class WhisperIM extends JFrame implements ActionListener, WindowListener,
     
    
     private JTabbedPane mainPain_;
-	private JMenu fileMenu_, optionsMenu_;
+	private JMenu fileMenu_, conversationMenu_;
 	private JMenuItem exit_, about_, closeTab_;
+	private static final String FILE_ = "File";
+	private static final String CLOSE_TAB_ = "Close tab";
+	private static final String EXIT_ = "Exit";
+	private static final String CONVERSATION_ = "Conversation";
+	private static final String LOGGING_ ="Logging";
+	private static final String WHISPER_BOT_ = "Whisper Bot";
+	private static final String START_WHITEBOARD_ = "Start Whiteboard";
 	private JCheckBoxMenuItem logging_;
 	
     
@@ -155,27 +162,40 @@ public class WhisperIM extends JFrame implements ActionListener, WindowListener,
 	//Menu creation is separate from UI layout
 	private void createMenu(){
 		
-		fileMenu_ = new JMenu("File");
-		exit_ = new JMenuItem("Exit");
-		exit_.setMnemonic(KeyEvent.VK_X);
-		closeTab_ = new JMenuItem("Close Tab");
-		fileMenu_.add(closeTab_);
-		fileMenu_.add(exit_);
-		optionsMenu_ = new JMenu("Options");
-		optionsMenu_.setMnemonic(KeyEvent.VK_O);
-		logging_ = new JCheckBoxMenuItem("Enable Logging");
-		logging_.setState(false);
-		optionsMenu_.add(logging_);
-		exit_.addActionListener(this);
-		logging_.addActionListener(this);
+		//first menu
+		//file
+			//close tab
+			//exit (x)
+		fileMenu_ = new JMenu(FILE_);
+		
+		closeTab_ = new JMenuItem(CLOSE_TAB_);
 		closeTab_.addActionListener(this);
+		fileMenu_.add(closeTab_);
+		
+		exit_ = new JMenuItem(EXIT_);
+		exit_.setMnemonic(KeyEvent.VK_X);
+		exit_.addActionListener(this);
+		fileMenu_.add(exit_);
+		
+		//second menu
+		//conversation (c)
+			//logging
+			//whisper bot
+			//start whiteboard
+		conversationMenu_ = new JMenu(CONVERSATION_);
+		conversationMenu_.setMnemonic(KeyEvent.VK_C);
+		
+		logging_ = new JCheckBoxMenuItem(LOGGING_);
+		logging_.setState(false);
+		logging_.addActionListener(this);
+		conversationMenu_.add(logging_);
 		
 		//Future use...
 		//W_ = KeyStroke.getKeyStroke(KeyEvent.VK_W, Event.CTRL_MASK);
 		
 		JMenuBar mb = new JMenuBar();
 		mb.add(fileMenu_);
-		mb.add(optionsMenu_);
+		mb.add(conversationMenu_);
 		setJMenuBar(mb);
 		
 	}
