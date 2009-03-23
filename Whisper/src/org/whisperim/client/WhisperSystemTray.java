@@ -111,7 +111,7 @@ public class WhisperSystemTray implements Runnable{
 		    //Away Status
 		    ActionListener statusAwayListener = new ActionListener() {
 		        public void actionPerformed(ActionEvent e) {
-		        	manager_.setState(ConnectionManager.AWAY);
+		        	//manager_.setState(manager_.);
 		        }
 		    };
 		    

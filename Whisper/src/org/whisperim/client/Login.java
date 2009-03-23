@@ -22,6 +22,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 
@@ -42,6 +43,10 @@ import javax.swing.WindowConstants;
  * This class handles the login and authentication of users to the AIM
  * system.  Some of these responsibilities are passed on to the
  * connection manager.
+ * 
+ * 
+ * The use of this class is deprecated.  There should be no references to it
+ * in any code.
  *
  * @author Chris Thompson, Cory Plastek, John Dlugokecki
  */
@@ -168,7 +173,7 @@ public class Login extends JFrame implements ActionListener {
 
     private void signOn() {
     	setVisibility(false);
-        manager_ = new ConnectionManager(ConnectionManager.AIM_SESSION, usernameTxtBox_.getText(), new String(passwordTxtBox_.getPassword()), this, myPrivate_, myPublic_);
+        manager_ = new ConnectionManager(new KeyPair(myPublic_, myPrivate_));
         WhisperClient temp = new WhisperClient(manager_);
         manager_.setClient(temp);
         temp.setVisible(true);

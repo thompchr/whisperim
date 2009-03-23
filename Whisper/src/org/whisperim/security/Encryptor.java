@@ -91,8 +91,6 @@ public class Encryptor {
 
 		}catch(NoSuchAlgorithmException e){
 			//No such algorithm
-			System.err.println(
-			"usage: java AsymmetricKeyMaker <RSA | DSA>");
 
 		}
 

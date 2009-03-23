@@ -16,20 +16,20 @@
 
 package org.whisperim.client;
 
+import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Point;
-import java.awt.SystemTray;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
@@ -49,6 +49,7 @@ import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
@@ -56,7 +57,16 @@ import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.xml.serialize.OutputFormat;
+import org.apache.xml.serialize.XMLSerializer;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.whisperim.aim.AIMStrategy;
 import org.whisperim.models.BuddyListModel;
 import org.whisperim.models.PluginListModel;
 import org.whisperim.plugins.Plugin;
@@ -65,6 +75,7 @@ import org.whisperim.prefs.Preferences;
 import org.whisperim.prefs.PreferencesWindow;
 import org.whisperim.renderers.BuddyListRenderer;
 import org.whisperim.security.Encryptor;
+import org.xml.sax.SAXException;
 
 import com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingException;
 import com.sun.org.apache.xml.internal.security.utils.Base64;
@@ -80,14 +91,18 @@ import com.sun.org.apache.xml.internal.security.utils.Base64;
 public class WhisperClient extends JFrame implements ActionListener {
 
 
-	private static final long serialVersionUID = 8511999017500855040L;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2916085324340552469L;
+	
 	//Enums used for plugin identification
 	public static final int CONNECTION = 0;
 	public static final int LOOK_AND_FEEL = 1;
-	
+
 	private PluginListModel plm_;
-	
-	
+
+
 	private Timer myTimer_;
 	private IdleTT myTaskTimer_;    
 	private ConnectionManager manager_;
@@ -97,6 +112,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 	private JList buddyList_;
 	private JScrollPane buddyListScroll_;
 	private JMenu whisperMenu_;
+	private JFrame accountInfoPane_;
 	//private JMenu preferencesMenu_;
 
 	private JMenuBar menuBar_;
@@ -105,6 +121,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 	private JMenuItem newIm_;
 	private JMenuItem plugins_;
 	private JMenuItem preferences_;
+	private JMenuItem accounts_;
 	private JCheckBoxMenuItem sound_;
 	private JMenuItem quit_;
 	//private PopupMenu popupMenu1;
@@ -116,6 +133,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 	private static final String WHISPER_ = "Whisper"; //menu 1 header
 	private static final String NEWIM_ = "New Instant Message"; //menu 1 first item
 	private static final String PLUGINS_ = "Plugins"; //menu 1 second item
+	private static final String ACCOUNTS_ = "Accounts";
 	private static final String PREFERENCES_ = "Preferences"; //menu 1 third item
 	private static final String SOUND_ = "Sound"; //menu 1 fourth item
 	private static final String QUIT_ = "Quit"; //menu 1 fifth item
@@ -129,10 +147,30 @@ public class WhisperClient extends JFrame implements ActionListener {
 
 	//end menus\\
 
+	//Directory constants
+	private static final String WHISPER_HOME_DIR_ = System.getProperty("user.home") + File.separator + "Whisper";
+	private static final String ACCOUNTS_FILE_ = WHISPER_HOME_DIR_ + File.separator + "accounts";
+
+	//Error messages
+	private static final String ERROR_CREATING_ACCOUNTS_ = "An error has occured creating the file to store account information, try restarting Whisper.";
+	private static final String ERROR_READING_ACCOUNTS_ = "An error has occured reading the file that stores account information, try restarting Whisper.";
+	private static final String IO_ERROR_ = "IO Error";
+
+	//Status update types
+	public static final String OFFLINE = "Offline";
+	public static final String RATE_LIMITED = "Rate Limited";
+	public static final String INVALID_USERNAME_PASSWORD = "Invalid credentials";
+	public static final String SERVICE_UNREACHABLE = "Service Unreachable";
+
+
+
 	private HashMap<String, WhisperIM> openBuddies_ = new HashMap<String, WhisperIM>();
-	private WhisperIM[] openWindows_;
 	
-	/** Creates new WhisperClient instance */
+
+	/**
+	 * Constructor.
+	 * @param manager - Connection manager to be associated with this instance
+	 */
 	public WhisperClient(ConnectionManager manager) {
 		
 		Preferences prefs_ = Preferences.getInstance();
@@ -143,34 +181,164 @@ public class WhisperClient extends JFrame implements ActionListener {
 		getClientListeners().add(sound);
 		manager_ = manager;
 		manager_.setClient(this);
-		
+
 		this.setTitle(WHISPER_);
 		resetTimer(5000);   
-				
+
 		setLocation(new Point(Toolkit.getDefaultToolkit().getScreenSize().width / 3,Toolkit.getDefaultToolkit().getScreenSize().height / 4));
+				
+		
 		
 		sound.playSound(this, "Open.wav");
 		
-		//this.setAwayMessage("Away!!!", true);
 
-		//Sets you away
-		setAwayMessage("Away put your weapons, I mean you no harm");
-		
-		//Sets you as here
-		setAwayMessage("");
-		
-		//This must be called last
+
+		//This must be called after the manager_ member is set.
 		pluginLoader_ = new PluginLoader(this);
 		try {
 			pluginLoader_.loadPlugins();
 		} catch (Exception e) {
-			
+
 			e.printStackTrace();
+		}
+
+		registerPlugin("AIM", CONNECTION, new AIMStrategy());
+		loadAccounts();
+		setVisible(true);
+
+
+	}
+
+	/**
+	 * This helper method loads saved account information from the accounts
+	 * file.  If the file does not exist it will create one.  If it determines
+	 * that there is no saved account information, it will display to the user
+	 * the new account window so that they can create an account.
+	 */
+	private void loadAccounts(){
+
+		File accounts = new File(ACCOUNTS_FILE_);
+		Document dom;
+		if (!accounts.exists()){
+			//Accounts file doesn't exist,
+			//likely a first time use
+
+
+			try {
+				accounts.createNewFile();
+				dom = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+
+				Element root = dom.createElement("Accounts");
+				dom.appendChild(root);
+
+				OutputFormat format = new OutputFormat(dom);
+				format.setIndenting(true);
+
+				XMLSerializer serializer = new XMLSerializer(
+						new FileOutputStream(ACCOUNTS_FILE_), format);
+
+				serializer.serialize(dom);
+
+			} catch (IOException e) {
+				JOptionPane.showMessageDialog(this, ERROR_CREATING_ACCOUNTS_ + " " + IO_ERROR_ + ": " + e.getMessage(),
+						IO_ERROR_, JOptionPane.ERROR_MESSAGE);
+				return;
+			}catch (ParserConfigurationException e) {
+
+				e.printStackTrace();
+				return;
+			}
+
+
+			//Show the new account window
+			EventQueue.invokeLater(new Runnable(){
+
+				@Override
+				public void run(){
+					new NewAccountWindow(manager_);
+				}
+			});
+
+		}else {
+			//Load the account information
+			try {
+				dom = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(accounts);
+
+				NodeList accountList = dom.getElementsByTagName("Accounts").item(0).getChildNodes();
+
+				if (accountList.getLength() == 0){
+					//No accounts exist in the file, show the 
+					//new account window and exit
+
+					EventQueue.invokeLater(new Runnable(){
+
+						@Override
+						public void run(){
+							new NewAccountWindow(manager_);
+						}
+					});
+
+					return;
+
+				}else{
+					//Accounts have been saved, load them up
+					for (int i = 0; i < accountList.getLength(); ++i){
+						if (accountList.item(i).getNodeType() == Node.TEXT_NODE){
+
+						}else{
+
+							Element e = (Element) accountList.item(i);
+
+							String handle = e.getTagName().substring(e.getTagName().indexOf(":") + 1);
+
+							String protocol = e.getTagName().substring(0, e.getTagName().indexOf(":"));
+
+							String pw = ((Element)e.getElementsByTagName("Password").item(0)).getAttribute("value");
+
+							HashMap<String, ConnectionStrategy> potentialConnections = manager_.getRegisteredStrategies();
+
+							if(e.getAttribute("autosignin").equalsIgnoreCase("true")){
+								ConnectionStrategy cs = potentialConnections.get(protocol);
+								cs.signOn(manager_, handle, pw);
+								manager_.addStrategy(cs);
+							}else{
+								ConnectionStrategy cs = potentialConnections.get(protocol);
+								cs.setHandle(handle);
+								manager_.addStrategy(cs);
+							}
+						}
+
+
+					}
+
+				}
+
+			} catch (SAXException e) {
+
+				e.printStackTrace();
+			} catch (IOException e) {
+				JOptionPane.showMessageDialog(this, ERROR_READING_ACCOUNTS_ + " " + IO_ERROR_ + ": " + e.getMessage(),
+						IO_ERROR_, JOptionPane.ERROR_MESSAGE);
+				e.printStackTrace();
+			} catch (ParserConfigurationException e) {
+
+				e.printStackTrace();
+			}
+
+
+
 		}
 	}
 
 
 
+	/**
+	 * This method resets the timer responsible for keeping track of
+	 * how much time is left before the user goes idle.  It resets the 
+	 * timer to the provided value
+	 * @param timeToIdle - Time that should elapse before the user 
+	 * 		becomes idle
+	 */
 	private void resetTimer(int timeToIdle)
 	{
 		if(myTaskTimer_ != null)
@@ -189,6 +357,11 @@ public class WhisperClient extends JFrame implements ActionListener {
 		}
 	}
 
+	/**
+	 * Inner class responsible for setting the user to idle.
+	 * @author Chris Thompson
+	 *
+	 */
 	class IdleTT extends TimerTask {
 		@Override
 		public void run() {
@@ -215,11 +388,11 @@ public class WhisperClient extends JFrame implements ActionListener {
 
 
 		//first menu\\
-			//File
-			//New IM
-			//Plugins
-			//Preferences
-			//Quit
+		//File
+		//New IM
+		//Plugins
+		//Preferences
+		//Quit
 		whisperMenu_ = new JMenu();
 		whisperMenu_.setText(WHISPER_);
 		menuBar_.add(whisperMenu_);
@@ -230,17 +403,24 @@ public class WhisperClient extends JFrame implements ActionListener {
 		newIm_.addActionListener(this);
 		whisperMenu_.add(newIm_);
 		
+		accounts_ = new JMenuItem();
+		accounts_.setText(ACCOUNTS_);
+		accounts_.setActionCommand(ACCOUNTS_);
+		accounts_.addActionListener(this);
+		whisperMenu_.add(accounts_);
+
 		plugins_ = new JMenuItem();
 		plugins_.setText(PLUGINS_);
 		plugins_.setActionCommand(PLUGINS_);
 		plugins_.addActionListener(this);
 		whisperMenu_.add(plugins_);
-		
+
 		preferences_ = new JMenuItem();
 		preferences_.setText(PREFERENCES_);
 		preferences_.setActionCommand(PREFERENCES_);
 		preferences_.addActionListener(this);
 		whisperMenu_.add(preferences_);
+
 		
 		sound_ = new JCheckBoxMenuItem();
 		sound_.setText(SOUND_);
@@ -256,8 +436,8 @@ public class WhisperClient extends JFrame implements ActionListener {
 		whisperMenu_.add(quit_);
 		
 		//second menu\\ - not used
-			//Preferences
-			//Encryption
+		//Preferences
+		//Encryption
 		/*
 		preferencesMenu_ = new JMenu();
 		preferencesMenu_.setText(PREFERENCES_);
@@ -268,7 +448,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 		encryption_.setActionCommand(ENCRYPTION_);
 		encryption_.addActionListener(this);
 		preferencesMenu_.add(encryption_);
-		*/
+		 */
 
 		setJMenuBar(menuBar_);
 
@@ -331,6 +511,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 		});
 
 		buddyList_.addMouseListener(new MouseAdapter() {
+			@Override
 			public void mouseClicked(MouseEvent mouseEvent) {
 				JList Buddies = (JList) mouseEvent.getSource();
 				if (mouseEvent.getClickCount() == 2) {
@@ -338,7 +519,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 					if (index >= 0) {
 						final Buddy selectedBuddy_ = (Buddy) Buddies.getModel().getElementAt(index);
 						//need to start new chat window
-												
+
 						EventQueue.invokeLater(new Runnable() {
 							public void run() {
 								newIMWindow(selectedBuddy_);
@@ -348,25 +529,6 @@ public class WhisperClient extends JFrame implements ActionListener {
 				}
 			}
 		});
-		
-		buddyList_.addKeyListener( new KeyAdapter() {
-			public void keyTyped(KeyEvent e) {
-				if (e.getKeyChar() == '\n') {
-					JList Buddies = (JList) e.getSource();
-					int index = Buddies.getSelectedIndex();
-        				if (index >= 0) {
-        					final Buddy selectedBuddy_ = (Buddy) Buddies.getModel().getElementAt(index);
-        					//need to start new chat window
-        					EventQueue.invokeLater(new Runnable() {
-        						public void run() {
-        							newIMWindow(selectedBuddy_);
-        						}
-        					});
-        				}
-					}
-        		}
-			}
-		);
 
 
 		GroupLayout layout = new GroupLayout(getContentPane());
@@ -380,10 +542,15 @@ public class WhisperClient extends JFrame implements ActionListener {
 				.addComponent(buddyListScroll_, GroupLayout.DEFAULT_SIZE, 294, Short.MAX_VALUE)
 		);
 		
+		accountInfoPane_ = new JFrame();
+		accountInfoPane_.setAlwaysOnTop(true);
+		accountInfoPane_.setMinimumSize(new Dimension(100, 50));
+		
+
 
 		pack();
-		
-		
+
+
 	}
 
 	/**
@@ -392,20 +559,20 @@ public class WhisperClient extends JFrame implements ActionListener {
 	 * @param client
 	 */
 	public WhisperIM newIMWindow(final Buddy selectedBuddy_) {
-			
+
 		WhisperIM window;
 		WhisperIMPanel panel;
-		
+
 		if (openBuddies_.isEmpty()){
 			//There is no window
-			
+
 			window = new WhisperIM(this, manager_.getPrivateKey());
 			panel = new WhisperIMPanel(selectedBuddy_, window, manager_.getPrivateKey());
 			window.addPanel(selectedBuddy_, panel);
 			window.setVisible(true);
-		
+
 			openBuddies_.put(selectedBuddy_.getHandle().toLowerCase().replace(" ", ""), window);
-			
+
 		}
 		else
 		{
@@ -418,8 +585,9 @@ public class WhisperClient extends JFrame implements ActionListener {
 		}
 		window.requestFocus();
 		return window;
-		
+
 	}
+
 	
 	//  Methods for Whisper System Tray  \\
 	
@@ -459,6 +627,17 @@ public class WhisperClient extends JFrame implements ActionListener {
 	}
 	
 	private void BuddiesComponentShown(ComponentEvent evt) {
+
+	}
+
+	/**
+	 * Method that allows the ConnectionManager class to notify
+	 * the WhisperClient class of a change in status for an open
+	 * connection.  
+	 * @param status - The String containing the status message
+	 * @param account - The identifier for the account
+	 */
+	public void statusUpdate(String status, String account){
 
 	}
 
@@ -528,7 +707,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 			//to the chat window.
 			if (openBuddies_.get(message.getFrom().toLowerCase().replace(" ", "")) == null){
 				//There isn't currently a window associated with that buddy
-				
+
 				EventQueue.invokeLater(new Runnable() {
 					public void run() {
 						//needs to go to an buddy object version
@@ -583,7 +762,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 	}
 
 
-	private void setAwayMessage(String message){
+	public void setAwayMessage(String message){
 		manager_.setAwayMessage(message);
 	}
 
@@ -603,7 +782,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 		if (actionCommand.equals(quit_.getActionCommand())) {
 			processWindowEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
 		}
-		
+
 		//New blank IM window
 		if (actionCommand.equals(newIm_.getActionCommand())) {
 			final WhisperClient wc = WhisperClient.this;
@@ -613,17 +792,17 @@ public class WhisperClient extends JFrame implements ActionListener {
 				}
 			});
 		}
-		
+
 		//Open the plugins window
 		if (actionCommand.equals(plugins_.getActionCommand())){
-			
+
 			EventQueue.invokeLater(new Runnable() {
 				public void run() {
 					new WhisperPluginManagerWindow(pluginLoader_, plm_);
 				}
 			});
 		}
-		
+
 		//Preferences
 		if (actionCommand.equals(preferences_.getActionCommand())) {
 			EventQueue.invokeLater(new Runnable() {
@@ -633,12 +812,21 @@ public class WhisperClient extends JFrame implements ActionListener {
 			});
 		}
 		
+		//Account Management Window
+		if (actionCommand.equals(accounts_.getActionCommand())){
+			EventQueue.invokeLater(new Runnable(){
+				public void run(){
+					new AccountManagementWindow(manager_);
+				}
+			});
+		}
+
 		//Sound
 		if (actionCommand.equals(sound_.getActionCommand())) {
 			toggleSound();
 		}
 	}
-	
+
 	/**
 	 * This method will be used to register a loaded plugin.  The WhisperClient
 	 * object will keep track of all currently running plugins and hand them off to
@@ -648,10 +836,10 @@ public class WhisperClient extends JFrame implements ActionListener {
 	 * @param c - The "Class" object representing the plugin
 	 */
 	public void registerPlugin(String name, int type, Plugin p){
-		
+
 		plm_.addPlugin(p);
 		switch (type){
-		
+
 		case CONNECTION:
 			//Stuff for loading a connection
 			manager_.registerConnection(name, p);

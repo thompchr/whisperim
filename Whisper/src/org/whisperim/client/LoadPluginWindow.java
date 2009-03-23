@@ -33,6 +33,7 @@ import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 import javax.swing.UIManager;
 
+import org.whisperim.filters.XMLFilter;
 import org.whisperim.plugins.PluginLoader;
 
 public class LoadPluginWindow extends JFrame implements ActionListener {

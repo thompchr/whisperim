@@ -33,6 +33,7 @@ import javax.swing.UIManager;
 import javax.swing.filechooser.FileFilter;
 
 import org.jdesktop.layout.GroupLayout;
+import org.whisperim.filters.WhiteboardFileFilter;
 
 public class Whiteboard extends JFrame{
     private JButton clear;
