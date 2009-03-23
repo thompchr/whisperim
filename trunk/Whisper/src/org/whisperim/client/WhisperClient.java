@@ -61,6 +61,7 @@ import org.whisperim.models.BuddyListModel;
 import org.whisperim.models.PluginListModel;
 import org.whisperim.plugins.Plugin;
 import org.whisperim.plugins.PluginLoader;
+import org.whisperim.prefs.Preferences;
 import org.whisperim.prefs.PreferencesWindow;
 import org.whisperim.renderers.BuddyListRenderer;
 import org.whisperim.security.Encryptor;
@@ -133,6 +134,9 @@ public class WhisperClient extends JFrame implements ActionListener {
 	
 	/** Creates new WhisperClient instance */
 	public WhisperClient(ConnectionManager manager) {
+		
+		Preferences prefs_ = Preferences.getInstance();
+		
 		initComponents();
 		WhisperSystemTray.startSystemTray(this);
 		Sound sound = new Sound();

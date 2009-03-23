@@ -25,10 +25,43 @@ package org.whisperim.prefs;
  * @author Cory Plastek
  * 
  */
-class Preferences {
+public class Preferences {
 	
-	
+	//for singleton
 	private static Preferences instance = null;
+	
+	//general
+	//logging
+	//security
+	//sounds
+	//whisperbot
+	
+	/**
+	 * General Preferences
+	 */
+	//themes
+	
+	/**
+	 * Logging Preferences
+	 */
+	private boolean loggingEnabled_;
+	
+	/**
+	 * Security Preferences
+	 */
+	private boolean encryptionEnabled_;
+	
+	/**
+	 * Sound Preferences
+	 */
+	private boolean soundsEnabled_;
+	
+	/**
+	 * Whisperbot Preferences
+	 */
+	private boolean whisperBotEnabled_;
+	
+	
 	
 	protected Preferences() {
 	    
@@ -48,6 +81,39 @@ class Preferences {
 	}
 	public Object clone() throws CloneNotSupportedException {
 		throw new CloneNotSupportedException();
+	}
+	
+	//accessors/mutators
+	public boolean getLoggingEnabled() {
+		return loggingEnabled_;
+	}
+	
+	public void setLoggingEnabled(boolean logging) {
+		loggingEnabled_ = logging;
+	}
+	
+	public boolean getEncryptionEnabled() {
+		return encryptionEnabled_;
+	}
+	
+	public void setEncryptionEnabled(boolean encryption) {
+		encryptionEnabled_ = encryption;
+	}
+	
+	public boolean getSoundsEnabled() {
+		return soundsEnabled_;
+	}
+	
+	public void setSoundsEnabled(boolean sounds) {
+		soundsEnabled_ = sounds;
+	}
+	
+	public boolean getWhisperBotEnabled() {
+		return whisperBotEnabled_;
+	}
+	
+	public void setWhisperBotEnabled(boolean whisperbot) {
+		whisperBotEnabled_ = whisperbot;
 	}
 
 }
