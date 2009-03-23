@@ -88,7 +88,7 @@ public class AIMSession implements AccEvents, Runnable {
 	private boolean running_ = true;
 	private AIMStrategy strategy_;
 	private String localHandle_;
-	private String protocol_ = "aol";
+	private String protocol_ = "AIM";
 
 	private LinkedList<AIMOperation> operations_ = new LinkedList<AIMOperation>();
 
