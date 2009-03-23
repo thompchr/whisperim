@@ -16,13 +16,13 @@
 
 package org.whisperim.client;
 
-import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import org.whisperim.aim.AIMStrategy;
 import org.whisperim.plugins.Plugin;
 
 /**
@@ -39,11 +39,17 @@ public class ConnectionManager {
 	 * Each title holds data for the session connection.
 	 */
 	
-	
+	private Login login_;
 	private WhisperClient client_ = null;
 	private PrivateKey myPrivateKey_;
 	private PublicKey myPublicKey_;
+	
+	public static final int INVISIBLE = 0;
+	public static final int AVAILABLE = 1;
+	public static final int IDLE = 2;
 
+
+	public static final int AIM_SESSION = 0; 
 
 	/**
 	 * This data member holds currently active sessions.
@@ -111,8 +117,7 @@ public class ConnectionManager {
 	
 	/**
 	 * Loads a connection and opens the connection based on the
-	 * strategy initially defined. This method is used to
-	 * make a new connection utilizing a predefined protocol.
+	 * strategy initially defined
 	 * @param name - Identifier originally used when the connection was stored
 	 * @param username - Username for the account associated with that connection
 	 * @param password - Password for the account
@@ -124,29 +129,42 @@ public class ConnectionManager {
 	}
 
 	/**
-	 * This method is used to retrieve the entire list of currently
-	 * registered ConnectionStrategy objects and allows for the calling
-	 * object to determine which one to open a new connection with.
-	 * 
-	 * @return HashMap<String, ConnectionStrategy>
-	 */
-	public HashMap<String, ConnectionStrategy> getRegisteredStrategies(){
-		return registeredStrategies_;
-	}
-	
-	/**
 	 * Constructor for Connection Manager.
 	 */
-	public ConnectionManager(KeyPair kp){
-		myPrivateKey_ = kp.getPrivate();
-		myPublicKey_ = kp.getPublic();
+	public ConnectionManager(int strategy, String handle, String password, Login login, PrivateKey privKey, PublicKey pubKey) throws IllegalArgumentException{
+		if (handle == null){
+			throw new IllegalArgumentException();
+		}
+
+		ConnectionStrategy cs;
+		// Switch statement for strategies. 
+		switch(strategy){
+			case 0:
+			{
+				cs = new AIMStrategy();
+				break;
+			}
+			default:
+			{
+				System.err.println("Error: No such strategy.");
+				cs = null;
+				break;
+			}
+		}
+
+		myPrivateKey_ = privKey;
+		myPublicKey_ = pubKey;
+		login_ = login;
+		cs.signOn(this, handle, password);
+		strategies_.put(cs.getIdentifier(), cs);
+		registeredStrategies_.put(cs.getProtocol(), cs);
 
 	}
 
 
 	/**
 	 * Set client_ to specified chat client
-	 * @param client -  The current WhisperClient object. 
+	 * @param client is the chat client. 
 	 */
 	public void setClient(WhisperClient client){
 		client_ = client;
@@ -154,25 +172,18 @@ public class ConnectionManager {
 
 	/**
 	 * Action taken when message is received from client.
-	 * 
-	 * @param message - The message object constructed by the
-	 * 					session thread from the message received
-	 * 					from the service.
 	 */
 	public void messageReceived(Message message){
+		//System.out.println("Received message: " + message.getMessage());
 		client_.recieveMessage(message);
 
 	}
 
 	/**
-	 * This method allows the strategy to notify the ConnectionManager
-	 * of changes in status in the running sessions.  
-	 * @param status - The String indicating the new status
-	 * @param account - The account the status change was associated
-	 * 					with.
+	 * Updates status.
 	 */
-	public void statusUpdate (String status, String account){
-		client_.statusUpdate(status, account);
+	public void statusUpdate (String status){
+		login_.statusUpdate(status);
 	}
 
 	/**
@@ -186,8 +197,9 @@ public class ConnectionManager {
 	 * Action to send message.
 	 */
 	public void sendMessage(Message message){
-		strategies_.get(message.getProtocol() + ":" + message.getFrom().toLowerCase().replace(" ",""))
-					.sendMessage(message);
+		System.out.println("Sending message: " + message.getMessage());
+		String identifier = message.getProtocol() + ":" + message.getFrom().toLowerCase().replace(" ","");
+		strategies_.get(identifier).sendMessage(message);
 	}
 	
 	/**
@@ -239,7 +251,6 @@ public class ConnectionManager {
 		 }
 		 
 	 }
-	 
 	 
 	 public void setState(int newState){
 		 
