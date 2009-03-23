@@ -39,18 +39,15 @@ public class WhisperSystemTray implements Runnable{
 	private static final String NEW_IM_IMAGE_LOCATION_ = "..\\images\\newIM.jpg";
 	private static final String TRAY_ICON_LOCATION_ = "..\\images\\WhisperIMLogo-Small.png";
 
-
-
 	private static TrayIcon trayIcon = null;
-	
-	 
 	
 	private final Image recIMImage = Toolkit.getDefaultToolkit().getImage(NEW_IM_IMAGE_LOCATION_);
     private final Image trayIMImage = Toolkit.getDefaultToolkit().getImage(TRAY_ICON_LOCATION_);
 	
-	public static void startSystemTray(WhisperClient client){
+	public static void startSystemTray(WhisperClient client, ConnectionManager manager){
 		
 		final WhisperClient client_= client;
+		final ConnectionManager manager_ = manager;
 					
 		if (SystemTray.isSupported()) {
 		    SystemTray tray = SystemTray.getSystemTray();
@@ -107,28 +104,26 @@ public class WhisperSystemTray implements Runnable{
 		    //Available Status
 		    ActionListener statusAvailableListener = new ActionListener() {
 		        public void actionPerformed(ActionEvent e) {
-		        	//Default Status
-		        	//Code to Change to Available Status
+		        	manager_.setState(ConnectionManager.AVAILABLE);
 		        }
 		    };
 		    
 		    //Away Status
 		    ActionListener statusAwayListener = new ActionListener() {
 		        public void actionPerformed(ActionEvent e) {
-		        	//Code to Change to Away Status
+		        	manager_.setState(ConnectionManager.AWAY);
 		        }
 		    };
 		    
 		    //Invisible Status
 		    ActionListener statusInvisibleListener = new ActionListener() {
 		        public void actionPerformed(ActionEvent e) {
-		        	
+		        	manager_.setState(ConnectionManager.INVISIBLE);
 		        }
 		    };
 		    
 		    //Mute all sounds from tray
 		    ItemListener soundListener = new ItemListener() {
-				@Override
 				public void itemStateChanged(ItemEvent arg0) {
 					System.out.println("clicked");
 		        	client_.toggleSound();
