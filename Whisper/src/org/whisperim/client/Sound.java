@@ -66,12 +66,6 @@ public class Sound implements ClientListener {
 	}
 	
 	@Override
-	public void statusChange() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public void soundChange(WhisperClient client) {
 		// TODO Auto-generated method stub
 		

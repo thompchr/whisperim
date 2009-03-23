@@ -32,22 +32,54 @@ import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-//Things to do: User can change status, Mute all sounds from tray
-
-public class WhisperSystemTray implements Runnable{
+public class WhisperSystemTray implements Runnable,ActionListener{
 	
 	private static final String NEW_IM_IMAGE_LOCATION_ = "..\\images\\newIM.jpg";
 	private static final String TRAY_ICON_LOCATION_ = "..\\images\\WhisperIMLogo-Small.png";
+	private static final String EXIT_ = "Exit";
+	private static final String ABOUT_ = "About";
+	private static final String WHISPER_ = "Whisper";
+	private static final String AVAILABLE_ = "Available";
+	private static final String INVISIBLE_ = "Invisible";
+	private static final String AWAY_ = "Away";
+	private static final String MINIMIZEWHISPER_ = "Minimize Whisper";
+	private static final String NEWIM_ = "New IM";
+	private static final String PLUGINS_ = "Plugins";
+	private static final String ACCOUNTMANAGER_ = "Account Manager";
+	private static final String PREFERENCES_ = "Preferences";
+	private static final String SOUND_ = "Sound";
+	private static final String HIDETRAY_ = "Hide System Tray";
+	private static final String STATUS_ = "Status";
+	private static final String OPTIONS_ = "Options";
 
+	private MenuItem exitItem;
+    private MenuItem aboutItem;
+    private MenuItem openWhisperItem;
+    private Menu statusMenu;
+    private CheckboxMenuItem statusAvailableItem;
+    private CheckboxMenuItem statusInvisibleItem;
+    private CheckboxMenuItem statusAwayItem;	        
+    private Menu whisperMenu;
+    private MenuItem minimizeWhisperItem;
+    private MenuItem newImItem;
+    private MenuItem pluginsItem;
+    private MenuItem accountItem;
+    private Menu prefMenu;
+    private MenuItem prefItem;
+    private MenuItem hideTrayItem;
+    
+    private WhisperClient client_;
+    private ConnectionManager manager_;
+	
 	private static TrayIcon trayIcon = null;
 	
 	private final Image recIMImage = Toolkit.getDefaultToolkit().getImage(NEW_IM_IMAGE_LOCATION_);
     private final Image trayIMImage = Toolkit.getDefaultToolkit().getImage(TRAY_ICON_LOCATION_);
 	
-	public static void startSystemTray(WhisperClient client, ConnectionManager manager){
+	public void startSystemTray(WhisperClient client, ConnectionManager manager){
 		
-		final WhisperClient client_= client;
-		final ConnectionManager manager_ = manager;
+		client_= client;
+		manager_ = manager;
 					
 		if (SystemTray.isSupported()) {
 		    SystemTray tray = SystemTray.getSystemTray();
@@ -59,172 +91,82 @@ public class WhisperSystemTray implements Runnable{
 		        public void mouseExited(MouseEvent e) {}
 		        public void mousePressed(MouseEvent e) {}
 		        public void mouseReleased(MouseEvent e) {}
-		    };		    
-		    
-		    //Exit Listener for tray
-		    ActionListener exitListener = new ActionListener() {
-		        public void actionPerformed(ActionEvent e) {
-		            System.out.println("System Tray - Exiting");
-		            System.exit(0);
-		        }
 		    };
 		    
-		    //New IM Listener for tray
-		    ActionListener newImListener = new ActionListener() {
-		        public void actionPerformed(ActionEvent e) {
-		            System.out.println("System Tray - Creating new IM");
-		            client_.createNewIMWindow();
-		        }
-		    };
-		    
-		    //About Listener for tray
-		    ActionListener aboutListener = new ActionListener() {
-		        public void actionPerformed(ActionEvent e) {
-		            System.out.println("System Tray - Opening About");
-		            client_.openAboutPage();
-		        }
-		    };
-		    
-		    //Plugins Listener for tray
-		    ActionListener pluginsListener = new ActionListener() {
-		        public void actionPerformed(ActionEvent e) {
-		            System.out.println("System Tray - Opening Plugins");
-		        	client_.openPluginsPage();
-		        }
-		    };
-
-		    //Preferences Listener for tray
-		    ActionListener prefListener = new ActionListener() {
-		        public void actionPerformed(ActionEvent e) {
-		            System.out.println("System Tray - Opening Preferences");
-		        	client_.openPreferencesWindow();
-		        }
-		    };	
-		    
-		    //Available Status
-		    ActionListener statusAvailableListener = new ActionListener() {
-		        public void actionPerformed(ActionEvent e) {
-		        	manager_.setState(ConnectionManager.AVAILABLE);
-		        }
-		    };
-		    
-		    //Away Status
-		    ActionListener statusAwayListener = new ActionListener() {
-		        public void actionPerformed(ActionEvent e) {
-		        	//manager_.setState(manager_.);
-		        }
-		    };
-		    
-		    //Invisible Status
-		    ActionListener statusInvisibleListener = new ActionListener() {
-		        public void actionPerformed(ActionEvent e) {
-		        	manager_.setState(ConnectionManager.INVISIBLE);
-		        }
-		    };
-		    
-		    //Mute all sounds from tray
 		    ItemListener soundListener = new ItemListener() {
-				public void itemStateChanged(ItemEvent arg0) {
-					System.out.println("clicked");
+		    	public void itemStateChanged(ItemEvent arg0) {
+		    		System.out.println("clicked");
 		        	client_.toggleSound();
-				}
+		    	}
 		    };	
-		    
-		    //Open Account Listener from tray
-		    ActionListener accountListener = new ActionListener() {
-		        public void actionPerformed(ActionEvent e) {
-		        	client_.openAccountsPage();    	
-		        }
-		    };
-		    
-		    //Minimize Whisper Client from tray
-		    ActionListener minimizeListener = new ActionListener() {
-		        public void actionPerformed(ActionEvent e) {
-		        	client_.setVisible(false);
-		        }
-		    };
-		    
-		    //Open Whisper Client from tray
-		    ActionListener openWhisperListener = new ActionListener() {
-		        public void actionPerformed(ActionEvent e) {
-		        	client_.setVisible(true);
-		        }
-		    };
-		    
-		    //Hide System Tray Icon
-		    ActionListener hideTrayListener = new ActionListener() {
-		        public void actionPerformed(ActionEvent e) {
-		        	closeTray();
-		        }
-		    };
 		    
 		    //New IM option on Whisper menu
-		    MenuItem newImItem = new MenuItem("New Message");
-		    newImItem.addActionListener(newImListener);
+		    newImItem = new MenuItem(NEWIM_);
+		    newImItem.addActionListener(this);
 		    
 		    //Exit option on menu
-		    MenuItem exitItem = new MenuItem("Exit");
-		    exitItem.addActionListener(exitListener);
+		    exitItem = new MenuItem(EXIT_);
+		    exitItem.addActionListener(this);
 		    
 		    //About option on menu
-		    MenuItem aboutItem = new MenuItem("About");
-		    aboutItem.addActionListener(aboutListener);
+		    aboutItem = new MenuItem(ABOUT_);
+		    aboutItem.addActionListener(this);
 		         
 		    //Open account manager from menu
-		    MenuItem accountItem = new MenuItem("Account Manager");
-		    accountItem.addActionListener(accountListener);
+		    accountItem = new MenuItem(ACCOUNTMANAGER_);
+		    accountItem.addActionListener(this);
 		    
 		    //Whisper menu
-		    Menu whisperMenu = new Menu("Options");
+		    whisperMenu = new Menu(OPTIONS_);
 		    
 		    //Preferences menu
-		    Menu prefMenu = new Menu("Preferences");
+		    prefMenu = new Menu(PREFERENCES_);
 		    
 		    //About option on menu
-		    Menu statusMenu = new Menu("Status");
+		    statusMenu = new Menu(STATUS_);
 		    
 		    //Available option on Status menu
-		    CheckboxMenuItem statusAvailableItem = new CheckboxMenuItem("Available");
-		    statusAvailableItem.addActionListener(statusAvailableListener);
+		    statusAvailableItem = new CheckboxMenuItem(AVAILABLE_);
+		    statusAvailableItem.addActionListener(this);
 		    statusAvailableItem.setState(true);
 		    
 		    //Invisible option on Status menu
-		    CheckboxMenuItem statusInvisibleItem = new CheckboxMenuItem("Invisible");
-		    statusInvisibleItem.addActionListener(statusInvisibleListener);
+		    statusInvisibleItem = new CheckboxMenuItem(INVISIBLE_);
+		    statusInvisibleItem.addActionListener(this);
 		    statusInvisibleItem.setState(false);
 		    	
 		    //Away option on Status menu
-		    CheckboxMenuItem statusAwayItem = new CheckboxMenuItem("Away");
-		    statusAwayItem.addActionListener(statusAwayListener);
+		    statusAwayItem = new CheckboxMenuItem(AWAY_);
+		    statusAwayItem.addActionListener(this);
 		    statusInvisibleItem.setState(false);
 		    
-		    //Encryption option on Preference menu
-		    MenuItem prefItem = new MenuItem("Preferences");
-		    prefItem.addActionListener(prefListener);
+		    //Preferences option on Preference menu
+		    prefItem = new MenuItem(PREFERENCES_);
+		    prefItem.addActionListener(this);
 		    
 		    //Plugins option on Whisper menu
-		    MenuItem pluginsItem = new MenuItem("Plugins");
-		    pluginsItem.addActionListener(pluginsListener);
+		    pluginsItem = new MenuItem(PLUGINS_);
+		    pluginsItem.addActionListener(this);
 		    
 		    //Toggle sound off and on
-		    final CheckboxMenuItem soundItem = new CheckboxMenuItem("Sound");
+		    final CheckboxMenuItem soundItem = new CheckboxMenuItem(SOUND_);
 		    soundItem.addItemListener(soundListener);
 		    soundItem.setState(client_.getSound_());
 		    
 		    //Minimize Whisper Client Option
-		    MenuItem minimizeItem = new MenuItem("Hide Whisper");
-		    minimizeItem.addActionListener(minimizeListener);
+		    minimizeWhisperItem = new MenuItem(MINIMIZEWHISPER_);
+		    minimizeWhisperItem.addActionListener(this);
 		    
 		    //Open Whisper Client
-		    MenuItem openWhisperItem = new MenuItem("Whisper");
-		    openWhisperItem.addActionListener(openWhisperListener);
+		    openWhisperItem = new MenuItem(WHISPER_);
+		    openWhisperItem.addActionListener(this);
 		    
 		    //Hide System Tray
-		    MenuItem hideTrayItem = new MenuItem("Hide System Tray");
-		    hideTrayItem.addActionListener(hideTrayListener);
+		    hideTrayItem = new MenuItem(HIDETRAY_);
+		    hideTrayItem.addActionListener(this);
 		    
 		    PopupMenu popup = new PopupMenu();
-			trayIcon = new TrayIcon(image, "Whisper", popup);     
+			trayIcon = new TrayIcon(image, WHISPER_, popup);     
 		    trayIcon.setImageAutoSize(true);
 		    trayIcon.addMouseListener(mouseListener);
 		
@@ -237,7 +179,7 @@ public class WhisperSystemTray implements Runnable{
 	        statusMenu.add(statusInvisibleItem);
 	        statusMenu.add(statusAwayItem);	        
 	        popup.add(whisperMenu);
-	        whisperMenu.add(minimizeItem);
+	        whisperMenu.add(minimizeWhisperItem);
 	        whisperMenu.add(newImItem);
 	        whisperMenu.add(pluginsItem);
 	        whisperMenu.add(accountItem);
@@ -263,16 +205,10 @@ public class WhisperSystemTray implements Runnable{
 				}
 				
 				@Override
-				public void statusChange() {
-					//Waiting for implementation of Status Change to implement this method
-				}
-
-				@Override
 				public void sentMessage(WhisperClient client) {
 					// TODO Auto-generated method stub
 					
 				}
-
 				
 				public void soundChange(WhisperClient client) {
 					if(client_.getSound_()){
@@ -313,4 +249,45 @@ public class WhisperSystemTray implements Runnable{
     public static void closeTray(){
     	SystemTray.getSystemTray().remove(trayIcon);
     }
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		Object source = e.getSource();
+		if(source == exitItem){
+            System.exit(0);
+		}
+		else if(source == newImItem){
+	        client_.createNewIMWindow();
+		}
+		else if(source == aboutItem){
+	        client_.openAboutPage();
+		}
+		else if(source == pluginsItem){
+	    	client_.openPluginsPage();
+		}
+		else if(source == prefItem){
+	    	client_.openPreferencesWindow();
+		}
+		else if(source == statusAvailableItem){
+	    	manager_.setState(ConnectionManager.AVAILABLE);
+		}
+		else if(source == statusInvisibleItem){
+	    	manager_.setState(ConnectionManager.INVISIBLE);
+		}
+		else if(source == statusAwayItem){
+	    	manager_.setState(ConnectionManager.AWAY);
+		}
+		else if(source == accountItem){
+	    	client_.openAccountsPage();  
+		}
+		else if(source == minimizeWhisperItem){
+	    	client_.setVisible(false);
+		}
+		else if(source == openWhisperItem){
+	    	client_.setVisible(true);
+		}
+		else if(source == hideTrayItem){
+			closeTray();
+		}
+	}
 }
