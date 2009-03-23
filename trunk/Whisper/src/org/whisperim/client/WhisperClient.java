@@ -174,9 +174,9 @@ public class WhisperClient extends JFrame implements ActionListener {
 	public WhisperClient(ConnectionManager manager) {
 		
 		Preferences prefs_ = Preferences.getInstance();
-		
 		initComponents();
-		WhisperSystemTray.startSystemTray(this, manager_);
+		WhisperSystemTray tray = new WhisperSystemTray();
+		tray.startSystemTray(this, manager_);
 		Sound sound = new Sound();
 		getClientListeners().add(sound);
 		manager_ = manager;

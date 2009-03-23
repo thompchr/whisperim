@@ -47,7 +47,7 @@ public class ConnectionManager {
 	public static final int INVISIBLE = 0;
 	public static final int AVAILABLE = 1;
 	public static final int IDLE = 2;
-
+	public static final int AWAY = 3;
 
 	/**
 	 * This data member holds currently active sessions.
