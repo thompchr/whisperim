@@ -1,5 +1,5 @@
 /**************************************************************************
- * Copyright 2009 Cory Plastek                                             *
+ * Copyright 2009 Nick Krieble                                             *
  *                                                                         *
  * Licensed under the Apache License, Version 2.0 (the "License");         *
  * you may not use this file except in compliance with the License.        *
@@ -13,41 +13,12 @@
  * See the License for the specific language governing permissions and     *
  * limitations under the License.                                          *
  **************************************************************************/
+package HTTPServer;
+import java.net.*;
+import java.io.*;
+import java.util.*;
+import java.lang.*;
 
-
-/*
- * Preferences.java
- */
-
-package org.whisperim.prefs;
-
-/**
- * @author Cory Plastek
- * 
- */
-class Preferences {
-	
-	
-	private static Preferences instance = null;
-	
-	protected Preferences() {
-	    
-		// Instantiating Xstream
-		
-	//XStream xstream = new XStream();
-		//http://xstream.codehaus.org/tutorial.html
-	
-		
-	}
-	
-	public static Preferences getInstance() {
-		if(instance == null) {
-			instance = new Preferences();
-		}
-		return instance;
-	}
-	public Object clone() throws CloneNotSupportedException {
-		throw new CloneNotSupportedException();
-	}
+public class HTTPServer {
 
 }
