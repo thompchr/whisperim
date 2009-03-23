@@ -26,7 +26,6 @@ import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 
 import org.whisperim.client.ConnectionStrategy;
-import org.whisperim.plugins.Plugin;
 
 
 /**
