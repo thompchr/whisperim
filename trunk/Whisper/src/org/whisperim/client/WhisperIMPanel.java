@@ -39,6 +39,7 @@ public class WhisperIMPanel extends JPanel implements ActionListener {
     
     private Buddy buddy_;
     private WhisperIM window_;
+    private Whiteboard whiteboard_; 
     
     //This needs to be changed to support using the icon associated with the plugin
     //Perhaps store it in the buddy object
@@ -291,11 +292,12 @@ public class WhisperIMPanel extends JPanel implements ActionListener {
 	        		
 	        	}catch (Exception ex){
 	        		talkArea_.append("An error has occurred sending the key.\n");
+	        		ex.printStackTrace();
 	        	}
 	    	}
 	    	else if (actionCommand.equals(whiteboardBtn_.getActionCommand())) {
 	    		try{
-	        		Whiteboard w = new Whiteboard(buddy_.getHandle(),500,500);
+	        		whiteboard_ = new Whiteboard(buddy_.getHandle(),500,500);
 	        	}catch (Exception ex){
 	        		talkArea_.append("An error has occurred starting the whiteboard.\n");
 	        	}
@@ -347,16 +349,21 @@ public class WhisperIMPanel extends JPanel implements ActionListener {
 	    }
 	    
 	    public void receiveMsg(Message message)
-	    {
+	    {	    
 	    	DateFormat d = DateFormat.getTimeInstance(DateFormat.MEDIUM);
 	    	talkArea_.append("(" + d.format(message.getTimeSent()) + ") ");
 	    	talkArea_.append(message.getFrom() + ": ");
-	        
-	    	if (!doEncryption_ || !message.getMessage().contains("<key>")){
-	    		talkArea_.append(clearHTMLTags(message.getMessage(), -1));    		
+	    	
+	    	if (!doEncryption_ || !message.getMessage().contains("<key>")){		    	
+	    		talkArea_.append(clearHTMLTags(message.getMessage(), -1)); 
 	    	}else{
-	    		
-	    		talkArea_.append("(Encrypted Message) " + clearHTMLTags(encrypt.decryptMessage(message.getMessage()), -1));
+	    		String decryptedMsg = encrypt.decryptMessage(message.getMessage());
+
+	    		if(isWhiteboardMsg(decryptedMsg) == false)
+	    		{    	    	
+	    	    	talkArea_.append("(Encrypted Message) " + clearHTMLTags(decryptedMsg, -1));
+	    		}
+	    			
 	    	}
 	        
 	    	if (doLogging_)
@@ -366,6 +373,21 @@ public class WhisperIMPanel extends JPanel implements ActionListener {
 	        autoScroll();
 	    }
 
+	    public boolean isWhiteboardMsg(String msg)
+	    {
+	    	if(msg.contains("<whiteboard>") && msg.contains("</whiteboard>"))//contains whiteboard tags
+	    	{
+	    		msg = msg.replace("<whiteboard>","");
+	    		msg = msg.replace("</whiteboard>","");
+	    		
+	    		whiteboard_.handleCommand(msg);
+	    		
+	    		return true;
+	    	}
+	    	else
+	    		return false;
+	    }
+	    
 	    public void sendMsg()
 	    {
 	    	//if the message is empty, do nothing
@@ -379,10 +401,11 @@ public class WhisperIMPanel extends JPanel implements ActionListener {
 		        Calendar now = Calendar.getInstance();
 		        Date d = now.getTime();
 		        DateFormat df1 = DateFormat.getTimeInstance(DateFormat.MEDIUM);
-		        if (doEncryption_) {
-		            //Message will be encrypted
-		        	talkArea_.append("(" + df1.format(d) + ") " + myHandle_ + ":  (Encrypted Message) " + messageArea_.getText() + "\n");
-		            messageText = encrypt.generateCipherText(messageArea_.getText());
+		        if (doEncryption_) {   	    			    		
+			        	//Message will be encrypted
+			        	talkArea_.append("(" + df1.format(d) + ") " + myHandle_ + ":  (Encrypted Message) " + messageArea_.getText() + "\n");
+			            messageText = encrypt.generateCipherText(messageArea_.getText());
+			            boolean b = isWhiteboardMsg(messageArea_.getText());
 		        }
 		        else {
 		        	talkArea_.append("(" + df1.format(d) + ") " + myHandle_ + ": " + messageArea_.getText() + "\n");
