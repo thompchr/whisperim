@@ -1,4 +1,4 @@
-package org.whisperim.client;
+package org.whisperim.filters;
 
 import java.io.File;
 

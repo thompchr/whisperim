@@ -27,6 +27,7 @@ public class Buddy {
 	private String handle_;
 	private String protocolID_;
 	private String buddyIconLoc_;
+	private String serviceIconLoc_;
 	private String associatedLocalHandle_;
 	private String alias_;
 		
@@ -79,6 +80,22 @@ public class Buddy {
 
 	public void setAssociatedLocalHandle(String associatedLocalHandle) {
 		associatedLocalHandle_ = associatedLocalHandle;
+	}
+	
+	public void setServiceIconLoc(String loc){
+		serviceIconLoc_ = loc;
+	}
+	
+	public String getServiceIconLoc(){
+		return serviceIconLoc_;
+	}
+	
+	public void setBuddyIconLoc(String loc){
+		buddyIconLoc_ = loc;
+	}
+	
+	public String getBuddyIconLoc(){
+		return buddyIconLoc_;
 	}
 	
 	@Override

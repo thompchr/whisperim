@@ -722,6 +722,7 @@ public class AIMSession implements AccEvents, Runnable {
 		case AIMOperation.CREATE_VIDEO_SESSION:{
 			AccAvManager av = session_.getAudioVideoManager();
 			//av.setVideoInputDevice(av.getWi)
+			
 		}
 		
 		

@@ -20,9 +20,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.KeyPair;
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import java.util.ArrayList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -50,26 +47,48 @@ public class Whisper {
 	private static final String WHISPER_HOME_DIR_ = System.getProperty("user.home") + File.separator + "Whisper";
 
 	private static final String KEY_FILE_ = WHISPER_HOME_DIR_ + File.separator + "keys";
-
-	private ArrayList<Buddy> buddies_ = new ArrayList<Buddy>();
 	
-	private PrivateKey myPrivateKey_;
-	private PublicKey myPublicKey_;
 
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-
 		new Whisper();
-
 	}
 	
 	public Whisper(){
+
+		final KeyPair myKeys = getKeys();
 		
+		EventQueue.invokeLater(new Runnable() {
+	           public void run() {
+	             new WhisperClient(new ConnectionManager (myKeys));
+
+	           }
+	        });
+	}
+	/**
+	 * I take a xml element and the tag name, look for the tag and get
+	 * the text content
+	 * i.e for <employee><name>John</name></employee> xml snippet if
+	 * the Element points to employee node and tagName is 'name' I will return John
+	 * 
+	 * Take from http://www.totheriver.com/learn/xml/xmltutorial.html#6.1.2
+	 */
+	private String getTextValue(Element ele, String tagName) {
+		String textVal = null;
+		NodeList nl = ele.getElementsByTagName(tagName);
+		if(nl != null && nl.getLength() > 0) {
+			Element el = (Element)nl.item(0);
+			textVal = el.getFirstChild().getNodeValue();
+		}
+
+		return textVal;
+	}
+	
+	public KeyPair getKeys(){
 		File dir = new File(WHISPER_HOME_DIR_);
 		File keyFile = new File(KEY_FILE_);
-		
 		
 		if (dir.exists()){
 			// Directory exists, check to see if file exists.
@@ -77,7 +96,6 @@ public class Whisper {
 				// Key store does not exist, create it.
 				try {
 					keyFile.createNewFile();
-					
 					generateXML(keyFile);
 
 				} catch (IOException e) {
@@ -86,8 +104,6 @@ public class Whisper {
 			}
 			
 			// Determine if the file has been properly constructed as an XML file.
-			
-			
 		}else{
 			// Directory does not exist, create it and the file.
 			try{
@@ -128,10 +144,8 @@ public class Whisper {
 					String keys[] = new String[2];
 					keys[0] = getTextValue(myKeysElement, "PublicKey");
 					keys[1] = getTextValue(myKeysElement, "PrivateKey");
-					KeyPair keyPair = Encryptor
-							.generateRSAKeyPairFromString(keys);
-					myPrivateKey_ = keyPair.getPrivate();
-					myPublicKey_ = keyPair.getPublic();
+					return Encryptor.generateRSAKeyPairFromString(keys);
+					
 				
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -147,31 +161,9 @@ public class Whisper {
 			e.printStackTrace();
 		}
 		
+		return null;
 		
-		EventQueue.invokeLater(new Runnable() {
-	           public void run() {
-	               Login client = new Login(myPublicKey_, myPrivateKey_);
-	               client.setVisible(true);
-	           }
-	        });
-	}
-	/**
-	 * I take a xml element and the tag name, look for the tag and get
-	 * the text content
-	 * i.e for <employee><name>John</name></employee> xml snippet if
-	 * the Element points to employee node and tagName is 'name' I will return John
-	 * 
-	 * Take from http://www.totheriver.com/learn/xml/xmltutorial.html#6.1.2
-	 */
-	private String getTextValue(Element ele, String tagName) {
-		String textVal = null;
-		NodeList nl = ele.getElementsByTagName(tagName);
-		if(nl != null && nl.getLength() > 0) {
-			Element el = (Element)nl.item(0);
-			textVal = el.getFirstChild().getNodeValue();
-		}
-
-		return textVal;
+		
 	}
 	
 	public void sendMessage(Message message){

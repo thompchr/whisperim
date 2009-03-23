@@ -53,6 +53,15 @@ public abstract class ConnectionPluginAdapter implements Plugin, ConnectionStrat
 	 */
 	@Override
 	public abstract String getProtocol();
+	
+	/**
+	 * This method must be implemented in order to properly identify the
+	 * protocol when account information is saved.  This method will never
+	 * be called before signOn() is called.
+	 */
+	@Override
+	public abstract String getHandle();
+	
 
 	@Override
 	public void receiveBuddies(ArrayList<Buddy> buddies) {
