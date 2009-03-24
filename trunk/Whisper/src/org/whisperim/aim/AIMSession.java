@@ -605,7 +605,7 @@ public class AIMSession implements AccEvents, Runnable {
 	 * queue, performing any it comes across.
 	 */
 	public void run() {
-		// TODO Auto-generated method stub
+		
 		try {
 			session_ = new AccSession();
 

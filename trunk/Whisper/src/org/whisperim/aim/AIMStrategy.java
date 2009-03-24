@@ -22,7 +22,6 @@ import org.whisperim.client.Buddy;
 import org.whisperim.client.ConnectionManager;
 import org.whisperim.client.ConnectionStrategy;
 import org.whisperim.client.Message;
-import org.whisperim.plugins.Plugin;
 
 
 /**
