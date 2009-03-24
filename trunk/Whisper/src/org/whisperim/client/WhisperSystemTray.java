@@ -16,6 +16,7 @@
  **************************************************************************/
 package org.whisperim.client;
 
+import org.whisperim.prefs.PrefListener;
 import org.whisperim.prefs.Preferences;
 import org.whisperim.prefs.PreferencesWindow;
 
@@ -210,6 +211,20 @@ public class WhisperSystemTray implements Runnable,ActionListener,ItemListener{
 				}
 			});
 	        
+		    Preferences.getInstance().getListeners().add(new PrefListener() {
+				private boolean locked = false;
+				@Override
+				public void prefChanged(String name, Object o) {
+					if("Sound".equals(name) && !locked){
+						locked = true;
+						if(!o.equals(soundItem.getState())){
+							trayStateChange(1);
+						}
+						locked = false;
+					}
+				}
+			});
+		    
 		    try {
 		        tray.add(trayIcon);
 		    } catch (AWTException e) {
@@ -278,14 +293,13 @@ public class WhisperSystemTray implements Runnable,ActionListener,ItemListener{
 	    	}
 	    }
 
+	
+	
 	@Override
 	public void itemStateChanged(ItemEvent e) {
 		Object itemSource = e.getItemSelectable();
 		if(itemSource == soundItem){
-			JCheckBoxMenuItem temp = client_.getSound_();
-			temp.setState(!temp.getState());
-			client_.setSound_(temp);
-			client_.toggleSound();
+			client_.changeClientSound();
 		}
 		if(itemSource == statusAvailableItem){
 			statusAvailableItem.setState(true);

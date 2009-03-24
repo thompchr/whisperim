@@ -23,6 +23,8 @@ package org.whisperim.prefs;
 
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Cory Plastek
@@ -32,7 +34,7 @@ public class Preferences {
 	
 	//for singleton
 	private static Preferences instance = null;
-	
+	private List<PrefListener> listeners = new ArrayList<PrefListener>();
 	
 	//general
 	//logging
@@ -134,6 +136,9 @@ public class Preferences {
 	
 	public void setSoundsEnabled(boolean sounds) {
 		soundsEnabled_ = sounds;
+		for(PrefListener listener:listeners){
+			listener.prefChanged("Sound", sounds);
+		}
 	}
 	
 	
@@ -148,4 +153,13 @@ public class Preferences {
 		whisperBotEnabled_ = whisperbot;
 	}
 
+	public List<PrefListener> getListeners() {
+		return listeners;
+	}
+
+	public void setListeners(List<PrefListener> listeners) {
+		this.listeners = listeners;
+	}
+
+	
 }

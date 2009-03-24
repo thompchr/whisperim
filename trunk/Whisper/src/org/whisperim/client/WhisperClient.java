@@ -73,6 +73,7 @@ import org.whisperim.models.BuddyListModel;
 import org.whisperim.models.PluginListModel;
 import org.whisperim.plugins.Plugin;
 import org.whisperim.plugins.PluginLoader;
+import org.whisperim.prefs.PrefListener;
 import org.whisperim.prefs.Preferences;
 import org.whisperim.prefs.PreferencesWindow;
 import org.whisperim.renderers.BuddyListRenderer;
@@ -193,11 +194,24 @@ public class WhisperClient extends JFrame implements ActionListener {
 		Sound sound = new Sound();
 		getClientListeners().add(sound);
 		sound.playSound(this, "Open.wav");
+	    Preferences.getInstance().getListeners().add(new PrefListener() {
+			private boolean locked = false;
+			@Override
+			public void prefChanged(String name, Object o) {
+				if("Sound".equals(name) && !locked){
+					locked = true;
+					if(!o.equals(getSound_().getState())){
+						getSound_().setState(((Boolean)o).booleanValue());
+					}
+					locked = false;
+				}
+			}
+		});
 		
 		
 		//start system tray
 		tray_ = new WhisperSystemTray();
-		tray_.startSystemTray(this, manager_);
+		tray_.startSystemTray(this, manager);
 		
 		
 		//reset idle timer
@@ -873,7 +887,6 @@ public class WhisperClient extends JFrame implements ActionListener {
 		//Sound
 		if (actionCommand.equals(sound_.getActionCommand())) {
 			toggleSound();
-			this.getSystemTray().trayStateChange(1);
 		}
 	}
 	
@@ -888,6 +901,13 @@ public class WhisperClient extends JFrame implements ActionListener {
 
 	public void setSound_(JCheckBoxMenuItem sound_) {
 		this.sound_ = sound_;
+	}
+	
+	public void changeClientSound(){
+		JCheckBoxMenuItem temp = this.getSound_();
+		temp.setState(!temp.getState());
+		this.setSound_(temp);
+		this.toggleSound();
 	}
 
 	/**

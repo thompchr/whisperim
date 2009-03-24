@@ -29,10 +29,10 @@ public class Sound implements ClientListener {
 		
 	private static final String NEW_IM_RECEIVED = "IM.wav";
 	private static final String NEW_IM_SENT = "IM.wav";
-	boolean playSound = Preferences.getInstance().getSoundsEnabled();
+	//boolean playSound = Preferences.getInstance().getSoundsEnabled();
 	
 	public void playSound(WhisperClient client, String name){
-		if(playSound){
+		if(Preferences.getInstance().getSoundsEnabled()){
 			try{
 				File soundFile = new File("..\\sounds\\" + name);
 				AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(soundFile);
