@@ -21,10 +21,11 @@ package org.whisperim.client;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.util.Map.Entry;
 
 import javax.swing.JButton;
@@ -35,6 +36,7 @@ import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 import javax.swing.UIManager;
 
+import org.whisperim.prefs.Preferences;
 import org.whisperim.renderers.ProtocolRenderer;
 
 public class WhisperNewIMWindow extends JFrame implements ActionListener{
@@ -54,6 +56,8 @@ public class WhisperNewIMWindow extends JFrame implements ActionListener{
 	private static final String WINDOW_TITLE_ = "New Instant Message";
 
 	//UI Elements
+	private static final Image whisperIcon_ = Preferences.getInstance().getWhisperIconSmall();
+	
 	private JTextField foreignHandleBox_ = new JTextField();
 	private JComboBox protocolSelector_ = new JComboBox();
 
@@ -70,7 +74,7 @@ public class WhisperNewIMWindow extends JFrame implements ActionListener{
 	 */
 	public WhisperNewIMWindow(ConnectionManager manager, WhisperClient parent){
 		parent_ = parent;
-		foreignHandleBox_.addKeyListener(new KeyListener(){
+		foreignHandleBox_.addKeyListener(new KeyAdapter(){
 
 			@Override
 			public void keyPressed(KeyEvent e) {
@@ -78,15 +82,6 @@ public class WhisperNewIMWindow extends JFrame implements ActionListener{
 					//Enter key
 					actionPerformed(new ActionEvent(foreignHandleBox_, Integer.MAX_VALUE, OK_));
 				}
-			}
-
-			@Override
-			public void keyReleased(KeyEvent e) {
-
-			}
-
-			@Override
-			public void keyTyped(KeyEvent e) {
 			}
 		});
 			
@@ -105,6 +100,7 @@ public class WhisperNewIMWindow extends JFrame implements ActionListener{
 		cp.setLayout(sl);
 		
 		setTitle(WINDOW_TITLE_);
+		setIconImage(whisperIcon_);
 		
 		cp.add(foreignHandleLbl_);
 		cp.add(foreignHandleBox_);
@@ -138,10 +134,6 @@ public class WhisperNewIMWindow extends JFrame implements ActionListener{
 		protocolSelector_.setMinimumSize(new Dimension(240, 30));
 		protocolSelector_.setMaximumSize(new Dimension(240, 30));
 		protocolSelector_.setPreferredSize(new Dimension(240, 30));
-		
-		
-		//Set the window title
-		setTitle(WINDOW_TITLE_);
 		
 		
 		//Action Commands\\

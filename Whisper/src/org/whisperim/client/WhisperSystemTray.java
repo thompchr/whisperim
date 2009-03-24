@@ -17,6 +17,7 @@
 package org.whisperim.client;
 
 import org.whisperim.prefs.Preferences;
+import org.whisperim.prefs.PreferencesWindow;
 
 import java.awt.AWTException;
 import java.awt.CheckboxMenuItem;
@@ -148,9 +149,9 @@ public class WhisperSystemTray implements Runnable,ActionListener,ItemListener{
 		    
 		    //Toggle sound off and on
 		    soundItem = new CheckboxMenuItem(SOUND_);
-		    soundItem.addItemListener(this);
 		    soundItem.setState(Preferences.getInstance().getSoundsEnabled());
-		    
+		    soundItem.addItemListener(this);
+
 		    //Minimize Whisper Client Option
 		    minimizeWhisperItem = new MenuItem(MINIMIZEWHISPER_);
 		    minimizeWhisperItem.addActionListener(this);

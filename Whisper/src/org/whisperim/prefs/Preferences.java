@@ -21,6 +21,9 @@
 
 package org.whisperim.prefs;
 
+import java.awt.Image;
+import java.awt.Toolkit;
+
 /**
  * @author Cory Plastek
  * 
@@ -29,6 +32,7 @@ public class Preferences {
 	
 	//for singleton
 	private static Preferences instance = null;
+	
 	
 	//general
 	//logging
@@ -39,8 +43,9 @@ public class Preferences {
 	/**
 	 * General Preferences
 	 */
-	//themes
-	
+	private Image whisperIconSmall_ = Toolkit.getDefaultToolkit().getImage("..//images//WhisperIMLogo-Small.png");
+	private Image whisperIconBig_ = Toolkit.getDefaultToolkit().getImage("..//images//WhisperIMLogo-Big.png");
+
 	/**
 	 * Logging Preferences
 	 */
@@ -67,12 +72,13 @@ public class Preferences {
 	    
 		// Instantiating Xstream
 		
-	//XStream xstream = new XStream();
+		//XStream xstream = new XStream();
 		//http://xstream.codehaus.org/tutorial.html
 	
 		
 	}
 	
+	//for singleton
 	public static Preferences getInstance() {
 		if(instance == null) {
 			instance = new Preferences();
@@ -84,6 +90,20 @@ public class Preferences {
 	}
 	
 	//accessors/mutators
+	/**
+	 * General
+	 */
+	public Image getWhisperIconBig() {
+		return whisperIconBig_;
+	}
+	
+	public Image getWhisperIconSmall() {
+		return whisperIconSmall_;
+	}
+	
+	/**
+	 * Logging
+	 */
 	public boolean getLoggingEnabled() {
 		return loggingEnabled_;
 	}
@@ -92,6 +112,10 @@ public class Preferences {
 		loggingEnabled_ = logging;
 	}
 	
+	
+	/**
+	 * Security
+	 */
 	public boolean getEncryptionEnabled() {
 		return encryptionEnabled_;
 	}
@@ -100,6 +124,10 @@ public class Preferences {
 		encryptionEnabled_ = encryption;
 	}
 	
+	
+	/**
+	 * Sounds
+	 */
 	public boolean getSoundsEnabled() {
 		return soundsEnabled_;
 	}
@@ -108,6 +136,10 @@ public class Preferences {
 		soundsEnabled_ = sounds;
 	}
 	
+	
+	/**
+	 * WhisperBot
+	 */
 	public boolean getWhisperBotEnabled() {
 		return whisperBotEnabled_;
 	}
