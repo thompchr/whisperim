@@ -33,7 +33,7 @@ public class PreferencesWindowSecurity extends JPanel {
 	PreferencesWindowSecurity() {
 		
 		setBackground(Color.white);
-		label_ = new JLabel("security shit");
+		label_ = new JLabel("security");
 		add(label_);	
 		
 	}

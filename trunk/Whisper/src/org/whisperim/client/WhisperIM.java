@@ -16,12 +16,8 @@
 package org.whisperim.client;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Dimension;
-
-import java.awt.Event;
-import java.awt.Graphics;
-
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -32,27 +28,15 @@ import java.awt.event.WindowListener;
 import java.security.PrivateKey;
 import java.util.HashMap;
 
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
-import javax.swing.JTextArea;
-import javax.swing.JToggleButton;
 
-import javax.swing.KeyStroke;
-import javax.swing.SwingConstants;
-import javax.swing.UIManager;
-import javax.swing.WindowConstants;
-
-
-import org.whisperim.security.Encryptor;
+import org.whisperim.prefs.Preferences;
 
 /**
  * The majority of this class is auto-generated code using Java's swing UI
@@ -70,7 +54,9 @@ public class WhisperIM extends JFrame implements ActionListener, WindowListener,
      * WhisperBot GUI setup for enable/disable.
      */
      
-    
+	private static final long serialVersionUID = 1991002584679884126L;
+
+	private static final Image whisperIcon_ = Preferences.getInstance().getWhisperIconSmall(); 
    
     private JTabbedPane mainPain_;
 	private JMenu fileMenu_, conversationMenu_;
@@ -90,12 +76,8 @@ public class WhisperIM extends JFrame implements ActionListener, WindowListener,
     private Logger log_;
     private boolean doLogging_;
     private HashMap<String, WhisperIMPanel> tabHash_ = new HashMap<String,WhisperIMPanel>();
+
     
-    private ImageIcon defaultIcon_ = new ImageIcon("..\\images\\default.ico");
-	private ImageIcon aimIcon_ = new ImageIcon("..\\images\\aim_icon_small.png");
-
-
-
     /** Creates new form WhisperIM */
     public WhisperIM(WhisperClient parent, PrivateKey myKey) {
     	
@@ -113,6 +95,7 @@ public class WhisperIM extends JFrame implements ActionListener, WindowListener,
 
         //We should add a small version of their buddy icon into the "null" value here
 
+    	this.setIconImage(whisperIcon_);
         addWindowListener(this);
 		mainPain_.addFocusListener(this);
         setMinimumSize(new Dimension(470, 315));

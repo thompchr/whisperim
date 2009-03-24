@@ -16,16 +16,15 @@
 
 package org.whisperim.client;
 
-import java.awt.CheckboxMenuItem;
 import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.event.ItemEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
@@ -94,21 +93,20 @@ import com.sun.org.apache.xml.internal.security.utils.Base64;
 public class WhisperClient extends JFrame implements ActionListener {
 
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -2916085324340552469L;
 	
 	//Enums used for plugin identification
 	public static final int CONNECTION = 0;
 	public static final int LOOK_AND_FEEL = 1;
 
+	Preferences prefs_ = Preferences.getInstance();
+	private static final Image whisperIcon_ = Preferences.getInstance().getWhisperIconSmall();
+	
 	private PluginListModel plm_;
-
 
 	private Timer myTimer_;
 	private IdleTT myTaskTimer_;    
-	private ConnectionManager manager_;
+	private static ConnectionManager manager_;
 	private BuddyListModel blm_ = new BuddyListModel();
 
 	private PluginLoader pluginLoader_;
@@ -137,13 +135,13 @@ public class WhisperClient extends JFrame implements ActionListener {
 
 	//first menu\\
 	private static final String WHISPER_ = "Whisper"; //menu 1 header
-	private static final String NEWIM_ = "New Instant Message"; //menu 1 first item
-	private static final String SET_STATUS_ = "Set Status to Last.fm"; //menu 1 second item
-	private static final String PLUGINS_ = "Plugins"; //menu 1 second item
+	private static final String NEWIM_ = "New Instant Message";
+	private static final String SET_STATUS_ = "Set Status to Last.fm";
+	private static final String PLUGINS_ = "Plugins";
 	private static final String ACCOUNTS_ = "Accounts";
-	private static final String PREFERENCES_ = "Preferences"; //menu 1 third item
-	private static final String SOUND_ = "Sound"; //menu 1 fourth item
-	private static final String QUIT_ = "Quit"; //menu 1 fifth item
+	private static final String PREFERENCES_ = "Preferences";
+	private static final String SOUND_ = "Sound";
+	private static final String QUIT_ = "Quit";
 
 	//List of Listeners used by WhisperSystemTray
 	private List<ClientListener> clientListeners_ = new ArrayList<ClientListener>();
@@ -177,22 +175,40 @@ public class WhisperClient extends JFrame implements ActionListener {
 	 * @param manager - Connection manager to be associated with this instance
 	 */
 	public WhisperClient(ConnectionManager manager) {
+
+		//set program icon
+		this.setIconImage(whisperIcon_);
 		
-		Preferences prefs_ = Preferences.getInstance();
+		
+		//set frame title
+		this.setTitle(WHISPER_);
+		
+		
+		//gui stuff will be seperated from code
+		//right now its just ugly
 		initComponents();
-		tray = new WhisperSystemTray();
-		tray.startSystemTray(this, manager_);
+		setLocation(new Point(Toolkit.getDefaultToolkit().getScreenSize().width / 3,Toolkit.getDefaultToolkit().getScreenSize().height / 4));
+		
+		
+		//start sounds
 		Sound sound = new Sound();
 		getClientListeners().add(sound);
-		manager_ = manager;
-		manager_.setClient(this);
-
-		this.setTitle(WHISPER_);
+		sound.playSound(this, "Open.wav");
+		
+		
+		//start system tray
+		tray = new WhisperSystemTray();
+		tray.startSystemTray(this, manager_);
+		
+		
+		//reset idle timer
 		resetTimer(5000);   
 
-		setLocation(new Point(Toolkit.getDefaultToolkit().getScreenSize().width / 3,Toolkit.getDefaultToolkit().getScreenSize().height / 4));
-					
-		sound.playSound(this, "Open.wav");
+		
+		//set connection manager
+		manager_ = manager;
+		manager_.setClient(this);
+		
 		
 		//This must be called after the manager_ member is set.
 		pluginLoader_ = new PluginLoader(this);
@@ -205,7 +221,8 @@ public class WhisperClient extends JFrame implements ActionListener {
 
 		registerPlugin("AIM", CONNECTION, new AIMStrategy());
 		loadAccounts();
-		setVisible(true);
+		
+		this.setVisible(true);
 	}
 
 	/**
@@ -388,11 +405,12 @@ public class WhisperClient extends JFrame implements ActionListener {
 
 		//first menu\\
 		//File
-		//New IM
-		//Set Away
-		//Plugins
-		//Preferences
-		//Quit
+			//New IM
+			//Set Away
+			//Accounts
+			//Plugins
+			//Preferences
+			//Quit
 		whisperMenu_ = new JMenu();
 		whisperMenu_.setText(WHISPER_);
 		menuBar_.add(whisperMenu_);
@@ -605,18 +623,23 @@ public class WhisperClient extends JFrame implements ActionListener {
 	//Simple method to open about page
 	public void openAboutPage()
 	{
-		try{
-	        Runtime.getRuntime().exec("notepad ..\\images\\About.txt");
-	        }
-	        catch(IOException e){
-	        	System.out.println("Notepad not available to open about page");
-	        }
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				PreferencesWindow prefs = PreferencesWindow.getInstance();
+				prefs.setPreferencesCategory(PreferencesWindow.ABOUT_);
+			}
+		});
 	}
 	
 	//Simple method to open preference page
 	public void openPreferencesWindow()
 	{
-		new PreferencesWindow();
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				PreferencesWindow prefs = PreferencesWindow.getInstance();
+				prefs.setPreferencesCategory(PreferencesWindow.GENERAL_);
+			}
+		});
 	}
 	
 	//Simple method to open plugins page
@@ -628,7 +651,12 @@ public class WhisperClient extends JFrame implements ActionListener {
 	//Simple method to open Account Manager
 	public void openAccountsPage()
 	{
-		new AccountManagementWindow(manager_);
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				PreferencesWindow prefs = PreferencesWindow.getInstance();
+				prefs.setPreferencesCategory(PreferencesWindow.ACCOUNTS_);
+			}
+		});
 	}
 	
 	private void BuddiesComponentShown(ComponentEvent evt) {
@@ -704,7 +732,6 @@ public class WhisperClient extends JFrame implements ActionListener {
 				} catch (Base64DecodingException e) {
 					e.printStackTrace();
 				} catch (InvalidKeySpecException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -828,7 +855,8 @@ public class WhisperClient extends JFrame implements ActionListener {
 		if (actionCommand.equals(preferences_.getActionCommand())) {
 			EventQueue.invokeLater(new Runnable() {
 				public void run() {
-					new PreferencesWindow();
+					PreferencesWindow prefs = PreferencesWindow.getInstance();
+					prefs.setPreferencesCategory(PreferencesWindow.GENERAL_);
 				}
 			});
 		}
@@ -837,7 +865,8 @@ public class WhisperClient extends JFrame implements ActionListener {
 		if (actionCommand.equals(accounts_.getActionCommand())){
 			EventQueue.invokeLater(new Runnable(){
 				public void run(){
-					new AccountManagementWindow(manager_);
+					PreferencesWindow prefs = PreferencesWindow.getInstance();
+					prefs.setPreferencesCategory(PreferencesWindow.ACCOUNTS_);
 				}
 			});
 		}
@@ -904,5 +933,9 @@ public class WhisperClient extends JFrame implements ActionListener {
 	public void setSystemTray()
 	{	
 		
+	}
+	
+	public static ConnectionManager getConnectionManager() {
+		return manager_;
 	}
 }

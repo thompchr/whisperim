@@ -137,10 +137,6 @@ public class LoadPluginWindow extends JFrame implements ActionListener {
 		locationBox_.setMaximumSize(new Dimension(150, 23));
 		locationBox_.setPreferredSize(new Dimension(150, 23));
 		
-
-		
-		setTitle(WINDOW_TITLE_);
-		
 		
 		//Constraints
 		sl.putConstraint(SpringLayout.WEST, locationLbl_, 20, SpringLayout.WEST, cp);
