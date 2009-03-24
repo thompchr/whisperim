@@ -31,9 +31,14 @@ import java.util.HashMap;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+
 import javax.swing.JTabbedPane;
 
 import org.whisperim.prefs.Preferences;
@@ -69,7 +74,6 @@ public class WhisperIM extends JFrame implements ActionListener, WindowListener,
 	private static final String WHISPER_BOT_ = "Whisper Bot";
 	private static final String START_WHITEBOARD_ = "Start Whiteboard";
 	private JCheckBoxMenuItem logging_;
-	
     
     private WhisperClient myParent_;
     private PrivateKey myKey_;
@@ -78,16 +82,21 @@ public class WhisperIM extends JFrame implements ActionListener, WindowListener,
     private HashMap<String, WhisperIMPanel> tabHash_ = new HashMap<String,WhisperIMPanel>();
 
     
+
+    private ImageIcon defaultIcon_ = new ImageIcon("..\\images\\default.ico");
+	private ImageIcon aimIcon_ = new ImageIcon("..\\images\\aim_icon_small.png");
+
     /** Creates new form WhisperIM */
     public WhisperIM(WhisperClient parent, PrivateKey myKey) {
     	
     	//Create frame, its menu, and the TabbedPane 
     	super("Whisper IM Conversation");
-    	createMenu();    	
+    	createMenu();    
+    	initComponents();
     	mainPain_ = new JTabbedPane();
     	myParent_ = parent;
         myKey_ = myKey;
-    	
+    	mainPain_.setTabLayoutPolicy(JTabbedPane.WRAP_TAB_LAYOUT);
     	
     	
         add(mainPain_, BorderLayout.CENTER);
@@ -98,7 +107,8 @@ public class WhisperIM extends JFrame implements ActionListener, WindowListener,
     	this.setIconImage(whisperIcon_);
         addWindowListener(this);
 		mainPain_.addFocusListener(this);
-        setMinimumSize(new Dimension(470, 315));
+        setMinimumSize(new Dimension(550, 310));
+        pack();
     }
 
     
@@ -139,8 +149,14 @@ public class WhisperIM extends JFrame implements ActionListener, WindowListener,
     			dispose();
     		
     		}
+    	
+    	
     }
     
+    private void initComponents(){
+    	
+
+    }
 	
 	//Menu creation is separate from UI layout
 	private void createMenu(){
@@ -179,6 +195,7 @@ public class WhisperIM extends JFrame implements ActionListener, WindowListener,
 		JMenuBar mb = new JMenuBar();
 		mb.add(fileMenu_);
 		mb.add(conversationMenu_);
+		mb.addFocusListener(this);
 		setJMenuBar(mb);
 		
 	}
@@ -201,10 +218,18 @@ public class WhisperIM extends JFrame implements ActionListener, WindowListener,
     
     public void addPanel(Buddy buddy, WhisperIMPanel panel){
     	//We should add a small version of their buddy icon into the "null" value here
-    	mainPain_.addTab(buddy.getHandle(), null, panel, "Conversation with " + buddy.getHandle());
+    	
+
+    	
+		mainPain_.addTab(buddy.getHandle(), panel);
+		
+		mainPain_.setTabComponentAt(mainPain_.getTabCount()-1, panel.getTabHead());
+
     	tabHash_.put(buddy.getHandle().toLowerCase().replace(" ", ""),panel);
     	panel.setName(buddy.getHandle());
-    	panel.requestFocus();
+    	
+    	this.requestFocus();
+    	
     }
     
     public WhisperIMPanel getTab(String buddy){
@@ -265,9 +290,20 @@ public class WhisperIM extends JFrame implements ActionListener, WindowListener,
 
 	@Override
 	public void focusLost(FocusEvent arg0) {
-		// TODO Auto-generated method stub
+		
+		
 		
 	}
     
+	public void closeTab(WhisperIMPanel panel){
+		
+		tabHash_.remove(panel.getName().toLowerCase().replace(" ", ""));
+		myParent_.onWindowClose(panel.getName().toLowerCase().replace(" ", ""));
+		mainPain_.remove(panel);
+		if (mainPain_.getTabCount() == 0)
+			dispose();
+		
+	}
+	
     
 }

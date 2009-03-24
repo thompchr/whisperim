@@ -1,7 +1,14 @@
 package org.whisperim.client;
 
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.security.PrivateKey;
@@ -11,6 +18,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.regex.Pattern;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
@@ -28,7 +36,7 @@ import org.jdesktop.layout.LayoutStyle;
 import org.whisperim.security.Encryptor;
 
 
-public class WhisperIMPanel extends JPanel implements ActionListener {
+public class WhisperIMPanel extends JPanel implements ActionListener, FocusListener {
 		
 	private boolean doWhisperBot_ = false;
     private Encryptor encrypt;
@@ -36,6 +44,7 @@ public class WhisperIMPanel extends JPanel implements ActionListener {
     private String theirHandle_;
     private String myHandle_;
     private boolean doLogging_ = false;
+    private int myIndex_;
     
     private Buddy buddy_;
     private WhisperIM window_;
@@ -68,18 +77,21 @@ public class WhisperIMPanel extends JPanel implements ActionListener {
 	private JCheckBoxMenuItem logging_;
 	private JToggleButton toggleWhisperBot_;
 	private JButton whiteboardBtn_;
-	
+	private JButton close_;
+	private JPanel head_;
 
     private Logger log_;
     private PrivateKey myKey_;
     
     private ImageIcon defaultIcon_ = new ImageIcon("..\\images\\default.ico");
 	private ImageIcon aimIcon_ = new ImageIcon("..\\images\\aim_icon_small.png");
-
+	private ImageIcon closeIcon_ = new ImageIcon("..\\images\\close.jpg");
 	
 	public WhisperIMPanel (Buddy buddy, WhisperIM window, PrivateKey myKey){
-
+		
 		super(true);
+
+		
 		buddy_ = buddy;
 		window_ = window;
         theirHandle_ = buddy.getHandle();
@@ -100,11 +112,11 @@ public class WhisperIMPanel extends JPanel implements ActionListener {
    
         toggleEncryption_.setSelected(doEncryption_);
         toggleEncryption_.setText(ENCRYPTION_OFF_);
-        talkArea_.requestFocus();
-
+        //talkArea_.requestFocus();
+ 
 		
         addTab();
-        
+        this.requestFocusInWindow();
 	}
 	
     	public void enableWhisperBot()
@@ -124,9 +136,11 @@ public class WhisperIMPanel extends JPanel implements ActionListener {
 	    private JComponent initComponents() {
 	        
 	    	//Create panel that will hold the layout, and become a tab
+
+	       
+	    	
 	    	
 	    	GroupLayout layout = new GroupLayout(this);
-	    	
 	    	
 	    	//set native look and feel
 			try  {  
@@ -144,7 +158,11 @@ public class WhisperIMPanel extends JPanel implements ActionListener {
 			} else {
 			      serviceIcon_ = defaultIcon_;
 			}
+	        
+
 	        buddyName_ = new JLabel(buddy_.getHandle(), serviceIcon_, SwingConstants.LEFT);
+	        
+	        this.setName(buddy_.getHandle());
 	        
 	        toggleWhisperBot_ = new JToggleButton(TOGGLE_WHISPERBOT_);
 	        talkArea_ = new JTextArea();
@@ -247,10 +265,12 @@ public class WhisperIMPanel extends JPanel implements ActionListener {
 		            )
 	        );
 
+	        
 	        buddyName_.getAccessibleContext().setAccessibleName("Buddy");
 	        
 	        //Set tab close button and hotkey
 
+	        
 	        
 	        this.setLayout(layout);
 	        return this;
@@ -303,6 +323,9 @@ public class WhisperIMPanel extends JPanel implements ActionListener {
 	        	}
 	    	}
     	
+	    	else if (actionCommand.equals(close_.getActionCommand()))
+	    		window_.closeTab(this);
+	    	
     		else {
     			//problem with button interface
     			//didn't listen to the right Action Command
@@ -311,9 +334,9 @@ public class WhisperIMPanel extends JPanel implements ActionListener {
     }
     
 		private void addTab(){
-			//JComponent newTab_ = initComponents();
+			
 			window_.addPanel(buddy_, this);
-			//window_.setTab(buddy_.getHandle(), this);
+			
 		}		
 							
 		
@@ -365,6 +388,8 @@ public class WhisperIMPanel extends JPanel implements ActionListener {
 	    	if (doLogging_)
 	        	log_.write(message, message.getFrom());
 	        	
+	    	flash(this.isFocusOwner());
+	    		
 	        talkArea_.append("\n");
 	        autoScroll();
 	    }
@@ -425,4 +450,55 @@ public class WhisperIMPanel extends JPanel implements ActionListener {
 		        messageArea_.setText("");
 	    	}
 	    }
+
+	    public void flash(boolean focused){
+	    	
+	    	if (head_ == null){
+	    		System.out.println("This shouldnt happen");
+	    		System.out.println("Please contact your favorite WhisperIM dev with error code NOT1337");
+	    	}
+	    	else
+	    	{
+	    		if (focused)
+	    		{
+	    			head_.setBackground(this.getBackground());
+	    		}
+	    		else
+	    		{
+	    			Color newColor = new Color(150,100,100);
+	    			head_.setBackground(newColor);
+	    		}
+	    	}
+	    	
+	    }
+		@Override
+		public void focusGained(FocusEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void focusLost(FocusEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+		public JPanel getTabHead()
+		{
+			if (head_ == null){
+				
+				head_ = new JPanel();
+				head_.add(new JLabel(buddy_.getHandle()));
+				close_ = new JButton(closeIcon_);
+				close_.addActionListener(this);
+	    	
+				close_.setPreferredSize(new Dimension(closeIcon_.getIconHeight(),closeIcon_.getIconWidth()));
+	    
+				head_.add(close_);
+				return head_;
+			}
+			else 
+				return head_;
+			
+		}
 	}	
