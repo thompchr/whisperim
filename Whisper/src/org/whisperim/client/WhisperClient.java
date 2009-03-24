@@ -205,8 +205,6 @@ public class WhisperClient extends JFrame implements ActionListener {
 		registerPlugin("AIM", CONNECTION, new AIMStrategy());
 		loadAccounts();
 		setVisible(true);
-
-
 	}
 
 	/**
@@ -894,8 +892,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 	}
 	
 	public void setSystemTray()
-	{
-		
+	{	
 		
 	}
 }

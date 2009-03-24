@@ -25,9 +25,10 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.SourceDataLine;
 
-
 public class Sound implements ClientListener {
 		
+	private static final String NEW_IM_RECEIVED = "IM.wav";
+	private static final String NEW_IM_SENT = "IM.wav";
 	boolean playSound = Preferences.getInstance().getSoundsEnabled();
 	
 	public void playSound(WhisperClient client, String name){
@@ -60,11 +61,11 @@ public class Sound implements ClientListener {
 
 	@Override
 	public void messageRec(WhisperClient client, Message message, String from) {
-		playSound(client, "IM.wav");
+		playSound(client, NEW_IM_RECEIVED);
 	}
 
 	@Override
 	public void sentMessage(WhisperClient client) {
-		playSound(client, "IM.wav");
+		playSound(client, NEW_IM_SENT);
 	}
 }
