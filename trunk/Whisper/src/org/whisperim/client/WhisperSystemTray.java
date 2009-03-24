@@ -34,7 +34,9 @@ import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-public class WhisperSystemTray implements Runnable,ActionListener{
+import javax.swing.JCheckBoxMenuItem;
+
+public class WhisperSystemTray implements Runnable,ActionListener,ItemListener{
 	
 	private static final String NEW_IM_IMAGE_LOCATION_ = "..\\images\\newIM.jpg";
 	private static final String TRAY_ICON_LOCATION_ = "..\\images\\WhisperIMLogo-Small.png";
@@ -69,6 +71,7 @@ public class WhisperSystemTray implements Runnable,ActionListener{
     private Menu prefMenu;
     private MenuItem prefItem;
     private MenuItem hideTrayItem;
+    private CheckboxMenuItem soundItem;
     
     private WhisperClient client_;
     private ConnectionManager manager_;
@@ -151,8 +154,8 @@ public class WhisperSystemTray implements Runnable,ActionListener{
 		    pluginsItem.addActionListener(this);
 		    
 		    //Toggle sound off and on
-		    final CheckboxMenuItem soundItem = new CheckboxMenuItem(SOUND_);
-		    soundItem.addItemListener(soundListener);
+		    soundItem = new CheckboxMenuItem(SOUND_);
+		    soundItem.addItemListener(this);
 		    soundItem.setState(Preferences.getInstance().getSoundsEnabled());
 		    
 		    //Minimize Whisper Client Option
@@ -283,4 +286,24 @@ public class WhisperSystemTray implements Runnable,ActionListener{
 			closeTray();
 		}
 	}
+
+	public void trayStateChange(int x) {
+		//Object source = arg0.getSource();
+		if(x == 1){
+	    		this.soundItem.setState(!this.soundItem.getState());        	
+	    	}
+	    }
+
+	@Override
+	public void itemStateChanged(ItemEvent e) {
+		Object itemSource = e.getItemSelectable();
+		if(itemSource == soundItem){
+			JCheckBoxMenuItem temp = client_.getSound_();
+			temp.setState(!temp.getState());
+			client_.setSound_(temp);
+			client_.toggleSound();
+		}
+		
+	};	
+		
 }
