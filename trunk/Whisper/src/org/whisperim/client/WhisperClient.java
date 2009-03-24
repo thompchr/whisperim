@@ -99,7 +99,11 @@ public class WhisperClient extends JFrame implements ActionListener {
 	public static final int CONNECTION = 0;
 	public static final int LOOK_AND_FEEL = 1;
 
-	Preferences prefs_ = Preferences.getInstance();
+	
+	//We need to figure this out, like this, it doesn't make
+	//sense to store the instance here if we can't call methods
+	//on it
+	private Preferences prefs_ = Preferences.getInstance();
 	private static final Image whisperIcon_ = Preferences.getInstance().getWhisperIconSmall();
 	
 	private PluginListModel plm_;
