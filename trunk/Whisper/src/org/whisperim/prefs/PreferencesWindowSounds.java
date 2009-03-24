@@ -43,7 +43,6 @@ public class PreferencesWindowSounds extends JPanel implements ItemListener {
 		soundsCheckBox_.setMnemonic(KeyEvent.VK_L);
 		soundsCheckBox_.addItemListener(this);
 		add(soundsCheckBox_);
-	
 	}
 
 	public void itemStateChanged(ItemEvent e) {
