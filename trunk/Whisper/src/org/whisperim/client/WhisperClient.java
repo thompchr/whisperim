@@ -118,11 +118,9 @@ public class WhisperClient extends JFrame implements ActionListener {
 	private JScrollPane buddyListScroll_;
 	private JMenu whisperMenu_;
 	private JFrame accountInfoPane_;
-	//private JMenu preferencesMenu_;
 
 	private JMenuBar menuBar_;
 
-	//private JMenuItem encryption_;
 	private JMenuItem newIm_;
 	private JCheckBoxMenuItem setStatus_;
 	private JMenuItem plugins_;
@@ -131,14 +129,13 @@ public class WhisperClient extends JFrame implements ActionListener {
 	private JCheckBoxMenuItem sound_;
 	private JMenuItem quit_;
 	
-	private WhisperSystemTray tray;
-	//private PopupMenu popupMenu1;
+	private WhisperSystemTray tray_;
 
 	private static final String BUDDY_LIST_ = "Buddy List";
 	private static final String BUDDY_LIST_IDLE_ = "Buddy List [Idle]";
 
 	//first menu\\
-	private static final String WHISPER_ = "Whisper"; //menu 1 header
+	private static final String WHISPER_ = "Whisper"; 
 	private static final String NEWIM_ = "New Instant Message";
 	private static final String SET_STATUS_ = "Set Status to Last.fm";
 	private static final String PLUGINS_ = "Plugins";
@@ -147,15 +144,13 @@ public class WhisperClient extends JFrame implements ActionListener {
 	private static final String SOUND_ = "Sound";
 	private static final String QUIT_ = "Quit";
 
+	
+	//end menus\\
+
 	//List of Listeners used by WhisperSystemTray
 	private List<ClientListener> clientListeners_ = new ArrayList<ClientListener>();
 	
-	//second menu\\ - not used!
-	//menu 2 header
-	//private static final String ENCRYPTION_ = "Encryption"; //menu 2 first item
-
-	//end menus\\
-
+	
 	//Directory constants
 	private static final String WHISPER_HOME_DIR_ = System.getProperty("user.home") + File.separator + "Whisper";
 	private static final String ACCOUNTS_FILE_ = WHISPER_HOME_DIR_ + File.separator + "accounts";
@@ -201,8 +196,8 @@ public class WhisperClient extends JFrame implements ActionListener {
 		
 		
 		//start system tray
-		tray = new WhisperSystemTray();
-		tray.startSystemTray(this, manager_);
+		tray_ = new WhisperSystemTray();
+		tray_.startSystemTray(this, manager_);
 		
 		
 		//reset idle timer
@@ -931,7 +926,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 
 	public WhisperSystemTray getSystemTray()
 	{
-		return this.tray;	
+		return this.tray_;	
 	}
 	
 	public void setSystemTray()
