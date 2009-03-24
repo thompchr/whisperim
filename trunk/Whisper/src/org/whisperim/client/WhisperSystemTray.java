@@ -96,13 +96,6 @@ public class WhisperSystemTray implements Runnable,ActionListener,ItemListener{
 		        public void mouseExited(MouseEvent e) {}
 		        public void mousePressed(MouseEvent e) {}
 		        public void mouseReleased(MouseEvent e) {}
-		    };
-		    
-		    ItemListener soundListener = new ItemListener() {
-		    	public void itemStateChanged(ItemEvent arg0) {
-		    		System.out.println("clicked");
-		        	client_.toggleSound();
-		    	}
 		    };	
 		    
 		    //New IM option on Whisper menu
@@ -132,17 +125,17 @@ public class WhisperSystemTray implements Runnable,ActionListener,ItemListener{
 		    
 		    //Available option on Status menu
 		    statusAvailableItem = new CheckboxMenuItem(AVAILABLE_);
-		    statusAvailableItem.addActionListener(this);
+		    statusAvailableItem.addItemListener(this);
 		    statusAvailableItem.setState(true);
 		    
 		    //Invisible option on Status menu
 		    statusInvisibleItem = new CheckboxMenuItem(INVISIBLE_);
-		    statusInvisibleItem.addActionListener(this);
+		    statusInvisibleItem.addItemListener(this);
 		    statusInvisibleItem.setState(false);
 		    	
 		    //Away option on Status menu
 		    statusAwayItem = new CheckboxMenuItem(AWAY_);
-		    statusAwayItem.addActionListener(this);
+		    statusAwayItem.addItemListener(this);
 		    statusInvisibleItem.setState(false);
 		    
 		    //Preferences option on Preference menu
@@ -264,15 +257,6 @@ public class WhisperSystemTray implements Runnable,ActionListener,ItemListener{
 		else if(source == prefItem){
 	    	client_.openPreferencesWindow();
 		}
-		else if(source == statusAvailableItem){
-	    	manager_.setState(ConnectionManager.AVAILABLE);
-		}
-		else if(source == statusInvisibleItem){
-	    	manager_.setState(ConnectionManager.INVISIBLE);
-		}
-		else if(source == statusAwayItem){
-	    	manager_.setState(ConnectionManager.AWAY);
-		}
 		else if(source == accountItem){
 	    	client_.openAccountsPage();  
 		}
@@ -288,7 +272,6 @@ public class WhisperSystemTray implements Runnable,ActionListener,ItemListener{
 	}
 
 	public void trayStateChange(int x) {
-		//Object source = arg0.getSource();
 		if(x == 1){
 	    		this.soundItem.setState(!this.soundItem.getState());        	
 	    	}
@@ -303,7 +286,23 @@ public class WhisperSystemTray implements Runnable,ActionListener,ItemListener{
 			client_.setSound_(temp);
 			client_.toggleSound();
 		}
-		
-	};	
-		
+		if(itemSource == statusAvailableItem){
+			statusAvailableItem.setState(true);
+			statusInvisibleItem.setState(false);
+			statusAwayItem.setState(false);
+			manager_.setState(ConnectionManager.AVAILABLE);
+		}
+		if(itemSource == statusInvisibleItem){
+			statusAvailableItem.setState(false);
+			statusInvisibleItem.setState(true);
+			statusAwayItem.setState(false);
+			manager_.setState(ConnectionManager.INVISIBLE);
+		}
+		if(itemSource == statusAwayItem){
+			statusAvailableItem.setState(false);
+			statusInvisibleItem.setState(false);
+			statusAwayItem.setState(true);
+			manager_.setState(ConnectionManager.AWAY);
+		}
+	};		
 }
