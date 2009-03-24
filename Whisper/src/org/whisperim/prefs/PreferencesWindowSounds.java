@@ -49,7 +49,7 @@ public class PreferencesWindowSounds extends JPanel implements ItemListener {
 		Object source = e.getItem();
 		if(source == soundsCheckBox_) {
 			soundsEnabled_ = soundsCheckBox_.isSelected();
-			Preferences.getInstance().setSoundsEnabled(soundsEnabled_);
+			Preferences.getInstance().setSoundsEnabled(soundsEnabled_);		
 			System.out.println("sounds " + ((soundsEnabled_)?"enabled":"not enabled").toString());
 			}
 		
