@@ -69,6 +69,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.whisperim.aim.AIMStrategy;
+import org.whisperim.lastfm.LastFM;
 import org.whisperim.models.BuddyListModel;
 import org.whisperim.models.PluginListModel;
 import org.whisperim.plugins.Plugin;
@@ -790,17 +791,26 @@ public class WhisperClient extends JFrame implements ActionListener {
 		}
 		
 		//Set / Unset Status
-		if (actionCommand.equals(setStatus_.getActionCommand())){
+		if (actionCommand.equals(setStatus_.getActionCommand())){			
 			if(setStatus_.isSelected())
 			{
-				//unset away status
-				manager_.setStatusMessage("");
-			}
+				String username = JOptionPane.showInputDialog(null, "Please enter your Last.FM username:");
 				
+				if(username != "")
+				{
+					if(setStatus_.isSelected())
+					{
+						//set away status
+						manager_.setStatusMessage(new LastFM(username).getLastSong());
+					}
+					else
+						manager_.setStatusMessage("");
+				}
+			}
 			else
 			{
-				//set away status
-				manager_.setStatusMessage("john");
+				manager_.setStatusMessage("");
+				setStatus_.setSelected(false);
 			}
 		}
 
