@@ -249,9 +249,7 @@ public class ConnectionManager {
 		 }
 	 }
 	 
-	 public void setState(int newState){
-		 
-	 }
-
-
+     public void setState(int newState){
+         
+     }
 }

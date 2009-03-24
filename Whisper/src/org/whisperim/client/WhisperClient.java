@@ -16,6 +16,7 @@
 
 package org.whisperim.client;
 
+import java.awt.CheckboxMenuItem;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Point;
@@ -24,6 +25,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.ItemEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
@@ -125,6 +127,8 @@ public class WhisperClient extends JFrame implements ActionListener {
 	private JMenuItem accounts_;
 	private JCheckBoxMenuItem sound_;
 	private JMenuItem quit_;
+	
+	private WhisperSystemTray tray;
 	//private PopupMenu popupMenu1;
 
 	private static final String BUDDY_LIST_ = "Buddy List";
@@ -175,7 +179,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 		
 		Preferences prefs_ = Preferences.getInstance();
 		initComponents();
-		WhisperSystemTray tray = new WhisperSystemTray();
+		tray = new WhisperSystemTray();
 		tray.startSystemTray(this, manager_);
 		Sound sound = new Sound();
 		getClientListeners().add(sound);
@@ -770,10 +774,6 @@ public class WhisperClient extends JFrame implements ActionListener {
 		manager_.setAwayMessage(message);
 	}
 
-	public void toggleSound(){
-		Preferences.getInstance().setSoundsEnabled(!Preferences.getInstance().getSoundsEnabled());
-	}
-
 	public void actionPerformed(ActionEvent e) {
 		String actionCommand = e.getActionCommand();
 		//Quit
@@ -837,7 +837,21 @@ public class WhisperClient extends JFrame implements ActionListener {
 		//Sound
 		if (actionCommand.equals(sound_.getActionCommand())) {
 			toggleSound();
+			this.getSystemTray().trayStateChange(1);
 		}
+	}
+	
+	public void toggleSound(){
+		System.out.println("Sound toggled");
+		Preferences.getInstance().setSoundsEnabled(!Preferences.getInstance().getSoundsEnabled());
+	}
+	
+	public JCheckBoxMenuItem getSound_() {
+		return sound_;
+	}
+
+	public void setSound_(JCheckBoxMenuItem sound_) {
+		this.sound_ = sound_;
 	}
 
 	/**
@@ -874,11 +888,14 @@ public class WhisperClient extends JFrame implements ActionListener {
 		this.clientListeners_ = clientListeners_;
 	}
 
-	public void setSound_(JCheckBoxMenuItem sound_) {
-		this.sound_ = sound_;
+	public WhisperSystemTray getSystemTray()
+	{
+		return this.tray;	
 	}
-
-	public boolean getSound_() {
-		return sound_.getState();
+	
+	public void setSystemTray()
+	{
+		
+		
 	}
 }
