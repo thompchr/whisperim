@@ -181,11 +181,11 @@ public class WhisperClient extends JFrame implements ActionListener {
 	public WhisperClient(ConnectionManager manager) {
 
 		//set program icon
-		this.setIconImage(whisperIcon_);
+		setIconImage(whisperIcon_);
 		
 		
 		//set frame title
-		this.setTitle(WHISPER_);
+		setTitle(WHISPER_);
 		
 		
 		//gui stuff will be seperated from code
