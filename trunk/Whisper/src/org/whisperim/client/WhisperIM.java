@@ -50,7 +50,7 @@ import org.whisperim.prefs.Preferences;
  * 
  * @author Kirk Banks, Chris Thompson, John Dlugokecki, Cory Plastek, Nick Krieble
  */
-public class WhisperIM extends JFrame implements ActionListener{
+public class WhisperIM extends JFrame implements ActionListener, WindowListener{
     //Encryptor for the chat session
   
     
@@ -107,7 +107,8 @@ public class WhisperIM extends JFrame implements ActionListener{
         //We should add a small version of their buddy icon into the "null" value here
 
     	this.setIconImage(whisperIcon_);
-        
+    	this.addWindowListener(this);
+    	
         setMinimumSize(new Dimension(550, 310));
         pack();
     }
@@ -292,6 +293,48 @@ public class WhisperIM extends JFrame implements ActionListener{
 	protected void paintContentBorderBottomEdge(Graphics g, int tabPlacement, int selectedIndex, int x, int y, int w, int h)
 	{
 		// Do nothing
+	}
+
+
+	@Override
+	public void windowActivated(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void windowClosed(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void windowDeactivated(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void windowDeiconified(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void windowIconified(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void windowOpened(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 
     
