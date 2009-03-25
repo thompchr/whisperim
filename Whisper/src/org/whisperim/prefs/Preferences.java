@@ -34,7 +34,7 @@ public class Preferences {
 	
 	//for singleton
 	private static Preferences instance = null;
-	private List<PrefListener> listeners = new ArrayList<PrefListener>();
+	private List<PrefListener> listeners_ = new ArrayList<PrefListener>();
 	
 	//general
 	//logging
@@ -52,21 +52,25 @@ public class Preferences {
 	 * Logging Preferences
 	 */
 	private boolean loggingEnabled_;
+	public static final String LOGGING_ = "Logging";
 	
 	/**
 	 * Security Preferences
 	 */
 	private boolean encryptionEnabled_;
+	public static final String ENCRYPTION_ = "Encryption";
 	
 	/**
 	 * Sound Preferences
 	 */
 	private boolean soundsEnabled_;
+	public static final String SOUNDS_ = "Sounds";
 	
 	/**
 	 * Whisperbot Preferences
 	 */
 	private boolean whisperBotEnabled_;
+	public static final String WHISPERBOT_ = "WhisperBot";
 	
 	
 	
@@ -112,6 +116,9 @@ public class Preferences {
 	
 	public void setLoggingEnabled(boolean logging) {
 		loggingEnabled_ = logging;
+		for(PrefListener listener:listeners_){
+			listener.prefChanged(LOGGING_, loggingEnabled_);
+		}
 	}
 	
 	
@@ -124,6 +131,9 @@ public class Preferences {
 	
 	public void setEncryptionEnabled(boolean encryption) {
 		encryptionEnabled_ = encryption;
+		for(PrefListener listener:listeners_){
+			listener.prefChanged(ENCRYPTION_, encryptionEnabled_);
+		}
 	}
 	
 	
@@ -134,10 +144,10 @@ public class Preferences {
 		return soundsEnabled_;
 	}
 	
-	public void setSoundsEnabled(boolean sounds) {
-		soundsEnabled_ = sounds;
-		for(PrefListener listener:listeners){
-			listener.prefChanged("Sound", sounds);
+	public void setSoundsEnabled(boolean soundsEnabled) {
+		soundsEnabled_ = soundsEnabled;
+		for(PrefListener listener:listeners_){
+			listener.prefChanged(SOUNDS_, soundsEnabled_);
 		}
 	}
 	
@@ -149,16 +159,23 @@ public class Preferences {
 		return whisperBotEnabled_;
 	}
 	
-	public void setWhisperBotEnabled(boolean whisperbot) {
-		whisperBotEnabled_ = whisperbot;
+	public void setWhisperBotEnabled(boolean whisperbotEnabled) {
+		whisperBotEnabled_ = whisperbotEnabled;
+		for(PrefListener listener:listeners_) {
+			listener.prefChanged(WHISPERBOT_, whisperBotEnabled_);
+		}
 	}
 
+	
+	/**
+	 *  Preferences Listener
+	 */
 	public List<PrefListener> getListeners() {
-		return listeners;
+		return listeners_;
 	}
 
 	public void setListeners(List<PrefListener> listeners) {
-		this.listeners = listeners;
+		this.listeners_ = listeners;
 	}
 
 	

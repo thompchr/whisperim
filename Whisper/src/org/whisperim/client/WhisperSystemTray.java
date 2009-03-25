@@ -16,10 +16,6 @@
  **************************************************************************/
 package org.whisperim.client;
 
-import org.whisperim.prefs.PrefListener;
-import org.whisperim.prefs.Preferences;
-import org.whisperim.prefs.PreferencesWindow;
-
 import java.awt.AWTException;
 import java.awt.CheckboxMenuItem;
 import java.awt.Image;
@@ -36,7 +32,8 @@ import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-import javax.swing.JCheckBoxMenuItem;
+import org.whisperim.prefs.PrefListener;
+import org.whisperim.prefs.Preferences;
 
 public class WhisperSystemTray implements Runnable,ActionListener,ItemListener{
 	
@@ -215,7 +212,7 @@ public class WhisperSystemTray implements Runnable,ActionListener,ItemListener{
 				private boolean locked = false;
 				@Override
 				public void prefChanged(String name, Object o) {
-					if("Sound".equals(name) && !locked){
+					if(Preferences.SOUNDS_.equals(name) && !locked){
 						locked = true;
 						if(!o.equals(soundItem.getState())){
 							trayStateChange(1);

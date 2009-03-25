@@ -21,9 +21,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 
-import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class PreferencesWindowSounds extends JPanel implements ItemListener {
@@ -43,6 +41,20 @@ public class PreferencesWindowSounds extends JPanel implements ItemListener {
 		soundsCheckBox_.setMnemonic(KeyEvent.VK_L);
 		soundsCheckBox_.addItemListener(this);
 		add(soundsCheckBox_);
+		
+		 Preferences.getInstance().getListeners().add(new PrefListener() {
+				private boolean locked = false;
+				@Override
+				public void prefChanged(String name, Object o) {
+					if(Preferences.SOUNDS_.equals(name) && !locked){
+						locked = true;
+						if(!o.equals(soundsCheckBox_.isSelected())){
+							soundsCheckBox_.setSelected(!soundsCheckBox_.isSelected());
+						}
+						locked = false;
+					}
+				}
+			});
 	}
 
 	public void itemStateChanged(ItemEvent e) {

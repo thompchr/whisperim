@@ -25,6 +25,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
@@ -43,7 +44,6 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import javax.swing.GroupLayout;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JList;
@@ -104,7 +104,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 	//We need to figure this out, like this, it doesn't make
 	//sense to store the instance here if we can't call methods
 	//on it
-	private Preferences prefs_ = Preferences.getInstance();
+	private Preferences prefs_;// = Preferences.getInstance();
 	private static final Image whisperIcon_ = Preferences.getInstance().getWhisperIconSmall();
 	
 	private PluginListModel plm_;
@@ -118,16 +118,14 @@ public class WhisperClient extends JFrame implements ActionListener {
 	private JList buddyList_;
 	private JScrollPane buddyListScroll_;
 	private JMenu whisperMenu_;
-	private JFrame accountInfoPane_;
-
 	private JMenuBar menuBar_;
-
 	private JMenuItem newIm_;
 	private JCheckBoxMenuItem setStatus_;
 	private JMenuItem plugins_;
 	private JMenuItem preferences_;
 	private JMenuItem accounts_;
 	private JCheckBoxMenuItem sound_;
+	private boolean soundsEnabled_;
 	private JMenuItem quit_;
 	
 	private WhisperSystemTray tray_;
@@ -175,20 +173,12 @@ public class WhisperClient extends JFrame implements ActionListener {
 	 * @param manager - Connection manager to be associated with this instance
 	 */
 	public WhisperClient(ConnectionManager manager) {
-
-		//set program icon
-		setIconImage(whisperIcon_);
+		manager_ = manager;
+		manager_.setClient(this);
 		
-		
-		//set frame title
-		setTitle(WHISPER_);
-		
-		
-		//gui stuff will be seperated from code
-		//right now its just ugly
-		initComponents();
-		setLocation(new Point(Toolkit.getDefaultToolkit().getScreenSize().width / 3,Toolkit.getDefaultToolkit().getScreenSize().height / 4));
-		
+		//start system tray
+		tray_ = new WhisperSystemTray();
+		tray_.startSystemTray(this, manager);
 		
 		//start sounds
 		Sound sound = new Sound();
@@ -198,7 +188,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 			private boolean locked = false;
 			@Override
 			public void prefChanged(String name, Object o) {
-				if("Sound".equals(name) && !locked){
+				if(Preferences.SOUNDS_.equals(name) && !locked){
 					locked = true;
 					if(!o.equals(getSound_().getState())){
 						getSound_().setState(((Boolean)o).booleanValue());
@@ -209,20 +199,23 @@ public class WhisperClient extends JFrame implements ActionListener {
 		});
 		
 		
-		//start system tray
-		tray_ = new WhisperSystemTray();
-		tray_.startSystemTray(this, manager);
-		
-		
 		//reset idle timer
-		resetTimer(5000);   
+		resetTimer(5000);		
+		
+		//set native look and feel
+		try  {  
+			//Tell the UIManager to use the platform look and feel  
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());  
+		}  
+		catch(Exception e) {  
+			//Do nothing  
+		} 
+		
+		createMenu();	
+		createBuddyList();
 
 		
-		//set connection manager
-		manager_ = manager;
-		manager_.setClient(this);
-		
-		
+		plm_ = new PluginListModel();
 		//This must be called after the manager_ member is set.
 		pluginLoader_ = new PluginLoader(this);
 		try {
@@ -235,9 +228,141 @@ public class WhisperClient extends JFrame implements ActionListener {
 		registerPlugin("AIM", CONNECTION, new AIMStrategy());
 		loadAccounts();
 		
+		//set sizes and show
+		this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent evt) {
+				formWindowClosing(evt);
+			}
+		});
+		this.setIconImage(whisperIcon_);
+		this.setLocation(new Point(Toolkit.getDefaultToolkit().getScreenSize().width / 3,Toolkit.getDefaultToolkit().getScreenSize().height / 4));
+		this.setMinimumSize(new Dimension(150,250));
+		this.setPreferredSize(new Dimension(200,500));
+		this.setTitle(WHISPER_); 
+		this.pack();
+		
 		this.setVisible(true);
 	}
 
+	
+	private void createBuddyList() {
+		blm_.addListDataListener(new ListDataListener(){
+			
+			@Override
+			public void contentsChanged(ListDataEvent e) {
+				if (e.getSource() instanceof ListModel){
+					buddyList_.setModel((ListModel) e.getSource());
+				}
+			}
+
+			@Override
+			public void intervalAdded(ListDataEvent e) {
+
+			}
+
+			@Override
+			public void intervalRemoved(ListDataEvent e) {
+
+
+			}
+
+		});
+		buddyList_ = new JList(blm_);
+		buddyList_.setSelectionMode(ListSelectionModel.SINGLE_SELECTION );
+		BuddyListRenderer buddyListRenderer_ = new BuddyListRenderer();
+		buddyList_.setCellRenderer(buddyListRenderer_);
+		buddyList_.addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentShown(ComponentEvent evt) {
+				BuddiesComponentShown(evt);
+			}
+		});
+
+		buddyList_.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent mouseEvent) {
+				JList Buddies = (JList) mouseEvent.getSource();
+				if (mouseEvent.getClickCount() == 2) {
+					int index = Buddies.locationToIndex(mouseEvent.getPoint());
+					if (index >= 0) {
+						final Buddy selectedBuddy_ = (Buddy) Buddies.getModel().getElementAt(index);
+						//need to start new chat window
+
+						EventQueue.invokeLater(new Runnable() {
+							public void run() {
+								newIMWindow(selectedBuddy_);
+							}
+						});
+					}
+				}
+			}
+		});
+		
+		buddyListScroll_ = new JScrollPane(buddyList_);
+		buddyListScroll_.setViewportView(buddyList_);      
+		buddyListScroll_.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		buddyListScroll_.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		this.add(buddyListScroll_);
+	}
+	
+	
+	private void createMenu() {
+		//create the menu bar
+		menuBar_ = new JMenuBar();
+		this.setJMenuBar(menuBar_);
+
+		//first menu\\
+		//Whisper (w)
+			//New IM (n)
+			//Set Away 
+			//Accounts (a)
+			//Plugins
+			//Preferences (p)
+			//Sound
+			//Quit (q)
+		whisperMenu_ = new JMenu(WHISPER_);
+		whisperMenu_.setMnemonic(KeyEvent.VK_W);
+
+		newIm_ = new JMenuItem(NEWIM_);
+		newIm_.setMnemonic(KeyEvent.VK_N);
+		newIm_.addActionListener(this);
+		whisperMenu_.add(newIm_);
+		
+		setStatus_ = new JCheckBoxMenuItem(SET_STATUS_);
+		setStatus_.addActionListener(this);
+		whisperMenu_.add(setStatus_);
+		
+		accounts_ = new JMenuItem(ACCOUNTS_);
+		accounts_.setMnemonic(KeyEvent.VK_A);
+		accounts_.addActionListener(this);
+		whisperMenu_.add(accounts_);
+
+		plugins_ = new JMenuItem(PLUGINS_);
+		plugins_.addActionListener(this);
+		whisperMenu_.add(plugins_);
+
+		preferences_ = new JMenuItem(PREFERENCES_);
+		preferences_.setMnemonic(KeyEvent.VK_P);
+		preferences_.addActionListener(this);
+		whisperMenu_.add(preferences_);
+
+		soundsEnabled_ = Preferences.getInstance().getSoundsEnabled();
+		sound_ = new JCheckBoxMenuItem(SOUND_);
+		sound_.setSelected(soundsEnabled_);
+		sound_.setActionCommand(SOUND_);
+		sound_.addActionListener(this);
+		whisperMenu_.add(sound_);
+		
+		quit_ = new JMenuItem(QUIT_);
+		quit_.setMnemonic(KeyEvent.VK_Q);
+		quit_.addActionListener(this);
+		whisperMenu_.add(quit_);
+		
+		menuBar_.add(whisperMenu_);
+	}
+	
 	/**
 	 * This helper method loads saved account information from the accounts
 	 * file.  If the file does not exist it will create one.  If it determines
@@ -336,26 +461,18 @@ public class WhisperClient extends JFrame implements ActionListener {
 								manager_.addStrategy(cs);
 							}
 						}
-
-
 					}
-
 				}
 
 			} catch (SAXException e) {
-
 				e.printStackTrace();
 			} catch (IOException e) {
 				JOptionPane.showMessageDialog(this, ERROR_READING_ACCOUNTS_ + " " + IO_ERROR_ + ": " + e.getMessage(),
 						IO_ERROR_, JOptionPane.ERROR_MESSAGE);
 				e.printStackTrace();
 			} catch (ParserConfigurationException e) {
-
 				e.printStackTrace();
 			}
-
-
-
 		}
 	}
 
@@ -370,16 +487,14 @@ public class WhisperClient extends JFrame implements ActionListener {
 	 */
 	private void resetTimer(int timeToIdle)
 	{
-		if(myTaskTimer_ != null)
-		{
+		if(myTaskTimer_ != null) {
 			this.setTitle(BUDDY_LIST_);
 
 			myTaskTimer_.cancel();
 			myTaskTimer_ = new IdleTT();
 			myTimer_.schedule(myTaskTimer_, timeToIdle);
 		}
-		else
-		{
+		else {
 			myTimer_ = new Timer();
 			myTaskTimer_ = new IdleTT();
 			myTimer_.schedule(myTaskTimer_, timeToIdle); //user goes idle after 5 seconds for demo/test purposes
@@ -396,197 +511,6 @@ public class WhisperClient extends JFrame implements ActionListener {
 		public void run() {
 			setTitle(BUDDY_LIST_IDLE_);
 		}
-	}
-
-	/** This method is called from within the constructor to
-	 * initialize the form.
-	 */
-	private void initComponents() {
-
-		//set native look and feel
-		try  {  
-			//Tell the UIManager to use the platform look and feel  
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());  
-		}  
-		catch(Exception e) {  
-			//Do nothing  
-		}  
-
-		//create the menu bar
-		menuBar_ = new JMenuBar();
-
-
-		//first menu\\
-		//File
-			//New IM
-			//Set Away
-			//Accounts
-			//Plugins
-			//Preferences
-			//Quit
-		whisperMenu_ = new JMenu();
-		whisperMenu_.setText(WHISPER_);
-		menuBar_.add(whisperMenu_);
-
-		newIm_ = new JMenuItem();
-		newIm_.setText(NEWIM_);
-		newIm_.setActionCommand(NEWIM_);
-		newIm_.addActionListener(this);
-		whisperMenu_.add(newIm_);
-		
-		setStatus_ = new JCheckBoxMenuItem();
-		setStatus_.setText(SET_STATUS_);
-		setStatus_.setActionCommand(SET_STATUS_);
-		setStatus_.addActionListener(this);
-		whisperMenu_.add(setStatus_);
-		
-		accounts_ = new JMenuItem();
-		accounts_.setText(ACCOUNTS_);
-		accounts_.setActionCommand(ACCOUNTS_);
-		accounts_.addActionListener(this);
-		whisperMenu_.add(accounts_);
-
-		plugins_ = new JMenuItem();
-		plugins_.setText(PLUGINS_);
-		plugins_.setActionCommand(PLUGINS_);
-		plugins_.addActionListener(this);
-		whisperMenu_.add(plugins_);
-
-		preferences_ = new JMenuItem();
-		preferences_.setText(PREFERENCES_);
-		preferences_.setActionCommand(PREFERENCES_);
-		preferences_.addActionListener(this);
-		whisperMenu_.add(preferences_);
-
-		
-		sound_ = new JCheckBoxMenuItem(SOUND_);
-		sound_.setSelected(Preferences.getInstance().getSoundsEnabled());
-		sound_.setActionCommand(SOUND_);
-		sound_.addActionListener(this);
-		whisperMenu_.add(sound_);
-		
-		quit_ = new JMenuItem();
-		quit_.setText(QUIT_);
-		quit_.setActionCommand(QUIT_);
-		quit_.addActionListener(this);
-		whisperMenu_.add(quit_);
-		
-		//second menu\\ - not used
-		//Preferences
-		//Encryption
-		/*
-		preferencesMenu_ = new JMenu();
-		preferencesMenu_.setText(PREFERENCES_);
-		menuBar_.add(preferencesMenu_);
-
-		encryption_ = new JMenuItem();
-		encryption_.setText(ENCRYPTION_);
-		encryption_.setActionCommand(ENCRYPTION_);
-		encryption_.addActionListener(this);
-		preferencesMenu_.add(encryption_);
-		 */
-
-		setJMenuBar(menuBar_);
-
-		/* popup menus do right-click stuff
-		 * we don't need this right now, implement later
-		popupMenu1 = new PopupMenu();
-		popupMenu1.setLabel("popupMenu1");
-		popupMenu1.addActionListener(this);
-		 */
-
-		buddyList_ = new JList(blm_);
-		buddyList_.setSelectionMode(ListSelectionModel.SINGLE_SELECTION );
-
-		BuddyListRenderer buddyListRenderer_ = new BuddyListRenderer();
-		buddyList_.setCellRenderer(buddyListRenderer_);
-
-		buddyListScroll_ = new JScrollPane(buddyList_);
-		buddyListScroll_.setViewportView(buddyList_);      
-		buddyListScroll_.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-		buddyListScroll_.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-
-		plm_ = new PluginListModel();
-
-
-		blm_.addListDataListener(new ListDataListener(){
-
-			@Override
-			public void contentsChanged(ListDataEvent e) {
-				if (e.getSource() instanceof ListModel){
-					buddyList_.setModel((ListModel) e.getSource());
-				}
-			}
-
-			@Override
-			public void intervalAdded(ListDataEvent e) {
-
-			}
-
-			@Override
-			public void intervalRemoved(ListDataEvent e) {
-
-
-			}
-
-		});
-
-		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosing(WindowEvent evt) {
-				formWindowClosing(evt);
-			}
-		});
-
-		buddyList_.addComponentListener(new ComponentAdapter() {
-			@Override
-			public void componentShown(ComponentEvent evt) {
-				BuddiesComponentShown(evt);
-			}
-		});
-
-		buddyList_.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent mouseEvent) {
-				JList Buddies = (JList) mouseEvent.getSource();
-				if (mouseEvent.getClickCount() == 2) {
-					int index = Buddies.locationToIndex(mouseEvent.getPoint());
-					if (index >= 0) {
-						final Buddy selectedBuddy_ = (Buddy) Buddies.getModel().getElementAt(index);
-						//need to start new chat window
-
-						EventQueue.invokeLater(new Runnable() {
-							public void run() {
-								newIMWindow(selectedBuddy_);
-							}
-						});
-					}
-				}
-			}
-		});
-
-
-		GroupLayout layout = new GroupLayout(getContentPane());
-		getContentPane().setLayout(layout);
-		layout.setHorizontalGroup(
-				layout.createParallelGroup()
-				.addComponent(buddyListScroll_, 100, 182, Short.MAX_VALUE)
-		);
-		layout.setVerticalGroup(
-				layout.createParallelGroup()
-				.addComponent(buddyListScroll_, GroupLayout.DEFAULT_SIZE, 294, Short.MAX_VALUE)
-		);
-		
-		accountInfoPane_ = new JFrame();
-		accountInfoPane_.setAlwaysOnTop(true);
-		accountInfoPane_.setMinimumSize(new Dimension(100, 50));
-		
-
-
-		pack();
-
-
 	}
 
 	/**
@@ -638,7 +562,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 	{
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
-				PreferencesWindow prefs = PreferencesWindow.getInstance();
+				PreferencesWindow prefs = new PreferencesWindow();//.getInstance();
 				prefs.setPreferencesCategory(PreferencesWindow.ABOUT_);
 			}
 		});
@@ -649,7 +573,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 	{
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
-				PreferencesWindow prefs = PreferencesWindow.getInstance();
+				PreferencesWindow prefs = new PreferencesWindow();//.getInstance();
 				prefs.setPreferencesCategory(PreferencesWindow.GENERAL_);
 			}
 		});
@@ -666,7 +590,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 	{
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
-				PreferencesWindow prefs = PreferencesWindow.getInstance();
+				PreferencesWindow prefs = new PreferencesWindow();//.getInstance();
 				prefs.setPreferencesCategory(PreferencesWindow.ACCOUNTS_);
 			}
 		});
@@ -868,7 +792,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 		if (actionCommand.equals(preferences_.getActionCommand())) {
 			EventQueue.invokeLater(new Runnable() {
 				public void run() {
-					PreferencesWindow prefs = PreferencesWindow.getInstance();
+					PreferencesWindow prefs = new PreferencesWindow();//.getInstance();
 					prefs.setPreferencesCategory(PreferencesWindow.GENERAL_);
 				}
 			});
@@ -878,7 +802,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 		if (actionCommand.equals(accounts_.getActionCommand())){
 			EventQueue.invokeLater(new Runnable(){
 				public void run(){
-					PreferencesWindow prefs = PreferencesWindow.getInstance();
+					PreferencesWindow prefs = new PreferencesWindow();//.getInstance();
 					prefs.setPreferencesCategory(PreferencesWindow.ACCOUNTS_);
 				}
 			});

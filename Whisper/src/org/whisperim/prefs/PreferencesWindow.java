@@ -197,7 +197,7 @@ public class PreferencesWindow extends JFrame implements ListSelectionListener,A
     }
 	
 	//for singleton
-	public static PreferencesWindow getInstance() {
+	/*public static PreferencesWindow getInstance() {
 		if(instance == null) {
 			instance = new PreferencesWindow();
 		}
@@ -206,6 +206,7 @@ public class PreferencesWindow extends JFrame implements ListSelectionListener,A
 	public Object clone() throws CloneNotSupportedException {
 		throw new CloneNotSupportedException();
 	}
+	*/
 	
 	/*
 	 * setPreferencesCategory - public interface allows other parts of whisper
@@ -256,6 +257,7 @@ public class PreferencesWindow extends JFrame implements ListSelectionListener,A
 		//save all prefs
 		//call update
 		//dispose window
+		instance = null;
 		this.dispose();
 	}
 
