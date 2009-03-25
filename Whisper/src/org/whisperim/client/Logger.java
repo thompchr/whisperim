@@ -32,7 +32,7 @@ public class Logger{
 		
 		try{				
 			//Appends to the file if it exists
-			writer_ = new BufferedWriter(new FileWriter(filename_.format(date) + ".txt",true));
+			writer_ = new BufferedWriter(new FileWriter(filename_.format(date) + ".html",true));
 			
 		}		
 		catch (IOException e){
