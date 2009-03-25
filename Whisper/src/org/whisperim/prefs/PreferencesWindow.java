@@ -97,6 +97,7 @@ public class PreferencesWindow extends JFrame implements ListSelectionListener,A
 
 	public PreferencesWindow() {
 
+		//set from preferences and update dyanmically
 		//set native look and feel
 		try  {  
 			//Tell the UIManager to use the platform look and feel  
