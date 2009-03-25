@@ -34,6 +34,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
 import org.whisperim.prefs.PrefListener;
@@ -228,7 +229,10 @@ public class WhisperIM extends JFrame implements ActionListener, WindowListener,
     	panel.setName(buddy.getHandle());
     	
     	this.requestFocus();
+    	
+    	
     	mainPain_.setSelectedComponent(panel);
+    	mainPain_.addChangeListener(panel);
     }
     
     public WhisperIMPanel getTab(String buddy){
