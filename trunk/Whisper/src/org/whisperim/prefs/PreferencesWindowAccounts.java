@@ -31,7 +31,6 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.SpringLayout;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
@@ -123,6 +122,7 @@ public class PreferencesWindowAccounts extends JPanel implements ActionListener 
 		else if (ac.equalsIgnoreCase(REMOVE_ACCOUNT_)) {
 			//remove from accounts jtable
 			//update accounts file
+			
 		}
 	}
 	
