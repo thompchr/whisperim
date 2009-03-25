@@ -50,6 +50,7 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
     private int myIndex_;
     private Timer flash_, noFlash_;
     private Color flashColor_ = new Color(30,144,255);
+    private String currentColor_ = "default";
     
     private Buddy buddy_;
     private WhisperIM window_;
@@ -334,10 +335,16 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
 	    		window_.closeTab(this);
 	    	
 	    	else if (actionCommand.equals(flash_.getActionCommand()))
-	    		head_.setBackground(flashColor_);
-	    	
-	    	else if (actionCommand.equals(noFlash_.getActionCommand()))
-	    		head_.setBackground(this.getBackground());
+	    	{
+	    		if (currentColor_.equals("flash")){
+	    			head_.setBackground(this.getBackground());
+	    			currentColor_ = "default";
+	    		}
+	    		else{
+	    			head_.setBackground(flashColor_);
+	    			currentColor_ = "flash";
+	    		}
+	    	}
 	    	
     		else {
     			//problem with button interface
@@ -483,17 +490,13 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
 	    		else
 	    		{
 	    			if (flash_ == null){
-	    				flash_ = new Timer(500,this);
+	    				flash_ = new Timer(750,this);
 	    				flash_.setActionCommand("flash");
 	    			}
-	    			if (noFlash_ == null){
-	    				noFlash_ = new Timer(750,this);
-	    				noFlash_.setActionCommand("noflash");
-	    			}
-	    			noFlash_.start();
+	    			
+	    			currentColor_ = "flash";
 	    			flash_.start();
-	    		//	Color newColor = new Color(150,100,100);
-	    		//	head_.setBackground(newColor);
+	    		
 	    		}
 	    	}
 	    	
@@ -525,11 +528,11 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
 			if (window_.isFocused(this)){
 				
 				//Do nothing, the tab was just created...
-				if (flash_ == null || noFlash_ == null){}
+				if (flash_ == null){}
 				
 				else{
 					flash_.stop();
-					noFlash_.stop();
+					currentColor_ = "default";
 					head_.setBackground(this.getBackground());
 				}
 			}
