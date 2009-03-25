@@ -127,6 +127,8 @@ public class WhisperClient extends JFrame implements ActionListener {
 	private JCheckBoxMenuItem sound_;
 	private boolean soundsEnabled_;
 	private JMenuItem quit_;
+	private boolean alwaysNewWindow_ = false;
+	private JMenuItem newWindow_;
 	
 	private WhisperSystemTray tray_;
 
@@ -284,6 +286,11 @@ public class WhisperClient extends JFrame implements ActionListener {
 			@Override
 			public void mouseClicked(MouseEvent mouseEvent) {
 				JList Buddies = (JList) mouseEvent.getSource();
+				
+				if (mouseEvent.getClickCount() == 1)
+					newWindow_.setEnabled(true);
+				
+				
 				if (mouseEvent.getClickCount() == 2) {
 					int index = Buddies.locationToIndex(mouseEvent.getPoint());
 					if (index >= 0) {
@@ -292,7 +299,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 
 						EventQueue.invokeLater(new Runnable() {
 							public void run() {
-								newIMWindow(selectedBuddy_);
+								newIMWindow(selectedBuddy_,alwaysNewWindow_);
 							}
 						});
 					}
@@ -329,6 +336,12 @@ public class WhisperClient extends JFrame implements ActionListener {
 		newIm_.setMnemonic(KeyEvent.VK_N);
 		newIm_.addActionListener(this);
 		whisperMenu_.add(newIm_);
+		
+		newWindow_ = new JMenuItem("Open selected in new window");
+		newWindow_.addActionListener(this);
+		whisperMenu_.add(newWindow_);
+		//newWindow_.setVisible(true);
+		newWindow_.setEnabled(false);
 		
 		setStatus_ = new JCheckBoxMenuItem(SET_STATUS_);
 		setStatus_.addActionListener(this);
@@ -518,12 +531,12 @@ public class WhisperClient extends JFrame implements ActionListener {
 	 * @param selectedBuddy_
 	 * @param client
 	 */
-	public WhisperIM newIMWindow(final Buddy selectedBuddy_) {
+	public WhisperIM newIMWindow(final Buddy selectedBuddy_, boolean newWindow) {
 
 		WhisperIM window;
 		WhisperIMPanel panel;
 
-		if (openBuddies_.isEmpty()){
+		if (openBuddies_.isEmpty() || newWindow){
 			//There is no window
 
 			window = new WhisperIM(this, manager_.getPrivateKey());
@@ -547,6 +560,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 		return window;
 
 	}
+
 
 	
 	//  Methods for Whisper System Tray  \\
@@ -653,7 +667,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 						java.awt.EventQueue.invokeLater(new Runnable() {
 							public void run() {
 								//needs to go to an buddy object version
-								newIMWindow(new Buddy(message.getFrom(), message.getTo(), message.getProtocol()));
+								newIMWindow(new Buddy(message.getFrom(), message.getTo(), message.getProtocol()),alwaysNewWindow_);
 								openBuddies_.get(message.getFrom().toLowerCase().replace(" ", "")).getTab(message.getFrom().toLowerCase().replace(" ", "")).enableEncryption(recKey);
 							}
 						});
@@ -682,7 +696,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 				EventQueue.invokeLater(new Runnable() {
 					public void run() {
 						//needs to go to an buddy object version
-						newIMWindow(new Buddy(message.getFrom(), message.getTo(), message.getProtocol()));
+						newIMWindow(new Buddy(message.getFrom(), message.getTo(), message.getProtocol()), alwaysNewWindow_);
 						openBuddies_.get(message.getFrom().toLowerCase().replace(" ", "")).getTab(message.getFrom().toLowerCase().replace(" ", "")).receiveMsg(message);
 					}
 				});
@@ -812,6 +826,26 @@ public class WhisperClient extends JFrame implements ActionListener {
 		if (actionCommand.equals(sound_.getActionCommand())) {
 			toggleSound();
 		}
+		
+		if (actionCommand.equals(newWindow_.getActionCommand())){
+			
+			if (buddyList_.getSelectedIndex() == -1){
+				newWindow_.setEnabled(false);
+			}
+			else
+			{
+				final Buddy selectedBuddy_ = (Buddy) buddyList_.getModel().getElementAt(buddyList_.getSelectedIndex());
+				//need to start new chat window
+			
+
+				EventQueue.invokeLater(new Runnable() {
+					public void run() {
+						newIMWindow(selectedBuddy_,true);
+					}
+				});
+				
+			}
+		}
 	}
 	
 	public void toggleSound(){
@@ -871,6 +905,10 @@ public class WhisperClient extends JFrame implements ActionListener {
 	public WhisperSystemTray getSystemTray()
 	{
 		return this.tray_;	
+	}
+
+	public boolean getWindowPref(){
+		return alwaysNewWindow_;
 	}
 	
 	public void setSystemTray()
