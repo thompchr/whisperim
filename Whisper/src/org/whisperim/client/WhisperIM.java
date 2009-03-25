@@ -18,6 +18,7 @@ package org.whisperim.client;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -49,7 +50,7 @@ import org.whisperim.prefs.Preferences;
  * 
  * @author Kirk Banks, Chris Thompson, John Dlugokecki, Cory Plastek, Nick Krieble
  */
-public class WhisperIM extends JFrame implements ActionListener, WindowListener,FocusListener {
+public class WhisperIM extends JFrame implements ActionListener{
     //Encryptor for the chat session
   
     
@@ -106,8 +107,7 @@ public class WhisperIM extends JFrame implements ActionListener, WindowListener,
         //We should add a small version of their buddy icon into the "null" value here
 
     	this.setIconImage(whisperIcon_);
-        addWindowListener(this);
-		mainPain_.addFocusListener(this);
+        
         setMinimumSize(new Dimension(550, 310));
         pack();
     }
@@ -265,64 +265,9 @@ public class WhisperIM extends JFrame implements ActionListener, WindowListener,
     		return false;
     }
 
-	@Override
-	public void windowActivated(WindowEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+	
 
 
-	@Override
-	public void windowClosed(WindowEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-
-
-
-	@Override
-	public void windowDeactivated(WindowEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-
-	@Override
-	public void windowDeiconified(WindowEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-
-	@Override
-	public void windowIconified(WindowEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-
-	@Override
-	public void windowOpened(WindowEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-
-	@Override
-	public void focusGained(FocusEvent arg0) {
-		
-		
-		
-	}
-
-
-	@Override
-	public void focusLost(FocusEvent arg0) {
-		
-		
-		
-	}
     
 	public void closeTab(WhisperIMPanel panel){
 		
@@ -334,5 +279,20 @@ public class WhisperIM extends JFrame implements ActionListener, WindowListener,
 		
 	}
 	
+	protected void paintContentBorderRightEdge(Graphics g, int tabPlacement, int selectedIndex, int x, int y, int w, int h)
+	{
+		// Do nothing
+	}
+
+	protected void paintContentBorderLeftEdge(Graphics g, int tabPlacement, int selectedIndex, int x, int y, int w, int h)
+	{
+		// Do nothing
+	}
+
+	protected void paintContentBorderBottomEdge(Graphics g, int tabPlacement, int selectedIndex, int x, int y, int w, int h)
+	{
+		// Do nothing
+	}
+
     
 }
