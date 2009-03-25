@@ -31,13 +31,15 @@ import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
 import javax.swing.UIManager;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import org.jdesktop.layout.GroupLayout;
 import org.jdesktop.layout.LayoutStyle;
 import org.whisperim.security.Encryptor;
 
 
-public class WhisperIMPanel extends JPanel implements ActionListener, FocusListener {
+public class WhisperIMPanel extends JPanel implements ActionListener, ChangeListener {
 		
 	private boolean doWhisperBot_ = false;
     private Encryptor encrypt;
@@ -273,7 +275,7 @@ public class WhisperIMPanel extends JPanel implements ActionListener, FocusListe
 	        
 	        buddyName_.getAccessibleContext().setAccessibleName("Buddy");
 	        
-	        this.addFocusListener(this);
+	        
 
 	        
 	        
@@ -496,18 +498,7 @@ public class WhisperIMPanel extends JPanel implements ActionListener, FocusListe
 	    	}
 	    	
 	    }
-		@Override
-		public void focusGained(FocusEvent arg0) {
-			
-			flash_.stop();
-			noFlash_.stop();
-		}
 
-		@Override
-		public void focusLost(FocusEvent arg0) {
-			// TODO Auto-generated method stub
-			
-		}
 		
 		public JPanel getTabHead()
 		{
@@ -526,6 +517,23 @@ public class WhisperIMPanel extends JPanel implements ActionListener, FocusListe
 			}
 			else 
 				return head_;
+			
+		}
+
+		@Override
+		public void stateChanged(ChangeEvent arg0) {
+			if (window_.isFocused(this)){
+				
+				//Do nothing, the tab was just created...
+				if (flash_ == null || noFlash_ == null){}
+				
+				else{
+					flash_.stop();
+					noFlash_.stop();
+					head_.setBackground(this.getBackground());
+				}
+			}
+			
 			
 		}
 	}	
