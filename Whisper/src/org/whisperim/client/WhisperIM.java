@@ -236,6 +236,12 @@ public class WhisperIM extends JFrame implements ActionListener, WindowListener,
     	return tabHash_.get(buddy.toLowerCase().replace(" ", ""));
     }
 
+    public boolean isFocused(JPanel panel){
+    	if (panel == mainPain_.getSelectedComponent())
+    		return true;
+    	else
+    		return false;
+    }
 
 	@Override
 	public void windowActivated(WindowEvent arg0) {
@@ -283,7 +289,8 @@ public class WhisperIM extends JFrame implements ActionListener, WindowListener,
 
 	@Override
 	public void focusGained(FocusEvent arg0) {
-		// TODO Auto-generated method stub
+		
+		
 		
 	}
 

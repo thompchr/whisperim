@@ -399,7 +399,9 @@ public class WhisperIMPanel extends JPanel implements ActionListener, FocusListe
 	    	if (doLogging_)
 	        	log_.write(message, message.getFrom());
 	        	
-	    	flash(this.isFocusOwner());
+	    	
+	    	flash(window_.isFocused(this));
+	    	//flash(this.isFocusOwner());
 	    		
 	        talkArea_.append("\n");
 	        autoScroll();
