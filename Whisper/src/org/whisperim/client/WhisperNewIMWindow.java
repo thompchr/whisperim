@@ -198,7 +198,7 @@ public class WhisperNewIMWindow extends JFrame implements ActionListener{
 
 				@Override
 				public void run() {
-					temp.newIMWindow(new Buddy(foreign, cs.getIdentifier().substring(cs.getIdentifier().lastIndexOf(":") + 1), cs.getProtocol()));
+					temp.newIMWindow(new Buddy(foreign, cs.getIdentifier().substring(cs.getIdentifier().lastIndexOf(":") + 1), cs.getProtocol()),parent_.getWindowPref());
 				}
 				
 			});
