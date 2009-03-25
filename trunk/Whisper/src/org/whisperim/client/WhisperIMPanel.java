@@ -29,6 +29,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
+import javax.swing.Timer;
 import javax.swing.UIManager;
 
 import org.jdesktop.layout.GroupLayout;
@@ -45,6 +46,8 @@ public class WhisperIMPanel extends JPanel implements ActionListener, FocusListe
     private String myHandle_;
     private boolean doLogging_ = false;
     private int myIndex_;
+    private Timer flash_, noFlash_;
+    private Color flashColor_ = new Color(30,144,255);
     
     private Buddy buddy_;
     private WhisperIM window_;
@@ -116,6 +119,8 @@ public class WhisperIMPanel extends JPanel implements ActionListener, FocusListe
  
 		
         addTab();
+        
+        
         this.requestFocusInWindow();
 	}
 	
@@ -268,7 +273,7 @@ public class WhisperIMPanel extends JPanel implements ActionListener, FocusListe
 	        
 	        buddyName_.getAccessibleContext().setAccessibleName("Buddy");
 	        
-	        //Set tab close button and hotkey
+	        this.addFocusListener(this);
 
 	        
 	        
@@ -325,6 +330,12 @@ public class WhisperIMPanel extends JPanel implements ActionListener, FocusListe
     	
 	    	else if (actionCommand.equals(close_.getActionCommand()))
 	    		window_.closeTab(this);
+	    	
+	    	else if (actionCommand.equals(flash_.getActionCommand()))
+	    		head_.setBackground(flashColor_);
+	    	
+	    	else if (actionCommand.equals(noFlash_.getActionCommand()))
+	    		head_.setBackground(this.getBackground());
 	    	
     		else {
     			//problem with button interface
@@ -453,6 +464,7 @@ public class WhisperIMPanel extends JPanel implements ActionListener, FocusListe
 
 	    public void flash(boolean focused){
 	    	
+	    	
 	    	if (head_ == null){
 	    		System.out.println("This shouldnt happen");
 	    		System.out.println("Please contact your favorite WhisperIM dev with error code NOT1337");
@@ -461,20 +473,32 @@ public class WhisperIMPanel extends JPanel implements ActionListener, FocusListe
 	    	{
 	    		if (focused)
 	    		{
+
 	    			head_.setBackground(this.getBackground());
 	    		}
 	    		else
 	    		{
-	    			Color newColor = new Color(150,100,100);
-	    			head_.setBackground(newColor);
+	    			if (flash_ == null){
+	    				flash_ = new Timer(500,this);
+	    				flash_.setActionCommand("flash");
+	    			}
+	    			if (noFlash_ == null){
+	    				noFlash_ = new Timer(750,this);
+	    				noFlash_.setActionCommand("noflash");
+	    			}
+	    			noFlash_.start();
+	    			flash_.start();
+	    		//	Color newColor = new Color(150,100,100);
+	    		//	head_.setBackground(newColor);
 	    		}
 	    	}
 	    	
 	    }
 		@Override
 		public void focusGained(FocusEvent arg0) {
-			// TODO Auto-generated method stub
 			
+			flash_.stop();
+			noFlash_.stop();
 		}
 
 		@Override
@@ -485,6 +509,7 @@ public class WhisperIMPanel extends JPanel implements ActionListener, FocusListe
 		
 		public JPanel getTabHead()
 		{
+			//We only want one head tab, per tab...
 			if (head_ == null){
 				
 				head_ = new JPanel();
