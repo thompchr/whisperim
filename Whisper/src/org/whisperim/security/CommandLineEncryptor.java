@@ -39,11 +39,21 @@ public class CommandLineEncryptor {
 
 	private OutputStream os_;
 	private PublicKey pk_;
+	private int buffSize_;
 
-	public CommandLineEncryptor(OutputStream os, PublicKey pk){
+	/**
+	 * This is the constructor for the command line encryptor.  
+	 * All access to the command line should pass through this
+	 * object as it will provide the necessary security and
+	 * privacy for these connections
+	 * @param os - The output stream output will be written to
+	 * @param pk - The public key used to encrypt the information
+	 * @param buffSize - The number of lines to buffer before sending
+	 */
+	public CommandLineEncryptor(OutputStream os, PublicKey pk, int buffSize){
 		os_ = os;
 		pk_ = pk;
-
+		buffSize_ = buffSize;
 	}
 
 	public void execute(String command, String dir){
@@ -51,10 +61,16 @@ public class CommandLineEncryptor {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(cle.execute(command, dir)[0]));
 		
 		String line = null;
+		String lineBuffer = null;
 		
 		try {
+			int i = 0;
 			while ((line = reader.readLine()) != null){
-				
+				lineBuffer += "\n" + line;
+				++i;
+				if (i >= buffSize_){
+					os_.write(encryptLine(lineBuffer).getBytes());
+				}
 			}
 		} catch (IOException e) {
 			

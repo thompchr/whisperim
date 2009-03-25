@@ -71,7 +71,7 @@ public class KeyContainer {
 	
 	/**
 	 * Method to retrieve the local public key from memory.
-	 * @return
+	 * @return PublicKey
 	 */
 	public PublicKey getMyPublicKey(){
 		return myKeys_.getPublic();

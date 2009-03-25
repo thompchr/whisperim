@@ -175,8 +175,10 @@ public class Preferences {
 	}
 
 	public void setListeners(List<PrefListener> listeners) {
-		this.listeners_ = listeners;
+		listeners_ = listeners;
 	}
+	
+	//There really should be a an add/remove method for the listeners that takesa  listener
 
 	
 }
