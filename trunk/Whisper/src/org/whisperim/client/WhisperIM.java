@@ -229,7 +229,7 @@ public class WhisperIM extends JFrame implements ActionListener, WindowListener,
     	panel.setName(buddy.getHandle());
     	
     	this.requestFocus();
-    	
+    	mainPain_.setSelectedComponent(panel);
     }
     
     public WhisperIMPanel getTab(String buddy){
