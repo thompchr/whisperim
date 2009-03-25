@@ -17,6 +17,7 @@ package org.whisperim.client;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.EventQueue;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -36,6 +37,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import javax.swing.KeyStroke;
 
 import org.whisperim.prefs.PrefListener;
 import org.whisperim.prefs.Preferences;
@@ -62,7 +64,7 @@ public class WhisperIM extends JFrame implements ActionListener, WindowListener,
    
     private JTabbedPane mainPain_;
 	private JMenu fileMenu_, conversationMenu_;
-	private JMenuItem exit_, about_, closeTab_;
+	private JMenuItem exit_, about_, closeTab_, newTab_;
 	private static final String FILE_ = "File";
 	private static final String CLOSE_TAB_ = "Close tab";
 	private static final String EXIT_ = "Exit";
@@ -70,6 +72,7 @@ public class WhisperIM extends JFrame implements ActionListener, WindowListener,
 	private static final String LOGGING_ ="Logging";
 	private static final String WHISPER_BOT_ = "Whisper Bot";
 	private static final String START_WHITEBOARD_ = "Start Whiteboard";
+	private static final String NEW_TAB_ = "New tab";
 	private JCheckBoxMenuItem logging_;
     
     private WhisperClient myParent_;
@@ -143,6 +146,13 @@ public class WhisperIM extends JFrame implements ActionListener, WindowListener,
     			this.dispose();
     		}
     	}
+    	else if (e.getSource() == newTab_){
+			EventQueue.invokeLater(new Runnable() {
+				public void run() {
+					new WhisperNewIMWindow(myParent_.getConnectionManager(), myParent_);
+				}
+			});
+    	}
     }
 	
 	//Menu creation is separate from UI layout
@@ -152,13 +162,22 @@ public class WhisperIM extends JFrame implements ActionListener, WindowListener,
 		
 		//first menu
 		//file (f)
+			//new tab (hidden)
 			//close tab
 			//exit (x)
 		fileMenu_ = new JMenu(FILE_);
 		fileMenu_.setMnemonic(KeyEvent.VK_F);
 		
+		
+		newTab_ = new JMenuItem(NEW_TAB_);
+		newTab_.addActionListener(this);
+		newTab_.setAccelerator(KeyStroke.getKeyStroke("control T"));
+		//Adding it to the menu probably isnt necessary...
+		fileMenu_.add(newTab_);
+		
 		closeTab_ = new JMenuItem(CLOSE_TAB_);
 		closeTab_.addActionListener(this);
+		closeTab_.setAccelerator(KeyStroke.getKeyStroke("control W"));
 		fileMenu_.add(closeTab_);
 		
 		exit_ = new JMenuItem(EXIT_);
