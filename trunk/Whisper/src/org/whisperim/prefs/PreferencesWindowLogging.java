@@ -38,18 +38,29 @@ public class PreferencesWindowLogging extends JPanel implements ItemListener {
 
 	private static final long serialVersionUID = 6555858513398336341L;
 	
-	private boolean loggingEnabled_ = Preferences.getInstance().getLoggingEnabled(); 
+	private boolean loggingEnabled_ = Preferences.getInstance().getLoggingEnabled();
 	private JCheckBox loggingCheckBox_;
 	
 	PreferencesWindowLogging() {
-		
-		loggingEnabled_ = Preferences.getInstance().getLoggingEnabled();
 		
 		setBackground(Color.white);
 		
 		loggingCheckBox_ = new JCheckBox("Logging Enabled");
 		loggingCheckBox_.setBackground(Color.white);
 		loggingCheckBox_.setSelected(loggingEnabled_);
+		Preferences.getInstance().getListeners().add(new PrefListener() {
+			private boolean locked = false;
+			@Override
+			public void prefChanged(String name, Object o) {
+				if(Preferences.LOGGING_.equals(name) && !locked){
+					locked = true;
+					if(!o.equals(loggingCheckBox_.isSelected())){
+						loggingCheckBox_.setSelected(!loggingCheckBox_.isSelected());
+					}
+					locked = false;
+				}
+			}
+		});
 		loggingCheckBox_.setMnemonic(KeyEvent.VK_L);
 		loggingCheckBox_.addItemListener(this);
 		add(loggingCheckBox_);

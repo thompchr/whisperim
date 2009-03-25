@@ -31,16 +31,12 @@ import java.util.HashMap;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-
 import javax.swing.JTabbedPane;
 
+import org.whisperim.prefs.PrefListener;
 import org.whisperim.prefs.Preferences;
 
 /**
@@ -91,8 +87,9 @@ public class WhisperIM extends JFrame implements ActionListener, WindowListener,
     	
     	//Create frame, its menu, and the TabbedPane 
     	super("Whisper IM Conversation");
+    	
     	createMenu();    
-    	initComponents();
+    	
     	mainPain_ = new JTabbedPane();
     	myParent_ = parent;
         myKey_ = myKey;
@@ -127,45 +124,37 @@ public class WhisperIM extends JFrame implements ActionListener, WindowListener,
 
 
     public void actionPerformed(ActionEvent e) {
-    	String actionCommand = e.getActionCommand();
     	
-    	if (e.getSource() == exit_){
-    		dispose();
+    	if (e.getSource() == exit_) {
+    		this.dispose();
     	}
-    	
-    	else if (e.getSource() == logging_){
+    	else if (e.getSource() == logging_) {
     		doLogging_ = logging_.getState();
-    		if (log_ == null)
-    			log_ = new Logger(); 
-    			
+    		if (log_ == null) {
+    			log_ = new Logger();
+    		}
     	}
-    	
-    	else if (e.getSource() == closeTab_){
-
+    	else if (e.getSource() == closeTab_) {
     		tabHash_.remove(mainPain_.getSelectedComponent().getName().toLowerCase().replace(" ", ""));
     		myParent_.onWindowClose(mainPain_.getSelectedComponent().getName().toLowerCase().replace(" ", ""));
     		mainPain_.remove(mainPain_.getSelectedComponent());
-    		if (mainPain_.getTabCount() == 0)
-    			dispose();
-    		
+    		if (mainPain_.getTabCount() == 0) {
+    			this.dispose();
     		}
-    	
-    	
-    }
-    
-    private void initComponents(){
-    	
-
+    	}
     }
 	
 	//Menu creation is separate from UI layout
 	private void createMenu(){
+		JMenuBar mb = new JMenuBar();
+		this.setJMenuBar(mb);
 		
 		//first menu
-		//file
+		//file (f)
 			//close tab
 			//exit (x)
 		fileMenu_ = new JMenu(FILE_);
+		fileMenu_.setMnemonic(KeyEvent.VK_F);
 		
 		closeTab_ = new JMenuItem(CLOSE_TAB_);
 		closeTab_.addActionListener(this);
@@ -178,26 +167,36 @@ public class WhisperIM extends JFrame implements ActionListener, WindowListener,
 		
 		//second menu
 		//conversation (c)
-			//logging
+			//logging (l)
 			//whisper bot
 			//start whiteboard
 		conversationMenu_ = new JMenu(CONVERSATION_);
 		conversationMenu_.setMnemonic(KeyEvent.VK_C);
 		
 		logging_ = new JCheckBoxMenuItem(LOGGING_);
-		logging_.setState(false);
+		logging_.setMnemonic(KeyEvent.VK_L);
+		logging_.setState(Preferences.getInstance().getLoggingEnabled());
+		Preferences.getInstance().getListeners().add(new PrefListener() {
+			private boolean locked = false;
+			@Override
+			public void prefChanged(String name, Object o) {
+				if(Preferences.LOGGING_.equals(name) && !locked){
+					locked = true;
+					if(!o.equals(logging_.getState())){
+						logging_.setSelected(!logging_.isSelected());
+					}
+					locked = false;
+				}
+			}
+		});
 		logging_.addActionListener(this);
 		conversationMenu_.add(logging_);
 		
 		//Future use...
 		//W_ = KeyStroke.getKeyStroke(KeyEvent.VK_W, Event.CTRL_MASK);
 		
-		JMenuBar mb = new JMenuBar();
 		mb.add(fileMenu_);
 		mb.add(conversationMenu_);
-		mb.addFocusListener(this);
-		setJMenuBar(mb);
-		
 	}
 
     public void windowClosing(WindowEvent evt) {
