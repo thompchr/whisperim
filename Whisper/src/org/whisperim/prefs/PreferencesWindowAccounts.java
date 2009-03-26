@@ -65,7 +65,7 @@ public class PreferencesWindowAccounts extends JPanel implements ActionListener 
 	private JScrollPane accountsScroll_;
 	private JPanel accountsButtons_;
 	private JButton addAccountButton_;
-	//private JButton removeAccountButton_;
+	private JButton removeAccountButton_;
 
 
 	PreferencesWindowAccounts(ConnectionManager connectionManager) {
@@ -103,6 +103,8 @@ public class PreferencesWindowAccounts extends JPanel implements ActionListener 
 			@Override
 			public void mousePressed(MouseEvent e){
 				if (e.getButton() == MouseEvent.BUTTON3){
+				//fix!
+					//if(e.isPopupTrigger()) {
 					//right click
 					final JMenuItem changeState = new JMenuItem();
 					final JMenuItem edit = new JMenuItem();
@@ -157,9 +159,6 @@ public class PreferencesWindowAccounts extends JPanel implements ActionListener 
 
 					menu.show(accounts_, e.getX(), e.getY());
 
-
-
-
 				}
 			}
 
@@ -177,11 +176,12 @@ public class PreferencesWindowAccounts extends JPanel implements ActionListener 
 		addAccountButton_.addActionListener(this);
 		accountsButtons_.add(addAccountButton_);
 
-		/*
+		
 		removeAccountButton_ = new JButton(REMOVE_ACCOUNT_);
+		removeAccountButton_.setEnabled(false);
 		removeAccountButton_.addActionListener(this);
 		accountsButtons_.add(removeAccountButton_);
-		 */
+
 	}
 
 	public void actionPerformed(ActionEvent arg0) {

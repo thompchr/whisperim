@@ -70,7 +70,7 @@ public class Preferences {
 	/**
 	 * Sound Preferences
 	 */
-	private boolean soundsEnabled_ = true;
+	private boolean soundsEnabled_ = false;
 	public static final String SOUNDS_ = "Sounds";
 	
 	/**

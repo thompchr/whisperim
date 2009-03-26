@@ -25,6 +25,7 @@ package org.whisperim.prefs;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.EventQueue;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -193,27 +194,58 @@ public class PreferencesWindow extends JFrame implements ListSelectionListener,A
 		categoriesScrollPane_.setBorder(null);
 		
 		
-		generalPrefs_ = new PreferencesWindowGeneral();
-		accountPrefs_ = new PreferencesWindowAccounts(connectionManager_);
-		loggingPrefs_ = new PreferencesWindowLogging();
-		securityPrefs_ = new PreferencesWindowSecurity();
-		//pluginsPrefs_ = new PreferencesWindowPlugins();
-		soundsPrefs_ = new PreferencesWindowSounds();
-		whisperbotPrefs_ = new PreferencesWindowWhisperBot();
-		aboutInfo_ = new PreferencesWindowAbout();
-		
 		content_ = new JPanel(new CardLayout());
 		content_.setPreferredSize(contentSize_);
 		content_.setMinimumSize(contentSize_);
 		content_.setAlignmentY(CENTER_ALIGNMENT);
-		content_.add(generalPrefs_, GENERAL_);
-		content_.add(accountPrefs_, ACCOUNTS_);
-		content_.add(loggingPrefs_, LOGGING_);
-		content_.add(securityPrefs_, SECURITY_);
+		
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				generalPrefs_ = new PreferencesWindowGeneral();
+				content_.add(generalPrefs_, GENERAL_);
+			}
+		});
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				accountPrefs_ = new PreferencesWindowAccounts(connectionManager_);
+				content_.add(accountPrefs_, ACCOUNTS_);
+			}
+		});
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				loggingPrefs_ = new PreferencesWindowLogging();
+				content_.add(loggingPrefs_, LOGGING_);
+			}
+		});
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				securityPrefs_ = new PreferencesWindowSecurity();
+				content_.add(securityPrefs_, SECURITY_);
+			}
+		});
+		
+		//pluginsPrefs_ = new PreferencesWindowPlugins();
 		//content_.add(pluginsPrefs_, PLUGINS_);
-		content_.add(soundsPrefs_, SOUNDS_);
-		content_.add(whisperbotPrefs_, WHISPERBOT_);
-		content_.add(aboutInfo_, ABOUT_);
+		
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				soundsPrefs_ = new PreferencesWindowSounds();
+				content_.add(soundsPrefs_, SOUNDS_);
+			}
+		});
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				whisperbotPrefs_ = new PreferencesWindowWhisperBot();
+				content_.add(whisperbotPrefs_, WHISPERBOT_);
+			}
+		});
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				aboutInfo_ = new PreferencesWindowAbout();
+				content_.add(aboutInfo_, ABOUT_);
+			}
+		});
+		
 		
 		contentLayout_ = (CardLayout)(content_.getLayout());
 		setPreferencesCategory(GENERAL_);
@@ -353,8 +385,8 @@ public class PreferencesWindow extends JFrame implements ListSelectionListener,A
 
 	private void packAndRepaint() {
 		SwingUtilities.updateComponentTreeUI(this);
+		categories_.setBorder(null);
 		this.repaint();
-		this.pack();
 	}
 	
 }

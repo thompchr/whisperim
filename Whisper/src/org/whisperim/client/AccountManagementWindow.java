@@ -221,7 +221,6 @@ public class AccountManagementWindow extends JFrame implements ActionListener {
 	private void packAndRepaint() {
 		SwingUtilities.updateComponentTreeUI(this);
 		this.repaint();
-		this.pack();
 	}
 
 }
