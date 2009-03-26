@@ -333,6 +333,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 			}
 		});
 		
+		//right click menu
 		popupMenu_ = new JPopupMenu();
 		
 		popupNewIM_ = new JMenuItem("New IM");
@@ -344,34 +345,49 @@ public class WhisperClient extends JFrame implements ActionListener {
 		popupMenu_.add(popupNewWindow_);
 		
 		buddyList_.add(popupMenu_);
+		//end right click menu
 		
 		buddyList_.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent mouseEvent) {
-				JList Buddies = (JList) mouseEvent.getSource();
-				
-				if(mouseEvent.isPopupTrigger()) {
+			
+			
+			
+			private void showIfPopupTrigger(MouseEvent mouseEvent) {
+				if(popupMenu_.isPopupTrigger(mouseEvent)) {
+					JList Buddies = (JList) mouseEvent.getSource();
 					int index = Buddies.locationToIndex(mouseEvent.getPoint());
+					//setselected buddylist index based on mouse position
 					if (index >= 0) {
+						buddyList_.setSelectedIndex(index);
 						popupMenu_.show(Buddies, mouseEvent.getX(), mouseEvent.getY());
 					}
 				}
-				else {
-					if (mouseEvent.getClickCount() == 1)
-						newWindow_.setEnabled(true);
+			}
+			
+			public void mousePressed(MouseEvent mouseEvent) {
+				showIfPopupTrigger(mouseEvent);
+			}
+			
+			public void mouseReleased(MouseEvent mouseEvent) {
+				showIfPopupTrigger(mouseEvent);
+			}
+			
+			
+			public void mouseClicked(MouseEvent mouseEvent) {
+				JList Buddies = (JList) mouseEvent.getSource();
+				if (mouseEvent.getClickCount() == 1)
+					newWindow_.setEnabled(true);
 					
-					if (mouseEvent.getClickCount() == 2) {
-						int index = Buddies.locationToIndex(mouseEvent.getPoint());
-						if (index >= 0) {
-							final Buddy selectedBuddy_ = (Buddy) Buddies.getModel().getElementAt(index);
-							//need to start new chat window
+				if (mouseEvent.getClickCount() == 2) {
+					int index = Buddies.locationToIndex(mouseEvent.getPoint());
+					if (index >= 0) {
+						final Buddy selectedBuddy_ = (Buddy) Buddies.getModel().getElementAt(index);
+						//need to start new chat window
 
-							EventQueue.invokeLater(new Runnable() {
-								public void run() {
-									newIMWindow(selectedBuddy_,alwaysNewWindow_);
-								}
-							});
-						}
+						EventQueue.invokeLater(new Runnable() {
+							public void run() {
+								newIMWindow(selectedBuddy_,alwaysNewWindow_);
+							}
+						});
 					}
 				}
 			}
@@ -914,29 +930,35 @@ public class WhisperClient extends JFrame implements ActionListener {
 		}
 		
 		if(actionCommand.equals(popupNewIM_.getActionCommand())) {
-			JList Buddies = (JList) e.getSource();
+			//JList Buddies = (JList) e.getSource();
+			//assumes that the popup came from the buddy list
 			int index = buddyList_.getSelectedIndex();
-			final Buddy selectedBuddy_ = (Buddy) Buddies.getModel().getElementAt(index);
-			//need to start new chat window
+			if(index >= 0 ) {
+				final Buddy selectedBuddy_ = (Buddy) buddyList_.getModel().getElementAt(index);
+				//need to start new chat window
 
-			EventQueue.invokeLater(new Runnable() {
-				public void run() {
-					newIMWindow(selectedBuddy_,alwaysNewWindow_);
-				}
-			});
+				EventQueue.invokeLater(new Runnable() {
+					public void run() {
+						newIMWindow(selectedBuddy_,alwaysNewWindow_);
+					}
+				});
+			}
 		}
 		
 		if(actionCommand.equals(popupNewWindow_.getActionCommand())) {
-			JList Buddies = (JList) e.getSource();
+			//JList Buddies = (JList) e.getSource();
+			//assumes that the popup came from the buddy list
 			int index = buddyList_.getSelectedIndex();
-			final Buddy selectedBuddy_ = (Buddy) Buddies.getModel().getElementAt(index);
-			//need to start new chat window
+			if(index >= 0) {
+				final Buddy selectedBuddy_ = (Buddy) buddyList_.getModel().getElementAt(index);
+				//need to start new chat window
 
-			EventQueue.invokeLater(new Runnable() {
-				public void run() {
-					newIMWindow(selectedBuddy_,true);
-				}
-			});
+				EventQueue.invokeLater(new Runnable() {
+					public void run() {
+						newIMWindow(selectedBuddy_,true);
+					}
+				});
+			}
 		}
 	}
 	
