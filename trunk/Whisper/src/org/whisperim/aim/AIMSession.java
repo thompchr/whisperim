@@ -179,10 +179,10 @@ public class AIMSession implements AccEvents, Runnable {
 						try{
 							//Throwing an exception when the friendly name isn't set IS AN AWFUL IDEA
 							//but AOL did it anyway
-							buddyList.add(new Buddy(buddy.getName(), localHandle_, "aol", buddy.getFriendlyName()));
+							buddyList.add(new Buddy(buddy.getName(), localHandle_, protocol_, buddy.getFriendlyName()));
 						}catch(AccException ae){
 							//System.err.println(ae.getMessage());
-							buddyList.add(new Buddy(buddy.getName(), localHandle_, "aol"));
+							buddyList.add(new Buddy(buddy.getName(), localHandle_, protocol_));
 						}
 						
 					}

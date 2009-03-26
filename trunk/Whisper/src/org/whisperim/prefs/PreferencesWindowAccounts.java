@@ -137,7 +137,7 @@ public class PreferencesWindowAccounts extends JPanel implements ActionListener 
 					changeState.addMouseListener(new MouseAdapter(){
 						@Override
 						public void mousePressed(MouseEvent e){
-							if (changeState.getActionCommand().equalsIgnoreCase(SIGN_OUT_)){
+							if (e.getSource() == changeState){
 								connectionManager_.signOff(cs.getHandle(), cs.getProtocol());
 							}
 						}

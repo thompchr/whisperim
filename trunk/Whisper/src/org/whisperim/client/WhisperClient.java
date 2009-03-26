@@ -833,6 +833,10 @@ public class WhisperClient extends JFrame implements ActionListener {
 		}
 
 	}
+	
+	public void signOffSN(String protocol, String handle){
+		blm_.removeBuddies(protocol, handle);
+	}
 
 	public void onWindowClose(String handle){
 		openBuddies_.remove(handle.toLowerCase().replace(" ", ""));
@@ -976,8 +980,8 @@ public class WhisperClient extends JFrame implements ActionListener {
 		return sound_;
 	}
 
-	public void setSound_(JCheckBoxMenuItem sound_) {
-		this.sound_ = sound_;
+	public void setSound_(JCheckBoxMenuItem sound) {
+		sound_ = sound;
 	}
 	
 	public void changeClientSound(){
@@ -1023,7 +1027,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 
 	public WhisperSystemTray getSystemTray()
 	{
-		return this.tray_;	
+		return tray_;	
 	}
 
 	public boolean getWindowPref(){

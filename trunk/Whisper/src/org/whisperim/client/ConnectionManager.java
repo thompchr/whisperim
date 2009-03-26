@@ -214,6 +214,10 @@ public class ConnectionManager {
 	 */
 	public void signOff(String handle, String protocol){
 		strategies_.get(protocol + ":" + handle).signOff();
+		
+		//Right now this is a problem because in theory, the ui could reflect something that 
+		//doesn't exist in the running code
+		//client_.signOffSN(protocol, handle);
 	}
 	
 	public HashMap<String, ConnectionStrategy> getStrategies(){

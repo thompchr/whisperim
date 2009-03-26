@@ -58,6 +58,8 @@ public class AIMStrategy implements ConnectionStrategy {
 	@Override
 	public void signOff() {
 		session_.addOperation(AIMOperation.createSignOut());
+		status_ = ConnectionStrategy.OFFLINE;
+		receiveBuddies(new ArrayList<Buddy>());
 	}
 
 	@Override
