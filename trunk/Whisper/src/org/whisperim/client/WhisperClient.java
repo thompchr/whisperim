@@ -668,7 +668,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 	{
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
-				PreferencesWindow prefs = new PreferencesWindow();//.getInstance();
+				PreferencesWindow prefs = PreferencesWindow.getInstance();
 				prefs.setPreferencesCategory(PreferencesWindow.ABOUT_);
 			}
 		});
@@ -679,7 +679,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 	{
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
-				PreferencesWindow prefs = new PreferencesWindow();//.getInstance();
+				PreferencesWindow prefs = PreferencesWindow.getInstance();
 				prefs.setPreferencesCategory(PreferencesWindow.GENERAL_);
 			}
 		});
@@ -696,7 +696,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 	{
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
-				PreferencesWindow prefs = new PreferencesWindow();//.getInstance();
+				PreferencesWindow prefs = PreferencesWindow.getInstance();
 				prefs.setPreferencesCategory(PreferencesWindow.ACCOUNTS_);
 			}
 		});
@@ -893,7 +893,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 		if (actionCommand.equals(preferences_.getActionCommand())) {
 			EventQueue.invokeLater(new Runnable() {
 				public void run() {
-					PreferencesWindow prefs = new PreferencesWindow();//.getInstance();
+					PreferencesWindow prefs = PreferencesWindow.getInstance();
 					prefs.setPreferencesCategory(PreferencesWindow.GENERAL_);
 				}
 			});
@@ -903,7 +903,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 		if (actionCommand.equals(accounts_.getActionCommand())){
 			EventQueue.invokeLater(new Runnable(){
 				public void run(){
-					PreferencesWindow prefs = new PreferencesWindow();//.getInstance();
+					PreferencesWindow prefs = PreferencesWindow.getInstance();
 					prefs.setPreferencesCategory(PreferencesWindow.ACCOUNTS_);
 				}
 			});

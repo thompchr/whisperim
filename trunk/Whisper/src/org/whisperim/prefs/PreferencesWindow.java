@@ -100,7 +100,7 @@ public class PreferencesWindow extends JFrame implements ListSelectionListener,A
 	private CardLayout contentLayout_;
 	
 
-	public PreferencesWindow() {
+	protected PreferencesWindow() {
 
 		//set themes
 		try {
@@ -278,16 +278,19 @@ public class PreferencesWindow extends JFrame implements ListSelectionListener,A
     }
 	
 	//for singleton
-	/*public static PreferencesWindow getInstance() {
+	public static PreferencesWindow getInstance() {
 		if(instance == null) {
 			instance = new PreferencesWindow();
+		}
+		else {
+			instance.setVisible(true);
 		}
 		return instance;
 	}
 	public Object clone() throws CloneNotSupportedException {
 		throw new CloneNotSupportedException();
 	}
-	*/
+
 	
 	/*
 	 * setPreferencesCategory - public interface allows other parts of whisper
@@ -326,7 +329,7 @@ public class PreferencesWindow extends JFrame implements ListSelectionListener,A
 			//save all prefs
 			//call update
 			//close window
-			this.dispose();
+			this.setVisible(false);
 		}
 	}
 
@@ -338,7 +341,7 @@ public class PreferencesWindow extends JFrame implements ListSelectionListener,A
 		//save all prefs
 		//call update
 		//dispose window
-		this.dispose();
+		this.setVisible(false);
 	}
 
 
