@@ -1,4 +1,4 @@
- /**************************************************************************
+/**************************************************************************
  * Copyright 2009 Chris Thompson                                           *
  *                                                                         *
  * Licensed under the Apache License, Version 2.0 (the "License");         *
@@ -16,6 +16,8 @@
 package org.whisperim.models;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import javax.swing.ListModel;
 import javax.swing.event.ListDataEvent;
@@ -32,16 +34,16 @@ import org.whisperim.client.Buddy;
  */
 public class BuddyListModel implements ListModel {
 
-	private ArrayList<Buddy> buddies_ = new ArrayList<Buddy>();
-	private ArrayList<ListDataListener> ld_ = new ArrayList<ListDataListener>();
-	
+	private List<Buddy> buddies_ = Collections.synchronizedList(new ArrayList<Buddy>());
+	private List<ListDataListener> ld_ = Collections.synchronizedList(new ArrayList<ListDataListener>());
+
 	/**
 	 * Constructor
 	 */
 	public BuddyListModel(){
-		
+
 	}
-	
+
 	@Override
 	public void addListDataListener(ListDataListener l) {
 		ld_.add(l);
@@ -63,7 +65,7 @@ public class BuddyListModel implements ListModel {
 	 */
 	@Override
 	public int getSize() {
-		
+
 		return buddies_.size();
 	}
 
@@ -77,14 +79,14 @@ public class BuddyListModel implements ListModel {
 	public void removeListDataListener(ListDataListener l) {
 		ld_.remove(l);
 	}
-	
+
 	public void addBuddies(ArrayList<Buddy> list){
 		for (Buddy buddy:list){
 			buddies_.add(buddy);
 		}
 		notifyListeners();
 	}
-	
+
 	/**
 	 * This method adds a single buddy to the model.
 	 * Used when a buddy signs on.
@@ -95,8 +97,8 @@ public class BuddyListModel implements ListModel {
 		buddies_.add(buddy);
 		notifyListeners();
 	}
-	
-	
+
+
 	/**
 	 * This method removes a single buddy from the list.
 	 * Used when a buddy signs out.
@@ -107,7 +109,7 @@ public class BuddyListModel implements ListModel {
 		buddies_.remove(buddy);
 		notifyListeners();
 	}
-	
+
 	/**
 	 * This method is used to clear the buddy list if a given session ends, etc.
 	 * @param 
@@ -116,15 +118,21 @@ public class BuddyListModel implements ListModel {
 	 * 		handle - The local handle associated with that session
 	 * 
 	 */
-	public void removeBuddies(String protocol, String handle){
-		for (Buddy buddy:buddies_){
-			if (buddy.getProtocolID().equalsIgnoreCase(protocol) && buddy.getAssociatedLocalHandle().equalsIgnoreCase(handle)){
-				buddies_.remove(buddy);
+	public synchronized void removeBuddies(String protocol, String handle){
+		
+			for (Buddy buddy:buddies_){
+
+				if (buddy.getProtocolID().equalsIgnoreCase(protocol) && buddy.getAssociatedLocalHandle().equalsIgnoreCase(handle)){
+
+					buddies_.remove(buddy);
+
+
+				}
 			}
-		}
+		
 		notifyListeners();
 	}
-	
+
 	/**
 	 * This method is used to clear the buddy list if a given session ends, etc.
 	 * @param 
@@ -137,7 +145,7 @@ public class BuddyListModel implements ListModel {
 			}
 		}
 	}
-	
+
 	/**
 	 * This method is designed to check if the list contains a given element.
 	 * Method uses the equals method of the Buddy class.
@@ -151,8 +159,8 @@ public class BuddyListModel implements ListModel {
 			return false;
 		}
 	}
-	
-	private void notifyListeners(){
+
+	private synchronized void notifyListeners(){
 		for (ListDataListener ldl:ld_){
 			ldl.contentsChanged(new ListDataEvent(buddies_, ListDataEvent.CONTENTS_CHANGED, 0, buddies_.size()));
 		}
