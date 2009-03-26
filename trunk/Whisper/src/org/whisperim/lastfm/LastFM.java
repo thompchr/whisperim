@@ -1,12 +1,14 @@
 package org.whisperim.lastfm;
 
-import java.text.DateFormat;
-import java.util.Collection;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
-import net.roarsoftware.lastfm.Artist;
-import net.roarsoftware.lastfm.Chart;
-import net.roarsoftware.lastfm.Track;
-import net.roarsoftware.lastfm.User;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.apache.xerces.parsers.DOMParser;
+import org.w3c.dom.Document;
 
 
 public class LastFM {
@@ -17,17 +19,48 @@ public class LastFM {
 	{
 		username_ = username;
 	}
-	
+
+		
 	public String getLastSong()
 	{
 		String song = null;
-		String key = "4e5b94a79e7b8edc70f9875e191386ef"; //this is the key used in the last.fm API examples online.
-		Collection<Track> tracks = User.getRecentTracks(username_, 1, key);
-				
-		for (Track track:tracks) {
-			song = track.getName();
-		}
 		
-		return song;
+		 try {
+
+			 HttpURLConnection con = (HttpURLConnection) 
+			 	new URL("http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user="+
+			 			username_
+			 			+"&api_key=4e5b94a79e7b8edc70f9875e191386ef&limit=1").openConnection();
+			 
+			 con.setRequestMethod("POST");
+			 con.setDoOutput(true);
+	         con.setReadTimeout(10000);
+			 
+			 con.connect();
+			 
+			 BufferedReader rd = new BufferedReader(new InputStreamReader(con.getInputStream()));
+			 StringBuilder sb = new StringBuilder();
+			 
+	         while ((song = rd.readLine()) != null)
+	             sb.append(song+"\n");
+	         
+	         String artist = sb.toString().substring(
+	        		 sb.toString().indexOf(">", sb.toString().indexOf("<artist"))+1, 
+	        		 sb.toString().indexOf("</artist>")
+	        		 );
+	         
+	         String track = sb.toString().substring(
+	        		 sb.toString().indexOf(">", sb.toString().indexOf("<name"))+1, 
+	        		 sb.toString().indexOf("</name>")
+	        		 );        
+	         
+	         song = artist + " - " + track;
+	         
+	         con.disconnect();
+
+		   } catch (Exception exception) {
+		
+		   }
+		   return song;
 	}
 }
