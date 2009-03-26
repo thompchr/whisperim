@@ -21,13 +21,18 @@
 package org.whisperim.prefs;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Map.Entry;
 
 import javax.swing.JButton;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -38,6 +43,7 @@ import javax.swing.table.TableModel;
 import org.whisperim.client.ConnectionManager;
 import org.whisperim.client.ConnectionStrategy;
 import org.whisperim.client.NewAccountWindow;
+import org.whisperim.menus.AccountsRightClickMenu;
 import org.whisperim.models.ActiveAccountModel;
 import org.whisperim.renderers.ActiveAccountRenderer;
 
@@ -51,6 +57,9 @@ public class PreferencesWindowAccounts extends JPanel implements ActionListener 
 	private static final String ADD_ACCOUNT_ = "Add Account";
 	private static final String REMOVE_ACCOUNT_ = "Remove Account";
 	private static final String ACCOUNTS_ = "Accounts";
+	private static final String EDIT_ = "Edit";
+	private static final String SIGN_IN_ = "Sign in";
+	private static final String SIGN_OUT_ = "Sign out";
 	
 	private JTable accounts_;
 	private JScrollPane accountsScroll_;
@@ -90,7 +99,71 @@ public class PreferencesWindowAccounts extends JPanel implements ActionListener 
 		accounts_.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		accounts_.setRowHeight(50);
 		
+		accounts_.addMouseListener(new MouseAdapter(){
+			@Override
+			public void mousePressed(MouseEvent e){
+				
+				final JMenuItem changeState = new JMenuItem();
+				final JMenuItem edit = new JMenuItem();
+				final JMenuItem remove = new JMenuItem();
+				
+				Point p = e.getPoint();
+				
+				final ConnectionStrategy cs = (ConnectionStrategy) aam_.getValueAt(accounts_.rowAtPoint(p),0);
+				AccountsRightClickMenu menu = new AccountsRightClickMenu(cs);
+				if (cs.getStatus() == ConnectionStrategy.ACTIVE){
+					changeState.setText(SIGN_OUT_);
+					changeState.setActionCommand(SIGN_OUT_);
+				}else{
+					changeState.setText(SIGN_IN_);
+					changeState.setActionCommand(SIGN_IN_);
+				}
+				
+				
+				
+				edit.setText(EDIT_);
+				edit.setActionCommand(EDIT_);
+				
+				remove.setText(REMOVE_ACCOUNT_);
+				remove.setActionCommand(REMOVE_ACCOUNT_);
+				
+				menu.add(changeState);
+				menu.add(edit);
+				menu.add(remove);
+				
+				changeState.addMouseListener(new MouseAdapter(){
+					@Override
+					public void mousePressed(MouseEvent e){
+						if (changeState.getActionCommand().equalsIgnoreCase(SIGN_OUT_)){
+							connectionManager_.signOff(cs.getHandle(), cs.getProtocol());
+						}
+					}
+				});
+				
+				remove.addMouseListener(new MouseAdapter(){
+					@Override
+					public void mousePressed(MouseEvent e){
+						
+					}
+				});
+				
+				edit.addMouseListener(new MouseAdapter(){
+					@Override
+					public void mousePressed(MouseEvent e){
+						
+					}
+				});
+				
+				menu.show(accounts_, e.getX(), e.getY());
+				
+				
+				
+				
+			}
+		});
+		
 		accountsScroll_ = new JScrollPane(accounts_);
+		
 		add(accountsScroll_);
 		
 		accountsButtons_ = new JPanel();
@@ -123,6 +196,11 @@ public class PreferencesWindowAccounts extends JPanel implements ActionListener 
 			//remove from accounts jtable
 			//update accounts file
 			
+		}else if (ac.equalsIgnoreCase(SIGN_IN_)){
+			if (arg0.getSource() instanceof Component){
+				ConnectionStrategy cs = ((AccountsRightClickMenu)((JMenuItem)arg0.getSource()).getParent()).getClicked();
+				connectionManager_.loadConnection(cs.getProtocol(), cs.getHandle(), "");
+			}
 		}
 	}
 	
