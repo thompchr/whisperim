@@ -48,9 +48,9 @@ import org.whisperim.models.ActiveAccountModel;
 import org.whisperim.renderers.ActiveAccountRenderer;
 
 public class PreferencesWindowAccounts extends JPanel implements ActionListener {
-	
+
 	private static final long serialVersionUID = -8510819567207609301L;
-	
+
 	private ConnectionManager connectionManager_;
 	private ActiveAccountModel aam_;
 
@@ -60,21 +60,21 @@ public class PreferencesWindowAccounts extends JPanel implements ActionListener 
 	private static final String EDIT_ = "Edit";
 	private static final String SIGN_IN_ = "Sign in";
 	private static final String SIGN_OUT_ = "Sign out";
-	
+
 	private JTable accounts_;
 	private JScrollPane accountsScroll_;
 	private JPanel accountsButtons_;
 	private JButton addAccountButton_;
 	//private JButton removeAccountButton_;
 
-	
+
 	PreferencesWindowAccounts(ConnectionManager connectionManager) {
 		connectionManager_ = connectionManager;
-		
-		
+
+
 		setBackground(Color.white);
 		//this.setLayout(new SpringLayout());
-		
+
 		aam_ = new ActiveAccountModel();
 		for(Entry<String, ConnectionStrategy> entry: connectionManager_.getStrategies().entrySet()){
 			aam_.add(entry.getValue());
@@ -86,9 +86,9 @@ public class PreferencesWindowAccounts extends JPanel implements ActionListener 
 				}
 
 			}
-			
+
 		});
-		
+
 		accounts_ = new JTable(aam_);
 		accounts_.setBackground(Color.white);
 		//accounts_.setBorder(null);
@@ -98,92 +98,95 @@ public class PreferencesWindowAccounts extends JPanel implements ActionListener 
 		accounts_.setPreferredSize(new Dimension(350, 400));
 		accounts_.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		accounts_.setRowHeight(50);
-		
+
 		accounts_.addMouseListener(new MouseAdapter(){
 			@Override
 			public void mousePressed(MouseEvent e){
-				
-				final JMenuItem changeState = new JMenuItem();
-				final JMenuItem edit = new JMenuItem();
-				final JMenuItem remove = new JMenuItem();
-				
-				Point p = e.getPoint();
-				
-				final ConnectionStrategy cs = (ConnectionStrategy) aam_.getValueAt(accounts_.rowAtPoint(p),0);
-				AccountsRightClickMenu menu = new AccountsRightClickMenu(cs);
-				if (cs.getStatus() == ConnectionStrategy.ACTIVE){
-					changeState.setText(SIGN_OUT_);
-					changeState.setActionCommand(SIGN_OUT_);
-				}else{
-					changeState.setText(SIGN_IN_);
-					changeState.setActionCommand(SIGN_IN_);
-				}
-				
-				
-				
-				edit.setText(EDIT_);
-				edit.setActionCommand(EDIT_);
-				
-				remove.setText(REMOVE_ACCOUNT_);
-				remove.setActionCommand(REMOVE_ACCOUNT_);
-				
-				menu.add(changeState);
-				menu.add(edit);
-				menu.add(remove);
-				
-				changeState.addMouseListener(new MouseAdapter(){
-					@Override
-					public void mousePressed(MouseEvent e){
-						if (changeState.getActionCommand().equalsIgnoreCase(SIGN_OUT_)){
-							connectionManager_.signOff(cs.getHandle(), cs.getProtocol());
+				if (e.getButton() == MouseEvent.BUTTON3){
+					//right click
+					final JMenuItem changeState = new JMenuItem();
+					final JMenuItem edit = new JMenuItem();
+					final JMenuItem remove = new JMenuItem();
+
+					Point p = e.getPoint();
+
+					final ConnectionStrategy cs = (ConnectionStrategy) aam_.getValueAt(accounts_.rowAtPoint(p),0);
+					AccountsRightClickMenu menu = new AccountsRightClickMenu(cs);
+					if (cs.getStatus() == ConnectionStrategy.ACTIVE){
+						changeState.setText(SIGN_OUT_);
+						changeState.setActionCommand(SIGN_OUT_);
+					}else{
+						changeState.setText(SIGN_IN_);
+						changeState.setActionCommand(SIGN_IN_);
+					}
+
+
+
+					edit.setText(EDIT_);
+					edit.setActionCommand(EDIT_);
+
+					remove.setText(REMOVE_ACCOUNT_);
+					remove.setActionCommand(REMOVE_ACCOUNT_);
+
+					menu.add(changeState);
+					menu.add(edit);
+					menu.add(remove);
+
+					changeState.addMouseListener(new MouseAdapter(){
+						@Override
+						public void mousePressed(MouseEvent e){
+							if (changeState.getActionCommand().equalsIgnoreCase(SIGN_OUT_)){
+								connectionManager_.signOff(cs.getHandle(), cs.getProtocol());
+							}
 						}
-					}
-				});
-				
-				remove.addMouseListener(new MouseAdapter(){
-					@Override
-					public void mousePressed(MouseEvent e){
-						
-					}
-				});
-				
-				edit.addMouseListener(new MouseAdapter(){
-					@Override
-					public void mousePressed(MouseEvent e){
-						
-					}
-				});
-				
-				menu.show(accounts_, e.getX(), e.getY());
-				
-				
-				
-				
+					});
+
+					remove.addMouseListener(new MouseAdapter(){
+						@Override
+						public void mousePressed(MouseEvent e){
+
+						}
+					});
+
+					edit.addMouseListener(new MouseAdapter(){
+						@Override
+						public void mousePressed(MouseEvent e){
+
+						}
+					});
+
+					menu.show(accounts_, e.getX(), e.getY());
+
+
+
+
+				}
 			}
+
 		});
-		
+
 		accountsScroll_ = new JScrollPane(accounts_);
-		
+
 		add(accountsScroll_);
-		
+
 		accountsButtons_ = new JPanel();
 		accountsButtons_.setBackground(Color.white);
 		add(accountsButtons_);
-		
+
 		addAccountButton_ = new JButton(ADD_ACCOUNT_);
 		addAccountButton_.addActionListener(this);
 		accountsButtons_.add(addAccountButton_);
-		
+
 		/*
 		removeAccountButton_ = new JButton(REMOVE_ACCOUNT_);
 		removeAccountButton_.addActionListener(this);
 		accountsButtons_.add(removeAccountButton_);
-		*/
+		 */
 	}
 
 	public void actionPerformed(ActionEvent arg0) {
 		String ac = arg0.getActionCommand();
-		
+
 		//if user hits "Add Account" start the new account window
 		if (ac.equalsIgnoreCase(ADD_ACCOUNT_)) {
 			EventQueue.invokeLater(new Runnable() {
@@ -196,7 +199,7 @@ public class PreferencesWindowAccounts extends JPanel implements ActionListener 
 		else if (ac.equalsIgnoreCase(REMOVE_ACCOUNT_)) {
 			//remove from accounts jtable
 			//update accounts file
-			
+
 		}else if (ac.equalsIgnoreCase(SIGN_IN_)){
 			if (arg0.getSource() instanceof Component){
 				ConnectionStrategy cs = ((AccountsRightClickMenu)((JMenuItem)arg0.getSource()).getParent()).getClicked();
@@ -204,5 +207,5 @@ public class PreferencesWindowAccounts extends JPanel implements ActionListener 
 			}
 		}
 	}
-	
+
 }
