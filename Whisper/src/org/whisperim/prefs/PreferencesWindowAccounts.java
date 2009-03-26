@@ -65,7 +65,7 @@ public class PreferencesWindowAccounts extends JPanel implements ActionListener 
 	private JScrollPane accountsScroll_;
 	private JPanel accountsButtons_;
 	private JButton addAccountButton_;
-	private JButton removeAccountButton_;
+	//private JButton removeAccountButton_;
 
 	
 	PreferencesWindowAccounts(ConnectionManager connectionManager) {
@@ -174,10 +174,11 @@ public class PreferencesWindowAccounts extends JPanel implements ActionListener 
 		addAccountButton_.addActionListener(this);
 		accountsButtons_.add(addAccountButton_);
 		
+		/*
 		removeAccountButton_ = new JButton(REMOVE_ACCOUNT_);
 		removeAccountButton_.addActionListener(this);
 		accountsButtons_.add(removeAccountButton_);
-			
+		*/
 	}
 
 	public void actionPerformed(ActionEvent arg0) {

@@ -51,10 +51,13 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
@@ -125,6 +128,9 @@ public class WhisperClient extends JFrame implements ActionListener {
 	private JMenuItem preferences_;
 	private JMenuItem accounts_;
 	private JCheckBoxMenuItem sound_;
+	private JPopupMenu popupMenu_;
+	private JMenuItem popupNewIM_;
+	private JMenuItem popupNewWindow_;
 	private boolean soundsEnabled_;
 	private JMenuItem quit_;
 	private boolean alwaysNewWindow_ = false;
@@ -204,7 +210,51 @@ public class WhisperClient extends JFrame implements ActionListener {
 		//reset idle timer
 		resetTimer(5000);		
 		
+		//set themes
+		try {
+			if(Preferences.getInstance().getLookAndFeel().equalsIgnoreCase(Preferences.SYSTEM_)) {
+				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+				System.out.println("use native laf");
+				//UIManager.setLookAndFeel(Preferences.SYSTEM_); 
+			}
+			else {
+				UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+				System.out.println("don't use native laf");
+				//UIManager.setLookAndFeel(Preferences.METAL_); 
+			}
+		}
+		catch (ClassNotFoundException e) {
+			//e.printStackTrace();
+		} catch (InstantiationException e) {
+			//e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			//e.printStackTrace();
+		} catch (UnsupportedLookAndFeelException e) {
+			//e.printStackTrace();
+		}
+		
+		Preferences.getInstance().getListeners().add(new PrefListener() {
+			private boolean locked = false;
+			@Override
+			public void prefChanged(String name, Object o) {
+				if(Preferences.THEME_.equals(name) && !locked){
+					locked = true;
+					try {
+						if(Preferences.getInstance().getLookAndFeel().equals(Preferences.METAL_))
+							UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+						else
+							UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+					}
+					catch (Exception e) {
+						//do nothing
+					}
+					packAndRepaint();
+					locked = false;
+				}
+			}
+		});
 		//set native look and feel
+		/*
 		try  {  
 			//Tell the UIManager to use the platform look and feel  
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());  
@@ -212,6 +262,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 		catch(Exception e) {  
 			//Do nothing  
 		} 
+		*/
 		
 		createMenu();	
 		createBuddyList();
@@ -281,27 +332,46 @@ public class WhisperClient extends JFrame implements ActionListener {
 				BuddiesComponentShown(evt);
 			}
 		});
-
+		
+		popupMenu_ = new JPopupMenu();
+		
+		popupNewIM_ = new JMenuItem("New IM");
+		popupNewIM_.addActionListener(this);
+		popupMenu_.add(popupNewIM_);
+		
+		popupNewWindow_ = new JMenuItem("New Window");
+		popupNewWindow_.addActionListener(this);
+		popupMenu_.add(popupNewWindow_);
+		
+		buddyList_.add(popupMenu_);
+		
 		buddyList_.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent mouseEvent) {
 				JList Buddies = (JList) mouseEvent.getSource();
 				
-				if (mouseEvent.getClickCount() == 1)
-					newWindow_.setEnabled(true);
-				
-				
-				if (mouseEvent.getClickCount() == 2) {
+				if(mouseEvent.isPopupTrigger()) {
 					int index = Buddies.locationToIndex(mouseEvent.getPoint());
 					if (index >= 0) {
-						final Buddy selectedBuddy_ = (Buddy) Buddies.getModel().getElementAt(index);
-						//need to start new chat window
+						popupMenu_.show(Buddies, mouseEvent.getX(), mouseEvent.getY());
+					}
+				}
+				else {
+					if (mouseEvent.getClickCount() == 1)
+						newWindow_.setEnabled(true);
+					
+					if (mouseEvent.getClickCount() == 2) {
+						int index = Buddies.locationToIndex(mouseEvent.getPoint());
+						if (index >= 0) {
+							final Buddy selectedBuddy_ = (Buddy) Buddies.getModel().getElementAt(index);
+							//need to start new chat window
 
-						EventQueue.invokeLater(new Runnable() {
-							public void run() {
-								newIMWindow(selectedBuddy_,alwaysNewWindow_);
-							}
-						});
+							EventQueue.invokeLater(new Runnable() {
+								public void run() {
+									newIMWindow(selectedBuddy_,alwaysNewWindow_);
+								}
+							});
+						}
 					}
 				}
 			}
@@ -323,6 +393,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 		//first menu\\
 		//Whisper (w)
 			//New IM (n)
+			//New IM in New Window
 			//Set Away 
 			//Accounts (a)
 			//Plugins
@@ -770,23 +841,18 @@ public class WhisperClient extends JFrame implements ActionListener {
 		
 		//Set / Unset Status
 		if (actionCommand.equals(setStatus_.getActionCommand())){			
-			if(setStatus_.isSelected())
-			{
+			if(setStatus_.isSelected())	{
 				String username = JOptionPane.showInputDialog(null, "Please enter your Last.FM username:");
-				
-				if(username != "")
-				{
-					if(setStatus_.isSelected())
-					{
+				if(username != "") {
+					if(setStatus_.isSelected())	{
 						//set away status
 						manager_.setStatusMessage(new LastFM(username).getLastSong());
-					}
+					} 
 					else
 						manager_.setStatusMessage("");
 				}
 			}
-			else
-			{
+			else {
 				manager_.setStatusMessage("");
 				setStatus_.setSelected(false);
 			}
@@ -845,6 +911,32 @@ public class WhisperClient extends JFrame implements ActionListener {
 				});
 				
 			}
+		}
+		
+		if(actionCommand.equals(popupNewIM_.getActionCommand())) {
+			JList Buddies = (JList) e.getSource();
+			int index = buddyList_.getSelectedIndex();
+			final Buddy selectedBuddy_ = (Buddy) Buddies.getModel().getElementAt(index);
+			//need to start new chat window
+
+			EventQueue.invokeLater(new Runnable() {
+				public void run() {
+					newIMWindow(selectedBuddy_,alwaysNewWindow_);
+				}
+			});
+		}
+		
+		if(actionCommand.equals(popupNewWindow_.getActionCommand())) {
+			JList Buddies = (JList) e.getSource();
+			int index = buddyList_.getSelectedIndex();
+			final Buddy selectedBuddy_ = (Buddy) Buddies.getModel().getElementAt(index);
+			//need to start new chat window
+
+			EventQueue.invokeLater(new Runnable() {
+				public void run() {
+					newIMWindow(selectedBuddy_,true);
+				}
+			});
 		}
 	}
 	
@@ -918,5 +1010,11 @@ public class WhisperClient extends JFrame implements ActionListener {
 	
 	public static ConnectionManager getConnectionManager() {
 		return manager_;
+	}
+	
+	private void packAndRepaint() {
+		SwingUtilities.updateComponentTreeUI(this);
+		this.repaint();
+		this.pack();
 	}
 }

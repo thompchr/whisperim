@@ -30,12 +30,16 @@ import javax.swing.JMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.SpringLayout;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
 
 import org.whisperim.models.ActiveAccountModel;
+import org.whisperim.prefs.PrefListener;
+import org.whisperim.prefs.Preferences;
 import org.whisperim.renderers.ActiveAccountRenderer;
 
 public class AccountManagementWindow extends JFrame implements ActionListener {
@@ -124,11 +128,49 @@ public class AccountManagementWindow extends JFrame implements ActionListener {
 		setJMenuBar(menuBar_);
 		
 		
-		try{
-			UIManager.setLookAndFeel(LOOK_AND_FEEL_);
-		}catch(Exception e){
-			e.printStackTrace();
+		//set themes
+		try {
+			if(Preferences.getInstance().getLookAndFeel().equalsIgnoreCase(Preferences.SYSTEM_)) {
+				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+				System.out.println("use native laf");
+				//UIManager.setLookAndFeel(Preferences.SYSTEM_); 
+			}
+			else {
+				UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+				System.out.println("don't use native laf");
+				//UIManager.setLookAndFeel(Preferences.METAL_); 
+			}
 		}
+		catch (ClassNotFoundException e) {
+			//e.printStackTrace();
+		} catch (InstantiationException e) {
+			//e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			//e.printStackTrace();
+		} catch (UnsupportedLookAndFeelException e) {
+			//e.printStackTrace();
+		}
+		
+		Preferences.getInstance().getListeners().add(new PrefListener() {
+			private boolean locked = false;
+			@Override
+			public void prefChanged(String name, Object o) {
+				if(Preferences.THEME_.equals(name) && !locked){
+					locked = true;
+					try {
+						if(Preferences.getInstance().getLookAndFeel().equals(Preferences.METAL_))
+							UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+						else
+							UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+					}
+					catch (Exception e) {
+						//do nothing
+					}
+					packAndRepaint();
+					locked = false;
+				}
+			}
+		});
 		
 		SpringLayout sl = new SpringLayout();
 		Container cp = getContentPane();
@@ -174,6 +216,12 @@ public class AccountManagementWindow extends JFrame implements ActionListener {
 			});
 		}
 
+	}
+	
+	private void packAndRepaint() {
+		SwingUtilities.updateComponentTreeUI(this);
+		this.repaint();
+		this.pack();
 	}
 
 }

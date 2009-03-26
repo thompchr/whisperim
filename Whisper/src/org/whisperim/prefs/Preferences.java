@@ -45,31 +45,38 @@ public class Preferences {
 	/**
 	 * General Preferences
 	 */
+	//look and feel
+	//acceptable strings 'Metal' 'System'
+	public static final String THEME_ = "Theme";
+	public static final String METAL_ = "Metal"; //UIManager.getCrossPlatformLookAndFeelClassName();
+	public static final String SYSTEM_ = "Native"; //UIManager.getSystemLookAndFeelClassName();
+	private String lookAndFeel_ = SYSTEM_;
+	
 	private Image whisperIconSmall_ = Toolkit.getDefaultToolkit().getImage("..//images//WhisperIMLogo-Small.png");
 	private Image whisperIconBig_ = Toolkit.getDefaultToolkit().getImage("..//images//WhisperIMLogo-Big.png");
 
 	/**
 	 * Logging Preferences
 	 */
-	private boolean loggingEnabled_;
+	private boolean loggingEnabled_ = true;
 	public static final String LOGGING_ = "Logging";
 	
 	/**
 	 * Security Preferences
 	 */
-	private boolean encryptionEnabled_;
+	private boolean encryptionEnabled_ = true;
 	public static final String ENCRYPTION_ = "Encryption";
 	
 	/**
 	 * Sound Preferences
 	 */
-	private boolean soundsEnabled_;
+	private boolean soundsEnabled_ = true;
 	public static final String SOUNDS_ = "Sounds";
 	
 	/**
 	 * Whisperbot Preferences
 	 */
-	private boolean whisperBotEnabled_;
+	private boolean whisperBotEnabled_ = false;
 	public static final String WHISPERBOT_ = "WhisperBot";
 	
 	
@@ -99,6 +106,25 @@ public class Preferences {
 	/**
 	 * General
 	 */
+	public String getLookAndFeel() {
+		return lookAndFeel_;
+	}
+	
+	public void setLookAndFeel(String laf) {
+		if(laf.equalsIgnoreCase(METAL_)) {
+			lookAndFeel_ = laf;
+		}
+		else if(laf.equalsIgnoreCase(SYSTEM_)) {
+			lookAndFeel_ = laf;
+		}
+		else {
+			//look and feel not supported
+		}
+		for(PrefListener listener:listeners_){
+			listener.prefChanged(THEME_, lookAndFeel_);
+		}
+	}
+	
 	public Image getWhisperIconBig() {
 		return whisperIconBig_;
 	}
@@ -178,7 +204,7 @@ public class Preferences {
 		listeners_ = listeners;
 	}
 	
-	//There really should be a an add/remove method for the listeners that takesa  listener
+	//There really should be a an add/remove method for the listeners that takes a listener
 
 	
 }

@@ -34,8 +34,11 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
+import org.whisperim.prefs.PrefListener;
 import org.whisperim.prefs.Preferences;
 import org.whisperim.renderers.ProtocolRenderer;
 
@@ -85,15 +88,49 @@ public class WhisperNewIMWindow extends JFrame implements ActionListener{
 			}
 		});
 			
-		//set native look and feel
-		try  {  
-			//Tell the UIManager to use the platform look and feel  
-			//This should be added to a global prefs registry
-			UIManager.setLookAndFeel(LOOK_AND_FEEL_);  
-		}  
-		catch(Exception e) {  
-			//Do nothing  
+		//set themes
+		try {
+			if(Preferences.getInstance().getLookAndFeel().equalsIgnoreCase(Preferences.SYSTEM_)) {
+				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+				System.out.println("use native laf");
+				//UIManager.setLookAndFeel(Preferences.SYSTEM_); 
+			}
+			else {
+				UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+				System.out.println("don't use native laf");
+				//UIManager.setLookAndFeel(Preferences.METAL_); 
+			}
 		}
+		catch (ClassNotFoundException e) {
+			//e.printStackTrace();
+		} catch (InstantiationException e) {
+			//e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			//e.printStackTrace();
+		} catch (UnsupportedLookAndFeelException e) {
+			//e.printStackTrace();
+		}
+		
+		Preferences.getInstance().getListeners().add(new PrefListener() {
+			private boolean locked = false;
+			@Override
+			public void prefChanged(String name, Object o) {
+				if(Preferences.THEME_.equals(name) && !locked){
+					locked = true;
+					try {
+						if(Preferences.getInstance().getLookAndFeel().equals(Preferences.METAL_))
+							UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+						else
+							UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+					}
+					catch (Exception e) {
+						//do nothing
+					}
+					packAndRepaint();
+					locked = false;
+				}
+			}
+		});
 		
 		SpringLayout sl = new SpringLayout();
 		Container cp = getContentPane();
@@ -209,6 +246,12 @@ public class WhisperNewIMWindow extends JFrame implements ActionListener{
 			dispose();
 		}
 		
+	}
+	
+	private void packAndRepaint() {
+		SwingUtilities.updateComponentTreeUI(this);
+		this.repaint();
+		this.pack();
 	}
 	
 	

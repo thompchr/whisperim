@@ -38,7 +38,7 @@ public class PreferencesWindowSounds extends JPanel implements ItemListener {
 		soundsCheckBox_ = new JCheckBox("Sounds Enabled");
 		soundsCheckBox_.setBackground(Color.white);
 		soundsCheckBox_.setSelected(soundsEnabled_);
-		soundsCheckBox_.setMnemonic(KeyEvent.VK_L);
+		soundsCheckBox_.setMnemonic(KeyEvent.VK_S);
 		soundsCheckBox_.addItemListener(this);
 		add(soundsCheckBox_);
 		

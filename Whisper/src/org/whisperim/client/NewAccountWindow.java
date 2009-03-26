@@ -36,6 +36,9 @@ import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -44,6 +47,8 @@ import org.apache.xml.serialize.XMLSerializer;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.whisperim.models.ActiveAccountModel;
+import org.whisperim.prefs.PrefListener;
+import org.whisperim.prefs.Preferences;
 import org.whisperim.renderers.ConnectionRenderer;
 import org.xml.sax.SAXException;
 
@@ -318,6 +323,52 @@ public class NewAccountWindow extends JFrame implements ActionListener {
 		savePwBox_.addActionListener(this);
 		autoSigninBox_.addActionListener(this);
 		
+		
+		//set themes
+		try {
+			if(Preferences.getInstance().getLookAndFeel().equalsIgnoreCase(Preferences.SYSTEM_)) {
+				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+				System.out.println("use native laf");
+				//UIManager.setLookAndFeel(Preferences.SYSTEM_); 
+			}
+			else {
+				UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+				System.out.println("don't use native laf");
+				//UIManager.setLookAndFeel(Preferences.METAL_); 
+			}
+		}
+		catch (ClassNotFoundException e) {
+			//e.printStackTrace();
+		} catch (InstantiationException e) {
+			//e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			//e.printStackTrace();
+		} catch (UnsupportedLookAndFeelException e) {
+			//e.printStackTrace();
+		}
+		
+		Preferences.getInstance().getListeners().add(new PrefListener() {
+			private boolean locked = false;
+			@Override
+			public void prefChanged(String name, Object o) {
+				if(Preferences.THEME_.equals(name) && !locked){
+					locked = true;
+					try {
+						if(Preferences.getInstance().getLookAndFeel().equals(Preferences.METAL_))
+							UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+						else
+							UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+					}
+					catch (Exception e) {
+						//do nothing
+					}
+					packAndRepaint();
+					locked = false;
+				}
+			}
+		});
+		
+		
 		pack();
 		setVisible(true);
 	}
@@ -405,6 +456,12 @@ public class NewAccountWindow extends JFrame implements ActionListener {
 			}
 		}
 
+	}
+	
+	private void packAndRepaint() {
+		SwingUtilities.updateComponentTreeUI(this);
+		this.repaint();
+		this.pack();
 	}
 
 }

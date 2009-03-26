@@ -38,7 +38,9 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -66,7 +68,9 @@ public class PreferencesWindow extends JFrame implements ListSelectionListener,A
 	public static final String SOUNDS_ = "Sounds";
 	public static final String WHISPERBOT_ = "Whisper Bot";
 	public static final String ABOUT_ = "About";
-	private static final String categoriesList_[] =  {GENERAL_, ACCOUNTS_, LOGGING_, SECURITY_, PLUGINS_, SOUNDS_, WHISPERBOT_, ABOUT_};
+	private static final String categoriesList_[] =  {GENERAL_, ACCOUNTS_, LOGGING_, SECURITY_, SOUNDS_, WHISPERBOT_, ABOUT_};
+	//old cat list contains plugins
+	//private static final String categoriesList_[] =  {GENERAL_, ACCOUNTS_, LOGGING_, SECURITY_, PLUGINS_, SOUNDS_, WHISPERBOT_, ABOUT_};
 
 	private Dimension frameSize_ = new Dimension(600,550);
 	private JList categories_;
@@ -78,7 +82,7 @@ public class PreferencesWindow extends JFrame implements ListSelectionListener,A
 	
 	private JPanel loggingPrefs_;
 	private JPanel securityPrefs_;
-	private JPanel pluginsPrefs_;
+	//private JPanel pluginsPrefs_;
 	private JPanel soundsPrefs_;
 	private JPanel whisperbotPrefs_;
 	private JPanel aboutInfo_;
@@ -97,15 +101,59 @@ public class PreferencesWindow extends JFrame implements ListSelectionListener,A
 
 	public PreferencesWindow() {
 
-		//set from preferences and update dyanmically
+		//set themes
+		try {
+			if(Preferences.getInstance().getLookAndFeel().equalsIgnoreCase(Preferences.SYSTEM_)) {
+				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+				System.out.println("use native laf");
+				//UIManager.setLookAndFeel(Preferences.SYSTEM_); 
+			}
+			else {
+				UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+				System.out.println("don't use native laf");
+				//UIManager.setLookAndFeel(Preferences.METAL_); 
+			}
+		}
+		catch (ClassNotFoundException e) {
+			//e.printStackTrace();
+		} catch (InstantiationException e) {
+			//e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			//e.printStackTrace();
+		} catch (UnsupportedLookAndFeelException e) {
+			//e.printStackTrace();
+		}
+		
+		Preferences.getInstance().getListeners().add(new PrefListener() {
+			private boolean locked = false;
+			@Override
+			public void prefChanged(String name, Object o) {
+				if(Preferences.THEME_.equals(name) && !locked){
+					locked = true;
+					try {
+						if(Preferences.getInstance().getLookAndFeel().equals(Preferences.METAL_))
+							UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+						else
+							UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+					}
+					catch (Exception e) {
+						//do nothing
+					}
+					packAndRepaint();
+					locked = false;
+				}
+			}
+		});
 		//set native look and feel
+		/*
 		try  {  
 			//Tell the UIManager to use the platform look and feel  
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());  
 		}  
 		catch(Exception e) {  
 			//Do nothing  
-		}
+		} 
+		*/
 		
 		this.setIconImage(whisperIcon_);
 		this.setTitle(WHISPER_PREFERENCES_);
@@ -149,7 +197,7 @@ public class PreferencesWindow extends JFrame implements ListSelectionListener,A
 		accountPrefs_ = new PreferencesWindowAccounts(connectionManager_);
 		loggingPrefs_ = new PreferencesWindowLogging();
 		securityPrefs_ = new PreferencesWindowSecurity();
-		pluginsPrefs_ = new PreferencesWindowPlugins();
+		//pluginsPrefs_ = new PreferencesWindowPlugins();
 		soundsPrefs_ = new PreferencesWindowSounds();
 		whisperbotPrefs_ = new PreferencesWindowWhisperBot();
 		aboutInfo_ = new PreferencesWindowAbout();
@@ -162,7 +210,7 @@ public class PreferencesWindow extends JFrame implements ListSelectionListener,A
 		content_.add(accountPrefs_, ACCOUNTS_);
 		content_.add(loggingPrefs_, LOGGING_);
 		content_.add(securityPrefs_, SECURITY_);
-		content_.add(pluginsPrefs_, PLUGINS_);
+		//content_.add(pluginsPrefs_, PLUGINS_);
 		content_.add(soundsPrefs_, SOUNDS_);
 		content_.add(whisperbotPrefs_, WHISPERBOT_);
 		content_.add(aboutInfo_, ABOUT_);
@@ -258,7 +306,6 @@ public class PreferencesWindow extends JFrame implements ListSelectionListener,A
 		//save all prefs
 		//call update
 		//dispose window
-		instance = null;
 		this.dispose();
 	}
 
@@ -304,4 +351,10 @@ public class PreferencesWindow extends JFrame implements ListSelectionListener,A
 		
 	}
 
+	private void packAndRepaint() {
+		SwingUtilities.updateComponentTreeUI(this);
+		this.repaint();
+		this.pack();
+	}
+	
 }
