@@ -390,7 +390,6 @@ public class WhisperIM extends JFrame implements ActionListener, WindowListener{
 	private void packAndRepaint() {
 		SwingUtilities.updateComponentTreeUI(this);
 		this.repaint();
-		this.pack();
 	}
     
 }

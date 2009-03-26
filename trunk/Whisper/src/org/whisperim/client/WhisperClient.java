@@ -191,8 +191,13 @@ public class WhisperClient extends JFrame implements ActionListener {
 		//start sounds
 		Sound sound = new Sound();
 		getClientListeners().add(sound);
+		
+		
+		//sounds class doesn't implement threads, so calling methods have to
+		//fix this
 		sound.playSound(this, "Open.wav");
-	    Preferences.getInstance().getListeners().add(new PrefListener() {
+		
+		Preferences.getInstance().getListeners().add(new PrefListener() {
 			private boolean locked = false;
 			@Override
 			public void prefChanged(String name, Object o) {
@@ -1037,6 +1042,5 @@ public class WhisperClient extends JFrame implements ActionListener {
 	private void packAndRepaint() {
 		SwingUtilities.updateComponentTreeUI(this);
 		this.repaint();
-		this.pack();
 	}
 }
