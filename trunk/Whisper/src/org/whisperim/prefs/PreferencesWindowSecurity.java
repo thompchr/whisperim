@@ -22,19 +22,15 @@ package org.whisperim.prefs;
 
 import java.awt.Color;
 
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class PreferencesWindowSecurity extends JPanel {
 
 	private static final long serialVersionUID = 5359436260113518838L;
-	private JLabel label_;
 	
 	PreferencesWindowSecurity() {
 		
-		setBackground(Color.white);
-		label_ = new JLabel("security");
-		add(label_);	
+		setBackground(Color.white);	
 		
 	}
 	

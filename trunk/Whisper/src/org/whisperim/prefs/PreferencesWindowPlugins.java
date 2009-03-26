@@ -21,7 +21,6 @@ package org.whisperim.prefs;
 
 import java.awt.Color;
 
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class PreferencesWindowPlugins extends JPanel {
@@ -29,7 +28,6 @@ public class PreferencesWindowPlugins extends JPanel {
 	PreferencesWindowPlugins() {
 		
 		setBackground(Color.white);
-		add(new JLabel("plugins go here"));
 		
 	}
 	

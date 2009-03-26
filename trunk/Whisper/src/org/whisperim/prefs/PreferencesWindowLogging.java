@@ -38,16 +38,20 @@ public class PreferencesWindowLogging extends JPanel implements ItemListener {
 
 	private static final long serialVersionUID = 6555858513398336341L;
 	
-	private boolean loggingEnabled_ = Preferences.getInstance().getLoggingEnabled();
+	private boolean loggingEnabled_;
 	private JCheckBox loggingCheckBox_;
 	
 	PreferencesWindowLogging() {
 		
-		setBackground(Color.white);
+		this.setBackground(Color.white);
 		
 		loggingCheckBox_ = new JCheckBox("Logging Enabled");
 		loggingCheckBox_.setBackground(Color.white);
-		loggingCheckBox_.setSelected(loggingEnabled_);
+		loggingCheckBox_.setSelected(Preferences.getInstance().getLoggingEnabled());
+		loggingCheckBox_.setMnemonic(KeyEvent.VK_L);
+		loggingCheckBox_.addItemListener(this);
+		add(loggingCheckBox_);
+		
 		Preferences.getInstance().getListeners().add(new PrefListener() {
 			private boolean locked = false;
 			@Override
@@ -61,18 +65,14 @@ public class PreferencesWindowLogging extends JPanel implements ItemListener {
 				}
 			}
 		});
-		loggingCheckBox_.setMnemonic(KeyEvent.VK_L);
-		loggingCheckBox_.addItemListener(this);
-		add(loggingCheckBox_);
 		
 	}
 
 	public void itemStateChanged(ItemEvent e) {
 		Object source = e.getItem();
 		if(source == loggingCheckBox_) {
-			loggingEnabled_ = loggingCheckBox_.isSelected();
-			Preferences.getInstance().setLoggingEnabled(loggingEnabled_);
-			System.out.println("logging " + ((loggingEnabled_)?"enabled":"not enabled").toString());
+			Preferences.getInstance().setLoggingEnabled(!Preferences.getInstance().getLoggingEnabled());
+			System.out.println("logging " + ((Preferences.getInstance().getLoggingEnabled())?"enabled":"not enabled").toString());
 			}
 	}
 	

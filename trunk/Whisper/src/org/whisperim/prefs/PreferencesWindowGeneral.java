@@ -24,21 +24,70 @@
 package org.whisperim.prefs;
 
 import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 
-import javax.swing.JButton;
+import javax.swing.ButtonGroup;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 
-public class PreferencesWindowGeneral extends JPanel {
+public class PreferencesWindowGeneral extends JPanel implements ActionListener {
 	
 	private static final long serialVersionUID = 1843003640261951662L;
-	private JButton label_;
+	private static final String WHISPER_THEME_ = "Whisper Theme";
+	private JLabel whisperTheme_;
+	private JRadioButton metal_;
+	private JRadioButton system_;
+	private ButtonGroup theme_;
 	
 	PreferencesWindowGeneral() {
 		
 		setBackground(Color.white);
-		label_ = new JButton("prefs shit");
-		add(label_);	
 		
+		whisperTheme_ = new JLabel(WHISPER_THEME_);
+		add(whisperTheme_);
+		
+		metal_ = new JRadioButton(Preferences.METAL_);
+		metal_.setMnemonic(KeyEvent.VK_M);
+		metal_.setBackground(Color.white);
+		metal_.setActionCommand(Preferences.METAL_);
+		metal_.addActionListener(this);
+		
+		system_ = new JRadioButton(Preferences.SYSTEM_);
+		system_.setMnemonic(KeyEvent.VK_S);
+		system_.setBackground(Color.white);
+		system_.setActionCommand(Preferences.SYSTEM_);
+		system_.addActionListener(this);
+		
+		if(Preferences.METAL_ == Preferences.getInstance().getLookAndFeel()) {
+			metal_.setSelected(true);
+		}
+		else {
+			system_.setSelected(true);
+		}
+		
+		theme_ = new ButtonGroup();
+		theme_.add(metal_);
+		theme_.add(system_);
+		
+		add(metal_);
+		add(system_);
+		
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		Object source = e.getSource();
+		if(source == metal_) {
+			Preferences.getInstance().setLookAndFeel(Preferences.METAL_);
+		}
+		else if(source == system_) {
+			Preferences.getInstance().setLookAndFeel(Preferences.SYSTEM_);
+		}
+		else {
+		}
 	}
 	
 }
