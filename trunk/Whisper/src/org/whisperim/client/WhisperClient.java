@@ -70,6 +70,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.whisperim.SocialSiteDump.SocialSiteManager;
 import org.whisperim.aim.AIMStrategy;
 import org.whisperim.lastfm.LastFM;
 import org.whisperim.models.BuddyListModel;
@@ -132,9 +133,11 @@ public class WhisperClient extends JFrame implements ActionListener {
 	private JMenuItem popupNewIM_;
 	private JMenuItem popupNewWindow_;
 	private boolean soundsEnabled_;
+	private JMenuItem socialSites_;
 	private JMenuItem quit_;
 	private boolean alwaysNewWindow_ = false;
 	private JMenuItem newWindow_;
+	
 	
 	private WhisperSystemTray tray_;
 
@@ -149,6 +152,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 	private static final String ACCOUNTS_ = "Accounts";
 	private static final String PREFERENCES_ = "Preferences";
 	private static final String SOUND_ = "Sound";
+	private static final String SOCIAL_SITE_MANAGER_ = "Social Site Notifications";
 	private static final String QUIT_ = "Quit";
 
 	
@@ -420,6 +424,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 			//Plugins
 			//Preferences (p)
 			//Sound
+			//Social Site Manager
 			//Quit (q)
 		whisperMenu_ = new JMenu(WHISPER_);
 		whisperMenu_.setMnemonic(KeyEvent.VK_W);
@@ -459,6 +464,10 @@ public class WhisperClient extends JFrame implements ActionListener {
 		sound_.setActionCommand(SOUND_);
 		sound_.addActionListener(this);
 		whisperMenu_.add(sound_);
+		
+		socialSites_ = new JMenuItem(SOCIAL_SITE_MANAGER_);
+		socialSites_.addActionListener(this);
+		whisperMenu_.add(socialSites_);
 		
 		quit_ = new JMenuItem(QUIT_);
 		quit_.setMnemonic(KeyEvent.VK_Q);
@@ -933,9 +942,9 @@ public class WhisperClient extends JFrame implements ActionListener {
 					public void run() {
 						newIMWindow(selectedBuddy_,true);
 					}
-				});
-				
+				});	
 			}
+			
 		}
 		
 		if(actionCommand.equals(popupNewIM_.getActionCommand())) {
@@ -968,6 +977,12 @@ public class WhisperClient extends JFrame implements ActionListener {
 					}
 				});
 			}
+		}
+		
+		// This launches the social site manager.
+		if(actionCommand.equals(socialSites_.getActionCommand())){
+			SocialSiteManager ssm = new SocialSiteManager();
+			ssm.show();
 		}
 	}
 	
@@ -1016,7 +1031,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 			break;
 		}
 	}
-
+	
 	public List<ClientListener> getClientListeners() {
 		return clientListeners_;
 	}

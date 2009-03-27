@@ -43,6 +43,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import org.whisperim.SocialSiteDump.SocialSiteManager;
 import org.whisperim.prefs.PrefListener;
 import org.whisperim.prefs.Preferences;
 
@@ -76,8 +77,12 @@ public class WhisperIM extends JFrame implements ActionListener, WindowListener{
 	private static final String LOGGING_ ="Logging";
 	private static final String WHISPER_BOT_ = "Whisper Bot";
 	private static final String START_WHITEBOARD_ = "Start Whiteboard";
+	private static final String START_SOCIAL_SITE_DUMP_ = "Start Social Site Notification Service";
+
 	private static final String NEW_TAB_ = "New tab";
+
 	private JCheckBoxMenuItem logging_;
+	private JCheckBoxMenuItem socialSites_;
     
     private WhisperClient myParent_;
     private PrivateKey myKey_;

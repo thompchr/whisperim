@@ -16,12 +16,18 @@
 
 package org.whisperim.security;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+
+import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
 
 public class FileEncryptor {
 	/**
@@ -87,8 +93,8 @@ public class FileEncryptor {
 		 * @param file
 		 * @return file
 		 */
-		/*public String generateCipherFile(File file){
-			File encryptedFile = null;
+		 
+		public void generateCipherFile(File file, String encryptedFileName){
 				try{
 				Cipher aesCipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
 
@@ -103,13 +109,7 @@ public class FileEncryptor {
 				// Change to byte array
 				byte [] byteArray = fileToByteArray(file);
 				
-				// LEAVE OFF HERE ********************************
-				
-				byte [] byteArray = message.getBytes("UTF-8");
-
-				String cipherMessage = new String (Base64.encode(aesCipher.doFinal(byteArray)));
-
-				encryptedMessage = "<key>";
+				byteArray = aesCipher.doFinal(byteArray);
 
 				Cipher rsaCipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
 
@@ -117,21 +117,26 @@ public class FileEncryptor {
 
 				byte [] encryptedKeyBytes = rsaCipher.doFinal(sessionKey.getEncoded());
 
-				String encryptedKeyString = new String (Base64.encode(encryptedKeyBytes));
-
-				encryptedMessage += encryptedKeyString +"</key>" +
-				"<message>" + cipherMessage + "</message>";
+				// new byte array of the encrypted key []'s length and the file []'s length
+				//and put them together
+				byte [] total = new byte [byteArray.length + encryptedKeyBytes.length];
+				
+				// Stick the arrays together into one.
+				System.arraycopy(encryptedKeyBytes, 0, total, 0, encryptedKeyBytes.length);
+				System.arraycopy(byteArray, 0, total, encryptedKeyBytes.length, byteArray.length);
+				
+				// Create output file.
+				String outputName = encryptedFileName + ".txt";
+				
+				BufferedWriter output = new BufferedWriter(new FileWriter(outputName));
+				output.write(total.toString());
+				output.close();
 				
 			}catch(Exception e){
 				e.printStackTrace();
-
 			}
-			
-			// Return Encrypted file.
-			return encryptedMessage;
 		}
 		
-		*/
 		/**
 		 * This function provides the decryption of an entire message.
 		 * It provides the functionality to initially decrypt the session key
@@ -139,31 +144,25 @@ public class FileEncryptor {
 		 * of that decryption to decrypt the body of the message itself.
 		 * @param message
 		 */
-	/*	public void decryptFile(File file){
-
+		public void decryptFile(File file){
+			/*
 			// Shift file to byte array to string.
 			try {
 				byte[] fileBytes = fileToByteArray(file);
+			
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-			String encryptedFile = fileBytes.toString();
 			String outputMessage = null;
 			try {
 
-				String encKey = encryptedFile.substring(5, encryptedFile.indexOf("</key>"));
 				byte [] keyBytes = Base64.decode(encKey.getBytes("UTF-8"));
-
-
-				String encMessage = encryptedFile.substring(encryptedFile.indexOf("</key>") + 15, encryptedFile.indexOf("</message>"));
 
 				byte [] messageBytes = Base64.decode(encMessage.getBytes("UTF-8"));
 
 				Cipher rsaCipherDecrypt = Cipher.getInstance("RSA/ECB/PKCS1Padding");
 				rsaCipherDecrypt.init(Cipher.DECRYPT_MODE, privateKey_);
-
-
 
 				Cipher aesCipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
 				SecretKeySpec aesKeyDec = new SecretKeySpec(rsaCipherDecrypt.doFinal(keyBytes), "AES");
@@ -184,6 +183,7 @@ public class FileEncryptor {
 			{
 				e.printStackTrace();
 			}
+			*/
 		}
 
 		/**
