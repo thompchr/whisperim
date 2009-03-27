@@ -23,7 +23,11 @@ import java.awt.event.KeyEvent;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 
+import org.whisperim.client.Whisper;
 import org.whisperim.prefs.Preferences;
+import org.whisperim.whisperbot.WhisperBot;
+
+import com.aol.acc.AccException;
 
 public class PreferencesWindowWhisperBot extends JPanel implements ItemListener {
 
@@ -43,16 +47,37 @@ public class PreferencesWindowWhisperBot extends JPanel implements ItemListener 
 		whisperbotCheckBox_.addItemListener(this);
 		add(whisperbotCheckBox_);
 
-	}
 	
+	Preferences.getInstance().getListeners().add(new PrefListener() {
+		private boolean locked = false;
+		@Override
+		public void prefChanged(String name, Object o) {
+			if(Preferences.WHISPERBOT_.equals(name) && !locked){
+				locked = true;
+				if(!o.equals(whisperbotCheckBox_.isSelected())){
+					whisperbotCheckBox_.setSelected(!whisperbotCheckBox_.isSelected());
+					// Start up whisperbot.
+					try {
+						new WhisperBot();
+					} catch (AccException e2) {
+						e2.printStackTrace();
+					}
+				}else{
+					new Whisper();
+				}
+				locked = false;
+			}
+		}
+	});}
 	
 	public void itemStateChanged(ItemEvent e) {
-		Object source = e.getItem();
-		if(source == whisperbotCheckBox_) {
+		Object sources = e.getItem();
+		if(sources == whisperbotCheckBox_) {
 			whisperbotEnabled_ = whisperbotCheckBox_.isSelected();
 			Preferences.getInstance().setWhisperBotEnabled(whisperbotEnabled_);
 			System.out.println("whisperbot " + ((whisperbotEnabled_)?"enabled":"not enabled").toString());
-			}
+			
+		}
 		
 	}
 

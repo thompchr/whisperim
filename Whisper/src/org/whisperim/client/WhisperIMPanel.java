@@ -64,11 +64,6 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
     private static final String SEND_ = "Send";
     private static final String SEND_KEY_ = "Send Key";
     private static final String TOGGLE_ENCRYPTION_ = "Toggle Encryption";
-    
-    private static final String WHISPERBOT_OFF_ = "WhisperBot: Off";
-    private static final String WHISPERBOT_ON_ = "WhisperBot: On";
-    private static final String TOGGLE_WHISPERBOT_ = "Toggle WhisperBot";
-    
     private static final String START_WHITEBOARD_ = "Start Whiteboard";
     
     private ImageIcon serviceIcon_;
@@ -81,7 +76,6 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
     private JToggleButton toggleEncryption_;
     private JButton sendKeyBtn_;
 	private JCheckBoxMenuItem logging_;
-	private JToggleButton toggleWhisperBot_;
 	private JButton whiteboardBtn_;
 	private JButton close_;
 	private JPanel head_;
@@ -127,11 +121,6 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
         this.requestFocusInWindow();
 	}
 	
-    	public void enableWhisperBot()
-    	{
-    		toggleWhisperBot_.setEnabled(true);
-    		talkArea_.append("WhisperBot is now Active.\n");
-    	}
 	
 	   	public void enableEncryption(PublicKey theirKey){
 	   		if (theirKey != null){
@@ -171,8 +160,7 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
 	        buddyName_ = new JLabel(buddy_.getHandle(), serviceIcon_, SwingConstants.LEFT);
 	        
 	        this.setName(buddy_.getHandle());
-	        
-	        toggleWhisperBot_ = new JToggleButton(TOGGLE_WHISPERBOT_);
+
 	        talkArea_ = new JTextArea();
 	        talkArea_.setColumns(20);
 	        talkArea_.setRows(5);
@@ -241,7 +229,6 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
 				                    .add(talkAreaScroll_, GroupLayout.DEFAULT_SIZE, 306, Short.MAX_VALUE)
 				                    .add(messageAreaScroll_, GroupLayout.DEFAULT_SIZE, 306, Short.MAX_VALUE)
 				                    .add(layout.createSequentialGroup()
-				                    		.add(toggleWhisperBot_)
 				                    		.add(toggleEncryption_)
 				                    		.add(whiteboardBtn_)
 				                    		.addPreferredGap(LayoutStyle.RELATED)
@@ -264,7 +251,6 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
 	                		.add(messageAreaScroll_, GroupLayout.PREFERRED_SIZE, 42, GroupLayout.PREFERRED_SIZE)
 			                .addPreferredGap(LayoutStyle.RELATED)
 			                .add(layout.createParallelGroup()
-			                		.add(toggleWhisperBot_)
 			                		.add(toggleEncryption_)
 			                		.add(whiteboardBtn_)
 			                		.add(sendKeyBtn_)
@@ -298,17 +284,6 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
 	                doEncryption_ = true;
 	                toggleEncryption_.setText(ENCRYPTION_ON_);
 	            }
-	    	}else if(actionCommand.equals(toggleWhisperBot_.getActionCommand()))
-	    	{
-	    		
-				if (doWhisperBot_)
-	    		{
-	    			doWhisperBot_ = false;
-	    			toggleWhisperBot_.setText(WHISPERBOT_OFF_);
-	    		}else{
-	    			doWhisperBot_ = true;
-	    			toggleWhisperBot_.setText(WHISPERBOT_ON_);
-	    		}
 	    	}else if (actionCommand.equals(sendKeyBtn_.getActionCommand())) {
 	    		try{
 	        		Message keyMsg = new Message(new Buddy(myHandle_, myHandle_, buddy_.getProtocolID()), 

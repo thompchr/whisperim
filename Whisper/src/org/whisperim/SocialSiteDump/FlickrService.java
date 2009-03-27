@@ -16,100 +16,118 @@ package org.whisperim.SocialSiteDump;
  * limitations under the License.                                          *
  **************************************************************************/
 
-import java.io.File;
 import java.io.IOException;
-import java.net.URL;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Properties;
+
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.xml.sax.SAXException;
 
-import com.sun.xml.internal.ws.client.RequestContext;
+import com.aetrion.flickr.Flickr;
+import com.aetrion.flickr.FlickrException;
+import com.aetrion.flickr.REST;
+import com.aetrion.flickr.RequestContext;
+import com.aetrion.flickr.activity.ActivityInterface;
+import com.aetrion.flickr.activity.Event;
+import com.aetrion.flickr.activity.Item;
+import com.aetrion.flickr.activity.ItemList;
+import com.aetrion.flickr.auth.Auth;
+import com.aetrion.flickr.auth.Permission;
+import com.aetrion.flickr.util.IOUtilities;
 
 public class FlickrService {
-/*
-	// Create instance variables for Flickr
-	private String nsid_ = null;
-	private Flickr flickr_ = null;
-	private AuthStore authStore_ = null;
-	private String sharedSecret_ = null;
-	
-	// Retrieve and store Flickr information.
-	flickr_ = new Flickr(apiKey); 
-	this.sharedSecret_ = sharedSecret_; 
-	this.nsid_ = nsid_; 
-	
-	// Read from file that stores auths
-	File authsDir = new File(System.getProperty("user.home") + File.separatorChar + ".flickrAuth"); 
-		
-		// Fill in authStore_/
-		if (authsDir != null)
-		{ 
-			authStore_ = new FileAuthStore(authsDir);
-		}
-	
-		
-	// Method authorizes connection to flicker.
-	private void flickrAuthorization() throws IOException, SAXException, FlickrException 
-	{ 
-		// Setup interface.
-		String frob = flickr_.getAuthInterface().getFrob(); 
-		URL authUrl = flickr_.getAuthInterface().buildAuthenticationUrl(Permission.READ, frob);
-		
-		//  Kick out to URL (change later).
-		System.out.println("Authorization Required. Browse to URL: " + authUrl.toExternalForm() + " then, hit enter."); 
-		
-		// Read in result, set and store.
-		System.in.read(); 
-		Auth token = flickr_.getAuthInterface().getToken(frob); 
-		RequestContext.getRequestContext().setAuth(token); 
-		authStore_.store(token); 
-	} 
-	
-	
-	// This function allows retrieval of updates.
-	private void getFlickrNotifications()
-	{
-		RequestContext rc = RequestContext.getRequestContext(); 
-		rc.setSharedSecret(sharedSecret_); 
-		  
-		// Begin Retrieval.
-		if (authStore_ != null) 
-		{ 
-		  Auth auth = authStore_.retrieve(this.nsid); 
-		  if (auth == null) flickrAuthorization(); 
-		  else rc.setAuth(auth); 
-		} 
-		
-		
-		ActivityInterface aInterface = flickr_.getActivityInterface(); 
-		ItemList list = aInterface.userPhotos(50, 0, "300d"); 
-		  
-		for (int j = 0; j < list.size(); j++) 
-		{ 
-		  Item item = (Item) list.get(j); 
-		  richText="Item " + (j + 1) + "/" + list.size() + " type: " + item.getType()+"<br>"; 
-		  richText="Item-id: " + item.getId() + "<br>"; 
-		  ArrayList events = (ArrayList) item.getEvents(); 
-		  
-		  	for (int i = 0; i < events.size(); i++) 
-		  	{ 
-		  		richText="Event " + (i + 1) + "/" + events.size() + " of Item " + (j + 1)+"<br>"; 
-		  		richText="Event-type: " + ((Event) events.get(i)).getType()+"<br>"; 
-		  		if (((Event) events.get(i)).getType().equals("note")) 
-		  		{ 
-		  			richText="Note-id: " + ((Event) events.get(i)).getId()+"<br>"; 
-		  		} else if (((Event) events.get(i)).getType().equals("comment"))
-		  			{ 
-		  				richText="Comment-id: " + ((Event) events.get(i)).getId()+"<br>"; 
-		  			} 
-		  
-		  		richText="User: " + ((Event) events.get(i)).getUser()+"<br>"; 
-		  		richText="Username: " + ((Event) events.get(i)).getUsername()+"<br>"; 
-		  		richText="Value: " + ((Event) events.get(i)).getValue()+"<br>"; 
-		  		richText="Dateadded: " + ((Event) events.get(i)).getDateadded() +"<br>"; 
-		  	}
-		}
+	private static String apiKey_ = "c368c2b676805ec3f9dcc5219bb6e982";
+	private static String sharedSecretKey_ = "08483e480ce39d70";
+	private Flickr flickr_;
+	private REST rest_;
+	private RequestContext requestContext_;
+	private Properties properties_ = null;
 
+	/*
+	 * Temp. Until Cory finishes his profile story thingy. After api key and
+	 * shared will be dynamic
+	 */
+
+	public FlickrService() throws ParserConfigurationException, IOException {
+		authorizeFlickrAccount();
+		try {
+			getNotifications();
+		} catch (FlickrException e) {
+			e.printStackTrace();
+		} catch (SAXException e) {
+			e.printStackTrace();
+		}
 	}
-	
-*/
+
+	public void authorizeFlickrAccount() {
+		try {
+			// This will be based off account settings when Cory does his story.
+			flickr_ = new Flickr(apiKey_, sharedSecretKey_, new REST());
+			
+		} catch (ParserConfigurationException e) {
+			e.printStackTrace();
+		}
+		requestContext_ = RequestContext.getRequestContext();
+		Auth auth = new Auth();
+		auth.setPermission(Permission.READ);
+		auth.setToken(properties_.getProperty("token"));
+		requestContext_.setAuth(auth);
+	}
+
+	public void getNotifications() throws FlickrException, IOException,
+			SAXException {
+		ActivityInterface interface1 = flickr_.getActivityInterface();
+		ItemList list = interface1.userComments(10, 0);
+		for (int j = 0; j < list.size(); j++) {
+			Item item = (Item) list.get(j);
+			System.out.println("Item " + (j + 1) + "/" + list.size()
+					+ " type: " + item.getType());
+			System.out.println("Item-id:       " + item.getId() + "\n");
+			ArrayList events = (ArrayList) item.getEvents();
+			for (int i = 0; i < events.size(); i++) {
+				System.out.println("Event " + (i + 1) + "/" + events.size()
+						+ " of Item " + (j + 1));
+				System.out.println("Event-type: "
+						+ ((Event) events.get(i)).getType());
+				System.out.println("User:       "
+						+ ((Event) events.get(i)).getUser());
+				System.out.println("Username:   "
+						+ ((Event) events.get(i)).getUsername());
+				System.out.println("Value:      "
+						+ ((Event) events.get(i)).getValue() + "\n");
+			}
+		}
+		ActivityInterface interface2 = flickr_.getActivityInterface();
+		list = interface2.userPhotos(50, 0, "300d");
+		for (int j = 0; j < list.size(); j++) {
+			Item item = (Item) list.get(j);
+			System.out.println("Item " + (j + 1) + "/" + list.size()
+					+ " type: " + item.getType());
+			System.out.println("Item-id:       " + item.getId() + "\n");
+			ArrayList events = (ArrayList) item.getEvents();
+			for (int i = 0; i < events.size(); i++) {
+				System.out.println("Event " + (i + 1) + "/" + events.size()
+						+ " of Item " + (j + 1));
+				System.out.println("Event-type: "
+						+ ((Event) events.get(i)).getType());
+				if (((Event) events.get(i)).getType().equals("note")) {
+					System.out.println("Note-id:    "
+							+ ((Event) events.get(i)).getId());
+				} else if (((Event) events.get(i)).getType().equals("comment")) {
+					System.out.println("Comment-id: "
+							+ ((Event) events.get(i)).getId());
+				}
+				System.out.println("User:       "
+						+ ((Event) events.get(i)).getUser());
+				System.out.println("Username:   "
+						+ ((Event) events.get(i)).getUsername());
+				System.out.println("Value:      "
+						+ ((Event) events.get(i)).getValue());
+				System.out.println("Dateadded:  "
+						+ ((Event) events.get(i)).getDateadded() + "\n");
+			}
+		}
+	}
 }
