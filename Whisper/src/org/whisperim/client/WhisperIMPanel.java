@@ -299,11 +299,17 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
 	        	}
 	    	}
 	    	else if (actionCommand.equals(whiteboardBtn_.getActionCommand())) {
-	    		try{
-	        		whiteboard_ = new Whiteboard(buddy_.getHandle(),500,500);
-	        	}catch (Exception ex){
-	        		talkArea_.append("An error has occurred starting the whiteboard.\n");
-	        	}
+	    		if(whiteboardBtn_.isEnabled())
+	    		{
+		    		try{
+		        		whiteboard_ = new Whiteboard(buddy_.getHandle(),500,500);
+		        	}catch (Exception ex){
+		        		talkArea_.append("An error has occurred starting the whiteboard.\n");
+		        	}
+		        	whiteboardBtn_.setEnabled(false);
+	    		}
+	    		else
+	    			whiteboardBtn_.setEnabled(false);
 	    	}
     	
 	    	else if (actionCommand.equals(close_.getActionCommand()))
