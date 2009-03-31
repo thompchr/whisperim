@@ -17,5 +17,8 @@
 	<classpathentry kind="con" path="org.dyno.visual.swing.VS_LIBRARY/layoutext"/>
 	<classpathentry kind="lib" path="lib/last.fm-bindings.jar"/>
 	<classpathentry kind="lib" path="lib/xmlrpc-1.1.jar"/>
+	<classpathentry kind="lib" path="C:/Documents and Settings/Nick Krieble/Desktop/xstream-1.2.2.jar"/>
+	<classpathentry kind="lib" path="C:/Documents and Settings/Nick Krieble/Desktop/jmdns-2.1/jmdns-2.1/lib/jmdns.jar"/>
+	<classpathentry kind="lib" path="C:/workspace/Whisper/lib/flickrapi-1.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
