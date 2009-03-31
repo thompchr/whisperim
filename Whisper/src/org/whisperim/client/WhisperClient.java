@@ -303,7 +303,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 		this.setMinimumSize(new Dimension(150,250));
 		this.setPreferredSize(new Dimension(200,500));
 		this.setTitle(WHISPER_); 
-		this.pack();
+		//this.pack();
 		
 		this.setVisible(true);
 	}
