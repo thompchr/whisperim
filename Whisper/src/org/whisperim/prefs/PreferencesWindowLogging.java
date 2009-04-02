@@ -29,6 +29,7 @@ import java.awt.event.KeyEvent;
 
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 
 import org.whisperim.prefs.Preferences;
 /**
@@ -38,8 +39,11 @@ public class PreferencesWindowLogging extends JPanel implements ItemListener {
 
 	private static final long serialVersionUID = 6555858513398336341L;
 	
-	private boolean loggingEnabled_;
+	private boolean loggingEnabled_ = Preferences.getInstance().getLoggingEnabled();
 	private JCheckBox loggingCheckBox_;
+	
+	private String loggingDir_ = Preferences.getInstance().getLoggingDir();
+	private JTextArea loggingDirChooser_;	
 	
 	PreferencesWindowLogging() {
 		
@@ -47,32 +51,36 @@ public class PreferencesWindowLogging extends JPanel implements ItemListener {
 		
 		loggingCheckBox_ = new JCheckBox("Logging Enabled");
 		loggingCheckBox_.setBackground(Color.white);
-		loggingCheckBox_.setSelected(Preferences.getInstance().getLoggingEnabled());
+		loggingCheckBox_.setSelected(loggingEnabled_);
 		loggingCheckBox_.setMnemonic(KeyEvent.VK_L);
 		loggingCheckBox_.addItemListener(this);
 		add(loggingCheckBox_);
 		
-		Preferences.getInstance().getListeners().add(new PrefListener() {
-			private boolean locked = false;
-			@Override
-			public void prefChanged(String name, Object o) {
-				if(Preferences.LOGGING_.equals(name) && !locked){
-					locked = true;
-					if(!o.equals(loggingCheckBox_.isSelected())){
-						loggingCheckBox_.setSelected(!loggingCheckBox_.isSelected());
+		loggingDirChooser_ = new JTextArea(loggingDir_);
+		loggingDirChooser_.setEnabled(loggingEnabled_);
+		
+		
+		 Preferences.getInstance().getListeners().add(new PrefListener() {
+				private boolean locked = false;
+				@Override
+				public void prefChanged(String name, Object o) {
+					if(Preferences.LOGGING_.equals(name) && !locked){
+						locked = true;
+						if(!o.equals(loggingCheckBox_.isSelected())){
+							loggingCheckBox_.setSelected(!loggingCheckBox_.isSelected());
+						}
+						locked = false;
 					}
-					locked = false;
 				}
-			}
-		});
+			});
 		
 	}
 
-	public void itemStateChanged(ItemEvent e) {
+	public void itemStateChanged(ItemEvent e) {		
 		Object source = e.getItem();
 		if(source == loggingCheckBox_) {
-			Preferences.getInstance().setLoggingEnabled(!Preferences.getInstance().getLoggingEnabled());
-			System.out.println("logging " + ((Preferences.getInstance().getLoggingEnabled())?"enabled":"not enabled").toString());
+			loggingEnabled_ = loggingCheckBox_.isSelected();
+			Preferences.getInstance().setLoggingEnabled(loggingEnabled_);		
 			}
 	}
 	

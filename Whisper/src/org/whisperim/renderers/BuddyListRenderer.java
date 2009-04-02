@@ -16,7 +16,6 @@
 package org.whisperim.renderers;
 
 import java.awt.Component;
-import java.util.Hashtable;
 
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.Icon;
@@ -26,6 +25,7 @@ import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 
 import org.whisperim.client.Buddy;
+import org.whisperim.prefs.Preferences;
 
 /**
  * @author Cory Plastek
@@ -34,32 +34,20 @@ import org.whisperim.client.Buddy;
 public class BuddyListRenderer implements ListCellRenderer {
 	protected DefaultListCellRenderer defaultRenderer = new DefaultListCellRenderer();
 	
-	/** Returns an ImageIcon, or null if the path was invalid. */
-	protected ImageIcon createImageIcon(String path, String description) {
-		java.net.URL imgURL = getClass().getResource(path);
-		if (imgURL != null) {
-			return new ImageIcon(imgURL, description);
-		} else {
-			System.err.println("Couldn't find file: " + path);
-			return null;
-		}
-	}
-	
-	private ImageIcon serviceIcon_ = new ImageIcon("..\\images\\default.ico");
-	private ImageIcon aimIcon_ = new ImageIcon("..\\images\\aim_icon_small.png");
-	
+	private ImageIcon serviceIcon_ = null;
+	private final ImageIcon aimIcon_ = Preferences.getInstance().getAimIconSmall();
 		
 	public Component getListCellRendererComponent(JList list, Object buddy, int index, boolean isSelected, boolean hasFocus) {
 
-		JLabel renderer = (JLabel) defaultRenderer.getListCellRendererComponent(list, buddy, index, isSelected, hasFocus);
+		Component renderer = defaultRenderer.getListCellRendererComponent(list, buddy, index, isSelected, hasFocus);
 
-		    if (((Buddy) buddy).getProtocolID().equals("aol")) {
+		    if (((Buddy) buddy).getProtocolID().equals("AIM")) {
 		      //buddy is on aim
 		      serviceIcon_ =  aimIcon_;
 		    } else {
-		      //use default service icon
+		      //serviceIcon_ = aimIcon_;
 		    }
-		    renderer.setIcon(serviceIcon_);
+		    ((JLabel) renderer).setIcon((Icon)serviceIcon_);
 		    return renderer;
 	}
 }
