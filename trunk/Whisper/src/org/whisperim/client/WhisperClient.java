@@ -191,25 +191,32 @@ public class WhisperClient extends JFrame implements ActionListener {
 		manager_.setClient(this);
 		
 		//start system tray
+		Runnable systrayRunnable = new Runnable() {
+			public void run() {
+				
+			}
+		};
+		Thread systray = new Thread(systrayRunnable);
+		systray.start();
 		tray_ = new WhisperSystemTray();
 		tray_.startSystemTray(this, manager);
+		
 		
 		//start sounds
 		Sound sound = new Sound();
 		getClientListeners().add(sound);
 		
-		
 		//sounds class doesn't implement threads, so calling methods have to
 		//fix this		
 		sound.playSound(this, "Open.wav");
 		
-		Runnable r = new Runnable() {
+		Runnable soundsRunnable = new Runnable() {
 			public void run() {
 				// TODO Auto-generated method stub
 			}
 		};
-		Thread t = new Thread(r);
-		t.start();
+		Thread soundsThread = new Thread(soundsRunnable);
+		soundsThread.start();
 		
 		Preferences.getInstance().getListeners().add(new PrefListener() {
 			private boolean locked = false;
@@ -271,9 +278,27 @@ public class WhisperClient extends JFrame implements ActionListener {
 			}
 		});
 		
-		createMenu();	
-		createBuddyList();
-
+		final JFrame jf = this;
+		Runnable menuRunnable = new Runnable() {
+			public void run() {
+				createMenu();
+				//System.out.println("menu created");
+				jf.validate();
+				jf.repaint();
+			}
+		};
+		Thread menuThread = new Thread(menuRunnable);
+		menuThread.start();
+		
+		Runnable buddyRunnable = new Runnable() {
+			public void run() {
+				createBuddyList();
+				jf.validate();
+				jf.repaint();
+			}
+		};
+		Thread buddyThread = new Thread(buddyRunnable);
+		buddyThread.start();
 		
 		plm_ = new PluginListModel();
 		//This must be called after the manager_ member is set.
@@ -303,6 +328,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 		this.setTitle(WHISPER_); 
 		//this.pack();
 		this.setVisible(true);
+		//System.out.println("frame displayed");
 	}
 
 	
