@@ -21,13 +21,13 @@ package org.whisperim.client;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.EventQueue;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.Map.Entry;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -59,7 +59,7 @@ public class WhisperNewIMWindow extends JFrame implements ActionListener{
 	private static final String WINDOW_TITLE_ = "New Instant Message";
 
 	//UI Elements
-	private static final Image whisperIcon_ = Preferences.getInstance().getWhisperIconSmall();
+	private static final ImageIcon whisperIcon_ = Preferences.getInstance().getWhisperIconSmall();
 	
 	private JTextField foreignHandleBox_ = new JTextField();
 	private JComboBox protocolSelector_ = new JComboBox();
@@ -92,12 +92,10 @@ public class WhisperNewIMWindow extends JFrame implements ActionListener{
 		try {
 			if(Preferences.getInstance().getLookAndFeel().equalsIgnoreCase(Preferences.SYSTEM_)) {
 				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-				System.out.println("use native laf");
 				//UIManager.setLookAndFeel(Preferences.SYSTEM_); 
 			}
 			else {
 				UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-				System.out.println("don't use native laf");
 				//UIManager.setLookAndFeel(Preferences.METAL_); 
 			}
 		}
@@ -137,7 +135,7 @@ public class WhisperNewIMWindow extends JFrame implements ActionListener{
 		cp.setLayout(sl);
 		
 		setTitle(WINDOW_TITLE_);
-		setIconImage(whisperIcon_);
+		setIconImage(whisperIcon_.getImage());
 		
 		cp.add(foreignHandleLbl_);
 		cp.add(foreignHandleBox_);

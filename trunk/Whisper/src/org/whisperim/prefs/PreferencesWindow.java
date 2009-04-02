@@ -33,6 +33,8 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
 import javax.swing.BoxLayout;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JList;
@@ -46,6 +48,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import org.whisperim.client.ConnectionManager;
+import org.whisperim.client.ThreadServices;
 import org.whisperim.client.WhisperClient;
 import org.whisperim.renderers.PreferencesWindowCategoryRenderer;
 
@@ -57,7 +60,7 @@ public class PreferencesWindow extends JFrame implements ListSelectionListener,A
 	private static PreferencesWindow instance = null;
 	
 	
-	private static final Image whisperIcon_ = Preferences.getInstance().getWhisperIconSmall();
+	private static final ImageIcon whisperIcon_ = Preferences.getInstance().getWhisperIconSmall();
 	
 	private static final String WHISPER_PREFERENCES_ = "Whisper Preferences";
 	//these are set to public so other classes can reference them
@@ -106,12 +109,10 @@ public class PreferencesWindow extends JFrame implements ListSelectionListener,A
 		try {
 			if(Preferences.getInstance().getLookAndFeel().equalsIgnoreCase(Preferences.SYSTEM_)) {
 				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-				System.out.println("use native laf");
 				//UIManager.setLookAndFeel(Preferences.SYSTEM_); 
 			}
 			else {
 				UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-				System.out.println("don't use native laf");
 				//UIManager.setLookAndFeel(Preferences.METAL_); 
 			}
 		}
@@ -145,18 +146,9 @@ public class PreferencesWindow extends JFrame implements ListSelectionListener,A
 				}
 			}
 		});
-		//set native look and feel
-		/*
-		try  {  
-			//Tell the UIManager to use the platform look and feel  
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());  
-		}  
-		catch(Exception e) {  
-			//Do nothing  
-		} 
-		*/
 		
-		this.setIconImage(whisperIcon_);
+		
+		this.setIconImage(whisperIcon_.getImage());
 		this.setTitle(WHISPER_PREFERENCES_);
 		//set background color equal to categories list and button pane
 		this.setBackground(new Color(239,239,239));
@@ -199,53 +191,59 @@ public class PreferencesWindow extends JFrame implements ListSelectionListener,A
 		content_.setMinimumSize(contentSize_);
 		content_.setAlignmentY(CENTER_ALIGNMENT);
 		
-		EventQueue.invokeLater(new Runnable() {
+		
+		ThreadServices.get().runInThread(new Runnable() {
 			public void run() {
 				generalPrefs_ = new PreferencesWindowGeneral();
 				content_.add(generalPrefs_, GENERAL_);
 			}
 		});
-		EventQueue.invokeLater(new Runnable() {
+		
+		ThreadServices.get().runInThread(new Runnable() {
 			public void run() {
 				accountPrefs_ = new PreferencesWindowAccounts(connectionManager_);
 				content_.add(accountPrefs_, ACCOUNTS_);
 			}
 		});
-		EventQueue.invokeLater(new Runnable() {
+		
+		ThreadServices.get().runInThread(new Runnable() {
 			public void run() {
 				loggingPrefs_ = new PreferencesWindowLogging();
 				content_.add(loggingPrefs_, LOGGING_);
 			}
 		});
-		EventQueue.invokeLater(new Runnable() {
+		
+		ThreadServices.get().runInThread(new Runnable() {
 			public void run() {
 				securityPrefs_ = new PreferencesWindowSecurity();
 				content_.add(securityPrefs_, SECURITY_);
 			}
 		});
 		
-		//pluginsPrefs_ = new PreferencesWindowPlugins();
-		//content_.add(pluginsPrefs_, PLUGINS_);
-		
-		EventQueue.invokeLater(new Runnable() {
+		ThreadServices.get().runInThread(new Runnable() {
 			public void run() {
 				soundsPrefs_ = new PreferencesWindowSounds();
 				content_.add(soundsPrefs_, SOUNDS_);
 			}
 		});
-		EventQueue.invokeLater(new Runnable() {
+		
+		ThreadServices.get().runInThread(new Runnable() {
 			public void run() {
 				whisperbotPrefs_ = new PreferencesWindowWhisperBot();
 				content_.add(whisperbotPrefs_, WHISPERBOT_);
 			}
 		});
-		EventQueue.invokeLater(new Runnable() {
+		
+		ThreadServices.get().runInThread(new Runnable() {
 			public void run() {
 				aboutInfo_ = new PreferencesWindowAbout();
 				content_.add(aboutInfo_, ABOUT_);
 			}
 		});
 		
+		
+		//pluginsPrefs_ = new PreferencesWindowPlugins();
+		//content_.add(pluginsPrefs_, PLUGINS_);
 		
 		contentLayout_ = (CardLayout)(content_.getLayout());
 		setPreferencesCategory(GENERAL_);
@@ -302,23 +300,23 @@ public class PreferencesWindow extends JFrame implements ListSelectionListener,A
 		for(int i = 0; i < categoriesList_.length; i++) {
 			if(category.equalsIgnoreCase(categoriesList_[i])) {
 				categories_.setSelectedIndex(i);
+				showCategory(i);
 			}
 		}
-		//shouldn't get here if category is in the categories list
-		//categories_.setSelectedIndex(4);
 	}
 	
 	
 	public void valueChanged (ListSelectionEvent e) {
 		//if the user is moving from one selection to another
 		//don't load every content pane between the start and end selection
-		if(e.getValueIsAdjusting()) {
-			//do nothing
+		if(!e.getValueIsAdjusting()) {
+			//if not adjusting
+			showCategory(categories_.getSelectedIndex());
 		}
-		else {
-			int index = categories_.getSelectedIndex();
-			contentLayout_.show(content_, categoriesList_[index]);
-		}
+	}
+	
+	private void showCategory(int index) {
+		contentLayout_.show(content_, categoriesList_[index]);
 	}
 
 
@@ -344,9 +342,10 @@ public class PreferencesWindow extends JFrame implements ListSelectionListener,A
 	//not used besides windowClosed
 	public void windowClosed(WindowEvent e) {
 		//ask user if they want to save changed prefs?
-		//save all prefs
-		//call update
-		//dispose window
+		
+		Preferences pref = new Preferences();
+		pref.savePrefs();
+
 		this.setVisible(false);
 	}
 

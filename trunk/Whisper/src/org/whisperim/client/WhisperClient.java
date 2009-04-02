@@ -44,6 +44,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JList;
@@ -108,8 +109,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 	//We need to figure this out, like this, it doesn't make
 	//sense to store the instance here if we can't call methods
 	//on it
-	private Preferences prefs_;// = Preferences.getInstance();
-	private static final Image whisperIcon_ = Preferences.getInstance().getWhisperIconSmall();
+	private static final ImageIcon whisperIcon_ = Preferences.getInstance().getWhisperIconSmall();
 	
 	private PluginListModel plm_;
 
@@ -138,6 +138,8 @@ public class WhisperClient extends JFrame implements ActionListener {
 	private boolean alwaysNewWindow_ = false;
 	private JMenuItem newWindow_;
 	
+	private Dimension frameMinSize_ = new Dimension(175,400);
+	private Dimension framePrefSize_ = new Dimension(175,500);
 	
 	private WhisperSystemTray tray_;
 
@@ -184,7 +186,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 	 * Constructor.
 	 * @param manager - Connection manager to be associated with this instance
 	 */
-	public WhisperClient(ConnectionManager manager) {
+	public WhisperClient(ConnectionManager manager) {		
 		manager_ = manager;
 		manager_.setClient(this);
 		
@@ -198,8 +200,16 @@ public class WhisperClient extends JFrame implements ActionListener {
 		
 		
 		//sounds class doesn't implement threads, so calling methods have to
-		//fix this
+		//fix this		
 		sound.playSound(this, "Open.wav");
+		
+		Runnable r = new Runnable() {
+			public void run() {
+				// TODO Auto-generated method stub
+			}
+		};
+		Thread t = new Thread(r);
+		t.start();
 		
 		Preferences.getInstance().getListeners().add(new PrefListener() {
 			private boolean locked = false;
@@ -223,12 +233,10 @@ public class WhisperClient extends JFrame implements ActionListener {
 		try {
 			if(Preferences.getInstance().getLookAndFeel().equalsIgnoreCase(Preferences.SYSTEM_)) {
 				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-				System.out.println("use native laf");
 				//UIManager.setLookAndFeel(Preferences.SYSTEM_); 
 			}
 			else {
 				UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-				System.out.println("don't use native laf");
 				//UIManager.setLookAndFeel(Preferences.METAL_); 
 			}
 		}
@@ -262,16 +270,6 @@ public class WhisperClient extends JFrame implements ActionListener {
 				}
 			}
 		});
-		//set native look and feel
-		/*
-		try  {  
-			//Tell the UIManager to use the platform look and feel  
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());  
-		}  
-		catch(Exception e) {  
-			//Do nothing  
-		} 
-		*/
 		
 		createMenu();	
 		createBuddyList();
@@ -298,13 +296,12 @@ public class WhisperClient extends JFrame implements ActionListener {
 				formWindowClosing(evt);
 			}
 		});
-		this.setIconImage(whisperIcon_);
+		this.setIconImage(whisperIcon_.getImage());
 		this.setLocation(new Point(Toolkit.getDefaultToolkit().getScreenSize().width / 3,Toolkit.getDefaultToolkit().getScreenSize().height / 4));
-		this.setMinimumSize(new Dimension(150,250));
-		this.setPreferredSize(new Dimension(200,500));
+		this.setMinimumSize(frameMinSize_);
+		this.setPreferredSize(framePrefSize_);
 		this.setTitle(WHISPER_); 
 		//this.pack();
-		
 		this.setVisible(true);
 	}
 
@@ -357,9 +354,6 @@ public class WhisperClient extends JFrame implements ActionListener {
 		//end right click menu
 		
 		buddyList_.addMouseListener(new MouseAdapter() {
-			
-			
-			
 			private void showIfPopupTrigger(MouseEvent mouseEvent) {
 				if(popupMenu_.isPopupTrigger(mouseEvent)) {
 					JList Buddies = (JList) mouseEvent.getSource();

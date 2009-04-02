@@ -14,7 +14,7 @@
  * limitations under the License.                                          *
  **************************************************************************/
 
-/*
+/**
  * Preferences.java
  */
 
@@ -30,9 +30,11 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
 import java.awt.Image;
-import java.awt.Toolkit;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.swing.ImageIcon;
 
 /**
  * @author Cory Plastek
@@ -44,22 +46,20 @@ public class Preferences {
 	private static Preferences instance = null;
 	private List<PrefListener> listeners_ = new ArrayList<PrefListener>();
 
-	// general
-	// logging
-	// security
-	// sounds
-	// whisperbot
+	//general
+	//accounts
+	//logging
+	//security
+	//plugins
+	//sounds
+	//whisperbot
+	//about
 
 	private static final String PREFS_FILE = System.getProperty("user.home") + File.separator + "Whisper" + File.separator + "prefs.xml";
+	
 	/**
 	 * General Preferences
 	 */
-
-	private Image whisperIconSmall_ = Toolkit.getDefaultToolkit().getImage(
-			"..//images//WhisperIMLogo-Small.png");
-	private Image whisperIconBig_ = Toolkit.getDefaultToolkit().getImage(
-			"..//images//WhisperIMLogo-Big.png");
-
 	//look and feel
 	//acceptable strings 'Metal' 'System'
 	public static final String THEME_ = "Theme";
@@ -67,11 +67,22 @@ public class Preferences {
 	public static final String SYSTEM_ = "Native"; //UIManager.getSystemLookAndFeelClassName();
 	private String lookAndFeel_ = SYSTEM_;
 
+	
+	private final static String imagesDir_ = System.getProperty("user.dir").replace("lib", "images")+File.separator;
+	private ImageIcon whisperIconSmall_ = new ImageIcon(imagesDir_+"WhisperIMLogo-Small.png","");
+	private ImageIcon whisperIconBig_ = new ImageIcon(imagesDir_+"WhisperIMLogo-Big.png","");
+	private ImageIcon aimIconSmall_ = new ImageIcon(imagesDir_+"aim_icon_small.png","AIM");
+	private ImageIcon aimIconMed_ = new ImageIcon(imagesDir_+"aim_icon_med.png","AIM");
+	private ImageIcon aimIconBig_ = new ImageIcon(imagesDir_+"aim_icon_big.png","AIM");
+	
+	
 	/**
 	 * Logging Preferences
 	 */
 	private boolean loggingEnabled_ = true;
 	public static final String LOGGING_ = "Logging";
+	
+	private static String loggingDir_ = System.getProperty("user.home")+File.separator+"Whisper Logs"+File.separator;
 
 	/**
 	 * Security Preferences
@@ -114,10 +125,10 @@ public class Preferences {
 	public static Preferences getInstance() {
 		if (instance == null) {
 			try {
-				XStream xstream = new XStream(new DomDriver());
-				xstream.alias("Preferences", Preferences.class);
+				XStream xstr = new XStream();
+				xstr.alias("Preferences", Preferences.class);
 
-				instance = (Preferences) xstream.fromXML(new FileInputStream(
+				instance = (Preferences) xstr.fromXML(new FileInputStream(
 						new File(PREFS_FILE)));
 			} catch (Exception e) {
 				instance = new Preferences();
@@ -154,14 +165,27 @@ public class Preferences {
 		}
 	}
 	
-	public Image getWhisperIconBig() {
+	public ImageIcon getWhisperIconBig() {
 		return whisperIconBig_;
 	}
 
-	public Image getWhisperIconSmall() {
+	public ImageIcon getWhisperIconSmall() {
 		return whisperIconSmall_;
 	}
 
+	public ImageIcon getAimIconBig() {
+		return aimIconBig_;
+	}
+	
+	public ImageIcon getAimIconMed() {
+		return aimIconMed_;
+	}
+	
+	public ImageIcon getAimIconSmall() {
+		return aimIconSmall_;
+	}
+	
+	
 	/**
 	 * Logging
 	 */
@@ -174,6 +198,15 @@ public class Preferences {
 		for (PrefListener listener : listeners_) {
 			listener.prefChanged(LOGGING_, loggingEnabled_);
 		}
+	}
+	
+	public String getLoggingDir() {
+		return loggingDir_;
+	}
+	
+	public void setLoggingDir(String logDir) {
+		//check actual directory?
+		loggingDir_ = logDir;
 	}
 
 	/**

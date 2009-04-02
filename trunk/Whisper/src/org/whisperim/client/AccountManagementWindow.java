@@ -132,12 +132,10 @@ public class AccountManagementWindow extends JFrame implements ActionListener {
 		try {
 			if(Preferences.getInstance().getLookAndFeel().equalsIgnoreCase(Preferences.SYSTEM_)) {
 				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-				System.out.println("use native laf");
 				//UIManager.setLookAndFeel(Preferences.SYSTEM_); 
 			}
 			else {
 				UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-				System.out.println("don't use native laf");
 				//UIManager.setLookAndFeel(Preferences.METAL_); 
 			}
 		}

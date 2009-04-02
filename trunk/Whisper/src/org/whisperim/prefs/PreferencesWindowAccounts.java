@@ -103,7 +103,7 @@ public class PreferencesWindowAccounts extends JPanel implements ActionListener 
 			@Override
 			public void mousePressed(MouseEvent e){
 				if (e.getButton() == MouseEvent.BUTTON3){
-				//fix!
+				// TODO
 					//if(e.isPopupTrigger()) {
 					//right click
 					final JMenuItem changeState = new JMenuItem();

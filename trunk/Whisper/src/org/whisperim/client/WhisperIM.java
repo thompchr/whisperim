@@ -65,7 +65,7 @@ public class WhisperIM extends JFrame implements ActionListener, WindowListener{
      
 	private static final long serialVersionUID = 1991002584679884126L;
 
-	private static final Image whisperIcon_ = Preferences.getInstance().getWhisperIconSmall(); 
+	private static final ImageIcon whisperIcon_ = Preferences.getInstance().getWhisperIconSmall(); 
    
     private JTabbedPane mainPain_;
 	private JMenu fileMenu_, conversationMenu_;
@@ -106,12 +106,10 @@ public class WhisperIM extends JFrame implements ActionListener, WindowListener{
 		try {
 			if(Preferences.getInstance().getLookAndFeel().equalsIgnoreCase(Preferences.SYSTEM_)) {
 				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-				System.out.println("use native laf");
 				//UIManager.setLookAndFeel(Preferences.SYSTEM_); 
 			}
 			else {
 				UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-				System.out.println("don't use native laf");
 				//UIManager.setLookAndFeel(Preferences.METAL_); 
 			}
 		}
@@ -161,7 +159,7 @@ public class WhisperIM extends JFrame implements ActionListener, WindowListener{
 
         //We should add a small version of their buddy icon into the "null" value here
 
-    	this.setIconImage(whisperIcon_);
+    	this.setIconImage(whisperIcon_.getImage());
     	this.addWindowListener(this);
     	
         setMinimumSize(new Dimension(550, 310));
@@ -190,6 +188,7 @@ public class WhisperIM extends JFrame implements ActionListener, WindowListener{
     	}
     	else if (e.getSource() == logging_) {
     		doLogging_ = logging_.getState();
+    		Preferences.getInstance().setLoggingEnabled(doLogging_);
     		if (log_ == null) {
     			log_ = new Logger();
     		}
