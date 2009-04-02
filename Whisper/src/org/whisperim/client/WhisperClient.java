@@ -16,15 +16,15 @@
 
 package org.whisperim.client;
 
+import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.EventQueue;
-import java.awt.Image;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -190,6 +190,8 @@ public class WhisperClient extends JFrame implements ActionListener {
 		manager_ = manager;
 		manager_.setClient(this);
 		
+		final Container jf = this;
+		
 		//start system tray
 		Runnable systrayRunnable = new Runnable() {
 			public void run() {
@@ -203,16 +205,19 @@ public class WhisperClient extends JFrame implements ActionListener {
 		
 		
 		//start sounds
-		Sound sound = new Sound();
+		final Sound sound = new Sound();
 		getClientListeners().add(sound);
 		
 		//sounds class doesn't implement threads, so calling methods have to
 		//fix this		
-		sound.playSound(this, "Open.wav");
+		
 		
 		Runnable soundsRunnable = new Runnable() {
 			public void run() {
-				// TODO Auto-generated method stub
+				//jf is the WhisperClient frame as a container
+				//playsound takes WhisperClient, not a container
+				//so need to cast to WhisperClient (it's ok because we _know_ its a WhisperClient
+				sound.playSound((WhisperClient)jf, "Open.wav");
 			}
 		};
 		Thread soundsThread = new Thread(soundsRunnable);
@@ -278,7 +283,6 @@ public class WhisperClient extends JFrame implements ActionListener {
 			}
 		});
 		
-		final JFrame jf = this;
 		Runnable menuRunnable = new Runnable() {
 			public void run() {
 				createMenu();
@@ -378,16 +382,29 @@ public class WhisperClient extends JFrame implements ActionListener {
 		
 		buddyList_.add(popupMenu_);
 		//end right click menu
-		
+		buddyList_.addKeyListener(new KeyAdapter() {
+			public void keyTyped(KeyEvent e) {
+				final Buddy selectedBuddy_ = (Buddy)buddyList_.getSelectedValue();
+				if (e.getKeyChar() == '\n') {
+	            	if(selectedBuddy_ != null) {
+	            		SwingUtilities.invokeLater(new Runnable() {
+	            			public void run() {
+	            				newIMWindow(selectedBuddy_,alwaysNewWindow_);
+	            			}
+	            		});
+	            	}
+	            }
+	         }
+	    });
 		buddyList_.addMouseListener(new MouseAdapter() {
 			private void showIfPopupTrigger(MouseEvent mouseEvent) {
 				if(popupMenu_.isPopupTrigger(mouseEvent)) {
-					JList Buddies = (JList) mouseEvent.getSource();
-					int index = Buddies.locationToIndex(mouseEvent.getPoint());
+					JList buddies = (JList) mouseEvent.getSource();
+					int index = buddies.locationToIndex(mouseEvent.getPoint());
 					//setselected buddylist index based on mouse position
 					if (index >= 0) {
 						buddyList_.setSelectedIndex(index);
-						popupMenu_.show(Buddies, mouseEvent.getX(), mouseEvent.getY());
+						popupMenu_.show(buddies, mouseEvent.getX(), mouseEvent.getY());
 					}
 				}
 			}
@@ -412,7 +429,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 						final Buddy selectedBuddy_ = (Buddy) Buddies.getModel().getElementAt(index);
 						//need to start new chat window
 
-						EventQueue.invokeLater(new Runnable() {
+						SwingUtilities.invokeLater(new Runnable() {
 							public void run() {
 								newIMWindow(selectedBuddy_,alwaysNewWindow_);
 							}
@@ -539,7 +556,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 
 
 			//Show the new account window
-			EventQueue.invokeLater(new Runnable(){
+			SwingUtilities.invokeLater(new Runnable(){
 
 				@Override
 				public void run(){
@@ -558,7 +575,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 					//No accounts exist in the file, show the 
 					//new account window and exit
 
-					EventQueue.invokeLater(new Runnable(){
+					SwingUtilities.invokeLater(new Runnable(){
 
 						@Override
 						public void run(){
@@ -695,7 +712,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 	//Simple method to open about page
 	public void openAboutPage()
 	{
-		EventQueue.invokeLater(new Runnable() {
+		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				PreferencesWindow prefs = PreferencesWindow.getInstance();
 				prefs.setPreferencesCategory(PreferencesWindow.ABOUT_);
@@ -706,7 +723,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 	//Simple method to open preference page
 	public void openPreferencesWindow()
 	{
-		EventQueue.invokeLater(new Runnable() {
+		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				PreferencesWindow prefs = PreferencesWindow.getInstance();
 				prefs.setPreferencesCategory(PreferencesWindow.GENERAL_);
@@ -723,7 +740,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 	//Simple method to open Account Manager
 	public void openAccountsPage()
 	{
-		EventQueue.invokeLater(new Runnable() {
+		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				PreferencesWindow prefs = PreferencesWindow.getInstance();
 				prefs.setPreferencesCategory(PreferencesWindow.ACCOUNTS_);
@@ -814,7 +831,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 			if (openBuddies_.get(message.getFrom().toLowerCase().replace(" ", "")) == null){
 				//There isn't currently a window associated with that buddy
 
-				EventQueue.invokeLater(new Runnable() {
+				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
 						//needs to go to an buddy object version
 						newIMWindow(new Buddy(message.getFrom(), message.getTo(), message.getProtocol()), alwaysNewWindow_);
@@ -886,7 +903,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 		//New blank IM window
 		if (actionCommand.equals(newIm_.getActionCommand())) {
 			final WhisperClient wc = WhisperClient.this;
-			EventQueue.invokeLater(new Runnable() {
+			SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
 					new WhisperNewIMWindow(manager_, wc);
 				}
@@ -915,7 +932,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 		//Open the plugins window
 		if (actionCommand.equals(plugins_.getActionCommand())){
 
-			EventQueue.invokeLater(new Runnable() {
+			SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
 					new WhisperPluginManagerWindow(pluginLoader_, plm_);
 				}
@@ -924,7 +941,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 
 		//Preferences
 		if (actionCommand.equals(preferences_.getActionCommand())) {
-			EventQueue.invokeLater(new Runnable() {
+			SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
 					PreferencesWindow prefs = PreferencesWindow.getInstance();
 					prefs.setPreferencesCategory(PreferencesWindow.GENERAL_);
@@ -934,7 +951,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 		
 		//Account Management Window
 		if (actionCommand.equals(accounts_.getActionCommand())){
-			EventQueue.invokeLater(new Runnable(){
+			SwingUtilities.invokeLater(new Runnable(){
 				public void run(){
 					PreferencesWindow prefs = PreferencesWindow.getInstance();
 					prefs.setPreferencesCategory(PreferencesWindow.ACCOUNTS_);
@@ -958,7 +975,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 				//need to start new chat window
 			
 
-				EventQueue.invokeLater(new Runnable() {
+				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
 						newIMWindow(selectedBuddy_,true);
 					}
@@ -975,7 +992,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 				final Buddy selectedBuddy_ = (Buddy) buddyList_.getModel().getElementAt(index);
 				//need to start new chat window
 
-				EventQueue.invokeLater(new Runnable() {
+				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
 						newIMWindow(selectedBuddy_,alwaysNewWindow_);
 					}
@@ -991,7 +1008,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 				final Buddy selectedBuddy_ = (Buddy) buddyList_.getModel().getElementAt(index);
 				//need to start new chat window
 
-				EventQueue.invokeLater(new Runnable() {
+				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
 						newIMWindow(selectedBuddy_,true);
 					}
