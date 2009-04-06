@@ -22,7 +22,6 @@
  * Users can make themselves 'locatable' and share this information with buddies. (John)
  * User can use a webcam to take a picture of themselves and set it as their buddy icon. (John)
  * User can create a local profile and WYSIWYG edit it. (Kirk)
- * User can interface with WYSIWYG in IM window. (Kirk)
  * User can receive rich text in IM windows (Kirk)
  * User can drag tabs.  (Logan)
  * User can drag files to chat area to initiate file transfer (pending transfer ability).  (Logan)
@@ -106,3 +105,4 @@
  * User can chat using the yahoo protocol
  * User can chat using the msn protocol
  * User can set their status on twitter
+ * User can interface with WYSIWYG in IM window
