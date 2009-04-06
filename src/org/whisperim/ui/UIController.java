@@ -1,5 +1,5 @@
  /**************************************************************************
- * Copyright 2009 Nick Krieble                                             *
+ * Copyright 2009 Chris Thompson                                           *
  *                                                                         *
  * Licensed under the Apache License, Version 2.0 (the "License");         *
  * you may not use this file except in compliance with the License.        *
@@ -14,48 +14,24 @@
  * limitations under the License.                                          *
  **************************************************************************/
 
-package org.whisperim.tests;
+package org.whisperim.ui;
 
-import java.security.KeyPair;
+import java.util.ArrayList;
 
-import junit.framework.TestCase;
+import org.whisperim.client.Buddy;
+import org.whisperim.client.Message;
+import org.whisperim.client.MessageProcessor;
 
-import org.whisperim.client.ConnectionManager;
-import org.whisperim.client.MessageProcessorImpl;
-import org.whisperim.security.Encryptor;
+public interface UIController {
+	
+	public void receiveMessage (Message m);
+	
+	public void addBuddies (ArrayList<Buddy> buddies);
 
-/**
- * This class is designed to provided a set of tests for the ConnectionManager class.
- * 
- * @author Nick Krieble
- *
- */
-public class ConnectionManagerTest extends TestCase {
+	public void removeBuddies (ArrayList<Buddy> buddies);
 	
-	KeyPair kp = Encryptor.generateRSAKeyPair();
-	ConnectionManager cm = 
-		new ConnectionManager(new MessageProcessorImpl(kp));
+	public void keyReceived (Buddy b);
 	
-	/**
-	 * This method tests the manager's ability to add a connection strategy
-	 * to the hashmap of currently activated protocols.
-	 */
-	public void testAddToMap()
-	{
-		//cm.addStrategy(null);
-		//assertTrue(cm.getStrategy(test) != null);
-	}
-	
-	/**
-	 * This method tests the manager's ability to remove connection strategies
-	 * from the hashmap.
-	 */
-	public void testRemoveStrategy()
-	{
-		//cm.removeStrategy(test);
-		//assertTrue(cm.isHashEmpty());
-	}
-	
-	
+	public void setMessageProcessor(MessageProcessor mp);
 
 }

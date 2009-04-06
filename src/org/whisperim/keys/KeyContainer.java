@@ -16,8 +16,12 @@
 
 package org.whisperim.keys;
 
-import java.security.*;
+import java.security.KeyPair;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.util.HashMap;
+
+import org.whisperim.client.Buddy;
 
 /**
  * This class is currently unused but is designed to hold local and foreign keys
@@ -28,7 +32,7 @@ import java.util.HashMap;
 public class KeyContainer {
 
 	private KeyPair myKeys_;
-	private HashMap<String, PublicKey> foreignKeys_;
+	private HashMap<Buddy, PublicKey> foreignKeys_;
 	
 	
 	/**
@@ -38,26 +42,26 @@ public class KeyContainer {
 	 */
 	public KeyContainer (KeyPair keys){
 		myKeys_ = keys;
-		foreignKeys_ = new HashMap<String, PublicKey>();
+		foreignKeys_ = new HashMap<Buddy, PublicKey>();
 	}
 	
 	/**
-	 * Method that returns the public key for the given buddy handle.
-	 * @param handle
+	 * Method that returns the public key for the given buddy.
+	 * @param b
 	 * @return PublicKey
 	 */
-	public PublicKey getKey(String handle){
-		return foreignKeys_.get(handle);
+	public PublicKey getKey(Buddy b){
+		return foreignKeys_.get(b);
 	}
 	
 	/**
 	 * Method that adds a key to the keystore in local memory.  Expects a PublicKey object
 	 * and a String object representing the handle of the buddy.
-	 * @param handle
+	 * @param b
 	 * @param key
 	 */
-	public void addKey (String handle, PublicKey key){
-		foreignKeys_.put(handle, key);
+	public void addKey (Buddy b, PublicKey key){
+		foreignKeys_.put(b, key);
 	}
 	
 	
@@ -75,6 +79,10 @@ public class KeyContainer {
 	 */
 	public PublicKey getMyPublicKey(){
 		return myKeys_.getPublic();
+	}
+	
+	public boolean contains(Buddy b){
+		return foreignKeys_.containsKey(b);
 	}
 	
 }
