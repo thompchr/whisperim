@@ -34,7 +34,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import org.whisperim.client.WhisperClient;
+import org.whisperim.ui.WhisperClient;
 import org.xml.sax.SAXException;
 
 public class PluginLoader {

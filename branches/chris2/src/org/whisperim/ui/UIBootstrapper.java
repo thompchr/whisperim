@@ -1,5 +1,5 @@
  /**************************************************************************
- * Copyright 2009 Nick Krieble                                             *
+ * Copyright 2009 Chris Thompson                                           *
  *                                                                         *
  * Licensed under the Apache License, Version 2.0 (the "License");         *
  * you may not use this file except in compliance with the License.        *
@@ -13,49 +13,21 @@
  * See the License for the specific language governing permissions and     *
  * limitations under the License.                                          *
  **************************************************************************/
+package org.whisperim.ui;
 
-package org.whisperim.tests;
-
-import java.security.KeyPair;
-
-import junit.framework.TestCase;
+import java.awt.EventQueue;
 
 import org.whisperim.client.ConnectionManager;
-import org.whisperim.client.MessageProcessorImpl;
-import org.whisperim.security.Encryptor;
 
-/**
- * This class is designed to provided a set of tests for the ConnectionManager class.
- * 
- * @author Nick Krieble
- *
- */
-public class ConnectionManagerTest extends TestCase {
+public class UIBootstrapper {
 	
-	KeyPair kp = Encryptor.generateRSAKeyPair();
-	ConnectionManager cm = 
-		new ConnectionManager(new MessageProcessorImpl(kp));
-	
-	/**
-	 * This method tests the manager's ability to add a connection strategy
-	 * to the hashmap of currently activated protocols.
-	 */
-	public void testAddToMap()
-	{
-		//cm.addStrategy(null);
-		//assertTrue(cm.getStrategy(test) != null);
+	public static void startUI(final ConnectionManager cm){
+		EventQueue.invokeLater(new Runnable() {
+	           public void run() {
+	             new WhisperClient(cm);
+
+	           }
+	        });
 	}
-	
-	/**
-	 * This method tests the manager's ability to remove connection strategies
-	 * from the hashmap.
-	 */
-	public void testRemoveStrategy()
-	{
-		//cm.removeStrategy(test);
-		//assertTrue(cm.isHashEmpty());
-	}
-	
-	
 
 }

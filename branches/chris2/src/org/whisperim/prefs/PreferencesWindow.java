@@ -49,8 +49,8 @@ import javax.swing.event.ListSelectionListener;
 
 import org.whisperim.client.ConnectionManager;
 import org.whisperim.client.ThreadServices;
-import org.whisperim.client.WhisperClient;
 import org.whisperim.renderers.PreferencesWindowCategoryRenderer;
+import org.whisperim.ui.WhisperClient;
 
 public class PreferencesWindow extends JFrame implements ListSelectionListener,ActionListener,WindowListener {
 	
