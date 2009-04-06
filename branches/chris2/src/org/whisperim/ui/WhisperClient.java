@@ -199,6 +199,7 @@ public class WhisperClient extends JFrame implements ActionListener, UIControlle
 		manager_.setClient(this);
 		
 		
+		
 		//start system tray
 		Runnable systrayRunnable = new Runnable() {
 			public void run() {
@@ -1078,14 +1079,18 @@ public class WhisperClient extends JFrame implements ActionListener, UIControlle
 
 	@Override
 	public void keyReceived(Buddy b) {
-		// TODO Auto-generated method stub
+		if (openBuddies_.get(b.getHandle().toLowerCase().replace(" ", "")) == null){
+
+		}else{
+			openBuddies_.get(b.getHandle().toLowerCase().replace(" ", "")).getTab(b.getHandle()).enableEncryption();
+		}
 		
 	}
 
 
 	@Override
 	public void setMessageProcessor(MessageProcessor mp) {
-		// TODO Auto-generated method stub
+		mp_ = mp;
 		
 	}
 }

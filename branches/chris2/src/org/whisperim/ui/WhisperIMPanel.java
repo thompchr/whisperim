@@ -103,7 +103,7 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
 		toggleEncryption_.setSelected(doEncryption_);
 		toggleEncryption_.setText(ENCRYPTION_OFF_);
 
-		        
+
 		if (window_.getMyParent().haveKey(buddy_)){
 			toggleEncryption_.setEnabled(true);
 		}else {
@@ -122,11 +122,11 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
 	}
 
 
-	public void enableEncryption(PublicKey theirKey){
-		if (theirKey != null){
-			toggleEncryption_.setEnabled(true);
-			talkArea_.append("Key received. Encryption is now available.\n");
-		}	
+	public void enableEncryption(){
+
+		toggleEncryption_.setEnabled(true);
+		talkArea_.append("Key received. Encryption is now available.\n");
+
 	}	
 
 	private JComponent initComponents() {
@@ -423,7 +423,7 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
 				boolean b = isWhiteboardMsg(messageArea_.getText());
 			}
 			talkArea_.append(messageArea_.getText() + "\n");
-			
+
 
 			Message message = new Message(new Buddy(myHandle_, myHandle_, buddy_.getProtocolID()), 
 					new Buddy(theirHandle_, myHandle_, buddy_.getProtocolID()), 
