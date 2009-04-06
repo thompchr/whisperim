@@ -71,7 +71,7 @@ public class MessageProcessorImpl implements MessageProcessor {
 				//to parse it and store it.  We will also probably want to
 				//fire some sort of event that allows the encryption to be
 				//enabled.
-				Encryptor.writeKeyToFile(keyText, m.getProtocol() + ":" + m.getFrom());
+				Encryptor.writeKeyToFile(keyText, m.getFromBuddy());
 
 				try {
 					X509EncodedKeySpec pubKeySpec = new X509EncodedKeySpec(Base64.decode(keyText.getBytes()));
@@ -92,7 +92,8 @@ public class MessageProcessorImpl implements MessageProcessor {
 		}
 		
 		if (m.getMessage().contains("<key>")){
-			m.setMessage(encConfig_.get(m.getFrom()).decryptMessage(m.getMessage()));
+			m.setMessage(" (Encrypted Message) " + 
+					encConfig_.get(m.getFrom()).decryptMessage(m.getMessage()));
 		}	
 	}
 
@@ -110,7 +111,15 @@ public class MessageProcessorImpl implements MessageProcessor {
 
 	@Override
 	public boolean haveKey(Buddy b) {
+		if (!kc_.contains(b)){
+			PublicKey key = Encryptor.getPublicKeyForBuddy(b);
+			if (key != null){
+				kc_.addKey(b, key);
+			}
+		}
+		
 		return kc_.contains(b);
+		
 	}
 
 	@Override

@@ -759,6 +759,18 @@ public class WhisperClient extends JFrame implements ActionListener, UIControlle
 		WhisperSystemTray.closeTray();
 		manager_.signOff();
 	}
+	
+	public void requestEnableEncryption(Buddy b){
+		mp_.enableEncryption(b);
+	}
+	
+	public void requestDisableEncryption(Buddy b){
+		mp_.disableEncryption(b);
+	}
+	
+	public boolean haveKey(Buddy b){
+		return mp_.haveKey(b);
+	}
 
 	public void recieveMessage(final Message message){
 		//First we need to check to see if it contains

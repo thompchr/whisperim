@@ -103,9 +103,9 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
 		toggleEncryption_.setSelected(doEncryption_);
 		toggleEncryption_.setText(ENCRYPTION_OFF_);
 
-		PublicKey theirKey = Encryptor.getPublicKeyForBuddy(buddy.getHandle());        
-		if (theirKey != null){
-
+		        
+		if (window_.getMyParent().haveKey(buddy_)){
+			toggleEncryption_.setEnabled(true);
 		}else {
 			toggleEncryption_.setEnabled(false);
 		}
@@ -277,10 +277,12 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
 		}else if(actionCommand.equals(toggleEncryption_.getActionCommand())) {
 			if (doEncryption_) {
 				doEncryption_ = false;
+				window_.getMyParent().requestDisableEncryption(buddy_);
 				toggleEncryption_.setText(ENCRYPTION_OFF_);
 			}
 			else {
 				doEncryption_ = true;
+				window_.getMyParent().requestEnableEncryption(buddy_);
 				toggleEncryption_.setText(ENCRYPTION_ON_);
 			}
 		}else if (actionCommand.equals(sendKeyBtn_.getActionCommand())) {
@@ -418,7 +420,6 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
 			talkArea_.append("(" + df1.format(d) + ") " + myHandle_ + ":");
 			if (doEncryption_) {   	    			    		
 				//Message will be encrypted
-				talkArea_.append("  (Encrypted Message) ");
 				boolean b = isWhiteboardMsg(messageArea_.getText());
 			}
 			talkArea_.append(messageArea_.getText() + "\n");

@@ -28,6 +28,7 @@ import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -45,6 +46,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.whisperim.client.Buddy;
 import org.xml.sax.SAXException;
 
 import com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingException;
@@ -98,6 +100,7 @@ public class Encryptor {
 		return kpg.generateKeyPair();
 
 	}
+	
 
 	/**
 	 * The function provides the ability to read the key file from the local file system
@@ -107,7 +110,7 @@ public class Encryptor {
 	 * @param handle
 	 * @return PublicKey
 	 */
-	public static PublicKey getPublicKeyForBuddy(String handle){
+	public static PublicKey getPublicKeyForBuddy(Buddy b){
 		try {
 			File keyFile = new File(System.getProperty("user.home") + File.separator + "Whisper" + File.separator + "keys");
 			DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
@@ -126,7 +129,7 @@ public class Encryptor {
 				for (int i = 0; i < buddies.getLength(); ++i){
 					Element temp = (Element)buddies.item(i);
 
-					if (temp.getAttribute("handle").equalsIgnoreCase(handle)){
+					if (temp.getAttribute("handle").equalsIgnoreCase(b.getProtocolID() + ":" + b.getHandle())){
 						//We found our buddy
 						buddy = temp;
 						break;
@@ -192,7 +195,7 @@ public class Encryptor {
 	 * @param keyText
 	 * @param handle
 	 */
-	public static void writeKeyToFile(String keyText, String handle){
+	public static void writeKeyToFile(String keyText, Buddy b){
 		//Identifier will be handle:protocol
 		//The handle string passed to the encryptor is already formatted correctly,
 		//no need to get any more information, just write the bugger.  Key text is
@@ -219,7 +222,7 @@ public class Encryptor {
 				for (int i = 0; i < buddies.getLength(); ++i){
 					Element temp = (Element)buddies.item(i);
 
-					if (temp.getAttribute(handle) == null){
+					if (temp.getAttribute(b.getHandle()) == null){
 						//Not our buddy
 					}else {
 						//We found our buddy
@@ -233,7 +236,7 @@ public class Encryptor {
 			if (buddy == null){
 				//We didn't find the buddy
 				buddy = doc.createElement("Buddy");
-				buddy.setAttribute("handle", handle);
+				buddy.setAttribute("handle", b.getProtocolID() + ":" + b.getHandle());
 				Element key = doc.createElement("Key");
 				key.setTextContent(keyText);
 				buddy.appendChild(key);
