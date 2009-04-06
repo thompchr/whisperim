@@ -113,6 +113,10 @@ public class ConnectionManager {
 		strategies_.put(strategy.getIdentifier(), strategy);
 	}
 	
+	public MessageProcessor getMessageProcessor(){
+		return mp_;
+	}
+	
 	/**
 	 * Loads a connection and opens the connection based on the
 	 * strategy initially defined. This method is used to
@@ -153,6 +157,7 @@ public class ConnectionManager {
 	 */
 	public void setClient(WhisperClient client){
 		client_ = client;
+		client_.setMessageProcessor(mp_);
 	}
 
 	/**
