@@ -15,7 +15,6 @@
  **************************************************************************/
 
 package org.whisperim.client;
-import java.awt.EventQueue;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -31,6 +30,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.whisperim.security.Encryptor;
+import org.whisperim.ui.UIBootstrapper;
 import org.xml.sax.SAXException;
 
 import com.sun.org.apache.xml.internal.security.utils.Base64;
@@ -57,15 +57,10 @@ public class Whisper {
 	}
 	
 	public Whisper(){
-
+		//This isn't the best way to do things, need to talk to Jules
 		final KeyPair myKeys = getKeys();
-		
-		EventQueue.invokeLater(new Runnable() {
-	           public void run() {
-	             new WhisperClient(new ConnectionManager (myKeys));
+		UIBootstrapper.startUI(new ConnectionManager(new MessageProcessorImpl(myKeys)));
 
-	           }
-	        });
 	}
 	/**
 	 * I take a xml element and the tag name, look for the tag and get

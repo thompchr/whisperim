@@ -71,6 +71,10 @@ public class Message {
 		other_ = other;
 	}
 	
+	public void setMessage(String message){
+		message_ = message;
+	}
+	
 	public String getFrom(){
 		return from_.getHandle();
 	}
@@ -97,6 +101,10 @@ public class Message {
 	
 	public void setProtocol(String protocol){
 		protocolID_ = protocol;
+	}
+	
+	public Buddy getFromBuddy(){
+		return from_;
 	}
 	
 	
