@@ -4,7 +4,6 @@
 
 =Build 7=
  * Super secret and totally awesome user story (Chris)
- * User can encrypt video chat (Chris)
  * User can implement penetration testing tools through Whisper (Cory)
  * User can use gtalk (Cory)
  * User can receive notifications and integrate with Facebook. (John)
