@@ -3,9 +3,7 @@
 
 
 =Build 7=
- * Bug fixes etc.
- * User can protect account and key configuration files through encryption (Chris)
- * User can use video chat on client networks where it is supported (Chris)
+ * Super secret and totally awesome user story (Chris)
  * User can encrypt video chat (Chris)
  * User can implement penetration testing tools through Whisper (Cory)
  * User can use gtalk (Cory)
@@ -17,8 +15,7 @@
 
 
 =Build 6=
- * User can utilize Whisper as a secure tunnel to the command line on a remote host (Chris)
- * User can see Buddy Icon (Chris)
+ * Super secret and totally awesome user story (Chris)
  * User will be able to import GTK themes (Cory)
  * User will be able to pass all traffic through the TOR network (Cory)
  * User can lock session and can only be resumed using a password (Cory)
