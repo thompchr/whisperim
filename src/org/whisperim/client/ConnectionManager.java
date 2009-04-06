@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 
 import org.whisperim.plugins.Plugin;
+import org.whisperim.ui.WhisperClient;
 
 /**
  * This class manages connections and ties them to local buddy handles. 
@@ -41,8 +42,7 @@ public class ConnectionManager {
 	
 	
 	private WhisperClient client_ = null;
-	private PrivateKey myPrivateKey_;
-	private PublicKey myPublicKey_;
+	private MessageProcessor mp_;
 	
 	public static final int INVISIBLE = 0;
 	public static final int AVAILABLE = 1;
@@ -141,10 +141,9 @@ public class ConnectionManager {
 	/**
 	 * Constructor for Connection Manager.
 	 */
-	public ConnectionManager(KeyPair kp){
-		myPrivateKey_ = kp.getPrivate();
-		myPublicKey_ = kp.getPublic();
-
+	public ConnectionManager(MessageProcessor mp){
+		mp.setConnectionManager(this);
+		mp_ = mp;
 	}
 
 
@@ -224,19 +223,6 @@ public class ConnectionManager {
 		return strategies_;
 	}
 
-	/**
-	 * Get Private key for encryption.
-	 */
-	public PrivateKey getPrivateKey(){
-		return myPrivateKey_;
-	}
-
-	/**
-	 *  Get public key for encryption.
-	 */
-	public PublicKey getPublicKey(){
-		return myPublicKey_;
-	}
 
 	/**
 	 *  Set status to away.
