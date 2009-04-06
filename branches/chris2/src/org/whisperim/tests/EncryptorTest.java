@@ -120,10 +120,10 @@ public class EncryptorTest extends TestCase {
 	}
 	
 	
-	public void testWriteToFile(){
-		Encryptor.writeKeyToFile(Base64.encode(Encryptor.generateRSAKeyPair().getPublic().getEncoded()),
-				"fightinggator13:aol");
-	}
+//	public void testWriteToFile(){
+//		Encryptor.writeKeyToFile(Base64.encode(Encryptor.generateRSAKeyPair().getPublic().getEncoded()),
+//				"fightinggator13:aol");
+//	}
 	
 
 }
