@@ -62,6 +62,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
+import javax.swing.text.BadLocationException;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -117,6 +118,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 	private IdleTT myTaskTimer_;    
 	private static ConnectionManager manager_;
 	private BuddyListModel blm_ = new BuddyListModel();
+	private ProfileEditor editor;
 
 	private PluginLoader pluginLoader_;
 	private JList buddyList_;
@@ -137,6 +139,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 	private JMenuItem quit_;
 	private boolean alwaysNewWindow_ = false;
 	private JMenuItem newWindow_;
+	private JMenuItem profile_;
 	
 	private Dimension frameMinSize_ = new Dimension(175,400);
 	private Dimension framePrefSize_ = new Dimension(175,500);
@@ -156,6 +159,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 	private static final String SOUND_ = "Sound";
 	private static final String SOCIAL_SITE_MANAGER_ = "Social Site Notifications";
 	private static final String QUIT_ = "Quit";
+	private static final String PROFILE_ = "Profile";
 
 	
 	//end menus\\
@@ -506,6 +510,10 @@ public class WhisperClient extends JFrame implements ActionListener {
 		socialSites_.addActionListener(this);
 		whisperMenu_.add(socialSites_);
 		
+		profile_ = new JMenuItem(PROFILE_);
+		profile_.addActionListener(this);
+		whisperMenu_.add(profile_);
+		
 		quit_ = new JMenuItem(QUIT_);
 		quit_.setMnemonic(KeyEvent.VK_Q);
 		quit_.addActionListener(this);
@@ -768,7 +776,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 		manager_.signOff();
 	}
 
-	public void recieveMessage(final Message message){
+	public void recieveMessage(final Message message) throws BadLocationException{
 		//First we need to check to see if it contains
 		//information that is intended for the client
 		//to interpret (key file, etc.)
@@ -835,7 +843,12 @@ public class WhisperClient extends JFrame implements ActionListener {
 					public void run() {
 						//needs to go to an buddy object version
 						newIMWindow(new Buddy(message.getFrom(), message.getTo(), message.getProtocol()), alwaysNewWindow_);
-						openBuddies_.get(message.getFrom().toLowerCase().replace(" ", "")).getTab(message.getFrom().toLowerCase().replace(" ", "")).receiveMsg(message);
+						try {
+							openBuddies_.get(message.getFrom().toLowerCase().replace(" ", "")).getTab(message.getFrom().toLowerCase().replace(" ", "")).receiveMsg(message);
+						} catch (BadLocationException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					}
 				});
 
@@ -1021,6 +1034,12 @@ public class WhisperClient extends JFrame implements ActionListener {
 			SocialSiteManager ssm = new SocialSiteManager();
 			ssm.show();
 		}
+		
+		//Profile
+		if(actionCommand.equals(profile_.getActionCommand())){
+			@SuppressWarnings("unused")
+			ProfileEditor editor = new ProfileEditor(this);
+		}
 	}
 	
 	public void toggleSound(){
@@ -1086,11 +1105,6 @@ public class WhisperClient extends JFrame implements ActionListener {
 		return alwaysNewWindow_;
 	}
 	
-	public void setSystemTray()
-	{	
-		
-	}
-	
 	public static ConnectionManager getConnectionManager() {
 		return manager_;
 	}
@@ -1098,5 +1112,13 @@ public class WhisperClient extends JFrame implements ActionListener {
 	private void packAndRepaint() {
 		SwingUtilities.updateComponentTreeUI(this);
 		this.repaint();
+	}
+
+	public void setEditor(ProfileEditor editor) {
+		this.editor = editor;
+	}
+
+	public ProfileEditor getEditor() {
+		return editor;
 	}
 }
