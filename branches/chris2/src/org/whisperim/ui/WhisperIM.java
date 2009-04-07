@@ -278,7 +278,7 @@ public class WhisperIM extends JFrame implements ActionListener, WindowListener{
     	if (log_ != null)
     		log_.close();
     	for (Entry key : tabHash_.entrySet())
-    		myParent_.onWindowClose(((WhisperIMPanel)key).getBuddy());
+    		myParent_.onWindowClose(((WhisperIMPanel)key.getValue()).getBuddy());
     }
 
     public WhisperClient getMyParent(){

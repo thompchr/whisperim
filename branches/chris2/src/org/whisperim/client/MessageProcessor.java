@@ -2,6 +2,8 @@ package org.whisperim.client;
 
 import java.security.PublicKey;
 
+import org.whisperim.ui.UIController;
+
 
 public interface MessageProcessor {
 
@@ -17,7 +19,9 @@ public interface MessageProcessor {
 	
 	public void registerKey(Buddy b, PublicKey key);
 
-	void setConnectionManager(ConnectionManager cm);
+	public void setConnectionManager(ConnectionManager cm);
+	
+	public void setUI(UIController ui);
 	
 	
 }

@@ -138,4 +138,10 @@ public class MessageProcessorImpl implements MessageProcessor {
 		kc_.addKey(b, key);		
 	}
 
+	@Override
+	public void setUI(UIController ui) {
+		ui_ = ui;
+		
+	}
+
 }
