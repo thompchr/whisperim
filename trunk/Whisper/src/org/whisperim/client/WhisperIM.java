@@ -360,7 +360,7 @@ public class WhisperIM extends JFrame implements ActionListener, WindowListener{
 		Collection <WhisperIMPanel> p = tabHash_.values();
 		for (WhisperIMPanel w : p)
 		{
-	        w.setText(" System Message: \n My location can be viewed here: \n http://maps.google.com/maps?f=q&source=s_q&hl=en&geocode=&q="+zipcode+"\n");
+	        w.setText(" System Message: \n My location can be viewed \n <a href='http://maps.google.com/maps?f=q&source=s_q&hl=en&geocode=&q="+zipcode+"'>here</a> \n");
 	        w.sendMsg();
 		}
 	}
