@@ -28,7 +28,9 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.security.PrivateKey;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
@@ -36,6 +38,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.KeyStroke;
@@ -78,12 +81,13 @@ public class WhisperIM extends JFrame implements ActionListener, WindowListener{
 	private static final String WHISPER_BOT_ = "Whisper Bot";
 	private static final String START_WHITEBOARD_ = "Start Whiteboard";
 	private static final String START_SOCIAL_SITE_DUMP_ = "Start Social Site Notification Service";
-
+	private static final String SET_LOCATION_ = "Set location...";
 	private static final String NEW_TAB_ = "New tab";
 
 	private JCheckBoxMenuItem logging_;
 	private JCheckBoxMenuItem socialSites_;
-    
+	private JCheckBoxMenuItem setLocation_;
+	
     private WhisperClient myParent_;
     private PrivateKey myKey_;
     private Logger log_;
@@ -208,6 +212,19 @@ public class WhisperIM extends JFrame implements ActionListener, WindowListener{
 				}
 			});
     	}
+    	else if (e.getSource() == setLocation_){		
+			if(setLocation_.isSelected())	{
+				String zipcode = JOptionPane.showInputDialog(null, "Please enter your zip code: ");
+				if(zipcode != "") {
+					if(setLocation_.isSelected())	{
+						broadcastLocation(zipcode);
+					} 
+				}
+			}
+			else {
+				setLocation_.setSelected(false);
+			}
+    	}
     }
 	
 	//Menu creation is separate from UI layout
@@ -266,6 +283,11 @@ public class WhisperIM extends JFrame implements ActionListener, WindowListener{
 		});
 		logging_.addActionListener(this);
 		conversationMenu_.add(logging_);
+		
+		setLocation_ = new JCheckBoxMenuItem(SET_LOCATION_);
+		setLocation_.setMnemonic(KeyEvent.VK_O);
+		setLocation_.addActionListener(this);
+		conversationMenu_.add(setLocation_);
 		
 		//Future use...
 		//W_ = KeyStroke.getKeyStroke(KeyEvent.VK_W, Event.CTRL_MASK);
@@ -332,6 +354,15 @@ public class WhisperIM extends JFrame implements ActionListener, WindowListener{
 		if (mainPain_.getTabCount() == 0)
 			dispose();
 		
+	}
+	
+	private void broadcastLocation(String zipcode) {
+		Collection <WhisperIMPanel> p = tabHash_.values();
+		for (WhisperIMPanel w : p)
+		{
+	        w.setText(" System Message: \n My location can be viewed here: \n http://maps.google.com/maps?f=q&source=s_q&hl=en&geocode=&q="+zipcode+"\n");
+	        w.sendMsg();
+		}
 	}
 	
 	protected void paintContentBorderRightEdge(Graphics g, int tabPlacement, int selectedIndex, int x, int y, int w, int h)
