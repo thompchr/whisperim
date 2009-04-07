@@ -8,6 +8,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.HashMap;
 
+import org.whisperim.events.EncryptionEvent;
 import org.whisperim.keys.KeyContainer;
 import org.whisperim.security.Encryptor;
 import org.whisperim.ui.UIController;
@@ -43,13 +44,18 @@ public class MessageProcessorImpl implements MessageProcessor {
 		if (encConfig_.containsKey(b)){
 			encConfig_.remove(b);
 		}
+		
+		EncryptionEvent e = new EncryptionEvent(b);
 		if (haveKey(b)){
 			encConfig_.put(b, new Encryptor(kc_.getKey(b), kc_.getMyPrivateKey()));
+			e.setEncryptionStatus(EncryptionEvent.ENCRYPTION_ENABLED);
+			
+			
 		}else{
-			//Notify the appropriate window that encryption
-			//could not be enabled because we do not
-			//have the key
+			e.setEncryptionStatus(EncryptionEvent.ENCRYPTION_DISABLED);
 		}
+		
+		ui_.processEvent(e);
 	}
 
 	@Override
@@ -83,10 +89,14 @@ public class MessageProcessorImpl implements MessageProcessor {
 
 				} catch (NoSuchAlgorithmException e) {
 					e.printStackTrace();
+					m.setMessage("<b><font color=\"red\">An error occurred reading the key that was received.  Please have your Buddy resend it.</font></b>");
+
 				} catch (Base64DecodingException e) {
 					e.printStackTrace();
+					m.setMessage("<b><font color=\"red\">An error occurred reading the key that was received.  Please have your Buddy resend it.</font></b>");
 				} catch (InvalidKeySpecException e) {
 					e.printStackTrace();
+					m.setMessage("<b><font color=\"red\">An error occurred reading the key that was received.  Please have your Buddy resend it.</font></b>");
 				}
 			}
 		}
@@ -94,7 +104,8 @@ public class MessageProcessorImpl implements MessageProcessor {
 		if (m.getMessage().contains("<key>")){
 			m.setMessage(" (Encrypted Message) " + 
 					encConfig_.get(m.getFrom()).decryptMessage(m.getMessage()));
-		}	
+		}
+		ui_.receiveMessage(m);
 	}
 
 	@Override

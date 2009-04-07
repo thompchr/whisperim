@@ -160,10 +160,6 @@ public class Whisper {
 		
 		
 	}
-	
-	public void sendMessage(Message message){
-		
-	}
 
 	/**
 	 * This is a helper method to generate the XML for the keys.

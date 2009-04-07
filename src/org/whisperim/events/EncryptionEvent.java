@@ -13,31 +13,40 @@
  * See the License for the specific language governing permissions and     *
  * limitations under the License.                                          *
  **************************************************************************/
-
-package org.whisperim.ui;
-
-import java.util.ArrayList;
+package org.whisperim.events;
 
 import org.whisperim.client.Buddy;
-import org.whisperim.client.Message;
-import org.whisperim.client.MessageProcessor;
-import org.whisperim.events.EncryptionEvent;
-import org.whisperim.events.SessionEvent;
 
-public interface UIController {
-	
-	public void receiveMessage (Message m);
-	
-	public void addBuddies (ArrayList<Buddy> buddies);
+public class EncryptionEvent implements WhisperEvent {
 
-	public void removeBuddies (ArrayList<Buddy> buddies);
+	private Buddy b_;
+	private int encStatus_;
 	
-	public void keyReceived (Buddy b);
-	
-	public void setMessageProcessor(MessageProcessor mp);
-	
-	public void processEvent(EncryptionEvent e);
-	
-	public void processEvent(SessionEvent e);
+	public static int ENCRYPTION_ENABLED = 0;
+	public static int ENCRYPTION_DISABLED = 1;
 
+	public EncryptionEvent (Buddy b){
+		b_ = b;
+		encStatus_ = ENCRYPTION_DISABLED;
+	}
+	
+	public EncryptionEvent(Buddy b, int newStatus){
+		b_ = b;
+		encStatus_ = newStatus;
+	}
+	
+	public Buddy getAffectedBuddy(){
+		return b_;
+	}
+	
+	public int getEncryptionStatus(){
+		return encStatus_;
+	}
+	
+	public void setEncryptionStatus(int s){
+		encStatus_ = s;
+	}
+	
+	
+	
 }
