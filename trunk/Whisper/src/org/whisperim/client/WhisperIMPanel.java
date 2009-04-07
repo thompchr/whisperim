@@ -504,6 +504,11 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
 			
 		}
 
+		public void setText(String txt)
+		{
+			this.talkArea_.setText(txt);
+		}
+		
 		@Override
 		public void stateChanged(ChangeEvent arg0) {
 			if (window_.isFocused(this)){
