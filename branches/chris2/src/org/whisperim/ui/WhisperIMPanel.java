@@ -120,14 +120,23 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
 
 		this.requestFocusInWindow();
 	}
+	
+	public Buddy getBuddy(){
+		return buddy_;
+	}
 
 
 	public void enableEncryption(){
 
 		toggleEncryption_.setEnabled(true);
-		talkArea_.append("Key received. Encryption is now available.\n");
+		talkArea_.append("<b>Key received. Encryption is now available.</b>\n");
 
 	}	
+	
+	public void disableEncryption(){
+		toggleEncryption_.setEnabled(false);
+		talkArea_.append("<b>Encryption Disabled.</b>\n");
+	}
 
 	private JComponent initComponents() {
 

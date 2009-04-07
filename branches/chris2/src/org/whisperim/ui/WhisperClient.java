@@ -77,6 +77,8 @@ import org.whisperim.client.ConnectionManager;
 import org.whisperim.client.ConnectionStrategy;
 import org.whisperim.client.Message;
 import org.whisperim.client.MessageProcessor;
+import org.whisperim.events.EncryptionEvent;
+import org.whisperim.events.SessionEvent;
 import org.whisperim.lastfm.LastFM;
 import org.whisperim.listeners.ClientListener;
 import org.whisperim.models.BuddyListModel;
@@ -105,17 +107,17 @@ public class WhisperClient extends JFrame implements ActionListener, UIControlle
 
 
 	private static final long serialVersionUID = -2916085324340552469L;
-	
+
 	//Enums used for plugin identification
 	public static final int CONNECTION = 0;
 	public static final int LOOK_AND_FEEL = 1;
 
-	
+
 	//We need to figure this out, like this, it doesn't make
 	//sense to store the instance here if we can't call methods
 	//on it
 	private static final ImageIcon whisperIcon_ = Preferences.getInstance().getWhisperIconSmall();
-	
+
 	private PluginListModel plm_;
 
 	private Timer myTimer_;
@@ -143,10 +145,10 @@ public class WhisperClient extends JFrame implements ActionListener, UIControlle
 	private JMenuItem quit_;
 	private boolean alwaysNewWindow_ = false;
 	private JMenuItem newWindow_;
-	
+
 	private Dimension frameMinSize_ = new Dimension(175,400);
 	private Dimension framePrefSize_ = new Dimension(175,500);
-	
+
 	private WhisperSystemTray tray_;
 
 	private static final String BUDDY_LIST_ = "Buddy List";
@@ -163,13 +165,13 @@ public class WhisperClient extends JFrame implements ActionListener, UIControlle
 	private static final String SOCIAL_SITE_MANAGER_ = "Social Site Notifications";
 	private static final String QUIT_ = "Quit";
 
-	
+
 	//end menus\\
 
 	//List of Listeners used by WhisperSystemTray
 	private List<ClientListener> clientListeners_ = new ArrayList<ClientListener>();
-	
-	
+
+
 	//Directory constants
 	private static final String WHISPER_HOME_DIR_ = System.getProperty("user.home") + File.separator + "Whisper";
 	private static final String ACCOUNTS_FILE_ = WHISPER_HOME_DIR_ + File.separator + "accounts";
@@ -187,9 +189,9 @@ public class WhisperClient extends JFrame implements ActionListener, UIControlle
 
 
 
-	private HashMap<String, WhisperIM> openBuddies_ = new HashMap<String, WhisperIM>();
-	
-	
+	private HashMap<Buddy, WhisperIM> openBuddies_ = new HashMap<Buddy, WhisperIM>();
+
+
 	/**
 	 * Constructor.
 	 * @param manager - Connection manager to be associated with this instance
@@ -197,29 +199,29 @@ public class WhisperClient extends JFrame implements ActionListener, UIControlle
 	public WhisperClient(ConnectionManager manager) {		
 		manager_ = manager;
 		manager_.setClient(this);
-		
-		
-		
+
+
+
 		//start system tray
 		Runnable systrayRunnable = new Runnable() {
 			public void run() {
-				
+
 			}
 		};
 		Thread systray = new Thread(systrayRunnable);
 		systray.start();
 		tray_ = new WhisperSystemTray();
 		tray_.startSystemTray(this, manager);
-		
-		
+
+
 		//start sounds
 		Sound sound = new Sound();
 		getClientListeners().add(sound);
-		
+
 		//sounds class doesn't implement threads, so calling methods have to
 		//fix this		
 		sound.playSound(this, "Open.wav");
-		
+
 		Runnable soundsRunnable = new Runnable() {
 			public void run() {
 				// TODO Auto-generated method stub
@@ -227,7 +229,7 @@ public class WhisperClient extends JFrame implements ActionListener, UIControlle
 		};
 		Thread soundsThread = new Thread(soundsRunnable);
 		soundsThread.start();
-		
+
 		Preferences.getInstance().getListeners().add(new PrefListener() {
 			private boolean locked = false;
 			@Override
@@ -241,11 +243,11 @@ public class WhisperClient extends JFrame implements ActionListener, UIControlle
 				}
 			}
 		});
-		
-		
+
+
 		//reset idle timer
 		resetTimer(5000);		
-		
+
 		//set themes
 		try {
 			if(Preferences.getInstance().getLookAndFeel().equalsIgnoreCase(Preferences.SYSTEM_)) {
@@ -266,7 +268,7 @@ public class WhisperClient extends JFrame implements ActionListener, UIControlle
 		} catch (UnsupportedLookAndFeelException e) {
 			//e.printStackTrace();
 		}
-		
+
 		Preferences.getInstance().getListeners().add(new PrefListener() {
 			private boolean locked = false;
 			@Override
@@ -287,7 +289,7 @@ public class WhisperClient extends JFrame implements ActionListener, UIControlle
 				}
 			}
 		});
-		
+
 		final JFrame jf = this;
 		Runnable menuRunnable = new Runnable() {
 			public void run() {
@@ -299,7 +301,7 @@ public class WhisperClient extends JFrame implements ActionListener, UIControlle
 		};
 		Thread menuThread = new Thread(menuRunnable);
 		menuThread.start();
-		
+
 		Runnable buddyRunnable = new Runnable() {
 			public void run() {
 				createBuddyList();
@@ -309,7 +311,7 @@ public class WhisperClient extends JFrame implements ActionListener, UIControlle
 		};
 		Thread buddyThread = new Thread(buddyRunnable);
 		buddyThread.start();
-		
+
 		plm_ = new PluginListModel();
 		//This must be called after the manager_ member is set.
 		pluginLoader_ = new PluginLoader(this);
@@ -322,7 +324,7 @@ public class WhisperClient extends JFrame implements ActionListener, UIControlle
 
 		registerPlugin("AIM", CONNECTION, new AIMStrategy());
 		loadAccounts();
-		
+
 		//set sizes and show
 		this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		addWindowListener(new WindowAdapter() {
@@ -341,10 +343,10 @@ public class WhisperClient extends JFrame implements ActionListener, UIControlle
 		//System.out.println("frame displayed");
 	}
 
-	
+
 	private void createBuddyList() {
 		blm_.addListDataListener(new ListDataListener(){
-			
+
 			@Override
 			public void contentsChanged(ListDataEvent e) {
 				if (e.getSource() instanceof ListModel){
@@ -374,21 +376,21 @@ public class WhisperClient extends JFrame implements ActionListener, UIControlle
 				BuddiesComponentShown(evt);
 			}
 		});
-		
+
 		//right click menu
 		popupMenu_ = new JPopupMenu();
-		
+
 		popupNewIM_ = new JMenuItem("New IM");
 		popupNewIM_.addActionListener(this);
 		popupMenu_.add(popupNewIM_);
-		
+
 		popupNewWindow_ = new JMenuItem("New Window");
 		popupNewWindow_.addActionListener(this);
 		popupMenu_.add(popupNewWindow_);
-		
+
 		buddyList_.add(popupMenu_);
 		//end right click menu
-		
+
 		buddyList_.addMouseListener(new MouseAdapter() {
 			private void showIfPopupTrigger(MouseEvent mouseEvent) {
 				if(popupMenu_.isPopupTrigger(mouseEvent)) {
@@ -401,21 +403,21 @@ public class WhisperClient extends JFrame implements ActionListener, UIControlle
 					}
 				}
 			}
-			
+
 			public void mousePressed(MouseEvent mouseEvent) {
 				showIfPopupTrigger(mouseEvent);
 			}
-			
+
 			public void mouseReleased(MouseEvent mouseEvent) {
 				showIfPopupTrigger(mouseEvent);
 			}
-			
-			
+
+
 			public void mouseClicked(MouseEvent mouseEvent) {
 				JList Buddies = (JList) mouseEvent.getSource();
 				if (mouseEvent.getClickCount() == 1)
 					newWindow_.setEnabled(true);
-					
+
 				if (mouseEvent.getClickCount() == 2) {
 					int index = Buddies.locationToIndex(mouseEvent.getPoint());
 					if (index >= 0) {
@@ -431,15 +433,15 @@ public class WhisperClient extends JFrame implements ActionListener, UIControlle
 				}
 			}
 		});
-		
+
 		buddyListScroll_ = new JScrollPane(buddyList_);
 		buddyListScroll_.setViewportView(buddyList_);      
 		buddyListScroll_.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		buddyListScroll_.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		this.add(buddyListScroll_);
 	}
-	
-	
+
+
 	private void createMenu() {
 		//create the menu bar
 		menuBar_ = new JMenuBar();
@@ -447,15 +449,15 @@ public class WhisperClient extends JFrame implements ActionListener, UIControlle
 
 		//first menu\\
 		//Whisper (w)
-			//New IM (n)
-			//New IM in New Window
-			//Set Away 
-			//Accounts (a)
-			//Plugins
-			//Preferences (p)
-			//Sound
-			//Social Site Manager
-			//Quit (q)
+		//New IM (n)
+		//New IM in New Window
+		//Set Away 
+		//Accounts (a)
+		//Plugins
+		//Preferences (p)
+		//Sound
+		//Social Site Manager
+		//Quit (q)
 		whisperMenu_ = new JMenu(WHISPER_);
 		whisperMenu_.setMnemonic(KeyEvent.VK_W);
 
@@ -463,17 +465,17 @@ public class WhisperClient extends JFrame implements ActionListener, UIControlle
 		newIm_.setMnemonic(KeyEvent.VK_N);
 		newIm_.addActionListener(this);
 		whisperMenu_.add(newIm_);
-		
+
 		newWindow_ = new JMenuItem("Open selected in new window");
 		newWindow_.addActionListener(this);
 		whisperMenu_.add(newWindow_);
 		//newWindow_.setVisible(true);
 		newWindow_.setEnabled(false);
-		
+
 		setStatus_ = new JCheckBoxMenuItem(SET_STATUS_);
 		setStatus_.addActionListener(this);
 		whisperMenu_.add(setStatus_);
-		
+
 		accounts_ = new JMenuItem(ACCOUNTS_);
 		accounts_.setMnemonic(KeyEvent.VK_A);
 		accounts_.addActionListener(this);
@@ -494,19 +496,19 @@ public class WhisperClient extends JFrame implements ActionListener, UIControlle
 		sound_.setActionCommand(SOUND_);
 		sound_.addActionListener(this);
 		whisperMenu_.add(sound_);
-		
+
 		socialSites_ = new JMenuItem(SOCIAL_SITE_MANAGER_);
 		socialSites_.addActionListener(this);
 		whisperMenu_.add(socialSites_);
-		
+
 		quit_ = new JMenuItem(QUIT_);
 		quit_.setMnemonic(KeyEvent.VK_Q);
 		quit_.addActionListener(this);
 		whisperMenu_.add(quit_);
-		
+
 		menuBar_.add(whisperMenu_);
 	}
-	
+
 	/**
 	 * This helper method loads saved account information from the accounts
 	 * file.  If the file does not exist it will create one.  If it determines
@@ -675,7 +677,7 @@ public class WhisperClient extends JFrame implements ActionListener, UIControlle
 			window.addPanel(selectedBuddy_, panel);
 			window.setVisible(true);
 
-			openBuddies_.put(selectedBuddy_.getHandle().toLowerCase().replace(" ", ""), window);
+			openBuddies_.put(selectedBuddy_, window);
 
 		}
 		else
@@ -684,7 +686,7 @@ public class WhisperClient extends JFrame implements ActionListener, UIControlle
 			window = openBuddies_.values().iterator().next();
 			panel = new WhisperIMPanel(selectedBuddy_, window);
 			window.addPanel(selectedBuddy_, panel);
-			openBuddies_.put(selectedBuddy_.getHandle().toLowerCase().replace(" ", ""), window);
+			openBuddies_.put(selectedBuddy_, window);
 
 		}
 		window.requestFocus();
@@ -693,15 +695,15 @@ public class WhisperClient extends JFrame implements ActionListener, UIControlle
 	}
 
 
-	
+
 	//  Methods for Whisper System Tray  \\
-	
+
 	//Simple method to create a new blank IM
 	public void createNewIMWindow()
 	{
 		new WhisperNewIMWindow(manager_, this);
 	}
-	
+
 	//Simple method to open about page
 	public void openAboutPage()
 	{
@@ -712,7 +714,7 @@ public class WhisperClient extends JFrame implements ActionListener, UIControlle
 			}
 		});
 	}
-	
+
 	//Simple method to open preference page
 	public void openPreferencesWindow()
 	{
@@ -723,13 +725,13 @@ public class WhisperClient extends JFrame implements ActionListener, UIControlle
 			}
 		});
 	}
-	
+
 	//Simple method to open plugins page
 	public void openPluginsPage()
 	{
 		new WhisperPluginManagerWindow(pluginLoader_, plm_);
 	}
-	
+
 	//Simple method to open Account Manager
 	public void openAccountsPage()
 	{
@@ -740,7 +742,7 @@ public class WhisperClient extends JFrame implements ActionListener, UIControlle
 			}
 		});
 	}
-	
+
 	private void BuddiesComponentShown(ComponentEvent evt) {
 
 	}
@@ -760,48 +762,45 @@ public class WhisperClient extends JFrame implements ActionListener, UIControlle
 		WhisperSystemTray.closeTray();
 		manager_.signOff();
 	}
-	
+
 	public void requestEnableEncryption(Buddy b){
 		mp_.enableEncryption(b);
 	}
-	
+
 	public void requestDisableEncryption(Buddy b){
 		mp_.disableEncryption(b);
 	}
-	
+
 	public boolean haveKey(Buddy b){
 		return mp_.haveKey(b);
 	}
 
-	public void recieveMessage(final Message message){
+	public void receiveMessage(final Message message){
 		//First we need to check to see if it contains
 		//information that is intended for the client
 		//to interpret (key file, etc.)
-		
-				
-				
-			//It would be really great if we could allow system messages to be passed around
-			//That is, if the Whisper program could alert the user of things by adding messages
-			//to the chat window.
-			if (openBuddies_.get(message.getFrom().toLowerCase().replace(" ", "")) == null){
-				//There isn't currently a window associated with that buddy
 
-				EventQueue.invokeLater(new Runnable() {
-					public void run() {
-						//needs to go to an buddy object version
-						newIMWindow(new Buddy(message.getFrom(), message.getTo(), message.getProtocol()), alwaysNewWindow_);
-						openBuddies_.get(message.getFrom().toLowerCase().replace(" ", "")).getTab(message.getFrom().toLowerCase().replace(" ", "")).receiveMsg(message);
-					}
-				});
+		if (openBuddies_.get(message.getFromBuddy()) == null){
+			//There isn't currently a window associated with that buddy
 
-			}else{
-				openBuddies_.get(message.getFrom().toLowerCase().replace(" ", "")).getTab(message.getFrom()).receiveMsg(message);
-			}
+			EventQueue.invokeLater(new Runnable() {
+				public void run() {
+					//needs to go to an buddy object version
+					newIMWindow(new Buddy(message.getFrom(), message.getTo(), message.getProtocol()), alwaysNewWindow_);
+					openBuddies_.get(message.getFromBuddy()).getTab(message.getFromBuddy()).receiveMsg(message);
+				}
+			});
+
+		}else{
+			openBuddies_.get(message.getFromBuddy()).getTab(message.getFromBuddy()).receiveMsg(message);
+		}
 
 		//Listener to update SystemTray if IM is received
-		for(ClientListener l:clientListeners_){l.messageRec(this, message);}
+		for(ClientListener l:clientListeners_){
+			l.messageRec(this, message);
 		}
-	
+	}
+
 
 	public void sendMessage (Message message){
 		//Listener to update sound if IM is received
@@ -834,13 +833,13 @@ public class WhisperClient extends JFrame implements ActionListener, UIControlle
 		}
 
 	}
-	
+
 	public void signOffSN(String protocol, String handle){
 		blm_.removeBuddies(protocol, handle);
 	}
 
-	public void onWindowClose(String handle){
-		openBuddies_.remove(handle.toLowerCase().replace(" ", ""));
+	public void onWindowClose(Buddy b){
+		openBuddies_.remove(b);
 	}
 
 
@@ -864,7 +863,7 @@ public class WhisperClient extends JFrame implements ActionListener, UIControlle
 				}
 			});
 		}
-		
+
 		//Set / Unset Status
 		if (actionCommand.equals(setStatus_.getActionCommand())){			
 			if(setStatus_.isSelected())	{
@@ -903,7 +902,7 @@ public class WhisperClient extends JFrame implements ActionListener, UIControlle
 				}
 			});
 		}
-		
+
 		//Account Management Window
 		if (actionCommand.equals(accounts_.getActionCommand())){
 			EventQueue.invokeLater(new Runnable(){
@@ -918,9 +917,9 @@ public class WhisperClient extends JFrame implements ActionListener, UIControlle
 		if (actionCommand.equals(sound_.getActionCommand())) {
 			toggleSound();
 		}
-		
+
 		if (actionCommand.equals(newWindow_.getActionCommand())){
-			
+
 			if (buddyList_.getSelectedIndex() == -1){
 				newWindow_.setEnabled(false);
 			}
@@ -928,7 +927,7 @@ public class WhisperClient extends JFrame implements ActionListener, UIControlle
 			{
 				final Buddy selectedBuddy_ = (Buddy) buddyList_.getModel().getElementAt(buddyList_.getSelectedIndex());
 				//need to start new chat window
-			
+
 
 				EventQueue.invokeLater(new Runnable() {
 					public void run() {
@@ -936,9 +935,9 @@ public class WhisperClient extends JFrame implements ActionListener, UIControlle
 					}
 				});	
 			}
-			
+
 		}
-		
+
 		if(actionCommand.equals(popupNewIM_.getActionCommand())) {
 			//JList Buddies = (JList) e.getSource();
 			//assumes that the popup came from the buddy list
@@ -954,7 +953,7 @@ public class WhisperClient extends JFrame implements ActionListener, UIControlle
 				});
 			}
 		}
-		
+
 		if(actionCommand.equals(popupNewWindow_.getActionCommand())) {
 			//JList Buddies = (JList) e.getSource();
 			//assumes that the popup came from the buddy list
@@ -970,19 +969,19 @@ public class WhisperClient extends JFrame implements ActionListener, UIControlle
 				});
 			}
 		}
-		
+
 		// This launches the social site manager.
 		if(actionCommand.equals(socialSites_.getActionCommand())){
 			SocialSiteManager ssm = new SocialSiteManager();
 			ssm.show();
 		}
 	}
-	
+
 	public void toggleSound(){
 		System.out.println("Sound toggled");
 		Preferences.getInstance().setSoundsEnabled(!Preferences.getInstance().getSoundsEnabled());
 	}
-	
+
 	public JCheckBoxMenuItem getSound_() {
 		return sound_;
 	}
@@ -990,7 +989,7 @@ public class WhisperClient extends JFrame implements ActionListener, UIControlle
 	public void setSound_(JCheckBoxMenuItem sound) {
 		sound_ = sound;
 	}
-	
+
 	public void changeClientSound(){
 		JCheckBoxMenuItem temp = this.getSound_();
 		temp.setState(!temp.getState());
@@ -1023,7 +1022,7 @@ public class WhisperClient extends JFrame implements ActionListener, UIControlle
 			break;
 		}
 	}
-	
+
 	public List<ClientListener> getClientListeners() {
 		return clientListeners_;
 	}
@@ -1040,16 +1039,16 @@ public class WhisperClient extends JFrame implements ActionListener, UIControlle
 	public boolean getWindowPref(){
 		return alwaysNewWindow_;
 	}
-	
+
 	public void setSystemTray()
 	{	
-		
+
 	}
-	
+
 	public static ConnectionManager getConnectionManager() {
 		return manager_;
 	}
-	
+
 	private void packAndRepaint() {
 		SwingUtilities.updateComponentTreeUI(this);
 		this.repaint();
@@ -1059,38 +1058,60 @@ public class WhisperClient extends JFrame implements ActionListener, UIControlle
 	@Override
 	public void addBuddies(ArrayList<Buddy> buddies) {
 		// TODO Auto-generated method stub
-		
-	}
 
-
-	@Override
-	public void receiveMessage(Message m) {
-		// TODO Auto-generated method stub
-		
 	}
 
 
 	@Override
 	public void removeBuddies(ArrayList<Buddy> buddies) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 
 	@Override
 	public void keyReceived(Buddy b) {
-		if (openBuddies_.get(b.getHandle().toLowerCase().replace(" ", "")) == null){
+		if (openBuddies_.get(b) == null){
 
 		}else{
-			openBuddies_.get(b.getHandle().toLowerCase().replace(" ", "")).getTab(b.getHandle()).enableEncryption();
+			openBuddies_.get(b).getTab(b).enableEncryption();
 		}
-		
+
 	}
 
 
 	@Override
 	public void setMessageProcessor(MessageProcessor mp) {
 		mp_ = mp;
-		
+
+	}
+
+
+	/**
+	 * This method will be used to notify the UI that the encryption
+	 * status has been changed.
+	 * 
+	 * @param e - EncryptionEvent
+	 */
+	@Override
+	public void processEvent(EncryptionEvent e) {
+		if (e.getEncryptionStatus() == EncryptionEvent.ENCRYPTION_DISABLED){
+			openBuddies_.get(e.getAffectedBuddy()).getTab(e.getAffectedBuddy()).disableEncryption();
+		}else{
+			openBuddies_.get(e.getAffectedBuddy()).getTab(e.getAffectedBuddy()).enableEncryption();
+		}
+
+	}
+
+
+	/**
+	 * This method is used to notify the UI of changes to session state
+	 * 
+	 * @param e - SessionEvent
+	 */
+	@Override
+	public void processEvent(SessionEvent e) {
+
+
 	}
 }

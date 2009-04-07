@@ -19,16 +19,13 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Graphics;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.security.PrivateKey;
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
@@ -43,7 +40,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import org.whisperim.SocialSiteDump.SocialSiteManager;
 import org.whisperim.client.Buddy;
 import org.whisperim.client.Logger;
 import org.whisperim.prefs.PrefListener;
@@ -90,7 +86,7 @@ public class WhisperIM extends JFrame implements ActionListener, WindowListener{
 
     private Logger log_;
     private boolean doLogging_;
-    private HashMap<String, WhisperIMPanel> tabHash_ = new HashMap<String,WhisperIMPanel>();
+    private HashMap<Buddy, WhisperIMPanel> tabHash_ = new HashMap<Buddy,WhisperIMPanel>();
 
     
 
@@ -196,8 +192,8 @@ public class WhisperIM extends JFrame implements ActionListener, WindowListener{
     		}
     	}
     	else if (e.getSource() == closeTab_) {
-    		tabHash_.remove(mainPain_.getSelectedComponent().getName().toLowerCase().replace(" ", ""));
-    		myParent_.onWindowClose(mainPain_.getSelectedComponent().getName().toLowerCase().replace(" ", ""));
+    		tabHash_.remove(((WhisperIMPanel)mainPain_.getSelectedComponent()).getBuddy());
+    		myParent_.onWindowClose(((WhisperIMPanel)mainPain_.getSelectedComponent()).getBuddy());
     		mainPain_.remove(mainPain_.getSelectedComponent());
     		if (mainPain_.getTabCount() == 0) {
     			this.dispose();
@@ -281,8 +277,8 @@ public class WhisperIM extends JFrame implements ActionListener, WindowListener{
     	//Close the open file
     	if (log_ != null)
     		log_.close();
-    	for (String key : tabHash_.keySet())
-    		myParent_.onWindowClose(key);
+    	for (Entry key : tabHash_.entrySet())
+    		myParent_.onWindowClose(((WhisperIMPanel)key).getBuddy());
     }
 
     public WhisperClient getMyParent(){
@@ -301,7 +297,7 @@ public class WhisperIM extends JFrame implements ActionListener, WindowListener{
 		
 		mainPain_.setTabComponentAt(mainPain_.getTabCount()-1, panel.getTabHead());
 
-    	tabHash_.put(buddy.getHandle().toLowerCase().replace(" ", ""),panel);
+    	tabHash_.put(buddy,panel);
     	panel.setName(buddy.getHandle());
     	
     	this.requestFocus();
@@ -311,8 +307,8 @@ public class WhisperIM extends JFrame implements ActionListener, WindowListener{
     	mainPain_.addChangeListener(panel);
     }
     
-    public WhisperIMPanel getTab(String buddy){
-    	return tabHash_.get(buddy.toLowerCase().replace(" ", ""));
+    public WhisperIMPanel getTab(Buddy buddy){
+    	return tabHash_.get(buddy);
     }
 
     public boolean isFocused(JPanel panel){
@@ -328,8 +324,8 @@ public class WhisperIM extends JFrame implements ActionListener, WindowListener{
     
 	public void closeTab(WhisperIMPanel panel){
 		
-		tabHash_.remove(panel.getName().toLowerCase().replace(" ", ""));
-		myParent_.onWindowClose(panel.getName().toLowerCase().replace(" ", ""));
+		tabHash_.remove(panel.getBuddy());
+		myParent_.onWindowClose(panel.getBuddy());
 		mainPain_.remove(panel);
 		if (mainPain_.getTabCount() == 0)
 			dispose();

@@ -168,7 +168,7 @@ public class ConnectionManager {
 	 * 					from the service.
 	 */
 	public void messageReceived(Message message){
-		client_.recieveMessage(message);
+		mp_.receiveMessage(message);
 
 	}
 
