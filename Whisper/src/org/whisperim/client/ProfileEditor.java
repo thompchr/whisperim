@@ -53,6 +53,7 @@ public class ProfileEditor extends JFrame implements ActionListener{
 	
 	private static final String SAVEPATH_ = "Profile.html";
 	
+	private static final String WHISPER_ = "Whisper Profile";	
 	private static final String FILE_ = "File";
 	private static final String EDIT_ = "Edit";
 	private static final String COLOR_ = "Color";
@@ -132,7 +133,7 @@ public class ProfileEditor extends JFrame implements ActionListener{
 	JMenuItem rightAlignMenuItem;
 	
 	public ProfileEditor(WhisperClient client){
-		super("Profile Editor");
+		super(WHISPER_);
 		client_ = client;
 		HTMLEditorKit editorKit = new HTMLEditorKit();
 		document = (HTMLDocument)editorKit.createDefaultDocument();
@@ -167,7 +168,13 @@ public class ProfileEditor extends JFrame implements ActionListener{
 			String message = "You have a profile.  Would you like to edit it?";
 			int jp = JOptionPane.showConfirmDialog(null, message, "Profile", JOptionPane.YES_NO_OPTION);
 			if (jp == JOptionPane.YES_OPTION){
-				openDocument();
+				try {
+					openDocument();
+				} catch (IOException e) {
+					e.printStackTrace();
+				} catch (BadLocationException e) {
+					e.printStackTrace();
+				}
 			}
 			else if(jp == JOptionPane.NO_OPTION){
 				//Do nothing
@@ -393,7 +400,13 @@ public class ProfileEditor extends JFrame implements ActionListener{
 		if (actionCommand.compareTo(NEW_) == 0){
 			startNewDocument();
 		} else if (actionCommand.compareTo(OPEN_) == 0){
-			openDocument();
+			try {
+				openDocument();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			} catch (BadLocationException e1) {
+				e1.printStackTrace();
+			}
 		} else if (actionCommand.compareTo(SAVE_) == 0){
 			saveDocument();
 		} else if (actionCommand.compareTo(SAVEAS_) == 0){
@@ -457,10 +470,9 @@ public class ProfileEditor extends JFrame implements ActionListener{
 		}
 	}
 
-	public void openDocument(){
-		try{
+	public void openDocument() throws IOException, BadLocationException{
 			File currentFile = new File("Profile.html");
-			System.out.println(currentFile.getAbsolutePath());
+			if (currentFile.exists()){
 				setTitle(currentFile.getName());	
 				FileReader fr = new FileReader(currentFile);
 				Document oldDoc = textPane.getDocument();
@@ -472,17 +484,22 @@ public class ProfileEditor extends JFrame implements ActionListener{
 				document.addUndoableEditListener(undoHandler);
 				textPane.setDocument(document);
 				resetUndoManager();
-		}catch(BadLocationException e){
-			e.printStackTrace();		
-		}catch(FileNotFoundException e){
-			e.printStackTrace();		
-		}catch(IOException e){
-			e.printStackTrace();
-		}
-
+			}
+			else {
+				String message = "You have no profile.  Would you like to create one?";
+				int jp = JOptionPane.showConfirmDialog(null, message, "Profile", JOptionPane.YES_NO_OPTION);
+				if (jp == JOptionPane.YES_OPTION){
+					currentFile = new File(SAVEPATH_);
+					saveDocumentAs();
+				}
+				else if(jp == JOptionPane.NO_OPTION){
+					//Do nothing
+				}
+			}
 	}
 
 	public void saveDocument(){
+		setTitle(SAVEPATH_);
 		if (currentFile != null){
 			try{
 				FileWriter fw = new FileWriter(currentFile);
@@ -500,10 +517,10 @@ public class ProfileEditor extends JFrame implements ActionListener{
 
 	public void saveDocumentAs(){
 		try{
-			File currentFile = new File("Profile.html");
-					setTitle(currentFile.getName());	
-					FileWriter fw = new FileWriter(currentFile);
-					fw.write(textPane.getText());
+			File currentFile = new File(SAVEPATH_);
+			setTitle(SAVEPATH_);	
+			FileWriter fw = new FileWriter(currentFile);
+			fw.write(textPane.getText());
 		}catch(FileNotFoundException e){
 			System.err.println(e.getMessage());			
 		}catch(IOException e){
@@ -512,6 +529,7 @@ public class ProfileEditor extends JFrame implements ActionListener{
 	}
 	
 	public void deleteDocument(){
+		setTitle(WHISPER_);
         if (currentFile.exists()){
         	currentFile.delete();
         }
