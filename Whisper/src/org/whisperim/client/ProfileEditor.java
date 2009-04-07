@@ -63,6 +63,7 @@ public class ProfileEditor extends JFrame implements ActionListener{
 	private static final String OPEN_ = "Open";
 	private static final String SAVE_ = "Save";
 	private static final String SAVEAS_ = "Save As";
+	private static final String DELETE_ = "Delete";
 	private static final String EXIT_ = "Exit";
 	private static final String UNDO_ = "Undo";
 	private static final String REDO_ = "Redo";
@@ -101,6 +102,7 @@ public class ProfileEditor extends JFrame implements ActionListener{
 	JMenuItem openItem;
 	JMenuItem saveItem;
 	JMenuItem saveAsItem;
+	JMenuItem deleteItem;
 	JMenuItem exitItem;
 	JMenuItem undoItem;
 	JMenuItem redoItem;
@@ -197,17 +199,20 @@ public class ProfileEditor extends JFrame implements ActionListener{
 		openItem = new JMenuItem(OPEN_);
 		saveItem = new JMenuItem(SAVE_);
 		//saveAsItem = new JMenuItem(SAVEAS_);
+		deleteItem = new JMenuItem(DELETE_);
 		exitItem = new JMenuItem(EXIT_);
 		
 		newItem.addActionListener(this);
 		openItem.addActionListener(this);
 		saveItem.addActionListener(this);
+		deleteItem.addActionListener(this);
 		//saveAsItem.addActionListener(this);
 		exitItem.addActionListener(this);
 		
 		fileMenu.add(newItem);
 		fileMenu.add(openItem);
 		fileMenu.add(saveItem);
+		fileMenu.add(deleteItem);
 		//fileMenu.add(saveAsItem);
 		fileMenu.add(exitItem);
 		
@@ -399,7 +404,9 @@ public class ProfileEditor extends JFrame implements ActionListener{
 			clear();
 		} else if (actionCommand.compareTo(SELECTALL_) == 0){
 			selectAll();
-		} 
+		} else if (actionCommand.compareTo(DELETE_) == 0){
+			deleteDocument();
+		}
 	}
 	 
 	protected void resetUndoManager() {
@@ -502,6 +509,12 @@ public class ProfileEditor extends JFrame implements ActionListener{
 		}catch(IOException e){
 			System.err.println(e.getMessage());
 		}
+	}
+	
+	public void deleteDocument(){
+        if (currentFile.exists()){
+        	currentFile.delete();
+        }
 	}
 
 	public void exit(){
