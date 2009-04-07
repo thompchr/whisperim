@@ -399,15 +399,12 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
 	    public void updateChatArea(String newText, String info){
 	    	String oldText = talkArea_.getText();
     		String tempRecMessage = newText;
-<<<<<<< .mine
     		
     		StringFilter filter = new StringFilter(newText);
     		newText = filter.filter();
     		
-    		if(tempRecMessage.indexOf("<HTML>") != -1){
-=======
     		if((tempRecMessage.indexOf("<HTML>") != -1) || (newText.contains("<font>"))){
->>>>>>> .r434
+
 	    		tempRecMessage = info + tempRecMessage.substring(tempRecMessage.indexOf("<BODY>")+6, tempRecMessage.indexOf("</BODY>"));
 	    		String finalText = oldText.substring(0, oldText.indexOf("</p>")-1) + "<br>" + tempRecMessage + oldText.substring(oldText.indexOf("</p>"), oldText.length());
 	    		talkArea_.setText(finalText);  	
