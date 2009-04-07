@@ -1,14 +1,11 @@
 package org.whisperim.client;
 
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.security.PrivateKey;
@@ -18,7 +15,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.regex.Pattern;
 
-import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
@@ -26,13 +22,23 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
+import javax.swing.JTextPane;
 import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
 import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
+import javax.swing.text.Element;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
+import javax.swing.text.html.HTML;
+import javax.swing.text.html.HTMLDocument;
+import javax.swing.text.html.HTMLEditorKit;
+import javax.swing.text.JTextComponent;
+
 
 import org.jdesktop.layout.GroupLayout;
 import org.jdesktop.layout.LayoutStyle;
@@ -51,6 +57,7 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
     private Timer flash_, noFlash_;
     private Color flashColor_ = new Color(30,144,255);
     private String currentColor_ = "default";
+    private String oldText;
     
     private Buddy buddy_;
     private WhisperIM window_;
@@ -66,19 +73,24 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
     private static final String TOGGLE_ENCRYPTION_ = "Toggle Encryption";
     private static final String START_WHITEBOARD_ = "Start Whiteboard";
     
+	private HTMLEditorKit editorKit = new HTMLEditorKit();
+	private HTMLDocument recText = (HTMLDocument)editorKit.createDefaultDocument();
+	private HTMLDocument sendText = (HTMLDocument)editorKit.createDefaultDocument();
+	
     private ImageIcon serviceIcon_;
     private JLabel buddyName_;
     private JScrollPane talkAreaScroll_;
-    private JTextArea messageArea_;
+    private JTextPane messageArea_ = new JTextPane(sendText);
     private JScrollPane messageAreaScroll_;
     private JButton sendBtn_;
-    private JTextArea talkArea_;
+    private JTextPane talkArea_ = new JTextPane(recText);
     private JToggleButton toggleEncryption_;
     private JButton sendKeyBtn_;
 	private JCheckBoxMenuItem logging_;
 	private JButton whiteboardBtn_;
 	private JButton close_;
 	private JPanel head_;
+
 
     private Logger log_;
     private PrivateKey myKey_;
@@ -112,12 +124,9 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
    
         toggleEncryption_.setSelected(doEncryption_);
         toggleEncryption_.setText(ENCRYPTION_OFF_);
-        //talkArea_.requestFocus();
- 
-		
+        	
         addTab();
-        
-        
+            
         this.requestFocusInWindow();
 	}
 	
@@ -126,16 +135,13 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
 	   		if (theirKey != null){
 	   			encrypt = new Encryptor(theirKey, myKey_);
 	   			toggleEncryption_.setEnabled(true);
-	   			talkArea_.append("Key received. Encryption is now available.\n");
+	   			updateChatArea("Key received. Encryption is now available.", "");
 	    	}	
 	    }	
 	
 	    private JComponent initComponents() {
 	        
 	    	//Create panel that will hold the layout, and become a tab
-
-	       
-	    	
 	    	
 	    	GroupLayout layout = new GroupLayout(this);
 	    	
@@ -147,8 +153,7 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
 			catch(Exception e) {  
 				//Do nothing  
 			}  
-	    	
-	    	
+	    	   	
 	        if (buddy_.getProtocolID().equals(AOL_)) {
 			      //buddy is on aim
 			      serviceIcon_ =  aimIcon_;
@@ -156,26 +161,17 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
 			      serviceIcon_ = defaultIcon_;
 			}
 	        
-
 	        buddyName_ = new JLabel(buddy_.getHandle(), serviceIcon_, SwingConstants.LEFT);
-	        
 	        this.setName(buddy_.getHandle());
 
-	        talkArea_ = new JTextArea();
-	        talkArea_.setColumns(20);
-	        talkArea_.setRows(5);
-	        talkArea_.setEditable(false);
-	        talkArea_.setLineWrap(true);
-	        talkArea_.setWrapStyleWord(true);
+	        talkArea_.requestFocus();
+	    	talkArea_.setContentType("text/html");
+	    	talkArea_.setEditable(false);
 	        talkAreaScroll_ = new JScrollPane(talkArea_);
 	        talkAreaScroll_.setViewportView(talkArea_);
 	        talkAreaScroll_.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 	        talkAreaScroll_.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 	        
-	        messageArea_ = new JTextArea();
-	        messageArea_.setColumns(20);
-	        messageArea_.setLineWrap(true);
-	        messageArea_.setWrapStyleWord(true);
 	        messageArea_.addKeyListener (
 	        		new KeyAdapter() {
 	        			public void keyTyped(KeyEvent e) {
@@ -261,11 +257,6 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
 
 	        
 	        buddyName_.getAccessibleContext().setAccessibleName("Buddy");
-	        
-	        
-
-	        
-	        
 	        this.setLayout(layout);
 	        return this;
 	    }
@@ -291,10 +282,10 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
 	        				"<whisperim keyspec=" + Encryptor.getMyPublicKey() + "-- />", buddy_.getProtocolID(),
 	        				Calendar.getInstance().getTime());
 	        		window_.getMyParent().sendMessage(keyMsg);
-	        		talkArea_.append("Public key sent\n");
+	        		updateChatArea("Public key sent", "");
 	        		
 	        	}catch (Exception ex){
-	        		talkArea_.append("An error has occurred sending the key.\n");
+	        		updateChatArea("An error has occurred sending the key.", "");
 	        		ex.printStackTrace();
 	        	}
 	    	}
@@ -304,7 +295,7 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
 		    		try{
 		        		whiteboard_ = new Whiteboard(buddy_.getHandle(),500,500);
 		        	}catch (Exception ex){
-		        		talkArea_.append("An error has occurred starting the whiteboard.\n");
+		        		updateChatArea("An error has occurred starting the whiteboard.", "");
 		        	}
 		        	whiteboardBtn_.setEnabled(false);
 	    		}
@@ -335,9 +326,7 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
     }
     
 		private void addTab(){
-			
 			window_.addPanel(buddy_, this);
-			
 		}		
 							
 		
@@ -372,29 +361,46 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
 	    	talkArea_.setCaretPosition(talkArea_.getDocument().getLength());
 	    }
 	    
-	    public void receiveMsg(Message message)
+	    public void updateChatArea(String newText, String info){
+	    	String oldText = talkArea_.getText();
+    		String tempRecMessage = newText;
+    		if(tempRecMessage.indexOf("<HTML>") != -1){
+	    		tempRecMessage = info + tempRecMessage.substring(tempRecMessage.indexOf("<BODY>")+6, tempRecMessage.indexOf("</BODY>"));
+	    		String finalText = oldText.substring(0, oldText.indexOf("</p>")-1) + "<br>" + tempRecMessage + oldText.substring(oldText.indexOf("</p>"), oldText.length());
+	    		talkArea_.setText(finalText);  	
+	    		System.out.println(finalText);
+    			System.out.println();
+    		}
+    		else {
+    			newText = "<FONT FACE=\"Arial\" SIZE=4 COLOR=#000000>" + newText + "</FONT>";
+    			String finalText = oldText.substring(0, oldText.indexOf("</p>")-1) + "<br>" + newText + oldText.substring(oldText.indexOf("</p>"), oldText.length());
+    			talkArea_.setText(finalText); 
+    			System.out.println(finalText);
+    			System.out.println();
+    		}	
+	    }
+	    
+	    public void receiveMsg(Message message) throws BadLocationException
 	    {	    
 	    	DateFormat d = DateFormat.getTimeInstance(DateFormat.MEDIUM);
-	    	talkArea_.append("(" + d.format(message.getTimeSent()) + ") ");
-	    	talkArea_.append(message.getFrom() + ": ");
-	    	
-	    	if (!doEncryption_ || !message.getMessage().contains("<key>")){		    	
-	    		talkArea_.append(clearHTMLTags(message.getMessage(), -1)); 
+	    	String info = "(" + d.format(message.getTimeSent()) + ") " + message.getFrom() + ": ";
+
+	    	if (!doEncryption_ || !message.getMessage().contains("<key>")){
+	    		updateChatArea(message.getMessage(), info);
 	    	}else{
 	    		String decryptedMsg = encrypt.decryptMessage(message.getMessage());
-	    		boolean b = isWhiteboardMsg(decryptedMsg);  	    	
-	    	    talkArea_.append("(Encrypted Message) " + clearHTMLTags(decryptedMsg, -1));
+	    		boolean b = isWhiteboardMsg(decryptedMsg);  
+	    		String updatedInfo = info + " (Encrypted Message) ";
+	    	    updateChatArea(decryptedMsg, updatedInfo);
 	    	}
 	        
-	    	if (doLogging_)
+	    	if (doLogging_){
 	        	log_.write(message, message.getFrom());
-	        	
+	    	}	        	
 	    	
 	    	flash(window_.isFocused(this));
 	    	//flash(this.isFocusOwner());
-	    		
-	        talkArea_.append("\n");
-	        autoScroll();
+	    	autoScroll();
 	    }
 
 	    public boolean isWhiteboardMsg(String msg)
@@ -427,13 +433,14 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
 		        DateFormat df1 = DateFormat.getTimeInstance(DateFormat.MEDIUM);
 		        if (doEncryption_) {   	    			    		
 			        	//Message will be encrypted
-			        	talkArea_.append("(" + df1.format(d) + ") " + myHandle_ + ":  (Encrypted Message) " + messageArea_.getText() + "\n");
+			        	updateChatArea("(" + df1.format(d) + ") " + myHandle_ + ":  (Encrypted Message) " + messageArea_.getText() + "\n", "");
 			            messageText = encrypt.generateCipherText(messageArea_.getText());
 			            boolean b = isWhiteboardMsg(messageArea_.getText());
 		        }
 		        else {
-		        	talkArea_.append("(" + df1.format(d) + ") " + myHandle_ + ": " + messageArea_.getText() + "\n");
+		        	updateChatArea("(" + df1.format(d) + ") " + myHandle_ + ": " + messageArea_.getText() + "\n", "");
 		            messageText = messageArea_.getText();
+		            messageArea_.repaint();
 		        }
 		
 		        Message message = new Message(new Buddy(myHandle_, myHandle_, buddy_.getProtocolID()), 
@@ -516,8 +523,6 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
 					currentColor_ = "default";
 					head_.setBackground(this.getBackground());
 				}
-			}
-			
-			
+			}		
 		}
 	}	
