@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import javax.swing.text.BadLocationException;
+
 import org.whisperim.plugins.Plugin;
 import org.whisperim.ui.WhisperClient;
 
@@ -168,9 +170,12 @@ public class ConnectionManager {
 	 * @param message - The message object constructed by the
 	 * 					session thread from the message received
 	 * 					from the service.
+	 * @throws BadLocationException 
 	 */
-	public void messageReceived(Message message){
+
+	public void messageReceived(Message message) throws BadLocationException{
 		mp_.receiveMessage(message);
+
 
 	}
 
