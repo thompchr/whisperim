@@ -196,19 +196,19 @@ public class ProfileEditor extends JFrame implements ActionListener{
 		newItem = new JMenuItem(NEW_);
 		openItem = new JMenuItem(OPEN_);
 		saveItem = new JMenuItem(SAVE_);
-		saveAsItem = new JMenuItem(SAVEAS_);
+		//saveAsItem = new JMenuItem(SAVEAS_);
 		exitItem = new JMenuItem(EXIT_);
 		
 		newItem.addActionListener(this);
 		openItem.addActionListener(this);
 		saveItem.addActionListener(this);
-		saveAsItem.addActionListener(this);
+		//saveAsItem.addActionListener(this);
 		exitItem.addActionListener(this);
 		
 		fileMenu.add(newItem);
 		fileMenu.add(openItem);
 		fileMenu.add(saveItem);
-		fileMenu.add(saveAsItem);
+		//fileMenu.add(saveAsItem);
 		fileMenu.add(exitItem);
 		
 		undoItem = new JMenuItem(undoAction);
