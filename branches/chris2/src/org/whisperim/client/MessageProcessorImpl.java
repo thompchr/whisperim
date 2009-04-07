@@ -8,13 +8,13 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.HashMap;
 
+import org.apache.commons.codec.binary.Base64;
 import org.whisperim.events.EncryptionEvent;
 import org.whisperim.keys.KeyContainer;
 import org.whisperim.security.Encryptor;
 import org.whisperim.ui.UIController;
 
-import com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingException;
-import com.sun.org.apache.xml.internal.security.utils.Base64;
+
 
 public class MessageProcessorImpl implements MessageProcessor {
 
@@ -80,7 +80,7 @@ public class MessageProcessorImpl implements MessageProcessor {
 				Encryptor.writeKeyToFile(keyText, m.getFromBuddy());
 
 				try {
-					X509EncodedKeySpec pubKeySpec = new X509EncodedKeySpec(Base64.decode(keyText.getBytes()));
+					X509EncodedKeySpec pubKeySpec = new X509EncodedKeySpec(new Base64().decode(keyText.getBytes()));
 					kc_.addKey(m.getFromBuddy(),KeyFactory.getInstance("RSA").generatePublic(pubKeySpec));
 					
 					ui_.keyReceived(m.getFromBuddy());
@@ -91,9 +91,6 @@ public class MessageProcessorImpl implements MessageProcessor {
 					e.printStackTrace();
 					m.setMessage("<b><font color=\"red\">An error occurred reading the key that was received.  Please have your Buddy resend it.</font></b>");
 
-				} catch (Base64DecodingException e) {
-					e.printStackTrace();
-					m.setMessage("<b><font color=\"red\">An error occurred reading the key that was received.  Please have your Buddy resend it.</font></b>");
 				} catch (InvalidKeySpecException e) {
 					e.printStackTrace();
 					m.setMessage("<b><font color=\"red\">An error occurred reading the key that was received.  Please have your Buddy resend it.</font></b>");

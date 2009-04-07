@@ -28,7 +28,6 @@ import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -40,6 +39,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.w3c.dom.Document;
@@ -50,7 +50,7 @@ import org.whisperim.client.Buddy;
 import org.xml.sax.SAXException;
 
 import com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingException;
-import com.sun.org.apache.xml.internal.security.utils.Base64;
+
 
 
 /**
@@ -152,7 +152,7 @@ public class Encryptor {
 				}
 				
 				String keyString = key.getTextContent();
-				X509EncodedKeySpec pubKeySpec = new X509EncodedKeySpec(Base64.decode(keyString.getBytes()));
+				X509EncodedKeySpec pubKeySpec = new X509EncodedKeySpec(new Base64().decode(keyString.getBytes()));
 
 				KeyFactory rsaKeyFac = null;
 
@@ -178,10 +178,7 @@ public class Encryptor {
 			Logger.getLogger(Encryptor.class.getName()).log(Level.SEVERE, null, ex);
 		} catch (ParserConfigurationException ex) {
 			Logger.getLogger(Encryptor.class.getName()).log(Level.SEVERE, null, ex);
-		} catch (Base64DecodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		} 
 		return null;
 	}
 
@@ -238,7 +235,7 @@ public class Encryptor {
 				buddy = doc.createElement("Buddy");
 				buddy.setAttribute("handle", b.getProtocolID() + ":" + b.getHandle());
 				Element key = doc.createElement("Key");
-				key.setTextContent(keyText);
+				key.appendChild(doc.createTextNode(keyText));
 				buddy.appendChild(key);
 				root.appendChild(buddy);
 				
@@ -251,14 +248,17 @@ public class Encryptor {
 				for (int i = 0; i < children.getLength(); ++i){
 					if (children.item(i).getNodeName().compareToIgnoreCase("Key") == 0){
 						//Key node already exists
-						children.item(i).setTextContent(keyText);
+						children.item(i).removeChild(children.item(i).getFirstChild());
+						
+						
+						children.item(i).appendChild(doc.createTextNode(keyText));
 						found = true;
 						break;
 					}
 				}
 				if (!found){
 					Element key = doc.createElement("Key");
-					key.setTextContent(keyText);
+					key.appendChild(doc.createTextNode(keyText));
 					buddy.appendChild(key);
 				}
 				
@@ -295,8 +295,8 @@ public class Encryptor {
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		}
-		X509EncodedKeySpec pubKeySpec = new X509EncodedKeySpec(Base64.decode(keys[0].getBytes()));
-		PKCS8EncodedKeySpec privKeySpec = new PKCS8EncodedKeySpec(Base64.decode(keys[1].getBytes()));
+		X509EncodedKeySpec pubKeySpec = new X509EncodedKeySpec(new Base64().decode(keys[0].getBytes()));
+		PKCS8EncodedKeySpec privKeySpec = new PKCS8EncodedKeySpec(new Base64().decode(keys[1].getBytes()));
 
 		PublicKey pubKey = null;
 		PrivateKey privKey = null;
@@ -309,7 +309,6 @@ public class Encryptor {
 				privKey = rsaKeyFac.generatePrivate(privKeySpec);
 
 			} catch (InvalidKeySpecException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -343,7 +342,7 @@ public class Encryptor {
 
 			byte [] byteArray = message.getBytes("UTF-8");
 
-			String cipherMessage = new String (Base64.encode(aesCipher.doFinal(byteArray)));
+			String cipherMessage = new String (new Base64 ().encode(aesCipher.doFinal(byteArray)));
 
 			encryptedMessage = "<key>";
 
@@ -353,7 +352,7 @@ public class Encryptor {
 
 			byte [] encryptedKeyBytes = rsaCipher.doFinal(sessionKey.getEncoded());
 
-			String encryptedKeyString = new String (Base64.encode(encryptedKeyBytes));
+			String encryptedKeyString = new String (new Base64().encode(encryptedKeyBytes));
 
 			encryptedMessage += encryptedKeyString +"</key>" +
 			"<message>" + cipherMessage + "</message>";
@@ -396,12 +395,12 @@ public class Encryptor {
 		try {
 
 			String encKey = message.substring(5, message.indexOf("</key>"));
-			byte [] keyBytes = Base64.decode(encKey.getBytes("UTF-8"));
+			byte [] keyBytes = new Base64().decode(encKey.getBytes("UTF-8"));
 
 
 			String encMessage = message.substring(message.indexOf("</key>") + 15, message.indexOf("</message>"));
 
-			byte [] messageBytes = Base64.decode(encMessage.getBytes("UTF-8"));
+			byte [] messageBytes = new Base64().decode(encMessage.getBytes("UTF-8"));
 
 			Cipher rsaCipherDecrypt = Cipher.getInstance("RSA/ECB/PKCS1Padding");
 			rsaCipherDecrypt.init(Cipher.DECRYPT_MODE, privateKey_);

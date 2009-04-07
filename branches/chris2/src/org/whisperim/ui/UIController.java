@@ -40,4 +40,8 @@ public interface UIController {
 	
 	public void processEvent(SessionEvent e);
 
+	public void statusUpdate(String status, String account);
+
+	public void updateBuddyList(ArrayList<Buddy> buddies);
+
 }
