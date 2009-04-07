@@ -2,12 +2,15 @@ package org.whisperim.client;
 
 
 import java.awt.Color;
+import java.awt.Desktop;
 import java.awt.Dimension;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.lang.reflect.Method;
+import java.net.URI;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.text.DateFormat;
@@ -29,6 +32,8 @@ import javax.swing.Timer;
 import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
@@ -83,7 +88,7 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
 	private JButton whiteboardBtn_;
 	private JButton close_;
 	private JPanel head_;
-
+	private JScrollPane hyperlinkPanel_;
 
     private Logger log_;
     private PrivateKey myKey_;
@@ -119,7 +124,44 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
         toggleEncryption_.setText(ENCRYPTION_OFF_);
         	
         addTab();
-            
+        
+        talkArea_.addHyperlinkListener(new HyperlinkListener()
+        {
+			@Override
+			public void hyperlinkUpdate(HyperlinkEvent arg0) {
+				hyperlinkPanel_ = new JScrollPane();
+            	JTextPane p = new JTextPane();
+            	hyperlinkPanel_.setPreferredSize(new Dimension(250, 145));
+            	
+				try
+                {
+                	if(arg0.getEventType() == HyperlinkEvent.EventType.ENTERED)
+                	{
+                		System.out.println("hyperlink entered");
+                    	p.setPage(arg0.getURL());
+                    	hyperlinkPanel_.add(p);
+                    	hyperlinkPanel_.setVisible(true);
+                	}
+                }catch(Exception e){}
+                
+                try{
+                    if(arg0.getEventType() == HyperlinkEvent.EventType.ACTIVATED)
+                    {
+                        System.out.println("hyperlink clicked");
+                        Desktop.getDesktop().browse(new URI(arg0.getURL().toString()));
+                    }
+                }catch(Exception e){}
+                
+                try{
+                    if(arg0.getEventType() == HyperlinkEvent.EventType.EXITED)
+                    {
+                    	System.out.println("hyperlink exited");
+                    	hyperlinkPanel_.setVisible(false);
+                    }
+                }catch(Exception e){} 
+			}
+        });
+        
         this.requestFocusInWindow();
 	}
 	
@@ -357,7 +399,15 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
 	    public void updateChatArea(String newText, String info){
 	    	String oldText = talkArea_.getText();
     		String tempRecMessage = newText;
+<<<<<<< .mine
+    		
+    		StringFilter filter = new StringFilter(newText);
+    		newText = filter.filter();
+    		
+    		if(tempRecMessage.indexOf("<HTML>") != -1){
+=======
     		if((tempRecMessage.indexOf("<HTML>") != -1) || (newText.contains("<font>"))){
+>>>>>>> .r434
 	    		tempRecMessage = info + tempRecMessage.substring(tempRecMessage.indexOf("<BODY>")+6, tempRecMessage.indexOf("</BODY>"));
 	    		String finalText = oldText.substring(0, oldText.indexOf("</p>")-1) + "<br>" + tempRecMessage + oldText.substring(oldText.indexOf("</p>"), oldText.length());
 	    		talkArea_.setText(finalText);  	
