@@ -400,8 +400,8 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
 	    	String oldText = talkArea_.getText();
     		String tempRecMessage = newText;
     		
-    		StringFilter filter = new StringFilter(newText);
-    		newText = filter.filter();
+    		//StringFilter filter = new StringFilter(newText);
+    		//newText = filter.filter();
     		
     		if((tempRecMessage.indexOf("<HTML>") != -1) || (newText.contains("<font>"))){
 
