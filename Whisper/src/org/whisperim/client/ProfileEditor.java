@@ -17,6 +17,8 @@
 
 package org.whisperim.client;
 
+import com.thoughtworks.xstream.XStream;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
@@ -31,8 +33,9 @@ public class ProfileEditor extends JFrame implements ActionListener{
 	
 	private HTMLDocument document;
 	private JTextPane textPane = new JTextPane();
-	private File currentFile;
+	private File currentFile = new File(SAVEPATH_);
 	private WhisperClient client_;
+	private XStream xstream_;
 		
 	protected UndoableEditListener undoHandler = new UndoHandler();
 	protected UndoManager undo = new UndoManager();
@@ -47,6 +50,8 @@ public class ProfileEditor extends JFrame implements ActionListener{
 	private Action boldAction = new StyledEditorKit.BoldAction();
 	private Action underlineAction = new StyledEditorKit.UnderlineAction();
 	private Action italicAction = new StyledEditorKit.ItalicAction();
+	
+	private static final String SAVEPATH_ = "Profile.html";
 	
 	private static final String FILE_ = "File";
 	private static final String EDIT_ = "Edit";
@@ -140,10 +145,34 @@ public class ProfileEditor extends JFrame implements ActionListener{
 		} catch (UnsupportedLookAndFeelException e) {
 			e.printStackTrace();
 		}
+		
 		init();
+		
+		boolean text = currentFile.exists();
+		if (!currentFile.exists()){
+			String message = "You have no profile.  Would you like to create one?";
+			int jp = JOptionPane.showConfirmDialog(null, message, "Profile", JOptionPane.YES_NO_OPTION);
+			if (jp == JOptionPane.YES_OPTION){
+				currentFile = new File(SAVEPATH_);
+				saveDocumentAs();
+			}
+			else if(jp == JOptionPane.NO_OPTION){
+				//Do nothing
+			}
+		}
+		else
+		{
+			String message = "You have a profile.  Would you like to edit it?";
+			int jp = JOptionPane.showConfirmDialog(null, message, "Profile", JOptionPane.YES_NO_OPTION);
+			if (jp == JOptionPane.YES_OPTION){
+				openDocument();
+			}
+			else if(jp == JOptionPane.NO_OPTION){
+				//Do nothing
+			}
+		}
 	}
 	
-
 	public void init(){
 		addWindowListener(new FrameListener());
 		
@@ -423,13 +452,8 @@ public class ProfileEditor extends JFrame implements ActionListener{
 
 	public void openDocument(){
 		try{
-			File current = new File(".");
-			JFileChooser chooser = new JFileChooser(current);
-			chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-			chooser.setFileFilter(new HTMLFileFilter());
-			int approval = chooser.showSaveDialog(this);
-			if (approval == JFileChooser.APPROVE_OPTION){
-				currentFile = chooser.getSelectedFile();
+			File currentFile = new File("Profile.html");
+			System.out.println(currentFile.getAbsolutePath());
 				setTitle(currentFile.getName());	
 				FileReader fr = new FileReader(currentFile);
 				Document oldDoc = textPane.getDocument();
@@ -441,7 +465,6 @@ public class ProfileEditor extends JFrame implements ActionListener{
 				document.addUndoableEditListener(undoHandler);
 				textPane.setDocument(document);
 				resetUndoManager();
-			}
 		}catch(BadLocationException e){
 			e.printStackTrace();		
 		}catch(FileNotFoundException e){
@@ -470,32 +493,10 @@ public class ProfileEditor extends JFrame implements ActionListener{
 
 	public void saveDocumentAs(){
 		try{
-			File current = new File(".");
-			JFileChooser chooser = new JFileChooser(current);
-			chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-			chooser.setFileFilter(new HTMLFileFilter());
-			int approval = chooser.showSaveDialog(this);
-			if (approval == JFileChooser.APPROVE_OPTION){
-				File newFile = chooser.getSelectedFile();
-				if (newFile.exists()){
-					String message = newFile.getAbsolutePath() 
-						+ " already exists. \n"
-						+ "Do you want to replace it?";
-					if (JOptionPane.showConfirmDialog(this, message) == JOptionPane.YES_OPTION){	
-						currentFile = newFile;
-						setTitle(currentFile.getName());	
-						FileWriter fw = new FileWriter(currentFile);
-						fw.write(textPane.getText());
-						fw.close();
-					}
-				}else{
-					currentFile = new File(newFile.getAbsolutePath() + ".html");
+			File currentFile = new File("Profile.html");
 					setTitle(currentFile.getName());	
 					FileWriter fw = new FileWriter(currentFile);
 					fw.write(textPane.getText());
-					fw.close();
-				}
-			}
 		}catch(FileNotFoundException e){
 			System.err.println(e.getMessage());			
 		}catch(IOException e){
