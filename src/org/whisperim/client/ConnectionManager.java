@@ -16,9 +16,6 @@
 
 package org.whisperim.client;
 
-import java.security.KeyPair;
-import java.security.PrivateKey;
-import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -26,7 +23,7 @@ import java.util.Map.Entry;
 import javax.swing.text.BadLocationException;
 
 import org.whisperim.plugins.Plugin;
-import org.whisperim.ui.WhisperClient;
+import org.whisperim.ui.UIController;
 
 /**
  * This class manages connections and ties them to local buddy handles. 
@@ -43,7 +40,7 @@ public class ConnectionManager {
 	 */
 	
 	
-	private WhisperClient client_ = null;
+	private UIController client_ = null;
 	private MessageProcessor mp_;
 	
 	public static final int INVISIBLE = 0;
@@ -158,7 +155,7 @@ public class ConnectionManager {
 	 * Set client_ to specified chat client
 	 * @param client -  The current WhisperClient object. 
 	 */
-	public void setClient(WhisperClient client){
+	public void setClient(UIController client){
 		client_ = client;
 		client_.setMessageProcessor(mp_);
 		mp_.setUI(client_);

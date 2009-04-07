@@ -24,16 +24,18 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
 import org.whisperim.security.Encryptor;
-import org.whisperim.ui.UIBootstrapper;
 import org.xml.sax.SAXException;
 
-import com.sun.org.apache.xml.internal.security.utils.Base64;
+
 
 /**
  * This class handles the keypair generation and sharing between clients.
@@ -58,8 +60,8 @@ public class Whisper {
 	
 	public Whisper(){
 		//This isn't the best way to do things, need to talk to Jules
-		final KeyPair myKeys = getKeys();
-		UIBootstrapper.startUI(new ConnectionManager(new MessageProcessorImpl(myKeys)));
+		//final KeyPair myKeys = getKeys();
+		//UIBootstrapper.startUI(new ConnectionManager(new MessageProcessorImpl(myKeys)));
 
 	}
 	/**
@@ -79,6 +81,25 @@ public class Whisper {
 		}
 
 		return textVal;
+	}
+	
+	/**
+	 * I take a xml element and the tag name, look for the tag and get
+	 * the text content
+	 * i.e for <employee><name>John</name></employee> xml snippet if
+	 * the Element points to employee node and tagName is 'name' I will return John
+	 * 
+	 * Take from http://www.totheriver.com/learn/xml/xmltutorial.html#6.1.2
+	 */
+	private void setTextValue(Element ele, String tagName, String newValue) {
+		
+		NodeList nl = ele.getElementsByTagName(tagName);
+		if(nl != null && nl.getLength() > 0) {
+			Element el = (Element)nl.item(0);
+			el.getFirstChild().setNodeValue(newValue);
+		}
+
+		
 	}
 	
 	public KeyPair getKeys(){
@@ -187,23 +208,26 @@ public class Whisper {
 		dom.appendChild(root);
 		
 		KeyPair newKeyPair = Encryptor.generateRSAKeyPair();
+		
+		Base64 b64 = new Base64();
 
-		String publicKeyString = new String(Base64.encode(newKeyPair.getPublic().getEncoded()));
+		String publicKeyString = new String(b64.encode(newKeyPair.getPublic().getEncoded()));
 
-		String privateKeyString = new String (Base64.encode(newKeyPair.getPrivate().getEncoded()));
+		String privateKeyString = new String (b64.encode(newKeyPair.getPrivate().getEncoded()));
 		
 		Element myKeys = dom.createElement("MyKeys");
 		root.appendChild(myKeys);
 		
 		Element myPublic = dom.createElement("PublicKey");
+		myPublic.appendChild(dom.createTextNode(publicKeyString));
 		
-		myPublic.setTextContent(publicKeyString);
+		
 		
 		myKeys.appendChild(myPublic);
 		
 		Element myPrivate = dom.createElement("PrivateKey");
 		
-		myPrivate.setTextContent(privateKeyString);
+		myPrivate.appendChild(dom.createTextNode(privateKeyString));
 		
 		myKeys.appendChild(myPrivate);
 		
