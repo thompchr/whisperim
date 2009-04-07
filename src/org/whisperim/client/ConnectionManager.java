@@ -148,6 +148,7 @@ public class ConnectionManager {
 	public ConnectionManager(MessageProcessor mp){
 		mp.setConnectionManager(this);
 		mp_ = mp;
+
 	}
 
 
@@ -158,6 +159,7 @@ public class ConnectionManager {
 	public void setClient(WhisperClient client){
 		client_ = client;
 		client_.setMessageProcessor(mp_);
+		mp_.setUI(client_);
 	}
 
 	/**

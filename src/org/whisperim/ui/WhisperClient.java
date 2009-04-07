@@ -775,6 +775,7 @@ public class WhisperClient extends JFrame implements ActionListener, UIControlle
 		return mp_.haveKey(b);
 	}
 
+	@Override
 	public void receiveMessage(final Message message){
 		//First we need to check to see if it contains
 		//information that is intended for the client
@@ -786,7 +787,7 @@ public class WhisperClient extends JFrame implements ActionListener, UIControlle
 			EventQueue.invokeLater(new Runnable() {
 				public void run() {
 					//needs to go to an buddy object version
-					newIMWindow(new Buddy(message.getFrom(), message.getTo(), message.getProtocol()), alwaysNewWindow_);
+					newIMWindow(message.getFromBuddy(), alwaysNewWindow_);
 					openBuddies_.get(message.getFromBuddy()).getTab(message.getFromBuddy()).receiveMsg(message);
 				}
 			});

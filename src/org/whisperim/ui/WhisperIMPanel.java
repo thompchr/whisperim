@@ -394,6 +394,7 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
 
 		flash(window_.isFocused(this));
 		//flash(this.isFocusOwner());
+		talkArea_.append(message.getMessage());
 
 		talkArea_.append("\n");
 		autoScroll();
