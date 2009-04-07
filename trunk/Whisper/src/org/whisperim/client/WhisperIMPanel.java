@@ -357,7 +357,7 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
 	    public void updateChatArea(String newText, String info){
 	    	String oldText = talkArea_.getText();
     		String tempRecMessage = newText;
-    		if(tempRecMessage.indexOf("<HTML>") != -1){
+    		if((tempRecMessage.indexOf("<HTML>") != -1) || (newText.contains("<font>"))){
 	    		tempRecMessage = info + tempRecMessage.substring(tempRecMessage.indexOf("<BODY>")+6, tempRecMessage.indexOf("</BODY>"));
 	    		String finalText = oldText.substring(0, oldText.indexOf("</p>")-1) + "<br>" + tempRecMessage + oldText.substring(oldText.indexOf("</p>"), oldText.length());
 	    		talkArea_.setText(finalText);  	
@@ -365,7 +365,7 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
     			System.out.println();
     		}
     		else {
-    			newText = "<FONT FACE=\"Arial\" SIZE=4 COLOR=#000000>" + newText + "</FONT>";
+    			newText = "<FONT FACE=\"Arial\" SIZE=4 COLOR=#000000>" + info + newText + "</FONT>";
     			String finalText = oldText.substring(0, oldText.indexOf("</p>")-1) + "<br>" + newText + oldText.substring(oldText.indexOf("</p>"), oldText.length());
     			talkArea_.setText(finalText); 
     			System.out.println(finalText);
