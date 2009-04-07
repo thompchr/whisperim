@@ -125,7 +125,7 @@ public class ProfileEditor extends JFrame implements ActionListener{
 	JMenuItem rightAlignMenuItem;
 	
 	public ProfileEditor(WhisperClient client){
-		super("ProfileEditor");
+		super("Profile Editor");
 		client_ = client;
 		HTMLEditorKit editorKit = new HTMLEditorKit();
 		document = (HTMLDocument)editorKit.createDefaultDocument();
