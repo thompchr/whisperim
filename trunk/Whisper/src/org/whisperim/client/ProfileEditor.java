@@ -17,8 +17,6 @@
 
 package org.whisperim.client;
 
-import com.thoughtworks.xstream.XStream;
-
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
@@ -35,7 +33,6 @@ public class ProfileEditor extends JFrame implements ActionListener{
 	private JTextPane textPane = new JTextPane();
 	private File currentFile = new File(SAVEPATH_);
 	private WhisperClient client_;
-	private XStream xstream_;
 		
 	protected UndoableEditListener undoHandler = new UndoHandler();
 	protected UndoManager undo = new UndoManager();
