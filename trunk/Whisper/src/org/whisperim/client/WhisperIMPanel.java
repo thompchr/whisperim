@@ -30,15 +30,8 @@ import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.text.BadLocationException;
-import javax.swing.text.Document;
-import javax.swing.text.Element;
-import javax.swing.text.StyleConstants;
-import javax.swing.text.StyledDocument;
-import javax.swing.text.html.HTML;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
-import javax.swing.text.JTextComponent;
-
 
 import org.jdesktop.layout.GroupLayout;
 import org.jdesktop.layout.LayoutStyle;
@@ -383,7 +376,7 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
 	    public void receiveMsg(Message message) throws BadLocationException
 	    {	    
 	    	DateFormat d = DateFormat.getTimeInstance(DateFormat.MEDIUM);
-	    	String info = "(" + d.format(message.getTimeSent()) + ") " + message.getFrom() + ": ";
+	    	String info = "<FONT COLOR=#FDD017><b>" + "(" + d.format(message.getTimeSent()) + ") " + message.getFrom() + ": " + "</b></FONT>";
 
 	    	if (!doEncryption_ || !message.getMessage().contains("<key>")){
 	    		updateChatArea(message.getMessage(), info);
@@ -433,12 +426,12 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
 		        DateFormat df1 = DateFormat.getTimeInstance(DateFormat.MEDIUM);
 		        if (doEncryption_) {   	    			    		
 			        	//Message will be encrypted
-			        	updateChatArea("(" + df1.format(d) + ") " + myHandle_ + ":  (Encrypted Message) " + messageArea_.getText() + "\n", "");
+			        	updateChatArea("<FONT COLOR=#F87217><b>" + "(" + df1.format(d) + ") " + myHandle_ + ":  (Encrypted Message) " + "</b></FONT>" + messageArea_.getText() + "\n", "");
 			            messageText = encrypt.generateCipherText(messageArea_.getText());
 			            boolean b = isWhiteboardMsg(messageArea_.getText());
 		        }
 		        else {
-		        	updateChatArea("(" + df1.format(d) + ") " + myHandle_ + ": " + messageArea_.getText() + "\n", "");
+		        	updateChatArea("<FONT COLOR=#F87217><b>" + "(" + df1.format(d) + ") " + myHandle_ + ": " + "</b></FONT>"  + messageArea_.getText() + "\n", "");
 		            messageText = messageArea_.getText();
 		            messageArea_.repaint();
 		        }

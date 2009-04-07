@@ -290,8 +290,6 @@ public class WhisperSystemTray implements Runnable,ActionListener,ItemListener{
 	    	}
 	    }
 
-	
-	
 	@Override
 	public void itemStateChanged(ItemEvent e) {
 		Object itemSource = e.getItemSelectable();
