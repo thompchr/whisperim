@@ -116,7 +116,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 
 	private Timer myTimer_;
 	private IdleTT myTaskTimer_;    
-	private static ConnectionManager manager_;
+	private static ConnectionManager manager_; 
 	private BuddyListModel blm_ = new BuddyListModel();
 	private ProfileEditor editor;
 
@@ -843,12 +843,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 					public void run() {
 						//needs to go to an buddy object version
 						newIMWindow(new Buddy(message.getFrom(), message.getTo(), message.getProtocol()), alwaysNewWindow_);
-						try {
-							openBuddies_.get(message.getFrom().toLowerCase().replace(" ", "")).getTab(message.getFrom().toLowerCase().replace(" ", "")).receiveMsg(message);
-						} catch (BadLocationException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
+						openBuddies_.get(message.getFrom().toLowerCase().replace(" ", "")).getTab(message.getFrom().toLowerCase().replace(" ", "")).receiveMsg(message);
 					}
 				});
 
@@ -941,7 +936,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 				setStatus_.setSelected(false);
 			}
 		}
-
+		
 		//Open the plugins window
 		if (actionCommand.equals(plugins_.getActionCommand())){
 
@@ -1041,7 +1036,8 @@ public class WhisperClient extends JFrame implements ActionListener {
 			ProfileEditor editor = new ProfileEditor(this);
 		}
 	}
-	
+
+
 	public void toggleSound(){
 		System.out.println("Sound toggled");
 		Preferences.getInstance().setSoundsEnabled(!Preferences.getInstance().getSoundsEnabled());
