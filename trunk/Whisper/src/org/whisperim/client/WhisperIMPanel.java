@@ -199,7 +199,6 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
 	        buddyName_ = new JLabel(buddy_.getHandle(), serviceIcon_, SwingConstants.LEFT);
 	        this.setName(buddy_.getHandle());
 
-	        talkArea_.requestFocus();
 	    	talkArea_.setContentType("text/html");
 	    	talkArea_.setEditable(false);
 	        talkAreaScroll_ = new JScrollPane(talkArea_);
