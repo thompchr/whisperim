@@ -407,16 +407,12 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
 
 	    		tempRecMessage = info + tempRecMessage.substring(tempRecMessage.indexOf("<BODY>")+6, tempRecMessage.indexOf("</BODY>"));
 	    		String finalText = oldText.substring(0, oldText.indexOf("</p>")-1) + "<br>" + tempRecMessage + oldText.substring(oldText.indexOf("</p>"), oldText.length());
-	    		talkArea_.setText(finalText);  	
-	    		System.out.println(finalText);
-    			System.out.println();
+	    		talkArea_.setText(finalText);
     		}
     		else {
     			newText = "<FONT FACE=\"Arial\" SIZE=4 COLOR=#000000>" + info + newText + "</FONT>";
     			String finalText = oldText.substring(0, oldText.indexOf("</p>")-1) + "<br>" + newText + oldText.substring(oldText.indexOf("</p>"), oldText.length());
-    			talkArea_.setText(finalText); 
-    			System.out.println(finalText);
-    			System.out.println();
+    			talkArea_.setText(finalText);
     		}	
 	    }
 	    
@@ -430,8 +426,7 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
 	    	}else{
 	    		String decryptedMsg = encrypt.decryptMessage(message.getMessage());
 	    		boolean b = isWhiteboardMsg(decryptedMsg);  
-	    		String updatedInfo = info.substring(0, info.length()-11);
-	    		updatedInfo = info + " (Encrypted) " + "</b></FONT>";
+	    		String updatedInfo = info + "<FONT COLOR=#FDD017><b>" + " (Encrypted Message) " + "</b></FONT>";
 	    	    updateChatArea(decryptedMsg, updatedInfo);
 	    	}
 	        
