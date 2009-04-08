@@ -430,7 +430,8 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
 	    	}else{
 	    		String decryptedMsg = encrypt.decryptMessage(message.getMessage());
 	    		boolean b = isWhiteboardMsg(decryptedMsg);  
-	    		String updatedInfo = info + " (Encrypted Message) ";
+	    		String updatedInfo = info.substring(0, info.length()-11);
+	    		updatedInfo = info + " (Encrypted) " + "</b></FONT>";
 	    	    updateChatArea(decryptedMsg, updatedInfo);
 	    	}
 	        
