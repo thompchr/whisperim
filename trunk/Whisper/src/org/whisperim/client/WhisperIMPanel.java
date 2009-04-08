@@ -494,6 +494,7 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
 		        	log_.write(message, myHandle_);
 		    	
 		        messageArea_.setText("");
+		        messageArea_.repaint();
 	    	}
 	    }
 
