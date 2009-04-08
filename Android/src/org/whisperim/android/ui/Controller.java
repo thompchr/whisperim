@@ -50,6 +50,7 @@ public class Controller implements UIController {
         cm_.registerConnection("Testconnection", new TestConnection());
         cm_.loadConnection("Testconnection", "Username", "Password");
         
+        
 	}
 
 	@Override
@@ -58,35 +59,36 @@ public class Controller implements UIController {
 			blm_.add(b);
 		}
 
+		
 	}
 
 	@Override
 	public void keyReceived(Buddy b) {
-		// TODO Auto-generated method stub
+		
 
 	}
 
 	@Override
 	public void processEvent(EncryptionEvent e) {
-		// TODO Auto-generated method stub
+	
 
 	}
 
 	@Override
 	public void processEvent(SessionEvent e) {
-		// TODO Auto-generated method stub
+
 
 	}
 
 	@Override
 	public void receiveMessage(Message m) {
-		// TODO Auto-generated method stub
+
 
 	}
 
 	@Override
 	public void removeBuddies(ArrayList<Buddy> buddies) {
-		// TODO Auto-generated method stub
+
 
 	}
 
@@ -97,13 +99,13 @@ public class Controller implements UIController {
 
 	@Override
 	public void statusUpdate(String status, String account) {
-		// TODO Auto-generated method stub
+
 		
 	}
 
 	@Override
 	public void updateBuddyList(ArrayList<Buddy> buddies) {
-		// TODO Auto-generated method stub
+
 		
 	}
 
