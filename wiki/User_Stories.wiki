@@ -4,8 +4,6 @@
 
 =Build 7=
  * Super secret and totally awesome user story (Chris)
- * User can implement penetration testing tools through Whisper (Cory)
- * User can use gtalk (Cory)
  * User can receive notifications and integrate with Facebook. (John)
  * User's message will be auto-spell checked as it is typed. (John)
  * User can create a chatroom. (Kirk)
@@ -15,8 +13,9 @@
 
 =Build 6=
  * Super secret and totally awesome user story (Chris)
- * User will be able to import GTK themes (Cory)
- * User will be able to pass all traffic through the TOR network (Cory)
+ * User will be able to import GTK themes (Cory) *not feasible*
+ * User will be able to pass all traffic through the TOR network (Cory) *not feasible*
+ * User can use gtalk (Cory)
  * User can lock session and can only be resumed using a password (Cory)
  * User can 'preview' links and links will be filtered for easy integration into Google Maps and other online services. (John)
  * Users can make themselves 'locatable' and share this information with buddies. (John)
