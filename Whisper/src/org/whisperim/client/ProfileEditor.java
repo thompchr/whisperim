@@ -427,7 +427,7 @@ public class ProfileEditor extends JFrame implements ActionListener{
 	
 	public int handleNewDocument(int docLength){
 		if(docLength > 0){
-			String message = "Do you want to save?";
+			String message = "Do you want to save your current work?";
 			int jp = JOptionPane.showConfirmDialog(this, message);
 			if (jp == JOptionPane.YES_OPTION){
 				return 2;
@@ -457,7 +457,7 @@ public class ProfileEditor extends JFrame implements ActionListener{
 			document = (HTMLDocument)editorKit.createDefaultDocument();
 			textPane.setDocument(document);	
 			currentFile = null;
-			setTitle("ProfileEditor");	
+			setTitle(WHISPER_);	
 			textPane.getDocument().addUndoableEditListener(undoHandler);
 			resetUndoManager();
 		}
@@ -526,10 +526,13 @@ public class ProfileEditor extends JFrame implements ActionListener{
 	}
 	
 	public void deleteDocument(){
-		setTitle(WHISPER_);
-        if (currentFile.exists()){
-        	currentFile.delete();
-        }
+		String message = "Are you sure you want to delete your profile?";
+		int jp = JOptionPane.showConfirmDialog(null, message, "Profile", JOptionPane.YES_NO_OPTION);
+		if (jp == JOptionPane.YES_OPTION) {
+			currentFile.delete();
+			setTitle(WHISPER_);
+			startNewDocument();
+		}
 	}
 
 	public void exit(){
