@@ -426,7 +426,7 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
 	    	}else{
 	    		String decryptedMsg = encrypt.decryptMessage(message.getMessage());
 	    		boolean b = isWhiteboardMsg(decryptedMsg);  
-	    		String updatedInfo = info + "<FONT COLOR=#FDD017><b>" + " (Encrypted Message) " + "</b></FONT>";
+	    		String updatedInfo = info + "<FONT COLOR=#FF0000><b>" + " (Encrypted) " + "</b></FONT>";
 	    	    updateChatArea(decryptedMsg, updatedInfo);
 	    	}
 	        
@@ -469,7 +469,7 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
 		        DateFormat df1 = DateFormat.getTimeInstance(DateFormat.MEDIUM);
 		        if (doEncryption_) {   	    			    		
 			        	//Message will be encrypted
-			        	updateChatArea("<FONT COLOR=#F87217><b>" + "(" + df1.format(d) + ") " + myHandle_ + ":  (Encrypted Message) " + "</b></FONT>" + messageArea_.getText() + "\n", "");
+			        	updateChatArea("<FONT COLOR=#F87217><b>" + "(" + df1.format(d) + ") " + myHandle_ + ": " + "</FONT><FONT COLOR=#FF0000>" + "(Encrypted) " + "</b></FONT>" + messageArea_.getText() + "\n", "");
 			            messageText = encrypt.generateCipherText(messageArea_.getText());
 			            boolean b = isWhiteboardMsg(messageArea_.getText());
 		        }
