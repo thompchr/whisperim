@@ -14,8 +14,10 @@ import java.net.URI;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import javax.swing.ImageIcon;
@@ -41,6 +43,8 @@ import javax.swing.text.html.HTMLEditorKit;
 import org.jdesktop.layout.GroupLayout;
 import org.jdesktop.layout.LayoutStyle;
 import org.whisperim.security.Encryptor;
+
+import com.centerkey.utils.BareBonesBrowserLaunch;
 
 
 public class WhisperIMPanel extends JPanel implements ActionListener, ChangeListener {
@@ -138,9 +142,11 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
                 	if(arg0.getEventType() == HyperlinkEvent.EventType.ENTERED)
                 	{
                 		System.out.println("hyperlink entered");
-                    	p.setPage(arg0.getURL());
-                    	hyperlinkPanel_.add(p);
-                    	hyperlinkPanel_.setVisible(true);
+                    	
+                		HyperlinkWindow w = new HyperlinkWindow("http://google.com");
+                		//p.setPage(arg0.getURL());
+                    	//hyperlinkPanel_.add(p);
+                    	//hyperlinkPanel_.setVisible(true);
                 	}
                 }catch(Exception e){}
                 
@@ -148,9 +154,20 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
                     if(arg0.getEventType() == HyperlinkEvent.EventType.ACTIVATED)
                     {
                         System.out.println("hyperlink clicked");
-                        Desktop.getDesktop().browse(new URI(arg0.getURL().toString()));
+                        
+                        if(!arg0.getURL().toString().contains("http"))
+                        {
+	                        List<String> command = new ArrayList<String>();
+	                        	
+	                        command.add("C:\\Program Files\\Skype\\Phone\\Skype.exe");
+	                        command.add("/callto:+16307473666");                     
+	                        ProcessBuilder builder = new ProcessBuilder(command);
+	                        final Process process = builder.start();
+                        }
+                        else
+                        	BareBonesBrowserLaunch.openURL(arg0.getURL().toString());
                     }
-                }catch(Exception e){}
+                }catch(Exception e){e.printStackTrace();}
                 
                 try{
                     if(arg0.getEventType() == HyperlinkEvent.EventType.EXITED)
@@ -416,7 +433,7 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
 	    }
 	    
 	    public void receiveMsg(Message message) throws BadLocationException
-	    {	    
+	    {	  
 	    	DateFormat d = DateFormat.getTimeInstance(DateFormat.MEDIUM);
 	    	String info = "<FONT COLOR=#FDD017><b>" + "(" + d.format(message.getTimeSent()) + ") " + message.getFrom() + ": " + "</b></FONT>";
 
