@@ -27,6 +27,7 @@ import org.whisperim.events.EncryptionEvent;
 import org.whisperim.events.SessionEvent;
 import org.whisperim.ui.UIController;
 
+import android.app.Activity;
 import android.content.Context;
 import android.widget.ListView;
 
@@ -44,6 +45,10 @@ public class Controller implements UIController {
 		
 		//Create the buddy list
 		ListView buddyList = new ListView(android_);
+		if (android_ instanceof Activity){
+			((Activity)android_).setContentView(buddyList);
+		}
+		
         buddyList.setAdapter(blm_);
         
         //Register the test connection
@@ -105,6 +110,10 @@ public class Controller implements UIController {
 
 	@Override
 	public void updateBuddyList(ArrayList<Buddy> buddies) {
+		
+		for(Buddy b:buddies){
+			blm_.add(b);
+		}
 
 		
 	}

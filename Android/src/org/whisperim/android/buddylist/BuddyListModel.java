@@ -23,6 +23,7 @@ import android.database.DataSetObserver;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListAdapter;
+import android.widget.TextView;
 
 public class BuddyListModel implements ListAdapter {
 	
@@ -59,25 +60,27 @@ public class BuddyListModel implements ListAdapter {
 	@Override
 	public long getItemId(int position) {
 		
-		return 0;
+		return 1;
 	}
 
 	@Override
 	public int getItemViewType(int position) {
 		
-		return 0;
+		return 1;
 	}
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
+		TextView row = new TextView(parent.getContext());
+		row.setText(buddies_.get(position).getHandle());
 		
-		return null;
+		return row;
 	}
 
 	@Override
 	public int getViewTypeCount() {
 
-		return 0;
+		return 1;
 	}
 
 	@Override

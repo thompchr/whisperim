@@ -27,7 +27,7 @@ public class TestConnection extends ConnectionPluginAdapter {
 
 	@Override
 	public String getHandle() {
-		// TODO Auto-generated method stub
+		
 		return "TestBuddyParent";
 	}
 	
@@ -42,37 +42,37 @@ public class TestConnection extends ConnectionPluginAdapter {
 
 	@Override
 	public String getIdentifier() {
-		// TODO Auto-generated method stub
+		
 		return "TestProto:TestBuddyParent";
 	}
 
 	@Override
 	public String getProtocol() {
-		// TODO Auto-generated method stub
+	
 		return "TestProto";
 	}
 
 	@Override
 	public String getPluginIconLocation() {
-		// TODO Auto-generated method stub
+	
 		return null;
 	}
 
 	@Override
 	public String getPluginName() {
-		// TODO Auto-generated method stub
+	
 		return "TestConnectionPlugin";
 	}
 
 	@Override
 	public void setIconLocation(String location) {
-		// TODO Auto-generated method stub
+
 
 	}
 
 	@Override
 	public void setPluginName(String name) {
-		// TODO Auto-generated method stub
+
 
 	}
 
