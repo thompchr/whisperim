@@ -33,15 +33,16 @@ import org.apache.xml.serialize.XMLSerializer;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import org.whisperim.prefs.GlobalPreferences;
 import org.whisperim.ui.WhisperClient;
 import org.xml.sax.SAXException;
 
 public class PluginLoader {
 
-	private static final String REGISTRY_ = System.getProperty("user.home") + File.separator + "Whisper" 
+	private static final String REGISTRY_ = GlobalPreferences.getInstance().getHomeDir() 
 	+ File.separator + "plugins" + File.separator + "plugins.xml";
 
-	private static final String PLUGIN_DIR_ = System.getProperty("user.home") + File.separator + "Whisper" 
+	private static final String PLUGIN_DIR_ = GlobalPreferences.getInstance().getHomeDir() 
 	+ File.separator + "plugins";
 
 	private WhisperClient client_;

@@ -13,28 +13,32 @@
  * See the License for the specific language governing permissions and     *
  * limitations under the License.                                          *
  **************************************************************************/
-package org.whisperim.ui;
+package org.whisperim.prefs;
 
-import java.awt.EventQueue;
-import java.io.File;
-
-import org.whisperim.client.ConnectionManager;
-import org.whisperim.client.MessageProcessor;
-import org.whisperim.client.MessageProcessorImpl;
-import org.whisperim.client.Whisper;
-
-public class UIBootstrapper {
+public class GlobalPreferences {
 	
-	public static void main(String[] args){
+	private static GlobalPreferences instance_;
+	
+	private String home_;
+	
+	protected GlobalPreferences(){
 		
-		MessageProcessor mp = new MessageProcessorImpl(new Whisper(System.getProperty("user.home") + File.separator + "Whisper").getKeys());
-        final ConnectionManager cm = new ConnectionManager(mp);
-		EventQueue.invokeLater(new Runnable() {
-	           public void run() {
-	             new WhisperClient(cm);
-
-	           }
-	        });
+	}
+	
+	public static GlobalPreferences getInstance(){
+		if (instance_ == null){
+			return new GlobalPreferences();
+		}else{
+			return instance_;
+		}
+	}
+	
+	public void setHomeDir(String dir){
+		home_ = dir;
+	}
+	
+	public String getHomeDir(){
+		return home_;
 	}
 
 }

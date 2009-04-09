@@ -92,7 +92,7 @@ public class ConnectionManager {
 	 */
 	public void removeStrategy(String strategy)
 	{
-		if(!strategy.isEmpty())
+		if(!strategies_.isEmpty())
 		{
 			strategies_.remove(strategy);
 		}else{
@@ -167,10 +167,10 @@ public class ConnectionManager {
 	 * @param message - The message object constructed by the
 	 * 					session thread from the message received
 	 * 					from the service.
-	 * @throws BadLocationException 
+	 * 
 	 */
 
-	public void messageReceived(Message message) throws BadLocationException{
+	public void messageReceived(Message message) {
 		mp_.receiveMessage(message);
 
 

@@ -30,6 +30,7 @@ import org.apache.xml.serialize.XMLSerializer;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import org.whisperim.prefs.GlobalPreferences;
 import org.whisperim.security.Encryptor;
 import org.xml.sax.SAXException;
 
@@ -44,23 +45,13 @@ import org.xml.sax.SAXException;
 
 public class Whisper {  
 
-	private static final String WHISPER_HOME_DIR_ = System.getProperty("user.home") + File.separator + "Whisper";
-
-	private static final String KEY_FILE_ = WHISPER_HOME_DIR_ + File.separator + "keys";
+	private String homeDir_;
+	private String keyFile_;
 	
-
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		new Whisper();
-	}
-	
-	public Whisper(){
-		//This isn't the best way to do things, need to talk to Jules
-		//final KeyPair myKeys = getKeys();
-		//UIBootstrapper.startUI(new ConnectionManager(new MessageProcessorImpl(myKeys)));
-
+	public Whisper(String home){
+			GlobalPreferences.getInstance().setHomeDir(home);
+			homeDir_ = GlobalPreferences.getInstance().getHomeDir();
+			keyFile_ = homeDir_ + File.separator + "keys";
 	}
 	/**
 	 * I take a xml element and the tag name, look for the tag and get
@@ -81,28 +72,9 @@ public class Whisper {
 		return textVal;
 	}
 	
-	/**
-	 * I take a xml element and the tag name, look for the tag and get
-	 * the text content
-	 * i.e for <employee><name>John</name></employee> xml snippet if
-	 * the Element points to employee node and tagName is 'name' I will return John
-	 * 
-	 * Take from http://www.totheriver.com/learn/xml/xmltutorial.html#6.1.2
-	 */
-	private void setTextValue(Element ele, String tagName, String newValue) {
-		
-		NodeList nl = ele.getElementsByTagName(tagName);
-		if(nl != null && nl.getLength() > 0) {
-			Element el = (Element)nl.item(0);
-			el.getFirstChild().setNodeValue(newValue);
-		}
-
-		
-	}
-	
 	public KeyPair getKeys(){
-		File dir = new File(WHISPER_HOME_DIR_);
-		File keyFile = new File(KEY_FILE_);
+		File dir = new File(homeDir_);
+		File keyFile = new File(keyFile_);
 		
 		if (dir.exists()){
 			// Directory exists, check to see if file exists.

@@ -80,6 +80,7 @@ import org.whisperim.models.BuddyListModel;
 import org.whisperim.models.PluginListModel;
 import org.whisperim.plugins.Plugin;
 import org.whisperim.plugins.PluginLoader;
+import org.whisperim.prefs.GlobalPreferences;
 import org.whisperim.prefs.PrefListener;
 import org.whisperim.prefs.Preferences;
 import org.whisperim.prefs.PreferencesWindow;
@@ -164,7 +165,7 @@ public class WhisperClient extends JFrame implements ActionListener, UIControlle
 
 
 	//Directory constants
-	private static final String WHISPER_HOME_DIR_ = System.getProperty("user.home") + File.separator + "Whisper";
+	private static final String WHISPER_HOME_DIR_ = GlobalPreferences.getInstance().getHomeDir();
 	private static final String ACCOUNTS_FILE_ = WHISPER_HOME_DIR_ + File.separator + "accounts";
 
 	//Error messages

@@ -49,6 +49,7 @@ import org.w3c.dom.Element;
 import org.whisperim.client.ConnectionManager;
 import org.whisperim.client.ConnectionStrategy;
 import org.whisperim.models.ActiveAccountModel;
+import org.whisperim.prefs.GlobalPreferences;
 import org.whisperim.prefs.PrefListener;
 import org.whisperim.prefs.Preferences;
 import org.whisperim.renderers.ConnectionRenderer;
@@ -109,7 +110,7 @@ public class NewAccountWindow extends JFrame implements ActionListener {
 	private static final String CREATE_NEW_ACCOUNT_= "Create a new account";
 	
 	//File System Constants
-	private static final String ACCOUNTS_FILE_ = System.getProperty("user.home") + File.separator + "Whisper" + File.separator + "accounts";
+	private static final String ACCOUNTS_FILE_ = GlobalPreferences.getInstance().getHomeDir() + File.separator + "accounts";
 	
 	//Data members\\
 	

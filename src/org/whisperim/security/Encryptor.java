@@ -47,6 +47,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.whisperim.client.Buddy;
+import org.whisperim.prefs.GlobalPreferences;
 import org.xml.sax.SAXException;
 
 import com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingException;
@@ -65,6 +66,8 @@ public class Encryptor {
 
 	private PublicKey publicKey_ = null;
 	private PrivateKey privateKey_ = null;
+	
+	private static String keyFileLocation_ = GlobalPreferences.getInstance().getHomeDir() + File.separator + "keys";
 
 
 	/**
@@ -112,7 +115,7 @@ public class Encryptor {
 	 */
 	public static PublicKey getPublicKeyForBuddy(Buddy b){
 		try {
-			File keyFile = new File(System.getProperty("user.home") + File.separator + "Whisper" + File.separator + "keys");
+			File keyFile = new File(keyFileLocation_);
 			DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
 			Document doc;
@@ -198,7 +201,8 @@ public class Encryptor {
 		//no need to get any more information, just write the bugger.  Key text is
 		//Base64 encoded
 
-		File keyFile = new File(System.getProperty("user.home") + File.separator + "Whisper" + File.separator + "keys");
+		
+		File keyFile = new File(keyFileLocation_);
 		Document doc;
 		DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder docBuilder;
@@ -368,7 +372,7 @@ public class Encryptor {
 	}
 	
 	public static String getMyPublicKey() throws ParserConfigurationException, SAXException, IOException{
-		File keyFile = new File(System.getProperty("user.home") + File.separator + "Whisper" + File.separator + "keys");
+		File keyFile = new File(keyFileLocation_);
 		DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
 		Document doc;
