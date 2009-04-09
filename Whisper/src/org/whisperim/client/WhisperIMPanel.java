@@ -601,7 +601,7 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
 
 		public void setText(String txt)
 		{
-			this.talkArea_.setText(txt);
+			this.messageArea_.setText(txt);
 		}
 		
 		@Override
