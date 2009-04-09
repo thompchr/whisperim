@@ -1,7 +1,9 @@
 package org.whisperim.whisperbot;
 
-import com.aol.acc.*;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Vector;
+
+import com.aol.acc.AccPreferencesHook;
 
 public class Prefs extends AccPreferencesHook {
 

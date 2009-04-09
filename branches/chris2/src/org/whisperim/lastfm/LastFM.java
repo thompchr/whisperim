@@ -5,11 +5,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import javax.xml.parsers.DocumentBuilderFactory;
-
-import org.apache.xerces.parsers.DOMParser;
-import org.w3c.dom.Document;
-
 
 public class LastFM {
 

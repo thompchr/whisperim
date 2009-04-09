@@ -19,7 +19,6 @@ package org.whisperim.plugins;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.URLStreamHandlerFactory;
