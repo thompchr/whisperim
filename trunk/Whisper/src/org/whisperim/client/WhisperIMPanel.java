@@ -172,7 +172,20 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
 	                        final Process process = builder.start();
                         }
                         else
+                        {
+                        	 java.awt.Desktop desktop = java.awt.Desktop.getDesktop();
+                        	try {
+
+                                java.net.URI uri = new java.net.URI(arg0.getURL().toString());
+                                desktop.browse( uri );
+                            }
+                            catch ( Exception e ) {
+
+                                System.err.println( e.getMessage() );
+                            }
+                        	
                         	BareBonesBrowserLaunch.openURL(arg0.getURL().toString());
+                        }
                     }
                 }catch(Exception e){e.printStackTrace();}
                 
