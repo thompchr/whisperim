@@ -20,20 +20,31 @@ import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.security.PrivateKey;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -41,10 +52,18 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextPane;
 import javax.swing.KeyStroke;
+import javax.swing.MenuSelectionManager;
 import javax.swing.SwingUtilities;
+import javax.swing.TransferHandler;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
+import javax.swing.text.JTextComponent;
+import javax.swing.text.Position;
 
 import org.whisperim.SocialSiteDump.SocialSiteManager;
 import org.whisperim.prefs.PrefListener;
@@ -70,7 +89,7 @@ public class WhisperIM extends JFrame implements ActionListener, WindowListener{
 
 	private static final ImageIcon whisperIcon_ = Preferences.getInstance().getWhisperIconSmall(); 
    
-    private JTabbedPane mainPain_;
+    private WhisperPane mainPain_;
 	private JMenu fileMenu_, conversationMenu_;
 	private JMenuItem exit_, about_, closeTab_, newTab_;
 	private static final String FILE_ = "File";
@@ -152,11 +171,26 @@ public class WhisperIM extends JFrame implements ActionListener, WindowListener{
     	
     	createMenu();    
     	
-    	mainPain_ = new JTabbedPane();
+    	mainPain_ = new WhisperPane();
     	myParent_ = parent;
         myKey_ = myKey;
     	mainPain_.setTabLayoutPolicy(JTabbedPane.WRAP_TAB_LAYOUT);
-    	
+    	mainPain_.addFocusListener(new FocusListener(){
+
+			@Override
+			public void focusGained(FocusEvent e) {
+				MenuSelectionManager.defaultManager().clearSelectedPath();
+				
+			}
+
+			@Override
+			public void focusLost(FocusEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+    		
+    		
+    	});
     	
         add(mainPain_, BorderLayout.CENTER);
 
@@ -229,8 +263,13 @@ public class WhisperIM extends JFrame implements ActionListener, WindowListener{
 	
 	//Menu creation is separate from UI layout
 	private void createMenu(){
-		JMenuBar mb = new JMenuBar();
+		final JMenuBar mb = new JMenuBar();
 		this.setJMenuBar(mb);
+		
+		
+		
+		
+
 		
 		//first menu
 		//file (f)
@@ -426,5 +465,190 @@ public class WhisperIM extends JFrame implements ActionListener, WindowListener{
 		SwingUtilities.updateComponentTreeUI(this);
 		this.repaint();
 	}
-    
-}
+	
+	
+	//This modifies the panel on a drag...
+	class PanelManager{
+		
+		WhisperIMPanel panel_;
+		
+		JTextPane talk_;
+		
+		public PanelManager(WhisperIMPanel panel){
+			
+			System.out.println("Built a panel manager");
+			panel_ = panel;
+			talk_ = panel_.getTextArea();
+			
+		}
+		
+		public void addFiles(String[] files){
+			
+			int i = 0;
+			while (files[i] != null)
+				panel_.addFiles(files[i++]);
+			
+		}
+		
+		public void addIcon(Icon icon){
+			//Do it!
+			
+		}
+		
+		public void addIcon(){
+			
+			System.out.println("Adding icon to the window");
+			talk_.setText("File has been added for transfer");
+			//talk_.add(UIManager.getIcon("FileView.hardDriveIcon"));
+			
+		}
+		
+		
+	}
+	
+	
+	
+	class TabTransferHandler extends TransferHandler{
+		
+		private DataFlavor flavaFlav_;
+		
+		private PanelManager manager_;
+		
+		private JTextArea clipBoard_;
+		
+		private Position start = null, end = null;
+		
+		public TabTransferHandler(PanelManager m){
+		
+			System.out.println("Built a transfer handler");
+			flavaFlav_ = DataFlavor.javaFileListFlavor;
+			manager_ = m;
+		}
+		
+		//Import data from file
+		public void importData(Transferable t){
+			
+			//Need to import the file in to a buffer,  
+			
+			if (hasFileFlavor(t.getTransferDataFlavors())) {
+		        String str = null;
+		        java.util.List files;
+				
+		        
+		        try {
+					files = (java.util.List) t
+					    .getTransferData(flavaFlav_);
+				 
+		        System.out.println("Reading the data...");
+		        String[] fileBuffer = new String[files.size()];
+		        for (int i = 0; i < files.size(); i++) {
+		          File file = (File) files.get(i);
+		          
+
+		          BufferedReader in = null;
+
+		          try {
+		            in = new BufferedReader(new FileReader(file));
+
+		            while ((str = in.readLine()) != null) {
+		            	fileBuffer[i] += str;
+		            }
+		          } catch (IOException ioe) {
+		            System.out
+		                .println("importData: Unable to read from file "
+		                    + file.toString());
+		          } finally {
+		            if (in != null) {
+		              try {
+		                in.close();
+		              } catch (IOException ioe) {
+		                System.out
+		                    .println("importData: Unable to close file "
+		                        + file.toString());
+		              }      		          	
+		            }
+		          }
+		          //Replace with attempt to grab file's icon
+		          manager_.addIcon();
+		          
+		        }
+			}
+		        catch (UnsupportedFlavorException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
+			//Add the file buffer(s) to the calling panel
+			
+			
+		}
+		
+		protected Transferable createTransferable(JComponent c) {
+		    clipBoard_ = (JTextArea) c;
+		    int begin = clipBoard_.getSelectionStart();
+		    int endd = clipBoard_.getSelectionEnd();
+		    Document doc = clipBoard_.getDocument();
+		    if (start == end) {
+		      return null;
+		    }
+		    try {
+		      start = doc.createPosition(begin);
+		      end = doc.createPosition(endd);
+		    } catch (BadLocationException e) {
+		      System.out
+		          .println("Can't create position - unable to remove text from source.");
+		    }
+		    
+		    String data = clipBoard_.getSelectedText();
+		    return new StringSelection(data);
+		  }
+		
+		protected void exportDone(JComponent c, Transferable data, int action){
+			
+	          JTextComponent tc = (JTextComponent) c;
+	          try {
+				tc.getDocument().remove(start.getOffset(),
+				      end.getOffset() - start.getOffset());
+			} catch (BadLocationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			clipBoard_ = null;
+			
+		}
+		
+		public int getSourceActions(JComponent c) {
+			    return COPY_OR_MOVE;
+			  }
+		
+		public boolean canImport(JComponent c, DataFlavor[] flavors) {
+			    if (hasFileFlavor(flavors)) {
+			      return true;
+			    }
+			    System.out.println("Couldnt import the file");
+			    return false;
+		}
+				
+		private boolean hasFileFlavor(DataFlavor[] flavors) {
+		    for (int i = 0; i < flavors.length; i++) {
+		      if (flavaFlav_.equals(flavors[i])) {
+		        return true;
+		      }
+		      else
+		      {
+		    	  System.out.println(flavors[i]);
+		      }
+		    }
+		    System.out.println("Didnt have file flavor requested for drag");
+		    
+		    return false;
+		  }
+	}
+	}
+
+	
+

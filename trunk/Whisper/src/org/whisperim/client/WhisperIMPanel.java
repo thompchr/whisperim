@@ -64,6 +64,8 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
     private Buddy buddy_;
     private WhisperIM window_;
     private Whiteboard whiteboard_; 
+    private boolean activeFiles_;
+    private String[] files_;
     
     //This needs to be changed to support using the icon associated with the plugin
     //Perhaps store it in the buddy object
@@ -110,6 +112,11 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
 		window_ = window;
         theirHandle_ = buddy.getHandle();
         myHandle_ = buddy.getAssociatedLocalHandle();
+        activeFiles_ = false;
+        
+        //Limitting to 2 files to send
+        files_ = new String[2];
+        
         
         myKey_ = myKey;
         
@@ -223,6 +230,8 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
 	        talkAreaScroll_.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 	        talkAreaScroll_.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 	        
+	        messageArea_.setDragEnabled(true);
+	        messageArea_.setTransferHandler(window_.new TabTransferHandler(window_.new PanelManager(this)));
 	        messageArea_.addKeyListener (
 	        		new KeyAdapter() {
 	        			public void keyTyped(KeyEvent e) {
@@ -312,6 +321,21 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
 	        return this;
 	    }
 
+	    public JTextPane getTextArea(){
+	    	return this.messageArea_;
+	    }
+	    
+	    //Should change to boolean for errors...
+	    public void addFiles(String file){
+	    	
+	    	int i = 0;
+	    	while(files_[i] != null)
+	    		i++;
+	    	
+	    	files_[i] = file;
+	    	activeFiles_ = true;
+	    	
+	    }
 	    
 	    public void actionPerformed(ActionEvent e) {
 	    	String actionCommand = e.getActionCommand();
@@ -505,6 +529,12 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
 		        	window_.getMyParent().sendMessage(message);
 		        
 		        autoScroll();
+		        
+		        if (activeFiles_){
+		        	//Make call to send files
+		        	
+		        }
+		        	
 		        
 		    	if (doLogging_)
 		        	log_.write(message, myHandle_);
