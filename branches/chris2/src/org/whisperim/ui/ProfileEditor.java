@@ -15,7 +15,7 @@
  * limitations under the License.                                          *
  **************************************************************************/
 
-package org.whisperim.client;
+package org.whisperim.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -62,7 +62,6 @@ import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.UndoManager;
 
-import org.whisperim.ui.WhisperClient;
 
 public class ProfileEditor extends JFrame implements ActionListener{
 	
