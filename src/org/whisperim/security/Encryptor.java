@@ -268,8 +268,8 @@ public class Encryptor {
 			OutputFormat format = new OutputFormat(doc);
 			format.setIndenting(true);
 
-			XMLSerializer serializer = new XMLSerializer(
-			new FileOutputStream(keyFile), format);
+			XMLSerializer serializer = new XMLSerializer();
+			serializer.setOutputByteStream(new FileOutputStream(keyFile));
 
 			serializer.serialize(doc);
 

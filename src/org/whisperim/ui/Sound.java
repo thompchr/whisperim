@@ -16,16 +16,17 @@
  **************************************************************************/
 package org.whisperim.ui;
 
-import org.whisperim.client.Message;
-import org.whisperim.listeners.ClientListener;
-import org.whisperim.prefs.Preferences;
-
 import java.io.File;
+
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.SourceDataLine;
+
+import org.whisperim.client.Message;
+import org.whisperim.listeners.ClientListener;
+import org.whisperim.prefs.Preferences;
 
 public class Sound implements ClientListener {
 		

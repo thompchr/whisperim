@@ -17,13 +17,12 @@
 package org.whisperim.tests;
 
 
-import junit.framework.TestCase;
-import java.security.*;
+import java.security.KeyPair;
 import java.util.Random;
 
-import org.whisperim.security.*;
+import junit.framework.TestCase;
 
-import com.sun.org.apache.xml.internal.security.utils.Base64;
+import org.whisperim.security.Encryptor;
 
 /**
  * This class tests the Encryptor class.  It provides tests for the stability

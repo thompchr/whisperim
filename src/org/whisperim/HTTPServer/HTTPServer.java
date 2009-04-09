@@ -14,10 +14,6 @@
  * limitations under the License.                                          *
  **************************************************************************/
 package org.whisperim.HTTPServer;
-import java.net.*;
-import java.io.*;
-import java.util.*;
-import java.lang.*;
 
 public class HTTPServer {
 

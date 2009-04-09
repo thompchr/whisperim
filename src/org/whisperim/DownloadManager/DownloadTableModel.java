@@ -15,9 +15,12 @@
 	 **************************************************************************/
 package org.whisperim.DownloadManager;
 
-import java.util.*;
-import javax.swing.*;
-import javax.swing.table.*;
+import java.util.ArrayList;
+import java.util.Observable;
+import java.util.Observer;
+
+import javax.swing.JProgressBar;
+import javax.swing.table.AbstractTableModel;
 
 // This class manages the download table's data.
 class DownloadsTableModel extends AbstractTableModel

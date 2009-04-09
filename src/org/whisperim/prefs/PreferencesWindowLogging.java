@@ -30,8 +30,6 @@ import java.awt.event.KeyEvent;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
-
-import org.whisperim.prefs.Preferences;
 /**
  * @author Cory Plastek
  */

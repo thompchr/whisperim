@@ -15,9 +15,11 @@
 	 **************************************************************************/
 package org.whisperim.DownloadManager;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
+import java.io.InputStream;
+import java.io.RandomAccessFile;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.Observable;
 
 public class Downloader extends Observable implements Runnable {
 

@@ -24,7 +24,6 @@ import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 
 import org.whisperim.client.Whisper;
-import org.whisperim.prefs.Preferences;
 import org.whisperim.whisperbot.WhisperBot;
 
 import com.aol.acc.AccException;

@@ -23,18 +23,13 @@ package org.whisperim.prefs;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
-
-import sun.security.jca.GetInstance.Instance;
-
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.xml.DomDriver;
-
-import java.awt.Image;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.ImageIcon;
+
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.xml.DomDriver;
 
 /**
  * @author Cory Plastek

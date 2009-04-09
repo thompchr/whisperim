@@ -17,7 +17,6 @@ package org.whisperim.SocialSiteDump;
  **************************************************************************/
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Properties;
 
@@ -35,7 +34,6 @@ import com.aetrion.flickr.activity.Item;
 import com.aetrion.flickr.activity.ItemList;
 import com.aetrion.flickr.auth.Auth;
 import com.aetrion.flickr.auth.Permission;
-import com.aetrion.flickr.util.IOUtilities;
 
 public class FlickrService {
 	private static String apiKey_ = "c368c2b676805ec3f9dcc5219bb6e982";

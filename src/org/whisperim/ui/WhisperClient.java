@@ -32,11 +32,6 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.security.KeyFactory;
-import java.security.NoSuchAlgorithmException;
-import java.security.PublicKey;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.X509EncodedKeySpec;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -89,11 +84,7 @@ import org.whisperim.prefs.PrefListener;
 import org.whisperim.prefs.Preferences;
 import org.whisperim.prefs.PreferencesWindow;
 import org.whisperim.renderers.BuddyListRenderer;
-import org.whisperim.security.Encryptor;
 import org.xml.sax.SAXException;
-
-import com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingException;
-import com.sun.org.apache.xml.internal.security.utils.Base64;
 
 /**
  * This class handles the creation of the swing interface components that 
