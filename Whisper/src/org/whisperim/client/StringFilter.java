@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.dapper.scrender.Scrender;
+//import net.dapper.scrender.Scrender;
 
 public class StringFilter {
 	private String string_;

@@ -10,8 +10,8 @@ import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import net.dapper.scrender.RenderingException;
-import net.dapper.scrender.Scrender;
+//import net.dapper.scrender.RenderingException;
+//import net.dapper.scrender.Scrender;
 
 public class HyperlinkWindow extends JFrame{
 	
