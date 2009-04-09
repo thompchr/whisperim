@@ -160,14 +160,14 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
                 try{
                     if(arg0.getEventType() == HyperlinkEvent.EventType.ACTIVATED)
                     {
-                        System.out.println("hyperlink clicked");
+                       // System.out.println("hyperlink clicked :" + arg0.getURL());
                         
-                        if(!arg0.getURL().toString().contains("http"))
+                        if(arg0.getURL().toString().contains("mailto://"))
                         {
 	                        List<String> command = new ArrayList<String>();
 	                        	
 	                        command.add("C:\\Program Files\\Skype\\Phone\\Skype.exe");
-	                        command.add("/callto:+16307473666");                     
+	                        command.add("/callto:+1"+arg0.getURL().toString().replace("mailto://", ""));                     
 	                        ProcessBuilder builder = new ProcessBuilder(command);
 	                        final Process process = builder.start();
                         }
@@ -440,9 +440,6 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
 	    	String oldText = talkArea_.getText();
     		String tempRecMessage = newText;
     		
-    		//StringFilter filter = new StringFilter(newText);
-    		//newText = filter.filter();
-    		
     		if((tempRecMessage.indexOf("<HTML>") != -1) || (newText.contains("<font>"))){
 
 	    		tempRecMessage = info + tempRecMessage.substring(tempRecMessage.indexOf("<BODY>")+6, tempRecMessage.indexOf("</BODY>"));
@@ -507,14 +504,22 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
 		        Calendar now = Calendar.getInstance();
 		        Date d = now.getTime();
 		        DateFormat df1 = DateFormat.getTimeInstance(DateFormat.MEDIUM);
+		        StringFilter filter;
+	    		
 		        if (doEncryption_) {   	    			    		
 			        	//Message will be encrypted
-			        	updateChatArea("<FONT COLOR=#F87217><b>" + "(" + df1.format(d) + ") " + myHandle_ + ": " + "</FONT><FONT COLOR=#FF0000>" + "(Encrypted) " + "</b></FONT>" + messageArea_.getText() + "\n", "");
+		        	    filter = new StringFilter(messageArea_.getText());
+		        	    messageText = filter.filter();
+		        	    
+			        	updateChatArea("<FONT COLOR=#F87217><b>" + "(" + df1.format(d) + ") " + myHandle_ + ": " + "</FONT><FONT COLOR=#FF0000>" + "(Encrypted) " + "</b></FONT>" + messageText + "\n", "");
 			            messageText = encrypt.generateCipherText(messageArea_.getText());
 			            boolean b = isWhiteboardMsg(messageArea_.getText());
 		        }
 		        else {
-		        	updateChatArea("<FONT COLOR=#F87217><b>" + "(" + df1.format(d) + ") " + myHandle_ + ": " + "</b></FONT>"  + messageArea_.getText() + "\n", "");
+		        	filter = new StringFilter(messageArea_.getText());
+	        	    messageText = filter.filter();
+	        	    
+		        	updateChatArea("<FONT COLOR=#F87217><b>" + "(" + df1.format(d) + ") " + myHandle_ + ": " + "</b></FONT>"  + messageText + "\n", "");
 		            messageText = messageArea_.getText();
 		            messageArea_.repaint();
 		        }
