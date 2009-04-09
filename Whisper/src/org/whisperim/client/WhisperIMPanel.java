@@ -173,7 +173,7 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
                         }
                         else
                         {
-                        	 java.awt.Desktop desktop = java.awt.Desktop.getDesktop();
+                        	/* java.awt.Desktop desktop = java.awt.Desktop.getDesktop();
                         	try {
 
                                 java.net.URI uri = new java.net.URI(arg0.getURL().toString());
@@ -182,7 +182,7 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
                             catch ( Exception e ) {
 
                                 System.err.println( e.getMessage() );
-                            }
+                            }*/
                         	
                         	BareBonesBrowserLaunch.openURL(arg0.getURL().toString());
                         }
