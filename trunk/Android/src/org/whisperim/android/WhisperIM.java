@@ -1,5 +1,8 @@
 package org.whisperim.android;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
 import org.whisperim.android.ui.Controller;
 import org.whisperim.client.ConnectionManager;
 import org.whisperim.client.MessageProcessor;
@@ -14,10 +17,13 @@ public class WhisperIM extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
+        //setContentView(R.layout.main);
+        
         //Start the UI
-        MessageProcessor mp = new MessageProcessorImpl(new Whisper().getKeys());
+        
+        MessageProcessor mp = new MessageProcessorImpl(new Whisper("test").getKeys());
         ConnectionManager cm = new ConnectionManager(mp);
+        
         new Controller(this, cm);
         
     }
