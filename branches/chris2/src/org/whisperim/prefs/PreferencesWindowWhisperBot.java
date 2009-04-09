@@ -62,7 +62,7 @@ public class PreferencesWindowWhisperBot extends JPanel implements ItemListener 
 						e2.printStackTrace();
 					}
 				}else{
-					new Whisper();
+					//new Whisper();
 				}
 				locked = false;
 			}

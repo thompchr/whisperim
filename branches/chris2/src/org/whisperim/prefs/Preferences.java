@@ -50,7 +50,7 @@ public class Preferences {
 	//whisperbot
 	//about
 
-	private static final String PREFS_FILE = System.getProperty("user.home") + File.separator + "Whisper" + File.separator + "prefs.xml";
+	private static final String PREFS_FILE = GlobalPreferences.getInstance().getHomeDir() + File.separator + "prefs.xml";
 	
 	/**
 	 * General Preferences

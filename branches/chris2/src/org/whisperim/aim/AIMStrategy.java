@@ -49,12 +49,7 @@ public class AIMStrategy implements ConnectionStrategy {
 	
 	@Override
 	public void receiveMessage(Message message) {
-		try {
-			manager_.messageReceived(message);
-		} catch (BadLocationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		manager_.messageReceived(message);
 	}
 
 	@Override
