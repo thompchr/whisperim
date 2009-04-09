@@ -15,7 +15,7 @@
  * limitations under the License.                                          *
  **************************************************************************/
 
-package org.whisperim.client;
+package org.whisperim.ui;
 
 import java.awt.*;
 import java.awt.event.*;

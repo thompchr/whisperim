@@ -14,7 +14,7 @@
  * limitations under the License.                                          *
  **************************************************************************/
 
-package org.whisperim.client;
+package org.whisperim.ui;
 
 
 import java.awt.EventQueue;
@@ -36,6 +36,8 @@ import javax.swing.JTextField;
 import javax.swing.LayoutStyle;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
+
+import org.whisperim.client.ConnectionManager;
 
 
 

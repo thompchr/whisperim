@@ -15,7 +15,10 @@
  * limitations under the License.                                          *
  **************************************************************************/
 
-package org.whisperim.client;
+package org.whisperim.listeners;
+
+import org.whisperim.client.Message;
+import org.whisperim.ui.WhisperClient;
 
 public interface ClientListener {
 

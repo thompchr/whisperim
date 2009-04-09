@@ -19,8 +19,8 @@ package org.whisperim.tests;
 import java.security.KeyPair;
 
 import org.whisperim.client.ConnectionManager;
-import org.whisperim.client.Login;
 import org.whisperim.security.Encryptor;
+import org.whisperim.ui.Login;
 
 import junit.framework.TestCase;
 

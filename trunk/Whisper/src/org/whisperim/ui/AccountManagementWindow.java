@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and     *
  * limitations under the License.                                          *
  **************************************************************************/
-package org.whisperim.client;
+package org.whisperim.ui;
 
 import java.awt.Container;
 import java.awt.Dimension;
@@ -37,6 +37,8 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
 
+import org.whisperim.client.ConnectionManager;
+import org.whisperim.client.ConnectionStrategy;
 import org.whisperim.models.ActiveAccountModel;
 import org.whisperim.prefs.PrefListener;
 import org.whisperim.prefs.Preferences;

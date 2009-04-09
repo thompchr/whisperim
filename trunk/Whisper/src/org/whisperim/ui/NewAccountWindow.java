@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and     *
  * limitations under the License.                                          *
  **************************************************************************/
-package org.whisperim.client;
+package org.whisperim.ui;
 
 import java.awt.Container;
 import java.awt.Dimension;
@@ -46,6 +46,8 @@ import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.whisperim.client.ConnectionManager;
+import org.whisperim.client.ConnectionStrategy;
 import org.whisperim.models.ActiveAccountModel;
 import org.whisperim.prefs.PrefListener;
 import org.whisperim.prefs.Preferences;

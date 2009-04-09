@@ -26,6 +26,7 @@ import java.util.Map.Entry;
 import javax.swing.text.BadLocationException;
 
 import org.whisperim.plugins.Plugin;
+import org.whisperim.ui.WhisperClient;
 
 /**
  * This class manages connections and ties them to local buddy handles. 

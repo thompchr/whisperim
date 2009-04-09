@@ -1,4 +1,4 @@
-package org.whisperim.client;
+package org.whisperim.ui;
 
 import java.awt.Canvas;
 import java.awt.Color;
