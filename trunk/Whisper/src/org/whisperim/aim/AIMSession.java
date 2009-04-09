@@ -532,7 +532,7 @@ public class AIMSession implements AccEvents, Runnable {
 	@Override
 	public void OnStateChange(AccSession accSession, AccSessionState accSessionState,
 			AccResult result) {
-		//System.out.println("In OnStateChange..." + result);
+		System.out.println("In OnStateChange..." + result);
 		if (result == AccResult.ACC_E_FAIL){
 			strategy_.statusUpdate(SERVICE_UNAVAILABLE);
 		}
