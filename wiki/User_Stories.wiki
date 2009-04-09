@@ -6,7 +6,7 @@
  * Super secret and totally awesome user story (Chris)
  * User can receive notifications and integrate with Facebook. (John)
  * User's message will be auto-spell checked as it is typed. (John)
- * User can create a chatroom. (Kirk)
+ * User can send SMS texts to cell phones using Whisper client. (Kirk)
  * User will be able to click tab to view email, initially gmail only. (Nick)
  * User can check their buddies statistics (Nick)
 
