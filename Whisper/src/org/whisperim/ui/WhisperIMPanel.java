@@ -1,4 +1,4 @@
-package org.whisperim.client;
+package org.whisperim.ui;
 
 
 import java.awt.Color;
@@ -42,6 +42,10 @@ import javax.swing.text.html.HTMLEditorKit;
 
 import org.jdesktop.layout.GroupLayout;
 import org.jdesktop.layout.LayoutStyle;
+import org.whisperim.client.Buddy;
+import org.whisperim.client.Logger;
+import org.whisperim.client.Message;
+import org.whisperim.client.StringFilter;
 import org.whisperim.security.Encryptor;
 
 import com.centerkey.utils.BareBonesBrowserLaunch;

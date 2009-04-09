@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and     *
  * limitations under the License.                                          *
  **************************************************************************/
-package org.whisperim.client;
+package org.whisperim.ui;
 
 import java.awt.AWTException;
 import java.awt.CheckboxMenuItem;
@@ -32,6 +32,9 @@ import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
+import org.whisperim.client.ConnectionManager;
+import org.whisperim.client.Message;
+import org.whisperim.listeners.ClientListener;
 import org.whisperim.prefs.PrefListener;
 import org.whisperim.prefs.Preferences;
 

@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and     *
  * limitations under the License.                                          *
  **************************************************************************/
-package org.whisperim.client;
+package org.whisperim.ui;
 
 
 
@@ -38,6 +38,9 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import org.whisperim.client.Buddy;
+import org.whisperim.client.ConnectionManager;
+import org.whisperim.client.ConnectionStrategy;
 import org.whisperim.prefs.PrefListener;
 import org.whisperim.prefs.Preferences;
 import org.whisperim.renderers.ProtocolRenderer;

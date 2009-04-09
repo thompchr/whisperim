@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and     *
  * limitations under the License.                                          *
  **************************************************************************/
-package org.whisperim.client;
+package org.whisperim.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -66,6 +66,8 @@ import javax.swing.text.JTextComponent;
 import javax.swing.text.Position;
 
 import org.whisperim.SocialSiteDump.SocialSiteManager;
+import org.whisperim.client.Buddy;
+import org.whisperim.client.Logger;
 import org.whisperim.prefs.PrefListener;
 import org.whisperim.prefs.Preferences;
 

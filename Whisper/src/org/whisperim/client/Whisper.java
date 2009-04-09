@@ -31,6 +31,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.whisperim.security.Encryptor;
+import org.whisperim.ui.WhisperClient;
 import org.xml.sax.SAXException;
 
 import com.sun.org.apache.xml.internal.security.utils.Base64;

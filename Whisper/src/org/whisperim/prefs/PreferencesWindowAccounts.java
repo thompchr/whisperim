@@ -42,10 +42,10 @@ import javax.swing.table.TableModel;
 
 import org.whisperim.client.ConnectionManager;
 import org.whisperim.client.ConnectionStrategy;
-import org.whisperim.client.NewAccountWindow;
 import org.whisperim.menus.AccountsRightClickMenu;
 import org.whisperim.models.ActiveAccountModel;
 import org.whisperim.renderers.ActiveAccountRenderer;
+import org.whisperim.ui.NewAccountWindow;
 
 public class PreferencesWindowAccounts extends JPanel implements ActionListener {
 

@@ -14,7 +14,7 @@
  * limitations under the License.                                          *
  **************************************************************************/
 
-package org.whisperim.client;
+package org.whisperim.ui;
 
 import java.awt.Container;
 import java.awt.Dimension;
@@ -74,7 +74,12 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.whisperim.SocialSiteDump.SocialSiteManager;
 import org.whisperim.aim.AIMStrategy;
+import org.whisperim.client.Buddy;
+import org.whisperim.client.ConnectionManager;
+import org.whisperim.client.ConnectionStrategy;
+import org.whisperim.client.Message;
 import org.whisperim.lastfm.LastFM;
+import org.whisperim.listeners.ClientListener;
 import org.whisperim.models.BuddyListModel;
 import org.whisperim.models.PluginListModel;
 import org.whisperim.plugins.Plugin;
