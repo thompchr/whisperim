@@ -465,6 +465,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 		//Whisper (w)
 			//New IM (n)
 			//New IM in New Window
+			//Send SMS text
 			//Set Away 
 			//Accounts (a)
 			//Plugins
@@ -480,12 +481,13 @@ public class WhisperClient extends JFrame implements ActionListener {
 		newIm_.addActionListener(this);
 		whisperMenu_.add(newIm_);
 		
-		newWindow_ = new JMenuItem("Open selected in new window");
+		newWindow_ = new JMenuItem("Open selected in new IM");
 		newWindow_.addActionListener(this);
 		whisperMenu_.add(newWindow_);
 		//newWindow_.setVisible(true);
 		newWindow_.setEnabled(false);
 		
+
 		setStatus_ = new JCheckBoxMenuItem(SET_STATUS_);
 		setStatus_.addActionListener(this);
 		whisperMenu_.add(setStatus_);
