@@ -44,6 +44,8 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.AddressException;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
@@ -145,6 +147,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 	private boolean alwaysNewWindow_ = false;
 	private JMenuItem newWindow_;
 	private JMenuItem profile_;
+	private JMenuItem newSMSText_;
 	
 	private Dimension frameMinSize_ = new Dimension(175,400);
 	private Dimension framePrefSize_ = new Dimension(175,500);
@@ -157,7 +160,8 @@ public class WhisperClient extends JFrame implements ActionListener {
 	//first menu\\
 	private static final String WHISPER_ = "Whisper"; 
 	private static final String NEWIM_ = "New Instant Message";
-	private static final String SET_STATUS_ = "Set Status to Last.fm";
+	private static final String SMSTEXT_ = "Send SMS Text";
+	private static final String SET_STATUS_ = "Set Status";
 	private static final String PLUGINS_ = "Plugins";
 	private static final String ACCOUNTS_ = "Accounts";
 	private static final String PREFERENCES_ = "Preferences";
@@ -487,7 +491,10 @@ public class WhisperClient extends JFrame implements ActionListener {
 		//newWindow_.setVisible(true);
 		newWindow_.setEnabled(false);
 		
-
+		newSMSText_ = new JMenuItem(SMSTEXT_);
+		newSMSText_.addActionListener(this);
+		whisperMenu_.add(newSMSText_);
+		
 		setStatus_ = new JCheckBoxMenuItem(SET_STATUS_);
 		setStatus_.addActionListener(this);
 		whisperMenu_.add(setStatus_);
@@ -1000,8 +1007,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 						newIMWindow(selectedBuddy_,true);
 					}
 				});	
-			}
-			
+			}	
 		}
 		
 		if(actionCommand.equals(popupNewIM_.getActionCommand())) {
@@ -1046,6 +1052,20 @@ public class WhisperClient extends JFrame implements ActionListener {
 		if(actionCommand.equals(profile_.getActionCommand())){
 			@SuppressWarnings("unused")
 			ProfileEditor editor = new ProfileEditor(this);
+		}
+		
+		//SMS Text
+		if(actionCommand.equals(newSMSText_.getActionCommand())){
+			smsText sms = new smsText();
+			try {
+				sms.sendText(sms.getSMSinfo());
+			} catch (AddressException e1) {
+				e1.printStackTrace();
+			} catch (MessagingException e1) {
+				e1.printStackTrace();
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
 		}
 	}
 
