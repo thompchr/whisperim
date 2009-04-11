@@ -109,7 +109,7 @@ public class ConnectionManager {
 	 * @param 
 	 * 		strategy - strategy object to be added to the collection. 
 	 * @param 
-	 * 		name - the unique identifier for the strategy. 
+	 * 		name_ - the unique identifier for the strategy. 
 	 */
 	public void addStrategy(ConnectionStrategy strategy)
 	{
