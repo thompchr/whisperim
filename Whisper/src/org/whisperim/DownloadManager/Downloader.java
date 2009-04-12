@@ -35,17 +35,17 @@ public class Downloader extends Observable implements Runnable {
     public static final int CANCELLED = 3;
     public static final int ERROR = 4;
     
-    private URL url; // Download URL.
-    private int size; // Size of download in bytes.
-    private int downloaded; // Number of bytes downloaded.
-    private int status; // Current status of download.
+    private URL url_; // Download URL.
+    private int size_; // Size of download in bytes.
+    private int downloaded_; // Number of bytes downloaded.
+    private int status_; // Current status of download.
     
     // Ctr.
     public Downloader(URL url) {
-        this.url = url;
-        size = -1;
-        downloaded = 0;
-        status = DOWNLOADING;
+        this.url_ = url;
+        size_ = -1;
+        downloaded_ = 0;
+        status_ = DOWNLOADING;
         
         // Begin the download.
         download();
@@ -53,46 +53,46 @@ public class Downloader extends Observable implements Runnable {
     
     // Get this download's URL.
     public String getUrl() {
-        return url.toString();
+        return url_.toString();
     }
     
     // Get this download's size.
     public int getSize() {
-        return size;
+        return size_;
     }
     
     // Get this download's progress.
     public float getProgress() {
-        return ((float) downloaded / size) * 100;
+        return ((float) downloaded_ / size_) * 100;
     }
     
     // Get this download's status.
     public int getStatus() {
-        return status;
+        return status_;
     }
     
     // Pause this download.
     public void pause() {
-        status = PAUSED;
+        status_ = PAUSED;
         stateChanged();
     }
     
     // Resume this download.
     public void resume() {
-        status = DOWNLOADING;
+        status_ = DOWNLOADING;
         stateChanged();
         download();
     }
     
     // Cancel this download.
     public void cancel() {
-        status = CANCELLED;
+        status_ = CANCELLED;
         stateChanged();
     }
     
     // Mark this download as having an error.
     private void error() {
-        status = ERROR;
+        status_ = ERROR;
         stateChanged();
     }
     
@@ -116,11 +116,11 @@ public class Downloader extends Observable implements Runnable {
         try {
             // Open connection to URL.
             HttpURLConnection connection =
-                    (HttpURLConnection) url.openConnection();
+                    (HttpURLConnection) url_.openConnection();
             
             // Specify what portion of file to download.
             connection.setRequestProperty("Range",
-                    "bytes=" + downloaded + "-");
+                    "bytes=" + downloaded_ + "-");
             
             // Connect to server.
             connection.connect();
@@ -138,24 +138,24 @@ public class Downloader extends Observable implements Runnable {
             
       /* Set the size for this download if it
          hasn't been already set. */
-            if (size == -1) {
-                size = contentLength;
+            if (size_ == -1) {
+                size_ = contentLength;
                 stateChanged();
             }
             
             // Open file and seek to the end of it.
-            file = new RandomAccessFile(getFileName(url), "rw");
-            file.seek(downloaded);
+            file = new RandomAccessFile(getFileName(url_), "rw");
+            file.seek(downloaded_);
             
             stream = connection.getInputStream();
-            while (status == DOWNLOADING) {
+            while (status_ == DOWNLOADING) {
         /* Size buffer according to how much of the
            file is left to download. */
                 byte buffer[];
-                if (size - downloaded > MAX_BUFFER_SIZE) {
+                if (size_ - downloaded_ > MAX_BUFFER_SIZE) {
                     buffer = new byte[MAX_BUFFER_SIZE];
                 } else {
-                    buffer = new byte[size - downloaded];
+                    buffer = new byte[size_ - downloaded_];
                 }
                 
                 // Read from server into buffer.
@@ -165,14 +165,14 @@ public class Downloader extends Observable implements Runnable {
                 
                 // Write buffer to file.
                 file.write(buffer, 0, read);
-                downloaded += read;
+                downloaded_ += read;
                 stateChanged();
             }
             
       /* Change status to complete if this point was
          reached because downloading has finished. */
-            if (status == DOWNLOADING) {
-                status = COMPLETE;
+            if (status_ == DOWNLOADING) {
+                status_ = COMPLETE;
                 stateChanged();
             }
         } catch (Exception e) {

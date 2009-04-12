@@ -74,6 +74,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.whisperim.Browser.BrowserLite;
+import org.whisperim.DownloadManager.DownloadManager;
 import org.whisperim.SocialSiteDump.SocialSiteManager;
 import org.whisperim.aim.AIMStrategy;
 import org.whisperim.client.Buddy;
@@ -143,6 +145,8 @@ public class WhisperClient extends JFrame implements ActionListener {
 	private JMenuItem popupNewWindow_;
 	private boolean soundsEnabled_;
 	private JMenuItem socialSites_;
+	private JMenuItem downloadManager_;
+	private JMenuItem browserLite_;
 	private JMenuItem quit_;
 	private boolean alwaysNewWindow_ = false;
 	private JMenuItem newWindow_;
@@ -167,6 +171,8 @@ public class WhisperClient extends JFrame implements ActionListener {
 	private static final String PREFERENCES_ = "Preferences";
 	private static final String SOUND_ = "Sound";
 	private static final String SOCIAL_SITE_MANAGER_ = "Social Site Notifications";
+	private static final String DOWNLOAD_MANAGER_ = "Download Manger";
+	private static final String BROWSER_LITE_ = "Whisper Web Browser Lite";
 	private static final String QUIT_ = "Quit";
 	private static final String PROFILE_ = "Profile";
 
@@ -299,7 +305,6 @@ public class WhisperClient extends JFrame implements ActionListener {
 		Runnable menuRunnable = new Runnable() {
 			public void run() {
 				createMenu();
-				//System.out.println("menu created");
 				jf.validate();
 				jf.repaint();
 			}
@@ -476,6 +481,8 @@ public class WhisperClient extends JFrame implements ActionListener {
 			//Preferences (p)
 			//Sound
 			//Social Site Manager
+			//Download Manager
+			//Web Browser Lite
 			//Quit (q)
 		whisperMenu_ = new JMenu(WHISPER_);
 		whisperMenu_.setMnemonic(KeyEvent.VK_W);
@@ -523,6 +530,14 @@ public class WhisperClient extends JFrame implements ActionListener {
 		socialSites_ = new JMenuItem(SOCIAL_SITE_MANAGER_);
 		socialSites_.addActionListener(this);
 		whisperMenu_.add(socialSites_);
+		
+		downloadManager_ = new JMenuItem(DOWNLOAD_MANAGER_);
+		downloadManager_.addActionListener(this);
+		whisperMenu_.add(downloadManager_);
+		
+		browserLite_ = new JMenuItem(BROWSER_LITE_);
+		browserLite_.addActionListener(this);
+		whisperMenu_.add(browserLite_);
 		
 		profile_ = new JMenuItem(PROFILE_);
 		profile_.addActionListener(this);
@@ -1046,6 +1061,18 @@ public class WhisperClient extends JFrame implements ActionListener {
 		if(actionCommand.equals(socialSites_.getActionCommand())){
 			SocialSiteManager ssm = new SocialSiteManager();
 			ssm.show();
+		}
+		
+		// This launches the download manager.
+		if(actionCommand.equals(downloadManager_.getActionCommand())){
+			DownloadManager dlm = new DownloadManager();
+			dlm.show();
+		}
+		
+		// This launches the download manager.
+		if(actionCommand.equals(browserLite_.getActionCommand())){
+			BrowserLite bl = new BrowserLite();
+			bl.show();
 		}
 		
 		//Profile

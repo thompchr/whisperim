@@ -32,7 +32,7 @@ class DownloadsTableModel extends AbstractTableModel
     String.class, JProgressBar.class, String.class};
     
     // The table's list of downloads.
-    private ArrayList downloadList = new ArrayList();
+    private ArrayList downloadList_ = new ArrayList();
     
     // Add a new download to the table.
     public void addDownload(Downloader download) {
@@ -40,7 +40,7 @@ class DownloadsTableModel extends AbstractTableModel
         // Register to be notified when the download changes.
         download.addObserver(this);
         
-        downloadList.add(download);
+        downloadList_.add(download);
         
         // Fire table row insertion notification to table.
         fireTableRowsInserted(getRowCount() - 1, getRowCount() - 1);
@@ -48,12 +48,12 @@ class DownloadsTableModel extends AbstractTableModel
     
     // Get a download for the specified row.
     public Downloader getDownload(int row) {
-        return (Downloader) downloadList.get(row);
+        return (Downloader) downloadList_.get(row);
     }
     
     // Remove a download from the list.
     public void clearDownload(int row) {
-        downloadList.remove(row);
+        downloadList_.remove(row);
         
         // Fire table row deletion notification to table.
         fireTableRowsDeleted(row, row);
@@ -76,13 +76,13 @@ class DownloadsTableModel extends AbstractTableModel
     
     // Get table's row count.
     public int getRowCount() {
-        return downloadList.size();
+        return downloadList_.size();
     }
     
     // Get value for a specific row and column combination.
     public Object getValueAt(int row, int col) {
         
-        Downloader download = (Downloader) downloadList.get(row);
+        Downloader download = (Downloader) downloadList_.get(row);
         switch (col) {
             case 0: // URL
                 return download.getUrl();
@@ -100,7 +100,7 @@ class DownloadsTableModel extends AbstractTableModel
   /* Update is called when a Download notifies its
      observers of any changes */
     public void update(Observable o, Object arg) {
-        int index = downloadList.indexOf(o);
+        int index = downloadList_.indexOf(o);
         
         // Fire table row update notification to table.
         fireTableRowsUpdated(index, index);

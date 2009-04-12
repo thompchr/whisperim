@@ -27,23 +27,23 @@ public class DownloadManager extends JFrame
         implements Observer {
     
     // Add download text field.
-    private JTextField addTextField;
+    private JTextField addTextField_;
     
     // Download table's data model.
-    private DownloadsTableModel tableModel;
+    private DownloadsTableModel tableModel_;
     
     // Table listing downloads.
-    private JTable table;
+    private JTable table_;
     
     // These are the buttons for managing the selected download.
-    private JButton pauseButton, resumeButton;
-    private JButton cancelButton, clearButton;
+    private JButton pauseButton_, resumeButton_;
+    private JButton cancelButton_, clearButton_;
     
     // Currently selected download.
-    private Downloader selectedDownload;
+    private Downloader selectedDownload_;
     
     // Flag for whether or not table selection is being cleared.
-    private boolean clearing;
+    private boolean clearing_;
     
     // Constructor for Download Manager.
     public DownloadManager() {
@@ -64,6 +64,25 @@ public class DownloadManager extends JFrame
         JMenuBar menuBar = new JMenuBar();
         JMenu fileMenu = new JMenu("File");
         fileMenu.setMnemonic(KeyEvent.VK_F);
+        
+        // Encrypt File.
+        JMenuItem fileEncryptMenuItem = new JMenuItem("Encrypt File",
+                KeyEvent.VK_X);
+        fileEncryptMenuItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                encryptFile();
+            }
+        });
+        
+        // Decrypt File.
+        JMenuItem fileDecryptMenuItem = new JMenuItem("Decrypt File",
+                KeyEvent.VK_X);
+        fileDecryptMenuItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                decryptFile();
+            }
+        });
+        
         JMenuItem fileExitMenuItem = new JMenuItem("Exit",
                 KeyEvent.VK_X);
         fileExitMenuItem.addActionListener(new ActionListener() {
@@ -71,14 +90,16 @@ public class DownloadManager extends JFrame
                 actionExit();
             }
         });
+        fileMenu.add(fileEncryptMenuItem);
+        fileMenu.add(fileDecryptMenuItem);
         fileMenu.add(fileExitMenuItem);
         menuBar.add(fileMenu);
         setJMenuBar(menuBar);
         
         // Set up add panel.
         JPanel addPanel = new JPanel();
-        addTextField = new JTextField(30);
-        addPanel.add(addTextField);
+        addTextField_ = new JTextField(30);
+        addPanel.add(addTextField_);
         JButton addButton = new JButton("Add Download");
         addButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -88,24 +109,24 @@ public class DownloadManager extends JFrame
         addPanel.add(addButton);
         
         // Set up Downloads table.
-        tableModel = new DownloadsTableModel();
-        table = new JTable(tableModel);
-        table.getSelectionModel().addListSelectionListener(new
+        tableModel_ = new DownloadsTableModel();
+        table_ = new JTable(tableModel_);
+        table_.getSelectionModel().addListSelectionListener(new
                 ListSelectionListener() {
             public void valueChanged(ListSelectionEvent e) {
                 tableSelectionChanged();
             }
         });
         // Allow only one row at a time to be selected.
-        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        table_.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         
         // Set up ProgressBar as renderer for progress column.
         ProgressRenderer renderer = new ProgressRenderer(0, 100);
         renderer.setStringPainted(true); // show progress text
-        table.setDefaultRenderer(JProgressBar.class, renderer);
+        table_.setDefaultRenderer(JProgressBar.class, renderer);
         
         // Set table's row height large enough to fit JProgressBar.
-        table.setRowHeight(
+        table_.setRowHeight(
                 (int) renderer.getPreferredSize().getHeight());
         
         // Set up downloads panel.
@@ -113,43 +134,43 @@ public class DownloadManager extends JFrame
         downloadsPanel.setBorder(
                 BorderFactory.createTitledBorder("Downloads"));
         downloadsPanel.setLayout(new BorderLayout());
-        downloadsPanel.add(new JScrollPane(table),
+        downloadsPanel.add(new JScrollPane(table_),
                 BorderLayout.CENTER);
         
         // Set up buttons panel.
         JPanel buttonsPanel = new JPanel();
-        pauseButton = new JButton("Pause");
-        pauseButton.addActionListener(new ActionListener() {
+        pauseButton_ = new JButton("Pause");
+        pauseButton_.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 actionPause();
             }
         });
-        pauseButton.setEnabled(false);
-        buttonsPanel.add(pauseButton);
-        resumeButton = new JButton("Resume");
-        resumeButton.addActionListener(new ActionListener() {
+        pauseButton_.setEnabled(false);
+        buttonsPanel.add(pauseButton_);
+        resumeButton_ = new JButton("Resume");
+        resumeButton_.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 actionResume();
             }
         });
-        resumeButton.setEnabled(false);
-        buttonsPanel.add(resumeButton);
-        cancelButton = new JButton("Cancel");
-        cancelButton.addActionListener(new ActionListener() {
+        resumeButton_.setEnabled(false);
+        buttonsPanel.add(resumeButton_);
+        cancelButton_ = new JButton("Cancel");
+        cancelButton_.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 actionCancel();
             }
         });
-        cancelButton.setEnabled(false);
-        buttonsPanel.add(cancelButton);
-        clearButton = new JButton("Clear");
-        clearButton.addActionListener(new ActionListener() {
+        cancelButton_.setEnabled(false);
+        buttonsPanel.add(cancelButton_);
+        clearButton_ = new JButton("Clear");
+        clearButton_.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 actionClear();
             }
         });
-        clearButton.setEnabled(false);
-        buttonsPanel.add(clearButton);
+        clearButton_.setEnabled(false);
+        buttonsPanel.add(clearButton_);
         
         // Add panels to display.
         getContentPane().setLayout(new BorderLayout());
@@ -158,6 +179,18 @@ public class DownloadManager extends JFrame
         getContentPane().add(buttonsPanel, BorderLayout.SOUTH);
     }
     
+    
+    
+    // Encrypt File.
+    private void encryptFile(){
+    	
+    }
+    
+    // Decrypt File.
+    private void decryptFile(){
+    	
+    }
+   
     // Exit this program.
     private void actionExit() {
         System.exit(0);
@@ -165,10 +198,10 @@ public class DownloadManager extends JFrame
     
     // Add a new download.
     private void actionAdd() {
-        URL verifiedUrl = verifyUrl(addTextField.getText());
+        URL verifiedUrl = verifyUrl(addTextField_.getText());
         if (verifiedUrl != null) {
-            tableModel.addDownload(new Downloader(verifiedUrl));
-            addTextField.setText(""); // reset add text field
+            tableModel_.addDownload(new Downloader(verifiedUrl));
+            addTextField_.setText(""); // reset add text field
         } else {
             JOptionPane.showMessageDialog(this,
                     "Invalid Download URL", "Error",
@@ -201,83 +234,83 @@ public class DownloadManager extends JFrame
     private void tableSelectionChanged() {
     /* Unregister from receiving notifications
        from the last selected download. */
-        if (selectedDownload != null)
-            selectedDownload.deleteObserver(DownloadManager.this);
+        if (selectedDownload_ != null)
+            selectedDownload_.deleteObserver(DownloadManager.this);
         
     /* If not in the middle of clearing a download,
        set the selected download and register to
        receive notifications from it. */
-        if (!clearing) {
-            selectedDownload =
-                    tableModel.getDownload(table.getSelectedRow());
-            selectedDownload.addObserver(DownloadManager.this);
+        if (!clearing_) {
+            selectedDownload_ =
+                    tableModel_.getDownload(table_.getSelectedRow());
+            selectedDownload_.addObserver(DownloadManager.this);
             updateButtons();
         }
     }
     
     // Pause the selected download.
     private void actionPause() {
-        selectedDownload.pause();
+        selectedDownload_.pause();
         updateButtons();
     }
     
     // Resume the selected download.
     private void actionResume() {
-        selectedDownload.resume();
+        selectedDownload_.resume();
         updateButtons();
     }
     
     // Cancel the selected download.
     private void actionCancel() {
-        selectedDownload.cancel();
+        selectedDownload_.cancel();
         updateButtons();
     }
     
     // Clear the selected download.
     private void actionClear() {
-        clearing = true;
-        tableModel.clearDownload(table.getSelectedRow());
-        clearing = false;
-        selectedDownload = null;
+        clearing_ = true;
+        tableModel_.clearDownload(table_.getSelectedRow());
+        clearing_ = false;
+        selectedDownload_ = null;
         updateButtons();
     }
     
   /* Update each button's state based off of the
      currently selected download's status. */
     private void updateButtons() {
-        if (selectedDownload != null) {
-            int status = selectedDownload.getStatus();
+        if (selectedDownload_ != null) {
+            int status = selectedDownload_.getStatus();
             switch (status) {
                 case Downloader.DOWNLOADING:
-                    pauseButton.setEnabled(true);
-                    resumeButton.setEnabled(false);
-                    cancelButton.setEnabled(true);
-                    clearButton.setEnabled(false);
+                    pauseButton_.setEnabled(true);
+                    resumeButton_.setEnabled(false);
+                    cancelButton_.setEnabled(true);
+                    clearButton_.setEnabled(false);
                     break;
                 case Downloader.PAUSED:
-                    pauseButton.setEnabled(false);
-                    resumeButton.setEnabled(true);
-                    cancelButton.setEnabled(true);
-                    clearButton.setEnabled(false);
+                    pauseButton_.setEnabled(false);
+                    resumeButton_.setEnabled(true);
+                    cancelButton_.setEnabled(true);
+                    clearButton_.setEnabled(false);
                     break;
                 case Downloader.ERROR:
-                    pauseButton.setEnabled(false);
-                    resumeButton.setEnabled(true);
-                    cancelButton.setEnabled(false);
-                    clearButton.setEnabled(true);
+                    pauseButton_.setEnabled(false);
+                    resumeButton_.setEnabled(true);
+                    cancelButton_.setEnabled(false);
+                    clearButton_.setEnabled(true);
                     break;
                 default: // COMPLETE or CANCELLED
-                    pauseButton.setEnabled(false);
-                    resumeButton.setEnabled(false);
-                    cancelButton.setEnabled(false);
-                    clearButton.setEnabled(true);
+                    pauseButton_.setEnabled(false);
+                    resumeButton_.setEnabled(false);
+                    cancelButton_.setEnabled(false);
+                    clearButton_.setEnabled(true);
             }
         } else {
             // No download is selected in table.
-            pauseButton.setEnabled(false);
-            resumeButton.setEnabled(false);
-            cancelButton.setEnabled(false);
-            clearButton.setEnabled(false);
+            pauseButton_.setEnabled(false);
+            resumeButton_.setEnabled(false);
+            cancelButton_.setEnabled(false);
+            clearButton_.setEnabled(false);
         }
     }
     
@@ -285,14 +318,9 @@ public class DownloadManager extends JFrame
      observers of any changes. */
     public void update(Observable o, Object arg) {
         // Update buttons if the selected download has changed.
-        if (selectedDownload != null && selectedDownload.equals(o))
+        if (selectedDownload_ != null && selectedDownload_.equals(o))
             updateButtons();
     }
     
-    // Run the Download Manager.
-    public static void main(String[] args) {
-        DownloadManager manager = new DownloadManager();
-        manager.show();
-    }
 }  
 
