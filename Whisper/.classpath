@@ -20,8 +20,9 @@
 	<classpathentry kind="lib" path="lib/flickrapi-1.1.jar"/>
 	<classpathentry kind="lib" path="lib/jxta.jar"/>
 	<classpathentry kind="lib" path="lib/javax.servlet.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/Scrender"/>
 	<classpathentry kind="lib" path="lib/BareBonesBrowserLaunch.jar"/>
 	<classpathentry kind="lib" path="lib/mail.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Scrender"/>
 	<classpathentry kind="output" path="bin"/>
+
 </classpath>
