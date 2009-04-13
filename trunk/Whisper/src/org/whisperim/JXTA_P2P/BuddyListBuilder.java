@@ -41,6 +41,7 @@ public class BuddyListBuilder {
         private PeerGroup group_ = null;
         private PipeAdvertisement replyPipe_ = null;
         private PipePresence presence_ = null;
+        private boolean firstMessageSent = true;
 
         // Constructor for the OnlineBuddy object. This will be put into WhisperBuddy List.
         public BuddyListBuilder( String name,
@@ -67,8 +68,27 @@ public class BuddyListBuilder {
                 return replyPipe_;
         }
 
-		public boolean sendMessage(Message msg) {
-			// TODO Auto-generated method stub
-			return false;
-		}
+        protected void sendAdInMessage (BuddyListBuilder buddy, Message msg) {
+            Chat.sendAdInMessage (buddy, msg);
+        }
+
+        
+        public boolean sendMessage( Message msg ) {
+            // Get the OutputPipe
+            OutputPipe op = (OutputPipe) presence_.getOutputPipe( pipeID_ );
+            if ( op == null ) {
+                    // No more output pipe
+                    return false;
+            }
+            if ( firstMessageSent ) {
+                    presence_.sendAdInMessage( this, msg );
+                    firstMessageSent = false;
+            }
+            try {
+                    op.send( msg );
+                    return true;
+            } catch ( IOException ez1 ) {
+                    return false;
+            }
+    }
 }

@@ -59,6 +59,7 @@ public class PipePresence implements Runnable, OutputPipeListener {
     public final static String COMMAND = "JxtaTalkCommand";
     public final static String PING = "Ping";
     public final static String ACK = "Ack";
+    public final static String BuddyListName = "JXTA_BuddyList";
 
 	// Buddy lists
 	protected Hashtable onlineBuddies_ = new Hashtable();
@@ -174,10 +175,10 @@ public class PipePresence implements Runnable, OutputPipeListener {
 	public void run() {
 
 		// Schedule the various tasks.
-		timer_.scheduleAtFixedRate(new MediumNapTask(this), 0, // Now
+		timer_.scheduleAtFixedRate(new MediumWait(this), 0, // Now
 				mediumWait_);
 
-		timer_.scheduleAtFixedRate(new LongNapTask(this), 0, // Now
+		timer_.scheduleAtFixedRate(new LongWait(this), 0, // Now
 				longWait_);
 
 	}
@@ -299,6 +300,8 @@ public class PipePresence implements Runnable, OutputPipeListener {
 		}
 
 		// Probe it
+		PreferenceReader prefs = PreferenceReader.getInstance();
+        String propPrefix = getClass().getName() + BuddyListName;
 		try {
 			probe(buddy, buddyAdv);
 		} catch (Exception ez1) {
@@ -384,14 +387,14 @@ public class PipePresence implements Runnable, OutputPipeListener {
 	}
 
 	protected void ping(BuddyListBuilder buddy) {
-		Chat.ping(buddy);
+		Chat.pingBuddy(buddy);
 	}
 
-	protected class MediumNapTask extends TimerTask {
-		private PipePresence presence = null;
+	protected class MediumWait extends TimerTask {
+		private PipePresence presence_ = null;
 
-		public MediumNapTask(PipePresence presence) {
-			this.presence = presence;
+		public MediumWait(PipePresence presence) {
+			this.presence_ = presence;
 		}
 
 		public void run() {
@@ -400,8 +403,8 @@ public class PipePresence implements Runnable, OutputPipeListener {
 			BuddyListBuilder buddy = null;
 			String buddyName = null;
 
-			Hashtable onlineBuddies = presence.onlineBuddies_;
-			Hashtable offlineBuddies = presence.offlineBuddies_;
+			Hashtable onlineBuddies = presence_.onlineBuddies_;
+			Hashtable offlineBuddies = presence_.offlineBuddies_;
 
 			// We check the online users on the ShortNap period.
 			if (onlineBuddies.size() > 0) {
@@ -419,31 +422,31 @@ public class PipePresence implements Runnable, OutputPipeListener {
 						// We declare this user off line.
 						removeOutputPipe(buddy.pipeID_);
 						onlineBuddies.remove(buddyName);
-						presence.notifyOfflineBuddy(buddy);
+						presence_.notifyOfflineBuddy(buddy);
 
 						// Store it in our offline list
 						offlineBuddies.put(buddyName, buddy.pipeID_);
 					} else {
 						// This user is still online, but it is time to check
-						presence.ping(buddy);
+						presence_.ping(buddy);
 					}
 				}
 			}
 		}
 	}
 
-	protected class LongNapTask extends TimerTask {
-		private PipePresence presence = null;
+	protected class LongWait extends TimerTask {
+		private PipePresence presence_ = null;
 
-		public LongNapTask(PipePresence presence) {
-			this.presence = presence;
+		public LongWait(PipePresence presence) {
+			this.presence_ = presence;
 		}
 
 		public void run() {
 
 			Enumeration buddys = null;
 
-			Hashtable offlineBuddies = presence.offlineBuddies_;
+			Hashtable offlineBuddies = presence_.offlineBuddies_;
 
 			// Try to probe the offlist on the LongNapPeriod, except for the
 			// first time
@@ -456,5 +459,10 @@ public class PipePresence implements Runnable, OutputPipeListener {
 				}
 			}
 		}
+	}
+
+	public void sendAdInMessage(BuddyListBuilder buddy, Message msg) {
+		Chat.sendAdInMessage(buddy, msg);
+		
 	}
 }

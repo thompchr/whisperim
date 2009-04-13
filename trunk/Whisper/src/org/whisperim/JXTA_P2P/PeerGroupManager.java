@@ -15,35 +15,36 @@
  **************************************************************************/
 package org.whisperim.JXTA_P2P;
 
-import java.util.EventListener;
-
-
 import java.net.MalformedURLException;
-import java.net.UnknownServiceException;
-
 import java.net.URL;
+import java.net.UnknownServiceException;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.Hashtable;
 import java.util.Map;
 import java.util.Vector;
-import java.io.InputStream;
-import java.io.ByteArrayInputStream;
-import java.util.prefs.*;
+import java.lang.Object;
 
-import java.util.StringTokenizer;
-
-import net.jxta.id.*;
+import net.jxta.discovery.DiscoveryService;
+import net.jxta.document.Advertisement;
+import net.jxta.document.AdvertisementFactory;
+import net.jxta.document.Element;
+import net.jxta.document.MimeMediaType;
+import net.jxta.document.StructuredDocumentFactory;
+import net.jxta.document.StructuredTextDocument;
+import net.jxta.document.TextElement;
+import net.jxta.id.ID;
+import net.jxta.id.IDFactory;
 import net.jxta.impl.membership.PasswdMembershipService;
 import net.jxta.impl.peergroup.StdPeerGroupParamAdv;
-import net.jxta.platform.*;
-import net.jxta.discovery.*;
-import net.jxta.exception.*;
-import net.jxta.membership.*;
-import net.jxta.peergroup.*;
-import net.jxta.protocol.*;
-import net.jxta.document.*;
-import net.jxta.rendezvous.*;
+import net.jxta.membership.MembershipService;
+import net.jxta.peergroup.PeerGroup;
+import net.jxta.peergroup.PeerGroupID;
+import net.jxta.platform.ModuleClassID;
+import net.jxta.platform.ModuleSpecID;
+import net.jxta.protocol.ModuleImplAdvertisement;
+import net.jxta.protocol.PeerAdvertisement;
+import net.jxta.protocol.PeerGroupAdvertisement;
+import net.jxta.rendezvous.RendezVousService;
 
 // Manages peer groups.
 public class PeerGroupManager implements AdvertisementDiscoveryListener {
@@ -260,8 +261,7 @@ public class PeerGroupManager implements AdvertisementDiscoveryListener {
         }
         
         if (adv != null) {
-            prefs.setProperty(getClass().getName() + SELECTED_PEER,
-            adv.getPeerGroupID().toString());
+            adv.getPeerGroupID().toString();
         }
     }
     
@@ -299,14 +299,16 @@ public class PeerGroupManager implements AdvertisementDiscoveryListener {
             l.groupChanged(currentGroup_);
             l.peerChanged(currentPeer_);
         }
-        
-        
+       
         PreferenceReader prefs = PreferenceReader.getInstance();
         
         prefs.setProperty(getClass().getName() + SELECTED_PEER_GROUP,
         adv.getPeerGroupID().toString());
     }
     
+    public void savePreferences() {
+        PreferenceReader.getInstance().save();
+    }
     
     // Called if the user wants to join a  group.
     public void joinGroup( PeerGroup pg, PeerGroupAdvertisement pgAdv,
@@ -515,11 +517,7 @@ public class PeerGroupManager implements AdvertisementDiscoveryListener {
         new AdvertisementEvent(this,
         AdvertisementEvent.ALL_ADV_DELETED, (List) null));
     }
-    
-    // Updates the preferences.
-    public void savePreferences() {
-        PreferenceReader.getInstance().save();
-    }
+   
    
     // Blocks until a RendezVousService server is found and connection is started.
     public boolean waitForRendezVous() throws Exception {
@@ -604,8 +602,6 @@ public class PeerGroupManager implements AdvertisementDiscoveryListener {
                 bufferRdv.append(",");
             }
         }
-        prefs.setProperty(getClass().getName() + JOINED, buffer.toString());
-        prefs.setProperty(getClass().getName() + JOINEDRDV, bufferRdv.toString());
     }
     
      // Collects the peers and peer groups

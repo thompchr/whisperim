@@ -1,12 +1,30 @@
 package org.whisperim.Browser;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.net.*;
-import java.util.*;
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.text.html.*;
+import java.awt.BorderLayout;
+import java.awt.Cursor;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.net.URL;
+import java.util.ArrayList;
+
+import javax.swing.JButton;
+import javax.swing.JEditorPane;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
+import javax.swing.text.html.HTMLDocument;
+import javax.swing.text.html.HTMLFrameHyperlinkEvent;
 
 // Whisper Web Browser Lite.
 public class BrowserLite extends JFrame implements HyperlinkListener {
@@ -30,7 +48,7 @@ public class BrowserLite extends JFrame implements HyperlinkListener {
 		super("Whisper Browser Lite");
 
 		// Set window size.
-		setSize(640, 480);
+		setSize(640, 700);
 
 		// Handle closing events.
 		addWindowListener(new WindowAdapter() {

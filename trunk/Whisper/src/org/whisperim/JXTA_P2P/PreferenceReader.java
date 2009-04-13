@@ -15,23 +15,57 @@
  **************************************************************************/
 package org.whisperim.JXTA_P2P;
 
-public class PreferenceReader {
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Properties;
 
-	// Build this later to store list of buddies.
-	
-	public static PreferenceReader getInstance() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+// Stores Preferences of users.
+public class PreferenceReader extends Properties{
+    // The instance of the PreferenceReader.
+    private static PreferenceReader reader = null;
 
-	public void setProperty(String string, String string2) {
-		// TODO Auto-generated method stub
-		
-	}
+    // The filename of the properties file.
+    private static final String filename = "WhisperJXTAP2P.properties";
 
-	public void save() {
-		// TODO Auto-generated method stub
-		
+    // Constructor.
+    private PreferenceReader(){
+      super();
+      
+      reader = this;
+      try{
+         InputStream stream = new BufferedInputStream(
+		   		       new FileInputStream(filename)); 
+         load(stream);
+       }
+       catch(Exception iox){
+    	   // No preferences found.
+       }        
+    }  
+
+    // Gets this instance of this PreferenceReader
+    public static PreferenceReader getInstance(){
+        if( reader == null){
+            reader = new PreferenceReader();
 	}
+        return reader;
+    }
+
+    // Save data.
+    public void save(){
+        try{
+            OutputStream stream = new BufferedOutputStream(
+		   		       new FileOutputStream(filename)); 
+             store(stream,null);           
+             stream.flush();
+             stream.close();
+	}
+        catch(Exception iox){ 
+	    // Fails
+	}
+    }
 
 }

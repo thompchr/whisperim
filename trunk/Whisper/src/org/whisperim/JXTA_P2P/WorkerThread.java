@@ -15,21 +15,70 @@
  **************************************************************************/
 package org.whisperim.JXTA_P2P;
 
-public class WorkerThread implements Runnable {
+import java.util.Vector;
 
-	public void run() {
-		
+public class WorkerThread extends Thread{
+
+	// Tracks objects to be run.
+    private Vector runObjects;
+
+    // Track if thread is running or not.
+    private boolean running = true;
+
+   // Create instance.
+    public WorkerThread(){
+        super("WorkerThread");
+	runObjects = new Vector();
+        this.start();
+    }
+
+    // Run the thread.
+    public void run(){
+        Runnable runner;
+ 
+        while( running){
+	    synchronized(runObjects){
+                if(runObjects.size() ==  0){
+                    try{
+                      runObjects.wait();
+                    }   
+                    catch(InterruptedException ii){ }
+		}
+                if( runObjects.size() > 0){
+		    runner = (Runnable)runObjects.elementAt(0);
+                    runObjects.removeElementAt(0);
+		}
+                else runner = null;
+	    }
+            if( runner != null && running)  runner.run();
 	}
+    }
 
-	public int getPriority() {
-		// TODO Auto-generated method stub
-		return 0;
+
+    // Adds data to the scheduler.
+    public void addData(Runnable object){
+	synchronized(runObjects){
+	    runObjects.addElement(object);
+            runObjects.notify();
 	}
+    }
 
-	public void setPriority(int i) {
-		// TODO Auto-generated method stub
-		
+    //Removes a Runnable object from the stack.
+    public boolean removeData(Runnable object){
+        boolean result =  false;
+
+        synchronized(runObjects){
+ 	    result = runObjects.removeElement(object);
 	}
-	
+        return result;
+    }
 
+    // Stops the worker thread.
+    public void stopThread(){
+        running = false;
+        synchronized(runObjects){
+            runObjects.notify();    // wake the thread if it is waiting
+	}
+    } 
 }
+
