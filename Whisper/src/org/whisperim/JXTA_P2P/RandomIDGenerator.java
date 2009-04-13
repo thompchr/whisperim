@@ -15,8 +15,7 @@
  **************************************************************************/
 package org.whisperim.JXTA_P2P;
 
-import java.util.*;
-
+import java.util.Random;
 /*
  * TODO: Consider using Crypto key gen.
  */

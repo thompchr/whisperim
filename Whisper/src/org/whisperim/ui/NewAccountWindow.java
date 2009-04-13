@@ -142,7 +142,7 @@ public class NewAccountWindow extends JFrame implements ActionListener {
 
 
 	/**
-	 * @param manager
+	 * @param manager_
 	 */
 	private void initComponents() {
 		connectionPicker_ = new JComboBox();

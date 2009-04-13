@@ -1,30 +1,50 @@
+/**************************************************************************
+ * Copyright 2009 Nick Krieble                                             *
+ *                                                                         *
+ * Licensed under the Apache License, Version 2.0 (the "License");         *
+ * you may not use this file except in compliance with the License.        *
+ * You may obtain a copy of the License at                                 *
+ *                                                                         *
+ * http://www.apache.org/licenses/LICENSE-2.0                              *
+ *                                                                         *
+ * Unless required by applicable law or agreed to in writing, software     *
+ * distributed under the License is distributed on an "AS IS" BASIS,       *
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.*
+ * See the License for the specific language governing permissions and     *
+ * limitations under the License.                                          *
+ **************************************************************************/
 package org.whisperim.JXTA_P2P;
 
-import java.awt.*;
-import java.awt.event.*;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
 import java.util.Enumeration;
 import java.util.EventListener;
 import java.util.Hashtable;
 import java.util.Vector;
-import java.io.InputStream;
-import java.io.IOException;
-import java.io.ByteArrayInputStream;
-import java.io.StringWriter;
 
-import net.jxta.pipe.*;
-import net.jxta.protocol.PipeAdvertisement;
-import net.jxta.document.Advertisement;
-import net.jxta.discovery.DiscoveryService;
 import net.jxta.discovery.DiscoveryEvent;
 import net.jxta.discovery.DiscoveryListener;
-import net.jxta.exception.*;
-import net.jxta.peergroup.*;
-import net.jxta.protocol.*;
-import net.jxta.document.*;
-import net.jxta.id.ID;
+import net.jxta.discovery.DiscoveryService;
+import net.jxta.document.Advertisement;
+import net.jxta.document.AdvertisementFactory;
+import net.jxta.document.MimeMediaType;
+import net.jxta.document.StructuredTextDocument;
+import net.jxta.endpoint.Message;
+import net.jxta.endpoint.MessageElement;
+import net.jxta.endpoint.Message.ElementIterator;
 import net.jxta.id.IDFactory;
-import net.jxta.endpoint.*;
-import net.jxta.impl.endpoint.EndpointReceiveQueue;
+import net.jxta.peergroup.PeerGroup;
+import net.jxta.peergroup.PeerGroupID;
+import net.jxta.pipe.InputPipe;
+import net.jxta.pipe.OutputPipe;
+import net.jxta.pipe.PipeMsgEvent;
+import net.jxta.pipe.PipeMsgListener;
+import net.jxta.pipe.PipeService;
+import net.jxta.protocol.PeerAdvertisement;
+import net.jxta.protocol.PeerGroupAdvertisement;
+import net.jxta.protocol.PipeAdvertisement;
 
 // Implements the actual chat.
 public class Chat extends DiscoveryClientServer implements 
@@ -36,58 +56,60 @@ public class Chat extends DiscoveryClientServer implements
 
     /** The eol to use */
     private static String EOL = System.getProperty("line.separator");
-    public final static String CHATNAMETAG = "JxtaTalkUserName";
-    public final static String SENDERNAME = "JxtaTalkSenderName";
-    public final static String SENDERGROUPNAME = "GrpName";
-    public final static String SENDERMESSAGE = "JxtaTalkSenderMessage";
-    public final static String SRCPEERADV = "JxtaTalkSrcPeerAdv";
-    public final static String SRCPIPEADV = "JxtaTalkSrcPipeAdv";
-    public final static String GROUPID = "JxtaTalkGroupId";
-    public final static String COMMAND = "JxtaTalkCommand";
-    public final static String PING = "Ping";
-    public final static String ACK = "Ack";
+    public final static String CHATNAMETAG_ = "JxtaTalkUserName";
+    public final static String SENDERNAME_ = "JxtaTalkSenderName";
+    public final static String SENDERGROUPNAME_ = "GrpName";
+    public final static String SENDERMESSAGE_ = "JxtaTalkSenderMessage";
+    public final static String SRCPEERADV_ = "JxtaTalkSrcPeerAdv";
+    public final static String SRCPIPEADV_ = "JxtaTalkSrcPipeAdv";
+    public final static String GROUPID_ = "JxtaTalkGroupId";
+    public final static String COMMAND_ = "JxtaTalkCommand";
+    public final static String PING_ = "Ping";
+    public final static String ACK_ = "Ack";
 
-    protected final static int PipeTimeout = 50000;
-    private final static int WaitingTime = 2000;
-    private final static int MAXRETRIES = 10;
-    private boolean groupChanged = false;
-    private EndpointReceiveQueue queue = new EndpointReceiveQueue();
+    protected final static int PipeTimeout_ = 50000;
+    private final static int WaitingTime_ = 2000;
+    private final static int MAXRETRIES_ = 10;
+    private final static int MAX_MESSAGES_ = 5;
+    private boolean groupChanged_ = false;
+    
+    private EndpointReceiveQueue queue_ = new EndpointReceiveQueue(MAX_MESSAGES_);
 
     // The mime type of the Advertisements we send out
-    private final static MimeMediaType XMLMIMETYPE = new MimeMediaType("text/xml");
+    private final static MimeMediaType XMLMIMETYPE_ = new MimeMediaType("text/xml");
 
     // Pipes
-    protected PipeAdvertisement myPipeAdvt = null;
-    protected PeerAdvertisement myPeerAdvt = null;
-    private String myPipeAdvString = null;
-    private String myPeerAdvString = null;
-    protected InputPipe inputPipe = null;
-    protected PipeService pipes = null;
-    protected PeerGroup currentGroup = null;
-    protected Vector structureListeners = new Vector();
-    protected Vector pipePListener = new Vector();
-    protected Vector inputPipes = new Vector();
+    protected PipeAdvertisement myPipeAdvt_ = null;
+    protected PeerAdvertisement myPeerAdvt_ = null;
+    private String myPipeAdvString_ = null;
+    private static String myPeerAdvString_ = null;
+    protected InputPipe inputPipe_ = null;
+    protected PipeService pipes_ = null;
+    protected PeerGroup currentGroup_ = null;
+    protected Vector structureListeners_ = new Vector();
+    protected Vector pipePListener_ = new Vector();
+    protected Vector inputPipes_ = new Vector();
 
     // Peer Group Manager.
-    protected PeerGroupManager manager = null;
+    protected PeerGroupManager manager_ = null;
 
     // Buddy List user being messaged
-    protected BuddyListBuilder currentUser = null;
+    protected BuddyListBuilder currentUser_ = null;
 
     // DiscoveryService service
-    protected DiscoveryService discovery = null;
+    protected DiscoveryService discovery_ = null;
 
     // Chat stuff.
-    protected boolean chatInProgress = false;
-    protected String toName;
-    protected String myName;
-    private static Vector chatSession = new Vector(10);
-    private static Hashtable pipePTable = new Hashtable();
-    private static Hashtable groups = new Hashtable();
-    private static Vector messages = new Vector(10);
+    protected boolean chatInProgress_ = false;
+    protected String toName_;
+    protected static String myName_;
+    private static Vector chatSession_ = new Vector(10);
+    private static Hashtable pipePTable_ = new Hashtable();
+    private static Hashtable groups_ = new Hashtable();
+    private static Vector messages_ = new Vector(10);
     
     // Initialized.
-    private boolean initialized = false;
+    private boolean initialized_ = false;
 	  
     
     public interface Listener extends EventListener {
@@ -100,7 +122,7 @@ public class Chat extends DiscoveryClientServer implements
     // Chat constructor.
     public Chat(PeerGroupManager manager) {
 
-        this(manager, PipeAdvertisement.NameTag, CHATNAMETAG +".*");
+        this(manager, PipeAdvertisement.NameTag, CHATNAMETAG_ +".*");
     }
 
     // Chat constructor.
@@ -113,7 +135,7 @@ public class Chat extends DiscoveryClientServer implements
                 attr,
                 value);
 
-        this.manager = manager;
+        this.manager_ = manager;
 
         // We use a thread just to let this happen in background
         Thread thread = new Thread(this, "Chat Thread");
@@ -123,24 +145,24 @@ public class Chat extends DiscoveryClientServer implements
     // Run chat.
     public void run() {
 
-        manager.addPeerListener(this);
+        manager_.addPeerListener(this);
         addListener(this);
-        currentGroup = manager.getSelectedPeerGroup();
-        pipes = currentGroup.getPipeService();
-        recordGroup (currentGroup);
+        currentGroup_ = manager_.getSelectedPeerGroup();
+        pipes_ = currentGroup_.getPipeService();
+        recordGroup (currentGroup_);
 
-        discovery = currentGroup.getDiscoveryService();
-        myName = manager.getMyPeerName();
-        chatSession.addElement(currentGroup.getPeerGroupID());
-        login(myName);
+        discovery_ = currentGroup_.getDiscoveryService();
+        myName_ = manager_.getMyPeerName();
+        chatSession_.addElement(currentGroup_.getPeerGroupID());
+        login(myName_);
 
-        getPipePresence (currentGroup, myPipeAdvt);
-        initialized = true;
+        getPipePresence (currentGroup_, myPipeAdvt_);
+        initialized_ = true;
         
           while (true) {
             try {
-             Message msg = queue.waitForMessage();
-             boolean res = currentUser.sendMessage(msg);
+             Message msg = queue_.waitForMessage();
+             boolean res = currentUser_.sendMessage(msg);
             } catch (InterruptedException e) {
                // we should never get this
                // so printStackTrace();
@@ -152,11 +174,11 @@ public class Chat extends DiscoveryClientServer implements
 
     private PipePresence getPipePresence (PeerGroup g, PipeAdvertisement localPipeAdv) {
 
-        PipePresence tmpPresence = (PipePresence) pipePTable.get (g.getPeerGroupID().toString());
+        PipePresence tmpPresence = (PipePresence) pipePTable_.get (g.getPeerGroupID().toString());
         if (tmpPresence == null) {
             // No PipePresence has been created yet.
             tmpPresence = new PipePresence (g, localPipeAdv);
-            pipePTable.put(manager.getSelectedPeerGroup().getPeerGroupID().toString(), tmpPresence);
+            pipePTable_.put(manager_.getSelectedPeerGroup().getPeerGroupID().toString(), tmpPresence);
             tmpPresence.addListener(this);
         }
         tmpPresence.setReplyPipe (localPipeAdv);
@@ -164,7 +186,7 @@ public class Chat extends DiscoveryClientServer implements
     }
 
     // Convert a doc to string
-    private String advToString(Advertisement adv) {
+    private static String advToString(Advertisement adv) {
         
         StringWriter out = new StringWriter();
         MimeMediaType displayAs = new MimeMediaType("text/xml");
@@ -184,7 +206,7 @@ public class Chat extends DiscoveryClientServer implements
                 return null;
         String name = pipeAdv.getName();
         if (name != null) {
-            return name.substring( CHATNAMETAG.length() + 1 /* the dot */ );
+            return name.substring( CHATNAMETAG_.length() + 1 /* the dot */ );
         }
         return null;
     }
@@ -192,25 +214,25 @@ public class Chat extends DiscoveryClientServer implements
    // Get groups.
     private void recordGroup (PeerGroup group) {
 
-        groups.put (group.getPeerGroupID().toString(), group);
+        groups_.put (group.getPeerGroupID().toString(), group);
     }
 
-    private PeerGroup getGroup (String pgid) {
-	return (PeerGroup) groups.get (pgid);
+    private PeerGroup getGroup (MessageElement groupId) {
+	return (PeerGroup) groups_.get (groupId);
     }
 
     // Update groups if peer groups change.
     public synchronized void groupChanged(PeerGroup group) {
 
         super.groupChanged(group);
-        currentGroup= group;
-        pipes = group.getPipeService();
-        discovery = group.getDiscoveryService();
+        currentGroup_= group;
+        pipes_ = group.getPipeService();
+        discovery_ = group.getDiscoveryService();
         try {
-         Enumeration localAds = discovery.getLocalAdvertisements(
+         Enumeration localAds = discovery_.getLocalAdvertisements(
                              DiscoveryService.ADV,
                              PipeAdvertisement.NameTag,
-                             CHATNAMETAG +".*");
+                             CHATNAMETAG_ +".*");
 
         java.util.Vector result = new  java.util.Vector();
 
@@ -226,17 +248,17 @@ public class Chat extends DiscoveryClientServer implements
         } catch (IOException e) {
           System.out.println("Error when groups updated.");
         }
-        if (!initialized) return;
+        if (!initialized_) return;
 
         //Check if need to create a new chat session when groups change.
-        if (!chatSession.contains(group.getPeerGroupID())) {
-          myName = manager.getMyPeerName();
-          login(myName);
-          chatSession.addElement(group.getPeerGroupID());
+        if (!chatSession_.contains(group.getPeerGroupID())) {
+          myName_ = manager_.getMyPeerName();
+          login(myName_);
+          chatSession_.addElement(group.getPeerGroupID());
         }
 
         recordGroup (group);
-        PipePresence tmpp = getPipePresence(group, myPipeAdvt);
+        PipePresence tmpp = getPipePresence(group, myPipeAdvt_);
         refreshNotify(null);
     }
 
@@ -250,11 +272,11 @@ public class Chat extends DiscoveryClientServer implements
         PipeAdvertisement pipeAd = null;
         
         if (toWhom != null) {
-         PeerGroup group = manager.getSelectedPeerGroup();
-         currentUser = getPipePresence (group, myPipeAdvt).getOnlineBuddy (getName (toWhom));
-            if (currentUser != null) {
+         PeerGroup group = manager_.getSelectedPeerGroup();
+         currentUser_ = getPipePresence (group, myPipeAdvt_).getOnlineBuddy (getName (toWhom));
+            if (currentUser_ != null) {
                 // This user is already an active user.
-                toName = getName (toWhom);
+                toName_ = getName (toWhom);
                 return;
             } 
             // This is not an online user. We cannot chat with this user.
@@ -264,54 +286,67 @@ public class Chat extends DiscoveryClientServer implements
     }
 
     // Ping Buddy to see if they are still out there.
-    public void pingBuddy (BuddyListBuilder buddy) {
+    public static void pingBuddy (BuddyListBuilder buddy) {
 
-        Message msg = pipes.createMessage();
-
-        msg.setString (SRCPIPEADV, advToString (buddy.getReplyPipe()));
-        msg.setString (SRCPEERADV, myPeerAdvString);
-        msg.setString (GROUPID, buddy.getGroup().getPeerGroupID().toString());
-        msg.setString (COMMAND, PING);
-        msg.setString (SENDERNAME, myName);
+        Message msg = null;//= pipes_.createMessage();
+        /*
+        msg.setString (SRCPIPEADV_, advToString (buddy.getReplyPipe()));
+        msg.setString (SRCPEERADV_, myPeerAdvString_);
+        msg.setString (GROUPID_, buddy.getGroup().getPeerGroupID().toString());
+        msg.setString (COMMAND_, PING_);
+        msg.setString (SENDERNAME_, myName_);
+        */
+        
+        msg.setMessageProperty(SRCPIPEADV_, advToString (buddy.getReplyPipe()));
+        msg.setMessageProperty(SRCPEERADV_, myPeerAdvString_);
+        msg.setMessageProperty(GROUPID_, buddy.getGroup().getPeerGroupID().toString());
+        msg.setMessageProperty(COMMAND_, PING_);
+        msg.setMessageProperty(SENDERNAME_, myName_);
         // Send the message.
         buddy.sendMessage (msg);
     }
 
     
     // Sends back ad in the message.
-    public void sendAdInMessage (BuddyListBuilder buddy, Message msg) {
-
-        msg.setString (SRCPIPEADV, advToString (buddy.getReplyPipe()));
-        msg.setString (SRCPEERADV, myPeerAdvString);
-        msg.setString (GROUPID, buddy.getGroup().getPeerGroupID().toString());
-        msg.setString (SENDERNAME, myName);
+    public static void sendAdInMessage (BuddyListBuilder buddy, Message msg) {
+    	/*
+        msg.setString (SRCPIPEADV_, advToString (buddy.getReplyPipe()));
+        msg.setString (SRCPEERADV_, myPeerAdvString_);
+        msg.setString (GROUPID_, buddy.getGroup().getPeerGroupID().toString());
+        msg.setString (SENDERNAME_, myName_);
+        */
+    	
+        msg.setMessageProperty(SRCPIPEADV_, advToString (buddy.getReplyPipe()));
+        msg.setMessageProperty(SRCPEERADV_, myPeerAdvString_);
+        msg.setMessageProperty(GROUPID_, buddy.getGroup().getPeerGroupID().toString());
+        msg.setMessageProperty(SENDERNAME_, myName_);
     }
 
     // Probe users and add to peer list if exists.
     public void probeUser (PipeAdvertisement toWhom) {
-        PeerGroup group = manager.getSelectedPeerGroup();
-        getPipePresence (group, myPipeAdvt).addOnlineBuddy (getName (toWhom), toWhom);
+        PeerGroup group = manager_.getSelectedPeerGroup();
+        getPipePresence (group, myPipeAdvt_).addOnlineBuddy (getName (toWhom), toWhom);
     }
 
     // Log in and start server.
     void login(String loginName) 
     {
-        myName       = loginName;
+        myName_       = loginName;
         // start the server here
         runChatServer();
     }
   
     // Add a listener for user and message events.
     public synchronized void addListener(Listener listener) {
-           if (!pipePListener.contains(listener) ) {
-                   pipePListener.addElement(listener);
+           if (!pipePListener_.contains(listener) ) {
+                   pipePListener_.addElement(listener);
            }
     }
 
     // Remove listener for a user and message event set.
     public synchronized boolean removeListener(Listener listener) {
  
-        return (pipePListener.removeElement(listener));
+        return (pipePListener_.removeElement(listener));
     }
     
 
@@ -334,11 +369,11 @@ public class Chat extends DiscoveryClientServer implements
                                         null);
         while (true) {
             try {
-                if (i > MAXRETRIES) {
+                if (i > MAXRETRIES_) {
                     break;
                 }
                 // Start looking remotely.
-                if (i > MAXRETRIES/2 ) {
+                if (i > MAXRETRIES_/2 ) {
                           discovery.getRemoteAdvertisements(null,
                                         DiscoveryService.ADV,
                                         PipeAdvertisement.NameTag,
@@ -346,7 +381,7 @@ public class Chat extends DiscoveryClientServer implements
                                           1,
                                         null);
                 }
-                Thread.sleep(WaitingTime);
+                Thread.sleep(WaitingTime_);
                 adv = findLocalUser (name, discovery);
                 if (adv != null ) {
                         return adv;
@@ -390,9 +425,9 @@ public class Chat extends DiscoveryClientServer implements
 
         int i = 0;        
         try {
-            return discovery.getLocalAdvertisements(DiscoveryService.ADV,
+            return discovery_.getLocalAdvertisements(DiscoveryService.ADV,
                                                     PipeAdvertisement.NameTag,
-                                                    CHATNAMETAG+".*");
+                                                    CHATNAMETAG_+".*");
             
         } catch (Exception e) {
             e.printStackTrace();
@@ -403,30 +438,29 @@ public class Chat extends DiscoveryClientServer implements
     // sendMessageToPeers - sends message to listening peer(s).
     public void sendMessageToPeers(String message) {
 
-        if (currentUser != null) {
+        if (currentUser_ != null) {
             Message msg = null;
-            InputStream ip = null;
+            ByteArrayInputStream ip = null;
 
             try {
                 if (message == null) {
                     return;
                 }
-                msg = pipes.createMessage();
+                //msg = pipes_.createMessage();
                 ip = new ByteArrayInputStream(message.getBytes());
-                msg.addElement(msg.newMessageElement (
-                                        SENDERMESSAGE,
-                                        null,
-                                        ip));
+               msg.addMessageElement(SENDERNAME_, null);
 
                 // push my Name
-                msg.setString (SENDERNAME, myName);
-
+                //msg.setString (SENDERNAME_, myName_);
+                msg.setMessageProperty(SENDERNAME_, myName_);
+                
                 // push my GroupName
-                msg.setString(
-                        SENDERGROUPNAME,
-                        manager.getSelectedPeerGroup().getPeerGroupName());
+                //msg.setString(
+                msg.setMessageProperty(
+                        SENDERGROUPNAME_,
+                        manager_.getSelectedPeerGroup().getPeerGroupName());
 
-                queue.push(msg);
+                queue_.push(msg);
 
             } catch (Exception e) {
             	System.out.println("Failed to post message.");
@@ -438,36 +472,36 @@ public class Chat extends DiscoveryClientServer implements
     public synchronized void runChatServer() {
         
     	// Runs chat.
-        PeerGroup group = manager.getSelectedPeerGroup();
+        PeerGroup group = manager_.getSelectedPeerGroup();
         DiscoveryService tmpDiscovery = group.getDiscoveryService();
         PipeService tmpPipe = group.getPipeService();
         PeerGroupAdvertisement pgAdv;
-        myPeerAdvt = group.getPeerAdvertisement();
-        myPeerAdvString = advToString (myPeerAdvt);
+        myPeerAdvt_ = group.getPeerAdvertisement();
+        myPeerAdvString_ = advToString (myPeerAdvt_);
 
-        myPipeAdvt = findUser(myName, tmpDiscovery);
+        myPipeAdvt_ = findUser(myName_, tmpDiscovery);
 
-        if (myPipeAdvt == null) {
+        if (myPipeAdvt_ == null) {
             // Create a pipe advertisement for this pipe.
-            myPipeAdvt = (PipeAdvertisement)
+            myPipeAdvt_ = (PipeAdvertisement)
                     AdvertisementFactory.newAdvertisement(
                     PipeAdvertisement.getAdvertisementType());
 
-            myPipeAdvt.setPipeID(IDFactory.newPipeID((PeerGroupID) group.getPeerGroupID()));
-            myPipeAdvt.setName(CHATNAMETAG + "." + myName);
-            myPipeAdvt.setType(PipeService.UnicastSecureType);
+            myPipeAdvt_.setPipeID(IDFactory.newPipeID((PeerGroupID) group.getPeerGroupID()));
+            myPipeAdvt_.setName(CHATNAMETAG_ + "." + myName_);
+            myPipeAdvt_.setType(PipeService.UnicastSecureType);
         }
         // Convert prev registered Unicast type to secure
-        myPipeAdvt.setType(PipeService.UnicastSecureType);
-        myPipeAdvString = advToString (myPipeAdvt);
+        myPipeAdvt_.setType(PipeService.UnicastSecureType);
+        myPipeAdvString_ = advToString (myPipeAdvt_);
 
         try {
-         publishAdvertisement(myPipeAdvt, tmpDiscovery);
-         inputPipe = tmpPipe.createInputPipe(myPipeAdvt, this);
+         publishAdvertisement(myPipeAdvt_, tmpDiscovery);
+         inputPipe_ = tmpPipe.createInputPipe(myPipeAdvt_, this);
          
          //Store user input pipe information.
-         inputPipes.addElement(inputPipe);
-         probeUser (myPipeAdvt);
+         inputPipes_.addElement(inputPipe_);
+         probeUser (myPipeAdvt_);
         } catch (IOException e)  {
              System.out.println("error logging in.");
         }
@@ -486,12 +520,6 @@ public class Chat extends DiscoveryClientServer implements
                 discovery.ADV);
     }
     
-    public void pipeMsgEvent(PipeMsgEvent event) {
-
-            Message msg = event.getMessage();
-            processMessage(msg);
-    }
-    
     // Ends chat server on logout.
     public synchronized void logout() {
         // Not implemented yet.
@@ -504,12 +532,12 @@ public class Chat extends DiscoveryClientServer implements
 
     // Adds listener for peer groups structure listeners.
     public void addStructureListener(GroupStructureListener listener) {
-        structureListeners.addElement(listener);
+        structureListeners_.addElement(listener);
     }
 
     // Removes listeners for Group and Peer  structure
     public void removeStructureListener(GroupStructureListener listener) {
-        structureListeners.removeElement(listener);
+        structureListeners_.removeElement(listener);
     }
 
     // Finds the PipeAdvertisement for the selected name.
@@ -534,19 +562,19 @@ public class Chat extends DiscoveryClientServer implements
     // Searches ads.
     public void searchAdvertisements()
              throws IOException {
-        discovery.getRemoteAdvertisements(
+        discovery_.getRemoteAdvertisements(
                         null, 
                         DiscoveryService.ADV,
                         PipeAdvertisement.NameTag, 
-                        CHATNAMETAG +".*", 
-                        DiscoveryClientServer.THRESHOLD,
+                        CHATNAMETAG_ +".*", 
+                        DiscoveryClientServer.THRESHOLD_,
                         null);
 
         // Get local  values.
-        Enumeration localAds = discovery.getLocalAdvertisements(
+        Enumeration localAds = discovery_.getLocalAdvertisements(
                              DiscoveryService.ADV,
                              PipeAdvertisement.NameTag,
-                             CHATNAMETAG +".*");
+                             CHATNAMETAG_ +".*");
 
         java.util.ArrayList result = new  java.util.ArrayList();
 
@@ -623,7 +651,7 @@ public class Chat extends DiscoveryClientServer implements
             pipeAdv = (PipeAdvertisement) adv;
             String str = pipeAdv.getName();
             String type = pipeAdv.getType();
-            if ( str.startsWith(CHATNAMETAG+".") &&
+            if ( str.startsWith(CHATNAMETAG_+".") &&
                !( type.equals(PipeService.PropagateType)) ) {
                 return true;
             }
@@ -631,124 +659,21 @@ public class Chat extends DiscoveryClientServer implements
         return false;
     }
 
-    // Processes a message
-    protected void processMessage(Message msg) {
-        String messageID;
-        byte[] buffer = null;
-
-        String srcPeerAdvWireFormat = msg.getString (SRCPEERADV);
-        PeerAdvertisement srcPeerAdv = null;
-        try {
-            if (srcPeerAdvWireFormat != null) {
-                srcPeerAdv = (PeerAdvertisement) AdvertisementFactory.newAdvertisement(
-                                              new MimeMediaType("text/xml"),
-                                              new ByteArrayInputStream(srcPeerAdvWireFormat.getBytes()));
-                
-                discovery.publish(srcPeerAdv, DiscoveryService.PEER);
-            }
-        } catch (Exception e) {
-        }
-
-        String srcPipeAdvWireFormat = msg.getString (SRCPIPEADV);
-        PipeAdvertisement srcPipeAdv = null;
-        try {
-            if (srcPipeAdvWireFormat != null) {
-                srcPipeAdv = (PipeAdvertisement) AdvertisementFactory.newAdvertisement(
-                                new MimeMediaType("text/xml"),
-                                new ByteArrayInputStream(srcPipeAdvWireFormat.getBytes()));
-                
-                discovery.publish(srcPipeAdv, DiscoveryService.ADV);
-            }
-        } catch (Exception e) {
-        }
-
-        String groupId = msg.getString (GROUPID);
-        PeerGroup group = null;
-        if (groupId != null) {
-            group = getGroup (groupId);
-        }
-
-        String        sender = null;
-        String     groupname = null;
-        String senderMessage = null;
-        // Get sender information
-        try {
-                sender = getTagString(msg, SENDERNAME, "anonymous");
-                groupname = getTagString(msg, SENDERGROUPNAME, "unknown");
-                senderMessage = getTagString(msg, SENDERMESSAGE, null);
-
-                String msgstr;
-                if (groupname.equals(manager.getSelectedPeerGroup().getPeerGroupName()) ) {
-                     //message is from this group
-                     msgstr = sender + "> " + senderMessage +EOL ;   
-                } else {
-                     msgstr = sender + "@" + groupname + "> " + senderMessage +EOL;   
-                }                
-                
-                if (senderMessage != null) {
-                }
-                // If there is a PipeAdvertisement piggy backed into the message
-                // create a new buddy.
-                if ((srcPipeAdv != null) && (group != null)) {
-                    PipePresence p  =  getPipePresence (group, myPipeAdvt);
-                    if (p != null) {
-                        p.addOnlineBuddy (sender, srcPipeAdv);
-                    }
-                }
-        } catch (Exception e) {
-           System.out.println("Error processing message.");
-        }
-        // Process any Chat commands
-
-        String cmd = msg.getString (COMMAND);
-        if (cmd == null) {
-            // Nothing to do
-            return;
-        }
-        if (cmd.equals (PING) && (group != null)) {
-            // This is a PING request. We need to reply ACK
-            OutputPipe op = null;
-            Vector dstPeers = new Vector (1);
-            dstPeers.add (srcPeerAdv.getPeerID());
-            try {
-                op = group.getPipeService().createOutputPipe (srcPipeAdv,
-                                     PipeTimeout);
-                if (op != null) {
-                    // Send the ACK
-                    Message rep = pipes.createMessage();
-                    rep.setString (COMMAND, ACK);
-                    rep.setString (GROUPID, groupId);
-                    rep.setString (SENDERNAME, myName);
-                    op.send (rep);
-                } else {
-                }
-            } catch (Exception ez1) {
-                // We can't reply. Too bad...
-            }
-        }
-
-        if (cmd.equals (ACK) && (group != null)) {
-            // This is a ACK reply. Get the appropriate PipePresence
-            PipePresence p  =  getPipePresence (group, myPipeAdvt);
-            if (p != null) {
-                p.processAck (sender);
-            }
-        }
-    }
+   
 
     public void presenceEvent( PipePresence.PresenceEvent event ) {
 
         // We filter out disconnect even from the local user
-        if (event.getName().equals (myName) &&
+        if (event.getName().equals (myName_) &&
             !event.getStatus()) {
             // Ignore the event
             return;
         }
-        if (pipePListener != null) {
+        if (pipePListener_ != null) {
             // this can happen as the method may be called from the
             // constructor in the super class
-            for (int i = 0; i < pipePListener.size(); i++) {
-              Listener l = (Listener) pipePListener.elementAt(i);
+            for (int i = 0; i < pipePListener_.size(); i++) {
+              Listener l = (Listener) pipePListener_.elementAt(i);
               l.userEvent( event );
             }
         }
@@ -756,9 +681,9 @@ public class Chat extends DiscoveryClientServer implements
 
        public void refreshNotify( Enumeration notifications ) {
 
-        if (pipePListener != null) {
-            for (int i = 0; i < pipePListener.size(); i++) {
-              Listener l = (Listener) pipePListener.elementAt(i);
+        if (pipePListener_ != null) {
+            for (int i = 0; i < pipePListener_.size(); i++) {
+              Listener l = (Listener) pipePListener_.elementAt(i);
               l.refreshEvent( notifications );
             }
         }
@@ -766,11 +691,11 @@ public class Chat extends DiscoveryClientServer implements
 
     // Called if the peer structure changes.
     private void processPeerStructureChanged(AdvertisementEvent e) {
-        if (structureListeners != null) {
+        if (structureListeners_ != null) {
             // this can happen as the method may be called from the
             // constructor in the super class
-            for (int i = 0; i < structureListeners.size(); i++) {
-              GroupStructureListener l = (GroupStructureListener) structureListeners.elementAt(i);
+            for (int i = 0; i < structureListeners_.size(); i++) {
+              GroupStructureListener l = (GroupStructureListener) structureListeners_.elementAt(i);
               l.peerDataChanged(e);
             }
         }
@@ -783,7 +708,11 @@ public class Chat extends DiscoveryClientServer implements
 		
 	}
 
-
+	@Override
+	public void pipeMsgEvent(PipeMsgEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
 }
 
 

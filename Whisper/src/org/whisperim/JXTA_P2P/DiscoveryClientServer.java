@@ -15,22 +15,23 @@
  **************************************************************************/
 package org.whisperim.JXTA_P2P;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Vector;
+
+import net.jxta.discovery.DiscoveryEvent;
+import net.jxta.discovery.DiscoveryListener;
+import net.jxta.discovery.DiscoveryService;
 import net.jxta.document.Advertisement;
 import net.jxta.document.AdvertisementFactory;
 import net.jxta.document.MimeMediaType;
-import net.jxta.discovery.*;
-import net.jxta.protocol.DiscoveryResponseMsg;
 import net.jxta.peergroup.PeerGroup;
-import net.jxta.protocol.PeerGroupAdvertisement;
+import net.jxta.protocol.DiscoveryResponseMsg;
 import net.jxta.protocol.PeerAdvertisement;
 import net.jxta.protocol.PipeAdvertisement;
-
-import java.io.IOException;
-import java.util.Vector;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Enumeration;
-import java.io.ByteArrayInputStream;
 
 /*
  * This class discovers peers and peer-groups.
@@ -39,15 +40,15 @@ public abstract class DiscoveryClientServer implements DiscoveryListener,
 					  PeerGroupManager.PeerListener {
 
 	// Threshold value for discovery service.
-    protected final static int THRESHOLD = 50;
+    protected final static int THRESHOLD_ = 50;
 
     // MIME advertisement.
-    private final static MimeMediaType XMLMIMETYPE =
+    private final static MimeMediaType XMLMIMETYPE_ =
             new MimeMediaType("text/xml");
 
     private Vector listeners_ = new Vector();
     protected DiscoveryService discover_ = null;
-    private int adType_ = -1;
+    protected int adType_ = -1;
     private String attribute_ = null;
     private String value_ = null;
 
@@ -112,7 +113,7 @@ public abstract class DiscoveryClientServer implements DiscoveryListener,
     public void searchAdvertisements(String attr, String value)
              throws IOException {
         discover_.getRemoteAdvertisements(null, adType_,
-                attr, value, THRESHOLD,null);
+                attr, value, THRESHOLD_,null);
 
         // Get local values.
         Enumeration locAds = discover_.getLocalAdvertisements(adType_,
@@ -154,7 +155,7 @@ public abstract class DiscoveryClientServer implements DiscoveryListener,
                     // Create Peer(Group)Advertisement from response.
                     adv = (Advertisement)
                             AdvertisementFactory.newAdvertisement(
-                            XMLMIMETYPE, new ByteArrayInputStream(
+                            XMLMIMETYPE_, new ByteArrayInputStream(
                             str.getBytes()));
                    
                     if ( isInvalidPipeAdv(adv) ) {

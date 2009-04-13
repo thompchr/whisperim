@@ -15,17 +15,12 @@
  **************************************************************************/
 
 package org.whisperim.JXTA_P2P;
-import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Hashtable;
 
 import net.jxta.peergroup.PeerGroup;
 
-import org.whisperim.plugins.ConnectionPluginAdapter;
-
-
-import java.util.ArrayList;
-import java.util.Hashtable;
-
-import org.whisperim.JXTA_P2P.PipePresence;
 import org.whisperim.client.Buddy;
 import org.whisperim.client.ConnectionManager;
 import org.whisperim.client.Message;
@@ -87,7 +82,7 @@ public class Peer2PeerPlugIn extends ConnectionPluginAdapter {
 		chat.login(username);
 		
 		// Create pipe presence instance.
-		PipePresence pp = new PipePresence((PeerGroup) pgm.getPeerList(), pp.getReplyPipe());
+		PipePresence pp = new PipePresence((PeerGroup) pgm.getPeerList(), null);
 		
 		// Create Buddy hash.
 		Hashtable buddyHash = new Hashtable();
@@ -97,7 +92,11 @@ public class Peer2PeerPlugIn extends ConnectionPluginAdapter {
 
 		// Push peers into buddy list.
 		ArrayList<Buddy> list = new ArrayList<Buddy>();
-		buddyHash.CopyTo(list, 0);
+//		buddyHash.CopyTo(list, 0);
+		
+		for (int i = 0; i < buddyHash.size(); ++i){
+			list.add((Buddy)buddyHash.elements().nextElement());
+		}
 
 		cm_.receiveBuddies(list);
 	}
@@ -105,10 +104,11 @@ public class Peer2PeerPlugIn extends ConnectionPluginAdapter {
 	@Override
 	public void sendMessage(Message m){
 		// Create a chat object.
+		PeerGroupManager pgm = new PeerGroupManager(null);
+		
 		Chat chat = new Chat(pgm);
 		
-		chat.sendMessageToPeers(m);
-		
+		chat.sendMessageToPeers(m.toString());
 	}
 	
 	private void print(String msg){
