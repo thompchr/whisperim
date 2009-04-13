@@ -16,12 +16,9 @@
 package org.whisperim.whisperbot;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.util.Date;
-import java.util.HashMap;
 
-import org.whisperim.security.*;
+import org.whisperim.security.FileEncryptor;
 
 import com.aol.acc.AccAlert;
 import com.aol.acc.AccAvManager;
@@ -32,7 +29,6 @@ import com.aol.acc.AccBartItem;
 import com.aol.acc.AccBartItemProp;
 import com.aol.acc.AccBuddyList;
 import com.aol.acc.AccBuddyListProp;
-import com.aol.acc.AccClientInfo;
 import com.aol.acc.AccCustomSession;
 import com.aol.acc.AccDirEntry;
 import com.aol.acc.AccEvents;
