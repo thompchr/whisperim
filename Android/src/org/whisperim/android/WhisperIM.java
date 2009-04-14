@@ -1,8 +1,6 @@
 package org.whisperim.android;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-
+import org.whisperim.android.files.AndroidFileStreamCoordinator;
 import org.whisperim.android.ui.Controller;
 import org.whisperim.client.ConnectionManager;
 import org.whisperim.client.MessageProcessor;
@@ -21,7 +19,7 @@ public class WhisperIM extends Activity {
         
         //Start the UI
         
-        MessageProcessor mp = new MessageProcessorImpl(new Whisper("test").getKeys());
+        MessageProcessor mp = new MessageProcessorImpl(new Whisper(new AndroidFileStreamCoordinator(this)).getKeys());
         ConnectionManager cm = new ConnectionManager(mp);
         
         new Controller(this, cm);
