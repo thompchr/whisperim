@@ -21,9 +21,10 @@ import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.FileOutputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Map.Entry;
 
 import javax.swing.JButton;
@@ -110,7 +111,8 @@ public class NewAccountWindow extends JFrame implements ActionListener {
 	private static final String CREATE_NEW_ACCOUNT_= "Create a new account";
 	
 	//File System Constants
-	private static final String ACCOUNTS_FILE_ = GlobalPreferences.getInstance().getHomeDir() + File.separator + "accounts";
+	private OutputStream ostream = GlobalPreferences.getInstance().getFSC().getOutputStream("accounts");
+	
 	
 	//Data members\\
 	
@@ -390,8 +392,14 @@ public class NewAccountWindow extends JFrame implements ActionListener {
 			}
 			
 			try {
+				InputStream istream = null;
+				try {
+					istream = GlobalPreferences.getInstance().getFSC().getInputStream("accounts");
+				}catch (FileNotFoundException e) {
+					return;
+				}
 				
-				Document dom = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(ACCOUNTS_FILE_);
+				Document dom = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(istream);
 				
 				Element curAccount = dom.createElement(cs.getProtocol() + ":" + cs.getHandle());
 				curAccount.setAttribute("localalias", localAliasField_.getText());
@@ -418,7 +426,7 @@ public class NewAccountWindow extends JFrame implements ActionListener {
 				format.setIndenting(true);
 
 				XMLSerializer serializer = new XMLSerializer(
-				new FileOutputStream(new File(ACCOUNTS_FILE_)), format);
+				ostream, format);
 
 				serializer.serialize(dom);
 				

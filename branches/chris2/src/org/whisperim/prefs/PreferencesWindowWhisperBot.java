@@ -23,7 +23,6 @@ import java.awt.event.KeyEvent;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 
-import org.whisperim.client.Whisper;
 import org.whisperim.whisperbot.WhisperBot;
 
 import com.aol.acc.AccException;

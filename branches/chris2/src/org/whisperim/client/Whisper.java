@@ -1,4 +1,4 @@
- /**************************************************************************
+/**************************************************************************
  * Copyright 2009 John Dlugokecki                                         *
  *                                                                         *
  * Licensed under the Apache License, Version 2.0 (the "License");         *
@@ -15,9 +15,10 @@
  **************************************************************************/
 
 package org.whisperim.client;
-import java.io.File;
-import java.io.FileOutputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.security.KeyPair;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -30,6 +31,7 @@ import org.apache.xml.serialize.XMLSerializer;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import org.whisperim.file.FileStreamCoordinator;
 import org.whisperim.prefs.GlobalPreferences;
 import org.whisperim.security.Encryptor;
 import org.xml.sax.SAXException;
@@ -45,13 +47,12 @@ import org.xml.sax.SAXException;
 
 public class Whisper {  
 
-	private String homeDir_;
-	private String keyFile_;
-	
-	public Whisper(String home){
-			GlobalPreferences.getInstance().setHomeDir(home);
-			homeDir_ = GlobalPreferences.getInstance().getHomeDir();
-			keyFile_ = homeDir_ + File.separator + "keys";
+	private FileStreamCoordinator coord_;
+
+	public Whisper(FileStreamCoordinator coord){
+		coord_ = coord;
+		GlobalPreferences.getInstance().setFSC(coord_);
+
 	}
 	/**
 	 * I take a xml element and the tag name, look for the tag and get
@@ -71,72 +72,58 @@ public class Whisper {
 
 		return textVal;
 	}
-	
+
 	public KeyPair getKeys(){
-		File dir = new File(homeDir_);
-		File keyFile = new File(keyFile_);
-		
-		if (dir.exists()){
-			// Directory exists, check to see if file exists.
-			if (!keyFile.exists()){
-				// Key store does not exist, create it.
-				try {
-					keyFile.createNewFile();
-					generateXML(keyFile);
-
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-			
-			// Determine if the file has been properly constructed as an XML file.
-		}else{
-			// Directory does not exist, create it and the file.
-			try{
-				dir.mkdir();
-				keyFile.createNewFile();
-				
-				generateXML(keyFile);
-
-			}catch (IOException e){
-				e.printStackTrace();
-			}
-		}
 
 		// Make sure that a keypair has been generated.
+		
+		InputStream istream = null;
+		try {
+			istream = GlobalPreferences.getInstance().getFSC().getInputStream("keys");
+		}catch (FileNotFoundException e){
+			generateXML(GlobalPreferences.getInstance().getFSC().getOutputStream("keys"));
+		}
 		try { 	
 			DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
 			Document doc;
-
-			doc = docBuilder.parse (keyFile);
+			istream = GlobalPreferences.getInstance().getFSC().getInputStream("keys");
+			try {
+				doc = docBuilder.parse(istream);
+			} catch(SAXException e){
+				generateXML(GlobalPreferences.getInstance().getFSC().getOutputStream("keys"));
+				return getKeys();
+			}
 
 			// Normalize text representation.
 			doc.getDocumentElement ().normalize ();
-			
+
 
 			NodeList myKeys = doc.getElementsByTagName("MyKeys");
-			
-							
+
+
 			if (myKeys.getLength() == 0){
 				/*KeyPair hasn't been generated,
-				 *Something is wrong with the file.
+				 *File was probably just created
 				 */
-			}else{
-				try {
-					
-					// KeyPair has been generated.
-					Element myKeysElement = (Element) myKeys.item(0);
-					String keys[] = new String[2];
-					keys[0] = getTextValue(myKeysElement, "PublicKey");
-					keys[1] = getTextValue(myKeysElement, "PrivateKey");
-					return Encryptor.generateRSAKeyPairFromString(keys);
-					
-				
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+				generateXML(GlobalPreferences.getInstance().getFSC().getOutputStream("keys"));
+				doc = docBuilder.parse(GlobalPreferences.getInstance().getFSC().getInputStream("keys"));
 			}
+
+			try {
+
+				// KeyPair has been generated.
+				Element myKeysElement = (Element) myKeys.item(0);
+				String keys[] = new String[2];
+				keys[0] = getTextValue(myKeysElement, "PublicKey");
+				keys[1] = getTextValue(myKeysElement, "PrivateKey");
+				return Encryptor.generateRSAKeyPairFromString(keys);
+
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
 		} catch (SAXException e) {
 
 			e.printStackTrace();
@@ -146,10 +133,10 @@ public class Whisper {
 		} catch (ParserConfigurationException e) {
 			e.printStackTrace();
 		}
-		
+
 		return null;
-		
-		
+
+
 	}
 
 	/**
@@ -158,7 +145,7 @@ public class Whisper {
 	 * only be called if the key file doesn't exist already.
 	 * @param keyFile
 	 */
-	private void generateXML(File keyFile){
+	private void generateXML(OutputStream keyFile){
 		Document dom = null;
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		try {
@@ -172,47 +159,47 @@ public class Whisper {
 			pce.printStackTrace();
 			return;
 		}
-		
+
 		// Write the xml header.
 		Element root = dom.createElement("Keys");
 		dom.appendChild(root);
-		
+
 		KeyPair newKeyPair = Encryptor.generateRSAKeyPair();
-		
+
 		Base64 b64 = new Base64();
 
 		String publicKeyString = new String(b64.encode(newKeyPair.getPublic().getEncoded()));
 
 		String privateKeyString = new String (b64.encode(newKeyPair.getPrivate().getEncoded()));
-		
+
 		Element myKeys = dom.createElement("MyKeys");
 		root.appendChild(myKeys);
-		
+
 		Element myPublic = dom.createElement("PublicKey");
 		myPublic.appendChild(dom.createTextNode(publicKeyString));
-		
-		
-		
+
+
+
 		myKeys.appendChild(myPublic);
-		
+
 		Element myPrivate = dom.createElement("PrivateKey");
-		
+
 		myPrivate.appendChild(dom.createTextNode(privateKeyString));
-		
+
 		myKeys.appendChild(myPrivate);
-		
+
 		try{
 			// Set output formatting.
 			OutputFormat format = new OutputFormat(dom);
 			format.setIndenting(true);
 
 			XMLSerializer serializer = new XMLSerializer(
-			new FileOutputStream(keyFile), format);
+					keyFile, format);
 
 			serializer.serialize(dom);
 
 		} catch(IOException ie) {
-		    ie.printStackTrace();
+			ie.printStackTrace();
 		}
 	}
 }

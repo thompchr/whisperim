@@ -1,4 +1,4 @@
- /**************************************************************************
+/**************************************************************************
  * Copyright 2009 Chris Thompson                                           *
  *                                                                         *
  * Licensed under the Apache License, Version 2.0 (the "License");         *
@@ -15,30 +15,33 @@
  **************************************************************************/
 package org.whisperim.prefs;
 
+import org.whisperim.file.FileStreamCoordinator;
+
 public class GlobalPreferences {
-	
+
 	private static GlobalPreferences instance_;
-	
-	private String home_;
-	
+
+	private FileStreamCoordinator fsc_;
+
 	protected GlobalPreferences(){
-		
+
 	}
-	
+
 	public static GlobalPreferences getInstance(){
 		if (instance_ == null){
-			return new GlobalPreferences();
-		}else{
-			return instance_;
+			instance_ = new GlobalPreferences();
 		}
+
+		return instance_;
+
 	}
-	
-	public void setHomeDir(String dir){
-		home_ = dir;
+
+	public void setFSC(FileStreamCoordinator fsc){
+		fsc_ = fsc;
 	}
-	
-	public String getHomeDir(){
-		return home_;
+
+	public FileStreamCoordinator getFSC(){
+		return fsc_;
 	}
 
 }
