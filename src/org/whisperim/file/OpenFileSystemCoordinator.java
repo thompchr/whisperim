@@ -13,28 +13,15 @@
  * See the License for the specific language governing permissions and     *
  * limitations under the License.                                          *
  **************************************************************************/
-package org.whisperim.ui;
+package org.whisperim.file;
 
-import java.awt.EventQueue;
-
-import org.whisperim.client.ConnectionManager;
-import org.whisperim.client.MessageProcessor;
-import org.whisperim.client.MessageProcessorImpl;
-import org.whisperim.client.Whisper;
-import org.whisperim.file.DesktopFileStreamCoordinator;
-
-public class UIBootstrapper {
+public interface OpenFileSystemCoordinator extends FileStreamCoordinator {
 	
-	public static void main(String[] args){
-		
-		MessageProcessor mp = new MessageProcessorImpl(new Whisper(new DesktopFileStreamCoordinator()).getKeys());
-        final ConnectionManager cm = new ConnectionManager(mp);
-		EventQueue.invokeLater(new Runnable() {
-	           public void run() {
-	             new WhisperClient(cm);
-
-	           }
-	        });
-	}
+	/**
+	 * This method returns the path to the Whisper home directory.
+	 * The returned string must end with a File.separator character.
+	 * @return String
+	 */
+	public String getHomeDirectory();
 
 }

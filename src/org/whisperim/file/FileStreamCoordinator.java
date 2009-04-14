@@ -13,28 +13,36 @@
  * See the License for the specific language governing permissions and     *
  * limitations under the License.                                          *
  **************************************************************************/
-package org.whisperim.ui;
+package org.whisperim.file;
 
-import java.awt.EventQueue;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
-import org.whisperim.client.ConnectionManager;
-import org.whisperim.client.MessageProcessor;
-import org.whisperim.client.MessageProcessorImpl;
-import org.whisperim.client.Whisper;
-import org.whisperim.file.DesktopFileStreamCoordinator;
-
-public class UIBootstrapper {
+public interface FileStreamCoordinator {
 	
-	public static void main(String[] args){
-		
-		MessageProcessor mp = new MessageProcessorImpl(new Whisper(new DesktopFileStreamCoordinator()).getKeys());
-        final ConnectionManager cm = new ConnectionManager(mp);
-		EventQueue.invokeLater(new Runnable() {
-	           public void run() {
-	             new WhisperClient(cm);
-
-	           }
-	        });
-	}
+	/**
+	 * This method is used to get an output stream and 
+	 * must be defined by the specific UI.  This allows
+	 * for system independent file-system interactions.
+	 * If the file/object does not exist, it should be created.
+	 * @param name - Name of the object to get the stream.
+	 * For example, this could be the filename associated
+	 * with this output stream.
+	 * @return OutputStream
+	 */
+	public OutputStream getOutputStream(String name);
+	
+	
+	/**
+	 * This method is used to get an input stream
+	 * and must be defined by the specific UI.  This
+	 * allows for system independent file-system interactions.
+	 * If the file/object does not exist, it should be 
+	 * created.
+	 * @param name - Name of the object associated with the stream.
+	 * @return InputStream
+	 */
+	public InputStream getInputStream(String name) throws FileNotFoundException;
 
 }

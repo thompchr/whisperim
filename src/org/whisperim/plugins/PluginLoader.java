@@ -33,23 +33,30 @@ import org.apache.xml.serialize.XMLSerializer;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import org.whisperim.file.OpenFileSystemCoordinator;
 import org.whisperim.prefs.GlobalPreferences;
 import org.whisperim.ui.WhisperClient;
 import org.xml.sax.SAXException;
 
+import com.sun.org.apache.regexp.internal.RE;
+
 public class PluginLoader {
 
-	private static final String REGISTRY_ = GlobalPreferences.getInstance().getHomeDir() 
-	+ File.separator + "plugins" + File.separator + "plugins.xml";
-
-	private static final String PLUGIN_DIR_ = GlobalPreferences.getInstance().getHomeDir() 
-	+ File.separator + "plugins";
+	private static String REGISTRY_ = null;
+	private static String PLUGIN_DIR_ = null;
 
 	private WhisperClient client_;
 
 
 	public PluginLoader (WhisperClient client){
 		client_ = client;
+		if (GlobalPreferences.getInstance() instanceof OpenFileSystemCoordinator){
+			PLUGIN_DIR_ = ((OpenFileSystemCoordinator)GlobalPreferences.getInstance()).getHomeDirectory() + "plugins";
+			REGISTRY_ = PLUGIN_DIR_ + File.separator + "plugins.xml";
+		}else{
+			REGISTRY_ = "";
+			PLUGIN_DIR_ = "";
+		}
 	}
 
 
@@ -69,20 +76,14 @@ public class PluginLoader {
 	 */
 	public void loadPlugins() throws Exception{
 		try {
-			File registry = new File(REGISTRY_);
-
-			if (!registry.exists()){
-				generatePluginFile();
-				return;
-			}
-
 
 			Document dom = DocumentBuilderFactory
 			.newInstance()
 			.newDocumentBuilder()
-			.parse(registry);
+			.parse(GlobalPreferences.getInstance().getFSC().getInputStream("plugins" + File.separator + "plugins.xml"));
 
 			NodeList connections = ((Element)dom.getElementsByTagName("connection").item(0)).getElementsByTagName("plugin");
+
 
 			for (int i = 0; i < connections.getLength(); ++i){
 
@@ -94,7 +95,7 @@ public class PluginLoader {
 					System.err.println("Name value was null and has not been set");
 					name = "";
 				}
-				
+
 				String location;
 				try{
 					location = ((Element)curElement.getElementsByTagName("location").item(0)).getAttribute("value");
@@ -105,7 +106,7 @@ public class PluginLoader {
 				location = location.replace("/", File.separator);
 				location = location.replace("\\", File.separator);
 
-				
+
 				String iconLocation;
 				try{
 					iconLocation = ((Element)curElement.getElementsByTagName("iconLocation").item(0)).getAttribute("value");
@@ -113,7 +114,7 @@ public class PluginLoader {
 					System.err.println("IconLocation was null and has not been set");
 					iconLocation = "";
 				}
-				
+
 				String entryClass;
 				try{
 					entryClass = ((Element)curElement.getElementsByTagName("class").item(0)).getAttribute("value");
@@ -121,7 +122,7 @@ public class PluginLoader {
 					System.err.println("Entry class was null, plugin cannot be loaded");
 					break;
 				}
-				
+
 				File dir = new File(location);
 				if (!dir.exists()){
 					System.err.println("File in registry doesn't exist");
@@ -134,9 +135,9 @@ public class PluginLoader {
 
 				ClassLoader cl = DynamicClassLoader.getExtendedClassLoader(Thread
 						.currentThread().getContextClassLoader(), location);
-				 
+
 				try{
-					
+
 					Plugin p = (Plugin) cl.loadClass(entryClass).newInstance();
 					p.setIconLocation(iconLocation);
 					p.setPluginName(name);
@@ -145,7 +146,7 @@ public class PluginLoader {
 				}catch(Exception e){
 					System.err.println(name + " could not be loaded.");
 				}
-				
+
 
 			}
 
@@ -160,7 +161,7 @@ public class PluginLoader {
 
 				ClassLoader cl = DynamicClassLoader.getExtendedClassLoader(Thread
 						.currentThread().getContextClassLoader(), location);
-				
+
 				try{
 
 					Plugin p = (Plugin)cl.loadClass(entryClass).newInstance();
@@ -171,7 +172,7 @@ public class PluginLoader {
 					System.err.println(name + " could not be loaded.");
 
 				}
-				
+
 
 			}
 
@@ -308,7 +309,7 @@ public class PluginLoader {
 
 
 			//Load in the class
-			
+
 			ClassLoader cl = DynamicClassLoader.getExtendedClassLoader(Thread
 					.currentThread().getContextClassLoader(), url + location);
 			Class c; 
@@ -338,7 +339,7 @@ public class PluginLoader {
 			if (!registry.exists()){
 				generatePluginFile();
 			}
-			
+
 			dom = DocumentBuilderFactory
 			.newInstance()
 			.newDocumentBuilder()
@@ -388,51 +389,45 @@ public class PluginLoader {
 	 * if one does not already exist.
 	 */
 	public static void generatePluginFile(){
-		File pluginFile = new File(REGISTRY_);
-		File dir = new File(PLUGIN_DIR_);
-		if (!dir.exists()){
-			dir.mkdirs();
+		OutputStream pluginFile = GlobalPreferences.getInstance().getFSC().getOutputStream("plugins" + File.separator + "plugins.xml");
+		try {
+
+
+			Document dom = null;
+			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+
+			// Get an instance of builder.
+			DocumentBuilder db = dbf.newDocumentBuilder();
+
+			// Create an instance of DOM.
+			dom = db.newDocument();
+
+			Element root = dom.createElement("Plugins");
+			dom.appendChild(root);
+
+			Element connectionsRoot = dom.createElement("connection");
+			root.appendChild(connectionsRoot);
+
+			Element lafRoot = dom.createElement("lookandfeel");
+			root.appendChild(lafRoot);
+
+			OutputFormat format = new OutputFormat(dom);
+			format.setIndenting(true);
+
+			XMLSerializer serializer = new XMLSerializer(
+					pluginFile, format);
+
+			serializer.serialize(dom);
+
+
+		} catch (IOException e) {
+
+			e.printStackTrace();
+		} catch (ParserConfigurationException e) {
+
+			e.printStackTrace();
 		}
-		if (!pluginFile.exists()){
-			try {
 
-				pluginFile.createNewFile();
-				Document dom = null;
-				DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-
-				// Get an instance of builder.
-				DocumentBuilder db = dbf.newDocumentBuilder();
-
-				// Create an instance of DOM.
-				dom = db.newDocument();
-
-				Element root = dom.createElement("Plugins");
-				dom.appendChild(root);
-
-				Element connectionsRoot = dom.createElement("connection");
-				root.appendChild(connectionsRoot);
-
-				Element lafRoot = dom.createElement("lookandfeel");
-				root.appendChild(lafRoot);
-
-				OutputFormat format = new OutputFormat(dom);
-				format.setIndenting(true);
-
-				XMLSerializer serializer = new XMLSerializer(
-						new FileOutputStream(pluginFile), format);
-
-				serializer.serialize(dom);
-
-
-			} catch (IOException e) {
-
-				e.printStackTrace();
-			} catch (ParserConfigurationException e) {
-
-				e.printStackTrace();
-			}
-
-		}
 	}
 
 

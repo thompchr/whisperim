@@ -20,8 +20,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-import javax.swing.text.BadLocationException;
-
 import org.whisperim.plugins.Plugin;
 import org.whisperim.ui.UIController;
 

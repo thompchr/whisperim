@@ -18,8 +18,6 @@ package org.whisperim.aim;
 
 import java.util.ArrayList;
 
-import javax.swing.text.BadLocationException;
-
 import org.whisperim.client.Buddy;
 import org.whisperim.client.ConnectionManager;
 import org.whisperim.client.ConnectionStrategy;

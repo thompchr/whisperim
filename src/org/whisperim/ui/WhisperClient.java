@@ -32,6 +32,8 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -74,6 +76,7 @@ import org.whisperim.client.Message;
 import org.whisperim.client.MessageProcessor;
 import org.whisperim.events.EncryptionEvent;
 import org.whisperim.events.SessionEvent;
+import org.whisperim.file.OpenFileSystemCoordinator;
 import org.whisperim.lastfm.LastFM;
 import org.whisperim.listeners.ClientListener;
 import org.whisperim.models.BuddyListModel;
@@ -163,10 +166,6 @@ public class WhisperClient extends JFrame implements ActionListener, UIControlle
 	//List of Listeners used by WhisperSystemTray
 	private List<ClientListener> clientListeners_ = new ArrayList<ClientListener>();
 
-
-	//Directory constants
-	private static final String WHISPER_HOME_DIR_ = GlobalPreferences.getInstance().getHomeDir();
-	private static final String ACCOUNTS_FILE_ = WHISPER_HOME_DIR_ + File.separator + "accounts";
 
 	//Error messages
 	private static final String ERROR_CREATING_ACCOUNTS_ = "An error has occured creating the file to store account information, try restarting Whisper.";
@@ -509,7 +508,7 @@ public class WhisperClient extends JFrame implements ActionListener, UIControlle
 	 */
 	private void loadAccounts(){
 
-		File accounts = new File(ACCOUNTS_FILE_);
+		File accounts = new File(((OpenFileSystemCoordinator)GlobalPreferences.getInstance()).getHomeDirectory() + "accounts");
 		Document dom;
 		if (!accounts.exists()){
 			//Accounts file doesn't exist,
@@ -527,7 +526,7 @@ public class WhisperClient extends JFrame implements ActionListener, UIControlle
 				format.setIndenting(true);
 
 				XMLSerializer serializer = new XMLSerializer(
-						new FileOutputStream(ACCOUNTS_FILE_), format);
+						new FileOutputStream(accounts), format);
 
 				serializer.serialize(dom);
 

@@ -23,6 +23,8 @@ package org.whisperim.prefs;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,8 +52,9 @@ public class Preferences {
 	//whisperbot
 	//about
 
-	private static final String PREFS_FILE = GlobalPreferences.getInstance().getHomeDir() + File.separator + "prefs.xml";
-	
+	//private static final String PREFS_FILE = GlobalPreferences.getInstance().getHomeDir() + File.separator + "prefs.xml";
+	private static OutputStream prefsOutStream = GlobalPreferences.getInstance().getFSC().getOutputStream("prefs.xml");
+
 	/**
 	 * General Preferences
 	 */
@@ -110,7 +113,7 @@ public class Preferences {
 		// Class setup
 		xstream.alias("Preferences", Preferences.class);
 		try {
-			xstream.toXML(this, new FileWriter(new File(PREFS_FILE)));
+			xstream.toXML(this, prefsOutStream);
 		} catch (Exception e) {
 
 		}
@@ -123,8 +126,7 @@ public class Preferences {
 				XStream xstr = new XStream();
 				xstr.alias("Preferences", Preferences.class);
 
-				instance = (Preferences) xstr.fromXML(new FileInputStream(
-						new File(PREFS_FILE)));
+				instance = (Preferences) xstr.fromXML(GlobalPreferences.getInstance().getFSC().getInputStream("prefs.xml"));
 			} catch (Exception e) {
 				instance = new Preferences();
 			}

@@ -16,9 +16,9 @@
 
 package org.whisperim.security;
 
-import java.io.File;
-import java.io.FileOutputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -66,8 +66,6 @@ public class Encryptor {
 
 	private PublicKey publicKey_ = null;
 	private PrivateKey privateKey_ = null;
-	
-	private static String keyFileLocation_ = GlobalPreferences.getInstance().getHomeDir() + File.separator + "keys";
 
 
 	/**
@@ -86,7 +84,7 @@ public class Encryptor {
 	/**
 	 * Method used for generating an RSA key pair.  This method is 
 	 * static and will only be called when a user first uses the program.
-	 * @return java.security.KeyPair
+	 * @return KeyPair
 	 */
 	public static KeyPair generateRSAKeyPair(){
 		KeyPairGenerator kpg = null;
@@ -103,7 +101,7 @@ public class Encryptor {
 		return kpg.generateKeyPair();
 
 	}
-	
+
 
 	/**
 	 * The function provides the ability to read the key file from the local file system
@@ -115,16 +113,22 @@ public class Encryptor {
 	 */
 	public static PublicKey getPublicKeyForBuddy(Buddy b){
 		try {
-			File keyFile = new File(keyFileLocation_);
+			InputStream inStream = null;
+			try {
+				inStream = GlobalPreferences.getInstance().getFSC().getInputStream("keys");
+			}
+			catch(FileNotFoundException e){
+				return null;
+			}
 			DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
 			Document doc;
-			doc = docBuilder.parse(keyFile);
+			doc = docBuilder.parse(inStream);
 			// normalize text representation
 			doc.getDocumentElement().normalize();
 			NodeList buddies = doc.getElementsByTagName("Buddy");
 
-	
+
 			Element buddy = null;
 
 			if (buddies.getLength() != 0){
@@ -141,7 +145,7 @@ public class Encryptor {
 				if (buddy == null){
 					return null;
 				}
-				
+
 				NodeList children = buddy.getChildNodes();
 				Element key = null;
 				for (int i = 0; i < children.getLength(); ++i){
@@ -153,8 +157,8 @@ public class Encryptor {
 				if (key == null){
 					return null;
 				}
-				
-				String keyString = key.getTextContent();
+
+				String keyString = key.getChildNodes().item(0).getNodeValue();
 				X509EncodedKeySpec pubKeySpec = new X509EncodedKeySpec(new Base64().decode(keyString.getBytes()));
 
 				KeyFactory rsaKeyFac = null;
@@ -169,10 +173,10 @@ public class Encryptor {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				
+
 			}
 
-			
+
 
 			return null;
 		} catch (SAXException ex) {
@@ -201,23 +205,29 @@ public class Encryptor {
 		//no need to get any more information, just write the bugger.  Key text is
 		//Base64 encoded
 
-		
-		File keyFile = new File(keyFileLocation_);
+
 		Document doc;
 		DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder docBuilder;
-		
-		try {
 
+		try {
+			InputStream inStream = null;
+			
+			try {
+				inStream = GlobalPreferences.getInstance().getFSC().getInputStream("keys");
+			}
+			catch(FileNotFoundException e){
+				return;
+			}
 			docBuilder = docBuilderFactory.newDocumentBuilder();
-			doc = docBuilder.parse(keyFile);
-			
+			doc = docBuilder.parse(inStream);
+
 			Node root = doc.getElementsByTagName("Keys").item(0);
-			
+
 			NodeList buddies = doc.getElementsByTagName("Buddy");
-			
+
 			Element buddy = null;
-			
+
 			if (buddies.getLength() != 0){
 				//We need to see if we already have a key for this buddy
 				for (int i = 0; i < buddies.getLength(); ++i){
@@ -233,7 +243,7 @@ public class Encryptor {
 					}
 				}
 			}
-			
+
 			if (buddy == null){
 				//We didn't find the buddy
 				buddy = doc.createElement("Buddy");
@@ -242,19 +252,19 @@ public class Encryptor {
 				key.appendChild(doc.createTextNode(keyText));
 				buddy.appendChild(key);
 				root.appendChild(buddy);
-				
-								
+
+
 			}else {
-				
+
 				NodeList children = buddy.getChildNodes();
 				boolean found = false;
-				
+
 				for (int i = 0; i < children.getLength(); ++i){
 					if (children.item(i).getNodeName().compareToIgnoreCase("Key") == 0){
 						//Key node already exists
 						children.item(i).removeChild(children.item(i).getFirstChild());
-						
-						
+
+
 						children.item(i).appendChild(doc.createTextNode(keyText));
 						found = true;
 						break;
@@ -265,27 +275,27 @@ public class Encryptor {
 					key.appendChild(doc.createTextNode(keyText));
 					buddy.appendChild(key);
 				}
-				
+
 			}
-			
-			
+
+
 			OutputFormat format = new OutputFormat(doc);
 			format.setIndenting(true);
 
 			XMLSerializer serializer = new XMLSerializer();
-			serializer.setOutputByteStream(new FileOutputStream(keyFile));
+			serializer.setOutputByteStream(GlobalPreferences.getInstance().getFSC().getOutputStream("keys"));
 
 			serializer.serialize(doc);
 
 
 		} catch (ParserConfigurationException e) {
-			
+
 			e.printStackTrace();
 		} catch (SAXException e) {
-			
+
 			e.printStackTrace();
 		} catch (IOException e) {
-			
+
 			e.printStackTrace();
 		}
 
@@ -370,19 +380,25 @@ public class Encryptor {
 		return encryptedMessage;
 
 	}
-	
+
 	public static String getMyPublicKey() throws ParserConfigurationException, SAXException, IOException{
-		File keyFile = new File(keyFileLocation_);
+		InputStream inStream = null;
+		try {
+			inStream = GlobalPreferences.getInstance().getFSC().getInputStream("keys");
+		}catch (FileNotFoundException e) {
+			return "";
+		}
+		
 		DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
 		Document doc;
-		doc = docBuilder.parse(keyFile);
+		doc = docBuilder.parse(inStream);
 		// normalize text representation
 		doc.getDocumentElement().normalize();
 		NodeList buddies = doc.getElementsByTagName("PublicKey");
-		
-		
-		return  buddies.item(0).getTextContent();
+
+
+		return  buddies.item(0).getNodeValue();
 	}
 
 	/**
