@@ -440,6 +440,33 @@ public class Encryptor {
 		return outputMessage;
 
 	}
+	
+	public static PublicKey getPublicKeyFromString(String s){
+		
+		KeyFactory rsaKeyFac = null;
+		try {
+			rsaKeyFac = KeyFactory.getInstance("RSA");
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+		X509EncodedKeySpec pubKeySpec = new X509EncodedKeySpec(new Base64().decode(s.getBytes()));
+		
+
+		if (rsaKeyFac != null){
+
+			try {
+
+				return rsaKeyFac.generatePublic(pubKeySpec);
+				
+
+			} catch (InvalidKeySpecException e) {
+				e.printStackTrace();
+				return null;
+			}
+		}else {
+			return null;
+		}
+	}
 
 
 	/**

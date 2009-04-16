@@ -33,7 +33,7 @@ public class DesktopFileStreamCoordinator implements OpenFileSystemCoordinator {
 	 * @see FileStreamCoordinator
 	 */
 	@Override
-	public InputStream getInputStream(String file){
+	public InputStream getInputStream(String file) throws FileNotFoundException {
 		File temp = new File (homeDir_ + file);
 		if (temp.exists()){
 			try {
@@ -45,17 +45,7 @@ public class DesktopFileStreamCoordinator implements OpenFileSystemCoordinator {
 				return null;
 			}
 		}else{
-			try {
-				temp.createNewFile();
-				return new FileInputStream(temp);
-			} catch (IOException e) {
-				//This could either be a FileNotFoundException
-				//which shouldn't happen because it was just
-				//created, or a generic exception associated
-				//with the creation process.
-				e.printStackTrace();
-				return null;
-			}
+			throw new FileNotFoundException();
 
 		}
 

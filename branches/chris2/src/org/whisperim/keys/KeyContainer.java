@@ -46,6 +46,13 @@ public class KeyContainer {
 	}
 	
 	/**
+	 * No-arg constructor for XStream
+	 */
+	public KeyContainer(){
+		
+	}
+	
+	/**
 	 * Method that returns the public key for the given buddy.
 	 * @param b
 	 * @return PublicKey
