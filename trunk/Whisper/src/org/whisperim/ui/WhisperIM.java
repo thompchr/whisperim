@@ -41,6 +41,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.AddressException;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
@@ -104,16 +106,20 @@ public class WhisperIM extends JFrame implements ActionListener, WindowListener{
 	private static final String START_SOCIAL_SITE_DUMP_ = "Start Social Site Notification Service";
 	private static final String SET_LOCATION_ = "Set location...";
 	private static final String NEW_TAB_ = "New tab";
+	private static final String SMSTEXT_ = "Send SMS Text";
+	
 
 	private JCheckBoxMenuItem logging_;
 	private JCheckBoxMenuItem socialSites_;
 	private JCheckBoxMenuItem setLocation_;
+	private JMenuItem sendSMSText_;
 	
     private WhisperClient myParent_;
     private PrivateKey myKey_;
     private Logger log_;
     private boolean doLogging_;
     private HashMap<String, WhisperIMPanel> tabHash_ = new HashMap<String,WhisperIMPanel>();
+    private SMSText sms;
 
     
 
@@ -261,6 +267,18 @@ public class WhisperIM extends JFrame implements ActionListener, WindowListener{
 				setLocation_.setSelected(false);
 			}
     	}
+    	else if (e.getSource() == sendSMSText_){
+			sms = new SMSText();
+			try {
+				sms.sendText();
+			} catch (AddressException e1) {
+				e1.printStackTrace();
+			} catch (MessagingException e1) {
+				e1.printStackTrace();
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+    	}
     }
 	
 	//Menu creation is separate from UI layout
@@ -277,6 +295,7 @@ public class WhisperIM extends JFrame implements ActionListener, WindowListener{
 		//file (f)
 			//new tab (hidden)
 			//close tab
+		    //Send SMS Text
 			//exit (x)
 		fileMenu_ = new JMenu(FILE_);
 		fileMenu_.setMnemonic(KeyEvent.VK_F);
@@ -292,6 +311,11 @@ public class WhisperIM extends JFrame implements ActionListener, WindowListener{
 		closeTab_.addActionListener(this);
 		closeTab_.setAccelerator(KeyStroke.getKeyStroke("control W"));
 		fileMenu_.add(closeTab_);
+		
+		sendSMSText_ = new JMenuItem(SMSTEXT_);
+		sendSMSText_.addActionListener(this);
+		sendSMSText_.setAccelerator(KeyStroke.getKeyStroke("control S"));
+		fileMenu_.add(sendSMSText_);
 		
 		exit_ = new JMenuItem(EXIT_);
 		exit_.setMnemonic(KeyEvent.VK_X);
