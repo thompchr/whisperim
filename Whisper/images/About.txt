@@ -15,7 +15,11 @@
  * limitations under the License.                                          *
  **************************************************************************/
 
-
 Developers Webpage:
 
 http://code.google.com/p/whisperim/
+
+
+Send all questions, comments, and concerns to.
+
+Whisper Developers E-Mail: whisper.client@gmail.com
