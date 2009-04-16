@@ -35,7 +35,6 @@ public class SMSText {
    private static String carrier_;
    private static String number_;
    private static String messageString_;
-
    
    public SMSText(){
        props_ = new Properties();
@@ -70,8 +69,8 @@ public class SMSText {
        if(userInput == null){
            return null;
        }
-       String input = userInput.toString();
        
+       String input = userInput.toString(); 
        if(input == "Alltel"){
            return "message.alltel.com";
        }
@@ -103,16 +102,16 @@ public class SMSText {
    }
    
    public String getNumber(){
-             Object userInput = JOptionPane.showInputDialog(null, "What 10-Digit cell phone number would you like to SMS text?", 
-                                                                          "Cell Phone Number", JOptionPane.QUESTION_MESSAGE);
-             if(userInput != null){
-                     if(userInput.toString().length() != 10){
-                            JOptionPane.showMessageDialog(null, "You did not enter a 10-Digit Number.  Please try again.");
-                            getNumber();
-                     }
-                     return userInput.toString();
-             }
-             return null;
+         Object userInput = JOptionPane.showInputDialog(null, "What 10-Digit cell phone number would you like to SMS text?", 
+                                                                      "Cell Phone Number", JOptionPane.QUESTION_MESSAGE);
+         if(userInput != null){
+                 if(userInput.toString().length() != 10){
+                        JOptionPane.showMessageDialog(null, "You did not enter a 10-Digit Number.  Please try again.");
+                        getNumber();
+                 }
+                 return userInput.toString();
+         }
+         return null;
    }
    
    public String getMessage(){
