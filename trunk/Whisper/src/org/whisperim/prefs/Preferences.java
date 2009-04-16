@@ -22,28 +22,23 @@ package org.whisperim.prefs;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
-
-import sun.security.jca.GetInstance.Instance;
-
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.xml.DomDriver;
-
-import java.awt.Image;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.ImageIcon;
 
-/**
- * @author Cory Plastek
- * 
- */
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.xml.DomDriver;
+
+
 public class Preferences {
 
 	// for singleton
 	private static Preferences instance = null;
+	
+	// for prefs listener
 	private List<PrefListener> listeners_ = new ArrayList<PrefListener>();
 
 	//general
@@ -57,7 +52,7 @@ public class Preferences {
 
 	private static final String PREFS_FILE = System.getProperty("user.home") + File.separator + "Whisper" + File.separator + "prefs.xml";
 	
-	/**
+	/*
 	 * General Preferences
 	 */
 	//look and feel
@@ -65,38 +60,43 @@ public class Preferences {
 	public static final String THEME_ = "Theme";
 	public static final String METAL_ = "Metal"; //UIManager.getCrossPlatformLookAndFeelClassName();
 	public static final String SYSTEM_ = "Native"; //UIManager.getSystemLookAndFeelClassName();
-	private String lookAndFeel_ = SYSTEM_;
+	private String lookAndFeel_ = SYSTEM_;	
 
+	//images
+	private final static String imagesDir_ = System.getProperty("user.dir").replace("lib","images")+File.separator;
+	private static final ImageIcon whisperIconSmall_ = new ImageIcon(imagesDir_+"WhisperIMLogo-Small.png","");
+	private static final ImageIcon whisperIconBig_ = new ImageIcon(imagesDir_+"WhisperIMLogo-Big.png","");
+	private static final ImageIcon aimIconSmall_ = new ImageIcon(imagesDir_+"aim_icon_small.png","AIM");
+	private static final ImageIcon aimIconMed_ = new ImageIcon(imagesDir_+"aim_icon_med.png","AIM");
+	private static final ImageIcon aimIconBig_ = new ImageIcon(imagesDir_+"aim_icon_big.png","AIM");
 	
-	private final static String imagesDir_ = System.getProperty("user.dir").replace("lib", "images")+File.separator;
-	private ImageIcon whisperIconSmall_ = new ImageIcon(imagesDir_+"WhisperIMLogo-Small.png","");
-	private ImageIcon whisperIconBig_ = new ImageIcon(imagesDir_+"WhisperIMLogo-Big.png","");
-	private ImageIcon aimIconSmall_ = new ImageIcon(imagesDir_+"aim_icon_small.png","AIM");
-	private ImageIcon aimIconMed_ = new ImageIcon(imagesDir_+"aim_icon_med.png","AIM");
-	private ImageIcon aimIconBig_ = new ImageIcon(imagesDir_+"aim_icon_big.png","AIM");
 	
-	
-	/**
+	/*
 	 * Logging Preferences
 	 */
 	private boolean loggingEnabled_ = true;
 	public static final String LOGGING_ = "Logging";
 	
-	private static String loggingDir_ = System.getProperty("user.home")+File.separator+"Whisper Logs"+File.separator;
+	private String loggingDir_ = System.getProperty("user.home")+File.separator+"Whisper Logs"+File.separator;
 
-	/**
+	/*
 	 * Security Preferences
 	 */
+	//locking
+	private boolean locked_ = false;
+	public static final String LOCKED_ = "Locked";
+	private static String lockPassword_ = "";
+	
 	private boolean encryptionEnabled_ = true;
 	public static final String ENCRYPTION_ = "Encryption";
 
-	/**
+	/*
 	 * Sound Preferences
 	 */
 	private boolean soundsEnabled_ = false;
 	public static final String SOUNDS_ = "Sounds";
 
-	/**
+	/*
 	 * Whisperbot Preferences
 	 */
 	private boolean whisperBotEnabled_ = false;
@@ -112,10 +112,26 @@ public class Preferences {
 	public void savePrefs() {
 		XStream xstream = new XStream(new DomDriver());
 
+		//ignore images
+		xstream.omitField(Preferences.class, "whisperIconSmall_");
+		xstream.omitField(Preferences.class, "whisperIconBig_");
+		xstream.omitField(Preferences.class, "aimIconSmall_");
+		xstream.omitField(Preferences.class, "aimIconMed_");
+		xstream.omitField(Preferences.class, "aimIconBig_");
+		
+		//ignore listeners
+		xstream.omitField(Preferences.class, "listeners_");
+		
+		//ignore the locked status
+		xstream.omitField(Preferences.class, "locked_");
+		
 		// Class setup
 		xstream.alias("Preferences", Preferences.class);
 		try {
-			xstream.toXML(this, new FileWriter(new File(PREFS_FILE)));
+			FileWriter out = new FileWriter(new File(PREFS_FILE));
+			xstream.toXML(this, out);
+			out.flush();
+			out.close();
 		} catch (Exception e) {
 
 		}
@@ -125,12 +141,14 @@ public class Preferences {
 	public static Preferences getInstance() {
 		if (instance == null) {
 			try {
-				XStream xstr = new XStream();
+				XStream xstr = new XStream(new DomDriver());
 				xstr.alias("Preferences", Preferences.class);
 
 				instance = (Preferences) xstr.fromXML(new FileInputStream(
 						new File(PREFS_FILE)));
+				instance.listeners_ = new ArrayList<PrefListener>();
 			} catch (Exception e) {
+				e.printStackTrace();
 				instance = new Preferences();
 			}
 
@@ -143,7 +161,7 @@ public class Preferences {
 	}
 
 	// accessors/mutators
-	/**
+	/*
 	 * General
 	 */
 	public String getLookAndFeel() {
@@ -186,7 +204,7 @@ public class Preferences {
 	}
 	
 	
-	/**
+	/*
 	 * Logging
 	 */
 	public boolean getLoggingEnabled() {
@@ -209,7 +227,7 @@ public class Preferences {
 		loggingDir_ = logDir;
 	}
 
-	/**
+	/*
 	 * Security
 	 */
 	public boolean getEncryptionEnabled() {
@@ -223,7 +241,28 @@ public class Preferences {
 		}
 	}
 
-	/**
+	//locking
+	public boolean isLocked() {
+		return locked_;
+	}
+	
+	public void setLocked(boolean lockWhisper) {
+		locked_ = lockWhisper;
+		for (PrefListener listener : listeners_) {
+			listener.prefChanged(LOCKED_, locked_);
+		}
+	}
+	
+	public String getLockPassword() {
+		return lockPassword_;
+	}
+	
+	public void setLockPassword(String password) {
+		lockPassword_ = password;
+	}
+	
+	
+	/*
 	 * Sounds
 	 */
 	public boolean getSoundsEnabled() {
@@ -237,7 +276,7 @@ public class Preferences {
 		}
 	}
 
-	/**
+	/*
 	 * WhisperBot
 	 */
 	public boolean getWhisperBotEnabled() {
@@ -251,7 +290,7 @@ public class Preferences {
 		}
 	}
 
-	/**
+	/*
 	 * Preferences Listener
 	 */
 	public List<PrefListener> getListeners() {
