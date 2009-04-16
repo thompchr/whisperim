@@ -128,6 +128,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 	private static ConnectionManager manager_; 
 	private BuddyListModel blm_ = new BuddyListModel();
 	private ProfileEditor editor;
+	private SMSText sms;
 
 	private PluginLoader pluginLoader_;
 	private JList buddyList_;
@@ -875,7 +876,6 @@ public class WhisperClient extends JFrame implements ActionListener {
 						try {
 							openBuddies_.get(message.getFrom().toLowerCase().replace(" ", "")).getTab(message.getFrom().toLowerCase().replace(" ", "")).receiveMsg(message);
 						} catch (BadLocationException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 					}
@@ -1083,9 +1083,9 @@ public class WhisperClient extends JFrame implements ActionListener {
 		
 		//SMS Text
 		if(actionCommand.equals(newSMSText_.getActionCommand())){
-			smsText sms = new smsText();
+			sms = new SMSText();
 			try {
-				sms.sendText(sms.getSMSinfo());
+				sms.sendText();
 			} catch (AddressException e1) {
 				e1.printStackTrace();
 			} catch (MessagingException e1) {
