@@ -26,43 +26,47 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.SourceDataLine;
+import javax.swing.SwingUtilities;
 
 public class Sound implements ClientListener {
 		
 	private static final String NEW_IM_RECEIVED = "IM.wav";
 	private static final String NEW_IM_SENT = "IM.wav";
-	//boolean playSound = Preferences.getInstance().getSoundsEnabled();
 	
-	public void playSound(WhisperClient client, String name){
-		if(Preferences.getInstance().getSoundsEnabled()){
-			try{
-				File soundFile = new File("..\\sounds\\" + name);
-				AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(soundFile);
-				audioInputStream = AudioSystem.getAudioInputStream(soundFile);
-				AudioFormat audioFormat = audioInputStream.getFormat();
-				DataLine.Info dataLineInfo = new DataLine.Info(SourceDataLine.class, audioFormat);
-			
-				byte tempBuffer[] = new byte[100000];
-			    
-				try{
-			      SourceDataLine sourceDataLine = (SourceDataLine)AudioSystem.getLine(dataLineInfo);
-			      sourceDataLine.open();
-			      sourceDataLine.start();
-			      audioInputStream.read(tempBuffer,0,tempBuffer.length);
-			      sourceDataLine.write(tempBuffer, 0,tempBuffer.length);
-			      sourceDataLine.drain();
-			      sourceDataLine.close();
-			    }catch (Exception e) {
-			      System.err.println(e);
-			    }		  
-		    }catch (Exception e) {
-			      System.err.println(e);
-			}
-		}
+	public void playSound(WhisperClient client, final String name){
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				if(Preferences.getInstance().getSoundsEnabled()){
+					try{
+						File soundFile = new File("..\\sounds\\" + name);
+						AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(soundFile);
+						audioInputStream = AudioSystem.getAudioInputStream(soundFile);
+						AudioFormat audioFormat = audioInputStream.getFormat();
+						DataLine.Info dataLineInfo = new DataLine.Info(SourceDataLine.class, audioFormat);
+					
+						byte tempBuffer[] = new byte[100000];
+					    
+						try{
+					      SourceDataLine sourceDataLine = (SourceDataLine)AudioSystem.getLine(dataLineInfo);
+					      sourceDataLine.open();
+					      sourceDataLine.start();
+					      audioInputStream.read(tempBuffer,0,tempBuffer.length);
+					      sourceDataLine.write(tempBuffer, 0,tempBuffer.length);
+					      sourceDataLine.drain();
+					      sourceDataLine.close();
+					    }catch (Exception e) {
+					      System.err.println(e);
+					    }		  
+				    }catch (Exception e) {
+					      System.err.println(e);
+					}
+				}
+					}
+			});
 	}
 
 	@Override
-	public void messageRec(WhisperClient client, Message message, String from) {
+	public void messageRec(WhisperClient client, Message message, String from) {	
 		playSound(client, NEW_IM_RECEIVED);
 	}
 

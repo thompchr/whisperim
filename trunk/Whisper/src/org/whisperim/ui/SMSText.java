@@ -132,7 +132,7 @@ public class SMSText {
 	   Object userInput = JOptionPane.showInputDialog(null, "Enter your name:", 
 			   											"Enter your name", JOptionPane.QUESTION_MESSAGE); 
        if(userInput != null){
-           if(userInput.toString().length() > 30){
+           if(userInput.toString().length() > 20){
                    JOptionPane.showMessageDialog(null, "Your name was too long.  Please try again.");
                    getUserName();
            }
