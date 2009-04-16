@@ -56,6 +56,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
@@ -153,6 +154,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 	private JMenuItem newWindow_;
 	private JMenuItem profile_;
 	private JMenuItem newSMSText_;
+	private JMenu optionsMenu_;
 	
 	private Dimension frameMinSize_ = new Dimension(175,400);
 	private Dimension framePrefSize_ = new Dimension(175,500);
@@ -164,18 +166,23 @@ public class WhisperClient extends JFrame implements ActionListener {
 
 	//first menu\\
 	private static final String WHISPER_ = "Whisper"; 
-	private static final String NEWIM_ = "New Instant Message";
-	private static final String SMSTEXT_ = "Send SMS Text";
+	private static final String NEWIM_ = "New IM...";
+	private static final String NEWUSERIM_ = "IM Selected User";
+	private static final String SMSTEXT_ = "Send SMS Text...";
 	private static final String SET_STATUS_ = "Set Status";
-	private static final String PLUGINS_ = "Plugins";
-	private static final String ACCOUNTS_ = "Accounts";
-	private static final String PREFERENCES_ = "Preferences";
-	private static final String SOUND_ = "Sound";
 	private static final String SOCIAL_SITE_MANAGER_ = "Social Site Notifications";
 	private static final String DOWNLOAD_MANAGER_ = "Download Manger";
-	private static final String BROWSER_LITE_ = "Whisper Web Browser Lite";
-	private static final String QUIT_ = "Quit";
+	private static final String BROWSER_LITE_ = "Whisper Web Browser";
 	private static final String PROFILE_ = "Profile";
+	private static final String QUIT_ = "Quit";
+	
+	//second menu\\
+	private static final String OPTIONS_ = "Options";
+	private static final String PREFERENCES_ = "Preferences";
+	private static final String SOUND_ = "Sound";
+	private static final String ACCOUNTS_ = "Accounts";
+	private static final String PLUGINS_ = "Plugins";
+	
 
 	
 	//end menus\\
@@ -493,40 +500,22 @@ public class WhisperClient extends JFrame implements ActionListener {
 		newIm_.addActionListener(this);
 		whisperMenu_.add(newIm_);
 		
-		newWindow_ = new JMenuItem("Open selected in new IM");
+		newWindow_ = new JMenuItem(NEWUSERIM_);
 		newWindow_.addActionListener(this);
 		whisperMenu_.add(newWindow_);
-		//newWindow_.setVisible(true);
 		newWindow_.setEnabled(false);
 		
 		newSMSText_ = new JMenuItem(SMSTEXT_);
 		newSMSText_.addActionListener(this);
 		whisperMenu_.add(newSMSText_);
 		
+		whisperMenu_.add(new JSeparator()); 
+		
 		setStatus_ = new JCheckBoxMenuItem(SET_STATUS_);
 		setStatus_.addActionListener(this);
 		whisperMenu_.add(setStatus_);
 		
-		accounts_ = new JMenuItem(ACCOUNTS_);
-		accounts_.setMnemonic(KeyEvent.VK_A);
-		accounts_.addActionListener(this);
-		whisperMenu_.add(accounts_);
-
-		plugins_ = new JMenuItem(PLUGINS_);
-		plugins_.addActionListener(this);
-		whisperMenu_.add(plugins_);
-
-		preferences_ = new JMenuItem(PREFERENCES_);
-		preferences_.setMnemonic(KeyEvent.VK_P);
-		preferences_.addActionListener(this);
-		whisperMenu_.add(preferences_);
-
-		soundsEnabled_ = Preferences.getInstance().getSoundsEnabled();
-		sound_ = new JCheckBoxMenuItem(SOUND_);
-		sound_.setSelected(soundsEnabled_);
-		sound_.setActionCommand(SOUND_);
-		sound_.addActionListener(this);
-		whisperMenu_.add(sound_);
+		whisperMenu_.add(new JSeparator()); 
 		
 		socialSites_ = new JMenuItem(SOCIAL_SITE_MANAGER_);
 		socialSites_.addActionListener(this);
@@ -536,20 +525,62 @@ public class WhisperClient extends JFrame implements ActionListener {
 		downloadManager_.addActionListener(this);
 		whisperMenu_.add(downloadManager_);
 		
+		whisperMenu_.add(new JSeparator()); 
+		
 		browserLite_ = new JMenuItem(BROWSER_LITE_);
 		browserLite_.addActionListener(this);
 		whisperMenu_.add(browserLite_);
 		
-		profile_ = new JMenuItem(PROFILE_);
-		profile_.addActionListener(this);
-		whisperMenu_.add(profile_);
+		whisperMenu_.add(new JSeparator()); 
 		
 		quit_ = new JMenuItem(QUIT_);
 		quit_.setMnemonic(KeyEvent.VK_Q);
 		quit_.addActionListener(this);
 		whisperMenu_.add(quit_);
+		 
+		//Second Menu\\
+		//Options (o)
+			//Preferences (p)
+			//Sound
+			//Social Site Manager
+			//Account
+			//Profile
+			//Plugins
+
+		optionsMenu_ = new JMenu(OPTIONS_);
+		optionsMenu_.setMnemonic(KeyEvent.VK_O);
+		
+		preferences_ = new JMenuItem(PREFERENCES_);
+		preferences_.setMnemonic(KeyEvent.VK_P);
+		preferences_.addActionListener(this);
+		optionsMenu_.add(preferences_);
+		
+		soundsEnabled_ = Preferences.getInstance().getSoundsEnabled();
+		sound_ = new JCheckBoxMenuItem(SOUND_);
+		sound_.setSelected(soundsEnabled_);
+		sound_.setActionCommand(SOUND_);
+		sound_.addActionListener(this);
+		optionsMenu_.add(sound_);
+		
+		optionsMenu_.add(new JSeparator()); 
+		
+		accounts_ = new JMenuItem(ACCOUNTS_);
+		accounts_.setMnemonic(KeyEvent.VK_A);
+		accounts_.addActionListener(this);
+		optionsMenu_.add(accounts_);
+		
+		profile_ = new JMenuItem(PROFILE_);
+		profile_.addActionListener(this);
+		optionsMenu_.add(profile_);
+		
+		optionsMenu_.add(new JSeparator()); 
+
+		plugins_ = new JMenuItem(PLUGINS_);
+		plugins_.addActionListener(this);
+		optionsMenu_.add(plugins_);
 		
 		menuBar_.add(whisperMenu_);
+		menuBar_.add(optionsMenu_);
 	}
 	
 	/**
