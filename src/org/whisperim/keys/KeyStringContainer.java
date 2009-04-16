@@ -13,27 +13,42 @@
  * See the License for the specific language governing permissions and     *
  * limitations under the License.                                          *
  **************************************************************************/
-package org.whisperim.ui;
+package org.whisperim.keys;
 
-import java.awt.EventQueue;
+import java.security.PublicKey;
+import java.util.HashMap;
+import java.util.Map.Entry;
 
-import org.whisperim.client.ConnectionManager;
-import org.whisperim.client.MessageProcessor;
-import org.whisperim.client.MessageProcessorImpl;
-import org.whisperim.client.Whisper;
-import org.whisperim.file.DesktopFileStreamCoordinator;
+import org.whisperim.client.Buddy;
+import org.whisperim.security.Encryptor;
 
-public class UIBootstrapper {
+public class KeyStringContainer {
 	
-	public static void main(String[] args){
-		MessageProcessor mp = new MessageProcessorImpl(new Whisper(new DesktopFileStreamCoordinator()).getKeys());
-        final ConnectionManager cm = new ConnectionManager(mp);
-		EventQueue.invokeLater(new Runnable() {
-	           public void run() {
-	             new WhisperClient(cm);
-
-	           }
-	        });
+	private String myPublic;
+	private String myPrivate;
+	
+	private HashMap<Buddy, String> foreignKeys_;
+	
+	public KeyStringContainer(){
+		foreignKeys_ = new HashMap<Buddy, String>();
+	}
+	
+	public KeyStringContainer(String pub, String priv){
+		myPrivate = priv;
+		myPublic = pub;
+	}
+	
+	public void addKey(Buddy b, String s){
+		foreignKeys_.put(b, s);
+	}
+	
+	public HashMap<Buddy, PublicKey> getKeys(){
+		HashMap<Buddy, PublicKey> temp = new HashMap<Buddy, PublicKey>();
+		for (Entry e:foreignKeys_.entrySet()){
+			temp.put((Buddy)e.getKey(), Encryptor.getPublicKeyFromString((String)e.getValue()));
+		}
+		
+		return temp;
 	}
 
 }

@@ -20,21 +20,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.KeyPair;
+import java.security.KeyRep;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.apache.commons.codec.binary.Base64;
-import org.apache.xml.serialize.OutputFormat;
-import org.apache.xml.serialize.XMLSerializer;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 import org.whisperim.file.FileStreamCoordinator;
+import org.whisperim.keys.KeyContainer;
 import org.whisperim.prefs.GlobalPreferences;
 import org.whisperim.security.Encryptor;
-import org.xml.sax.SAXException;
+
+import com.thoughtworks.xstream.XStream;
 
 
 
@@ -54,87 +49,32 @@ public class Whisper {
 		GlobalPreferences.getInstance().setFSC(coord_);
 
 	}
-	/**
-	 * I take a xml element and the tag name, look for the tag and get
-	 * the text content
-	 * i.e for <employee><name>John</name></employee> xml snippet if
-	 * the Element points to employee node and tagName is 'name' I will return John
-	 * 
-	 * Take from http://www.totheriver.com/learn/xml/xmltutorial.html#6.1.2
-	 */
-	private String getTextValue(Element ele, String tagName) {
-		String textVal = null;
-		NodeList nl = ele.getElementsByTagName(tagName);
-		if(nl != null && nl.getLength() > 0) {
-			Element el = (Element)nl.item(0);
-			textVal = el.getFirstChild().getNodeValue();
-		}
 
-		return textVal;
-	}
-
-	public KeyPair getKeys(){
+	public KeyContainer getKeys(){
+		KeyContainer kc = null;
 
 		// Make sure that a keypair has been generated.
-		
+
 		InputStream istream = null;
 		try {
 			istream = GlobalPreferences.getInstance().getFSC().getInputStream("keys");
 		}catch (FileNotFoundException e){
 			generateXML(GlobalPreferences.getInstance().getFSC().getOutputStream("keys"));
 		}
-		try { 	
-			DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-			Document doc;
+
+		XStream xs = new XStream();
+		xs.alias("Keys", KeyContainer.class);
+		xs.alias("PublicKey", PublicKey.class);
+		xs.alias("PrivateKey", KeyRep.class);
+		xs.alias("MyKeys", KeyPair.class);
+		try {
 			istream = GlobalPreferences.getInstance().getFSC().getInputStream("keys");
-			try {
-				doc = docBuilder.parse(istream);
-			} catch(SAXException e){
-				generateXML(GlobalPreferences.getInstance().getFSC().getOutputStream("keys"));
-				return getKeys();
-			}
-
-			// Normalize text representation.
-			doc.getDocumentElement ().normalize ();
-
-
-			NodeList myKeys = doc.getElementsByTagName("MyKeys");
-
-
-			if (myKeys.getLength() == 0){
-				/*KeyPair hasn't been generated,
-				 *File was probably just created
-				 */
-				generateXML(GlobalPreferences.getInstance().getFSC().getOutputStream("keys"));
-				doc = docBuilder.parse(GlobalPreferences.getInstance().getFSC().getInputStream("keys"));
-			}
-
-			try {
-
-				// KeyPair has been generated.
-				Element myKeysElement = (Element) myKeys.item(0);
-				String keys[] = new String[2];
-				keys[0] = getTextValue(myKeysElement, "PublicKey");
-				keys[1] = getTextValue(myKeysElement, "PrivateKey");
-				return Encryptor.generateRSAKeyPairFromString(keys);
-
-
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-
-		} catch (SAXException e) {
-
-			e.printStackTrace();
-		} catch (IOException e) {
-
-			e.printStackTrace();
-		} catch (ParserConfigurationException e) {
-			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			//Something went very wrong, we shouldn't be here
+			return null;
 		}
-
-		return null;
+		kc = (KeyContainer)xs.fromXML(istream);
+		return kc;	
 
 
 	}
@@ -143,64 +83,37 @@ public class Whisper {
 	 * This is a helper method to generate the XML for the keys.
 	 * It also handles generating a keypair for the user.  It will
 	 * only be called if the key file doesn't exist already.
-	 * @param keyFile
+	 * @param ostream - OutputStream to write keys to
 	 */
-	private void generateXML(OutputStream keyFile){
-		Document dom = null;
-		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+	private void generateXML(OutputStream ostream){
+
+
+		KeyContainer kc = new KeyContainer(Encryptor.generateRSAKeyPair());
+
+
+		// Set output formatting.
+		//			OutputFormat format = new OutputFormat(dom);
+		//			format.setIndenting(true);
+		//
+		//			XMLSerializer serializer = new XMLSerializer(
+		//					keyFile, format);
+		//
+		//			serializer.serialize(dom);
+
+		XStream stream = new XStream();
+		stream.alias("Keys", KeyContainer.class);
+		stream.alias("PublicKey", PublicKey.class);
+		stream.alias("PrivateKey", PrivateKey.class);
+		stream.alias("MyKeys", KeyPair.class);
+		
 		try {
-			// Get an instance of builder.
-			DocumentBuilder db = dbf.newDocumentBuilder();
-
-			// Create an instance of DOM.
-			dom = db.newDocument();
-
-		}catch(ParserConfigurationException pce) {
-			pce.printStackTrace();
-			return;
+			ostream.write(stream.toXML(kc).getBytes());
+		} catch (IOException e) {
+			//Unable to write to the stream
+			e.printStackTrace();
 		}
 
-		// Write the xml header.
-		Element root = dom.createElement("Keys");
-		dom.appendChild(root);
 
-		KeyPair newKeyPair = Encryptor.generateRSAKeyPair();
-
-		Base64 b64 = new Base64();
-
-		String publicKeyString = new String(b64.encode(newKeyPair.getPublic().getEncoded()));
-
-		String privateKeyString = new String (b64.encode(newKeyPair.getPrivate().getEncoded()));
-
-		Element myKeys = dom.createElement("MyKeys");
-		root.appendChild(myKeys);
-
-		Element myPublic = dom.createElement("PublicKey");
-		myPublic.appendChild(dom.createTextNode(publicKeyString));
-
-
-
-		myKeys.appendChild(myPublic);
-
-		Element myPrivate = dom.createElement("PrivateKey");
-
-		myPrivate.appendChild(dom.createTextNode(privateKeyString));
-
-		myKeys.appendChild(myPrivate);
-
-		try{
-			// Set output formatting.
-			OutputFormat format = new OutputFormat(dom);
-			format.setIndenting(true);
-
-			XMLSerializer serializer = new XMLSerializer(
-					keyFile, format);
-
-			serializer.serialize(dom);
-
-		} catch(IOException ie) {
-			ie.printStackTrace();
-		}
 	}
 }
 

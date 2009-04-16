@@ -41,6 +41,10 @@ public class MessageProcessorImpl implements MessageProcessor {
 	public MessageProcessorImpl(KeyPair kp){
 		kc_ = new KeyContainer(kp);
 	}
+	
+	public MessageProcessorImpl(KeyContainer kc){
+		kc_ = kc;
+	}
 
 	@Override
 	public void setConnectionManager(ConnectionManager cm){
