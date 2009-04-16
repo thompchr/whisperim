@@ -109,7 +109,6 @@ import com.sun.org.apache.xml.internal.security.utils.Base64;
  */
 public class WhisperClient extends JFrame implements ActionListener {
 
-
 	private static final long serialVersionUID = -2916085324340552469L;
 	
 	//Enums used for plugin identification
@@ -470,8 +469,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 		buddyListScroll_.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		buddyListScroll_.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		this.add(buddyListScroll_);
-	}
-	
+	}	
 	
 	private void createMenu() {
 		//create the menu bar
@@ -483,15 +481,12 @@ public class WhisperClient extends JFrame implements ActionListener {
 			//New IM (n)
 			//New IM in New Window
 			//Send SMS text
-			//Set Away 
-			//Accounts (a)
-			//Plugins
-			//Preferences (p)
-			//Sound
+			//Set Status
 			//Social Site Manager
 			//Download Manager
 			//Web Browser Lite
 			//Quit (q)
+		
 		whisperMenu_ = new JMenu(WHISPER_);
 		whisperMenu_.setMnemonic(KeyEvent.VK_W);
 
@@ -696,8 +691,6 @@ public class WhisperClient extends JFrame implements ActionListener {
 		}
 	}
 
-
-
 	/**
 	 * This method resets the timer responsible for keeping track of
 	 * how much time is left before the user goes idle.  It resets the 
@@ -768,8 +761,6 @@ public class WhisperClient extends JFrame implements ActionListener {
 
 	}
 
-
-	
 	//  Methods for Whisper System Tray  \\
 	
 	//Simple method to create a new blank IM
@@ -927,7 +918,6 @@ public class WhisperClient extends JFrame implements ActionListener {
 		manager_.sendMessage(message);
 		resetTimer(5000);
 	}
-
 
 	/**
 	 * This method will update the buddy list with a new list.
@@ -1127,9 +1117,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 		}
 	}
 
-
 	public void toggleSound(){
-		System.out.println("Sound toggled");
 		Preferences.getInstance().setSoundsEnabled(!Preferences.getInstance().getSoundsEnabled());
 	}
 	
