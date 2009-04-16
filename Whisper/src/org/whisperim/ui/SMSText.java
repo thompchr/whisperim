@@ -35,6 +35,7 @@ public class SMSText {
    private static String carrier_;
    private static String number_;
    private static String messageString_;
+   private static String user_;
    
    public SMSText(){
        props_ = new Properties();
@@ -127,20 +128,36 @@ public class SMSText {
            return null;
    }
 
+   public String getUserName(){
+	   Object userInput = JOptionPane.showInputDialog(null, "Enter your name:", 
+			   											"Enter your name", JOptionPane.QUESTION_MESSAGE); 
+       if(userInput != null){
+           if(userInput.toString().length() > 30){
+                   JOptionPane.showMessageDialog(null, "Your name was too long.  Please try again.");
+                   getUserName();
+           }
+           return userInput.toString();
+       }
+       return null;
+   }
+   
    public MimeMessage getSMSinfo() throws AddressException, MessagingException{
        //Get user inputs
        carrier_ = getCarrier();
        if(carrier_ != null){
                number_ = getNumber();
                if(number_ != null){
-                       messageString_ = getMessage();
+            	   	user_ = getUserName();
+            	   	if(user_ != null){
+                 	   messageString_ = getMessage();
+            	   	}
                }
        }
        //Forming message to be sent
        message_ = new MimeMessage(mailSession_);
-       if(!(carrier_ == null || number_ == null || messageString_ == null)){
+       if(!(carrier_ == null || number_ == null || messageString_ == null) || user_ == null){
                message_.addRecipient(Message.RecipientType.TO, new InternetAddress(number_ + "@" + carrier_));
-               message_.setSubject("Whisper Client");
+               message_.setSubject(user_);
                message_.setContent(messageString_, "text/plain");
                return message_;
        }
