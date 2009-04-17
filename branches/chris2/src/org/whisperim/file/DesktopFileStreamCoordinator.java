@@ -25,7 +25,7 @@ import java.io.OutputStream;
 
 public class DesktopFileStreamCoordinator implements OpenFileSystemCoordinator {
 
-	private String homeDir_ = System.getProperty("user.home") + File.separator + "Whisper" + File.separator;
+	private String homeDir_ = System.getProperty("user.home") + File.separator + "Whisper";
 
 	/**
 	 * This method assumes the files to be created
@@ -34,7 +34,12 @@ public class DesktopFileStreamCoordinator implements OpenFileSystemCoordinator {
 	 */
 	@Override
 	public InputStream getInputStream(String file) throws FileNotFoundException {
-		File temp = new File (homeDir_ + file);
+		File temp;
+		if (file.startsWith(File.separator)){
+			temp = new File (homeDir_ + file);
+		}else{
+			temp = new File (homeDir_ + File.separator + file);
+		}
 		if (temp.exists()){
 			try {
 				return new FileInputStream(temp);
@@ -58,7 +63,12 @@ public class DesktopFileStreamCoordinator implements OpenFileSystemCoordinator {
 	 */
 	@Override
 	public OutputStream getOutputStream(String file) {
-		File temp = new File (homeDir_ + file);
+		File temp;
+		if (file.startsWith(File.separator)){
+			temp = new File (homeDir_ + file);
+		}else{
+			temp = new File (homeDir_ + File.separator + file);
+		}
 		if (temp.exists()){
 			try {
 				return new FileOutputStream(temp);

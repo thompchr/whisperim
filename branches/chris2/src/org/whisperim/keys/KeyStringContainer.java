@@ -15,10 +15,12 @@
  **************************************************************************/
 package org.whisperim.keys;
 
+import java.security.KeyPair;
 import java.security.PublicKey;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import org.apache.commons.codec.binary.Base64;
 import org.whisperim.client.Buddy;
 import org.whisperim.security.Encryptor;
 
@@ -38,8 +40,24 @@ public class KeyStringContainer {
 		myPublic = pub;
 	}
 	
+	public KeyStringContainer(KeyPair kp){
+		Base64 b64 = new Base64();
+		myPrivate = new String(b64.encode(kp.getPrivate().getEncoded()));
+		
+		myPublic = new String(b64.encode(kp.getPublic().getEncoded()));
+	}
+	
+	public KeyPair getMyKeys(){
+		return new KeyPair(Encryptor.getPublicKeyFromString(myPublic), 
+				Encryptor.getPrivateKeyFromString(myPrivate));
+	}
+	
 	public void addKey(Buddy b, String s){
 		foreignKeys_.put(b, s);
+	}
+	
+	public void setForeignKeys(HashMap<Buddy, String> keys){
+		foreignKeys_ = keys;
 	}
 	
 	public HashMap<Buddy, PublicKey> getKeys(){

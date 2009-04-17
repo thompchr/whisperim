@@ -20,8 +20,11 @@ import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.HashMap;
+import java.util.Map.Entry;
 
+import org.apache.commons.codec.binary.Base64;
 import org.whisperim.client.Buddy;
+import org.whisperim.security.Encryptor;
 
 /**
  * This class is currently unused but is designed to hold local and foreign keys
@@ -46,13 +49,6 @@ public class KeyContainer {
 	}
 	
 	/**
-	 * No-arg constructor for XStream
-	 */
-	public KeyContainer(){
-		
-	}
-	
-	/**
 	 * Method that returns the public key for the given buddy.
 	 * @param b
 	 * @return PublicKey
@@ -69,6 +65,33 @@ public class KeyContainer {
 	 */
 	public void addKey (Buddy b, PublicKey key){
 		foreignKeys_.put(b, key);
+	}
+	
+	/**
+	 * This method is used for initialization or if a large number of keys needs
+	 * to be added to the container.
+	 * @param keys - HashMap of Buddies and keys
+	 */
+	public void addKeys(HashMap<Buddy, PublicKey> keys){
+		for (Entry e:keys.entrySet()){
+			foreignKeys_.put((Buddy)e.getKey(), (PublicKey)e.getValue());
+		}
+	}
+	
+	/**
+	 * This method is used to get the String encoded keys.  This
+	 * is used for serialization, etc.
+	 * @return HashMap<Buddy, String>
+	 */
+	public HashMap<Buddy, String> getStringRepresentation(){
+		HashMap<Buddy, String> temp = new HashMap<Buddy, String>();
+		Base64 b64 = new Base64();
+		for (Entry e:foreignKeys_.entrySet()){
+			String tempStr = new String((b64.encode(((PublicKey)e.getValue()).getEncoded())));
+			temp.put((Buddy)e.getKey(), tempStr);
+		}
+		
+		return temp;
 	}
 	
 	

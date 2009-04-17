@@ -15,21 +15,10 @@
  **************************************************************************/
 
 package org.whisperim.client;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.security.KeyPair;
-import java.security.KeyRep;
-import java.security.PrivateKey;
-import java.security.PublicKey;
-
 import org.whisperim.file.FileStreamCoordinator;
 import org.whisperim.keys.KeyContainer;
 import org.whisperim.prefs.GlobalPreferences;
 import org.whisperim.security.Encryptor;
-
-import com.thoughtworks.xstream.XStream;
 
 
 
@@ -51,69 +40,8 @@ public class Whisper {
 	}
 
 	public KeyContainer getKeys(){
-		KeyContainer kc = null;
-
-		// Make sure that a keypair has been generated.
-
-		InputStream istream = null;
-		try {
-			istream = GlobalPreferences.getInstance().getFSC().getInputStream("keys");
-		}catch (FileNotFoundException e){
-			generateXML(GlobalPreferences.getInstance().getFSC().getOutputStream("keys"));
-		}
-
-		XStream xs = new XStream();
-		xs.alias("Keys", KeyContainer.class);
-		xs.alias("PublicKey", PublicKey.class);
-		xs.alias("PrivateKey", KeyRep.class);
-		xs.alias("MyKeys", KeyPair.class);
-		try {
-			istream = GlobalPreferences.getInstance().getFSC().getInputStream("keys");
-		} catch (FileNotFoundException e) {
-			//Something went very wrong, we shouldn't be here
-			return null;
-		}
-		kc = (KeyContainer)xs.fromXML(istream);
-		return kc;	
-
-
+		return Encryptor.getKeys();
 	}
 
-	/**
-	 * This is a helper method to generate the XML for the keys.
-	 * It also handles generating a keypair for the user.  It will
-	 * only be called if the key file doesn't exist already.
-	 * @param ostream - OutputStream to write keys to
-	 */
-	private void generateXML(OutputStream ostream){
-
-
-		KeyContainer kc = new KeyContainer(Encryptor.generateRSAKeyPair());
-
-
-		// Set output formatting.
-		//			OutputFormat format = new OutputFormat(dom);
-		//			format.setIndenting(true);
-		//
-		//			XMLSerializer serializer = new XMLSerializer(
-		//					keyFile, format);
-		//
-		//			serializer.serialize(dom);
-
-		XStream stream = new XStream();
-		stream.alias("Keys", KeyContainer.class);
-		stream.alias("PublicKey", PublicKey.class);
-		stream.alias("PrivateKey", PrivateKey.class);
-		stream.alias("MyKeys", KeyPair.class);
-		
-		try {
-			ostream.write(stream.toXML(kc).getBytes());
-		} catch (IOException e) {
-			//Unable to write to the stream
-			e.printStackTrace();
-		}
-
-
-	}
 }
 

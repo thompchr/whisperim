@@ -23,38 +23,30 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.apache.xml.serialize.OutputFormat;
-import org.apache.xml.serialize.XMLSerializer;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 import org.whisperim.file.OpenFileSystemCoordinator;
 import org.whisperim.prefs.GlobalPreferences;
 import org.whisperim.ui.WhisperClient;
-import org.xml.sax.SAXException;
 
-import com.sun.org.apache.regexp.internal.RE;
+import com.thoughtworks.xstream.XStream;
 
 public class PluginLoader {
 
-	private static String REGISTRY_ = null;
+
 	private static String PLUGIN_DIR_ = null;
 
 	private WhisperClient client_;
 
+	private PluginRegistry pr_;
 
 	public PluginLoader (WhisperClient client){
 		client_ = client;
 		if (GlobalPreferences.getInstance() instanceof OpenFileSystemCoordinator){
 			PLUGIN_DIR_ = ((OpenFileSystemCoordinator)GlobalPreferences.getInstance()).getHomeDirectory() + "plugins";
-			REGISTRY_ = PLUGIN_DIR_ + File.separator + "plugins.xml";
+			
 		}else{
-			REGISTRY_ = "";
+			
 			PLUGIN_DIR_ = "";
 		}
 	}
@@ -63,133 +55,54 @@ public class PluginLoader {
 	public WhisperClient getClient() {
 		return client_;
 	}
+	
 
 
 	/**
 	 * This method will load all plugins from the plugins directory
-	 * that are not currently loaded and running.
+	 * into the plugins directory.
 	 * 
 	 * It also will be called when the program initializes.
 	 * 
-	 * If no registry file exists it will create one.
+	 * If no registry file exists it create a new, empty registry object
 	 * @throws Exception - Thrown if the plugin could not be loaded correctly
 	 */
 	public void loadPlugins() throws Exception{
-		try {
-
-			Document dom = DocumentBuilderFactory
-			.newInstance()
-			.newDocumentBuilder()
-			.parse(GlobalPreferences.getInstance().getFSC().getInputStream("plugins" + File.separator + "plugins.xml"));
-
-			NodeList connections = ((Element)dom.getElementsByTagName("connection").item(0)).getElementsByTagName("plugin");
-
-
-			for (int i = 0; i < connections.getLength(); ++i){
-
-				Element curElement = (Element)connections.item(i);
-				String name;
-				try{
-					name = ((Element)curElement.getElementsByTagName("name").item(0)).getAttribute("value");
-				}catch(NullPointerException e){
-					System.err.println("Name value was null and has not been set");
-					name = "";
-				}
-
-				String location;
-				try{
-					location = ((Element)curElement.getElementsByTagName("location").item(0)).getAttribute("value");
-				}catch (NullPointerException e){
-					System.err.println("Location value was null, plugin cannot be loaded");
-					break;
-				}
-				location = location.replace("/", File.separator);
-				location = location.replace("\\", File.separator);
-
-
-				String iconLocation;
-				try{
-					iconLocation = ((Element)curElement.getElementsByTagName("iconLocation").item(0)).getAttribute("value");
-				}catch (NullPointerException e){
-					System.err.println("IconLocation was null and has not been set");
-					iconLocation = "";
-				}
-
-				String entryClass;
-				try{
-					entryClass = ((Element)curElement.getElementsByTagName("class").item(0)).getAttribute("value");
-				}catch(NullPointerException e){
-					System.err.println("Entry class was null, plugin cannot be loaded");
-					break;
-				}
-
-				File dir = new File(location);
-				if (!dir.exists()){
-					System.err.println("File in registry doesn't exist");
-				}
-				if (dir.isDirectory()){
-					System.out.println("File is a directory");
-				}else{
-					System.out.println("File is not a directory");
-				}
-
-				ClassLoader cl = DynamicClassLoader.getExtendedClassLoader(Thread
-						.currentThread().getContextClassLoader(), location);
-
-				try{
-
-					Plugin p = (Plugin) cl.loadClass(entryClass).newInstance();
-					p.setIconLocation(iconLocation);
-					p.setPluginName(name);
-
-					client_.registerPlugin(name, WhisperClient.CONNECTION, p);
-				}catch(Exception e){
-					System.err.println(name + " could not be loaded.");
-				}
-
-
-			}
-
-			NodeList lookAndFeel = ((Element)dom.getElementsByTagName("lookandfeel").item(0)).getElementsByTagName("plugin");
-
-			for (int i = 0; i < lookAndFeel.getLength(); ++i){
-
-				Element curElement = (Element)lookAndFeel.item(i);
-				String name = ((Element)curElement.getElementsByTagName("name").item(0)).getAttribute("value");
-				String location = ((Element)curElement.getElementsByTagName("location").item(0)).getAttribute("value");
-				String entryClass = ((Element)curElement.getElementsByTagName("class").item(0)).getAttribute("value");
-
-				ClassLoader cl = DynamicClassLoader.getExtendedClassLoader(Thread
-						.currentThread().getContextClassLoader(), location);
-
-				try{
-
-					Plugin p = (Plugin)cl.loadClass(entryClass).newInstance();
-					p.setPluginName(name);
-					p.setIconLocation(location);
-					client_.registerPlugin(p.getPluginName(), WhisperClient.LOOK_AND_FEEL, p);
-				}catch(Exception e){
-					System.err.println(name + " could not be loaded.");
-
-				}
-
-
-			}
-
-
-		} catch (SAXException e) {
-
-			e.printStackTrace();
-		} catch (IOException e) {
-
-			e.printStackTrace();
-		} catch (ParserConfigurationException e) {
-
-			e.printStackTrace();
+		XStream xs = new XStream();
+		try{
+			pr_ = (PluginRegistry)xs.fromXML(GlobalPreferences.getInstance().getFSC().getInputStream("plugins" + File.separator + "plugins.xml"));
+		}catch (Exception e) {
+			//Could not read from previous plugin registry
+			//Might not exist or a problem occurred.
+			
+			pr_ = new PluginRegistry();
 		}
-
-
 	}
+	
+	
+	/**
+	 * This method is designed to load in all plugins for a given extention point.
+	 * It creates an ArrayList of Class objects that the caller can instantiate.
+	 * @param extentionPoint - The extention point name.
+	 * @return ArrayList<Class>
+	 * @throws Exception - Exception thrown when plugin cannot be loaded
+	 */
+	public ArrayList<Class> loadPlugins(String extentionPoint) throws Exception{
+		ArrayList<Class> temp = new ArrayList<Class>();
+		for (PluginRegistryEntry p:pr_.getPluginsForExtentionPoint(extentionPoint)){
+			ClassLoader cl = DynamicClassLoader.getExtendedClassLoader(Thread
+					.currentThread().getContextClassLoader(), p.getLocation());
+			
+			try{
+				temp.add(cl.loadClass(p.getEntryClass()));
+			}catch(Exception e){
+				throw new Exception("Plugin could not be loaded");
+			}
+		}
+		return temp;
+	}
+	
+	
 
 	/**
 	 * This method will load in a plugin from a foreign location.
@@ -213,222 +126,50 @@ public class PluginLoader {
 
 		//The type of plugin will dictate the interface that is used to access it
 
-		try{
+		url = url.replace("\\", File.separator);
+		url = url.replace("/", File.separator);
 
-			url = url.replace("\\", File.separator);
-			url = url.replace("/", File.separator);
-
-			if (url.contains(".")){
-				url = url.substring(0, url.lastIndexOf(File.separator));
-			}
-
-			DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-			Document doc;
-
-			doc = docBuilder.parse(manifest);
-
-			doc.getDocumentElement().normalize();
-
-			Element manifestElement = (Element)doc.getElementsByTagName("manifest").item(0);
-
-
-			String type;
-			try{
-				type = ((Element)(manifestElement
-						.getElementsByTagName("type")).item(0))
-						.getAttribute("value");
-			}catch(NullPointerException e){
-				System.out.println("Type not defined");
-				type = "";
-			}
-
-			String iconLocation;
-
-			try{
-				iconLocation = ((Element)(
-						manifestElement
-						.getElementsByTagName("iconLocation")).item(0))
-						.getAttribute("value");
-			}catch(NullPointerException e){
-				System.out.println("Icon location not defined");
-				iconLocation = "";
-
-			}
-
-			String location;
-			try{
-				location = ((Element)
-						((Element)manifestElement.getElementsByTagName("entrypoint").item(0))
-						.getElementsByTagName("location").item(0))
-						.getAttribute("value");
-			}catch(NullPointerException e){
-				System.out.println("Location not defined");
-				location = "";
-			}
-
-
-
-
-			//Make sure that we are using the correct directory separator for the
-			//current OS
-			location = location.replace("/", File.separator);
-			location = location.replace("\\", File.separator);
-
-
-			if (!location.startsWith(File.separator) && !url.endsWith(File.separator)){
-				//We need to make it into a valid url
-				location = File.separator + location;
-			}
-
-			if (location.startsWith(File.separator) && url.endsWith(File.separator)){
-				location = location.replaceFirst(File.separator, "");
-			}
-
-			String entryClass;
-			try{
-				entryClass = ((Element)
-						((Element)manifestElement.getElementsByTagName("entrypoint").item(0))
-						.getElementsByTagName("class").item(0))
-						.getAttribute("value");
-			}catch (NullPointerException e){
-				System.out.println("Entry class not defined");
-				entryClass = "";
-			}
-
-			String name;
-			try{
-				name = ((Element)(
-						manifestElement)
-						.getElementsByTagName("name").item(0))
-						.getAttribute("value");
-			}catch (NullPointerException e){
-				System.out.println("Name not defined");
-				name = "";
-			}
-
-
-			//Load in the class
-
-			ClassLoader cl = DynamicClassLoader.getExtendedClassLoader(Thread
-					.currentThread().getContextClassLoader(), url + location);
-			Class c; 
-			try{
-				c = cl.loadClass(entryClass);
-			}catch(Exception e){
-				throw new Exception("Plugin could not be loaded");
-			}
-
-			Plugin p = (Plugin) c.newInstance();
-			p.setIconLocation(iconLocation);
-			p.setPluginName(name);
-
-			if (type.equalsIgnoreCase("connection")){
-				client_.registerPlugin(name, WhisperClient.CONNECTION, p);
-			}else if (type.equalsIgnoreCase("lookandfeel")){
-				client_.registerPlugin(name, WhisperClient.LOOK_AND_FEEL, p);
-			}else {
-				client_.registerPlugin(name, 0, p);
-			}
-
-			copyDirectory(new File(url + location), new File(PLUGIN_DIR_ + File.separator + name + location));
-
-			//We then need to add the plugin information to the local registry file
-			File registry = new File(REGISTRY_);
-			Document dom;
-			if (!registry.exists()){
-				generatePluginFile();
-			}
-
-			dom = DocumentBuilderFactory
-			.newInstance()
-			.newDocumentBuilder()
-			.parse(registry);
-
-
-			NodeList types = dom.getElementsByTagName(type);
-			Element curPlugin = dom.createElement("plugin");
-			Element nameElement = dom.createElement("name");
-			Element locationElement = dom.createElement("location");
-			Element classElement = dom.createElement("class");
-
-			locationElement.setAttribute("value", PLUGIN_DIR_ + File.separator + name + location);
-			classElement.setAttribute("value", entryClass);
-			nameElement.setAttribute("value", name);
-
-			curPlugin.appendChild(nameElement);
-			curPlugin.appendChild(locationElement);
-			curPlugin.appendChild(classElement);
-
-			if (types == null){
-				Element typeNode = dom.createElement(type);
-				typeNode.appendChild(curPlugin);
-
-			}
-			((Element)types.item(0)).appendChild(curPlugin);
-
-
-			OutputFormat format = new OutputFormat(dom);
-			format.setIndenting(true);
-
-			XMLSerializer serializer = new XMLSerializer(
-					new FileOutputStream(registry), format);
-
-			serializer.serialize(dom);
-
-
-		}catch(Exception e){
-			//Need better exception handling
-			e.printStackTrace();
+		if (url.contains(".")){
+			url = url.substring(0, url.lastIndexOf(File.separator));
 		}
-	}
+		//Read the manifest
+		XStream xs = new XStream();
+		xs.alias("manifest", PluginRegistryEntry.class);
+		xs.aliasField("name", PluginRegistryEntry.class, "name_");
+		xs.aliasField("entryClass", PluginRegistryEntry.class, "entryClass_");
+		xs.aliasField("extentionPoint", PluginRegistryEntry.class, "extentionPoint_");
+		xs.aliasField("location", PluginRegistryEntry.class, "location_");
 
+		PluginRegistryEntry p = (PluginRegistryEntry)xs.fromXML(new FileInputStream(manifest));
+		String location = p.getLocation();
 
-	/**
-	 * This static utility method will be used to generate a plugin registry file
-	 * if one does not already exist.
-	 */
-	public static void generatePluginFile(){
-		OutputStream pluginFile = GlobalPreferences.getInstance().getFSC().getOutputStream("plugins" + File.separator + "plugins.xml");
+		//Make sure that we are using the correct directory separator for the
+		//current OS
+		location.replace("/", File.separator).replace("\\", File.separator);
+
+		if (!location.startsWith(File.separator) && !url.endsWith(File.separator)){
+			//We need to make it into a valid url
+			location = File.separator + location;
+		}
+		if (location.startsWith(File.separator) && url.endsWith(File.separator)){
+			location = location.replaceFirst(File.separator, "");
+		}
+
+		p.setLocation(location);
+		
+		pr_.registerPlugin(p);
+
 		try {
-
-
-			Document dom = null;
-			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-
-			// Get an instance of builder.
-			DocumentBuilder db = dbf.newDocumentBuilder();
-
-			// Create an instance of DOM.
-			dom = db.newDocument();
-
-			Element root = dom.createElement("Plugins");
-			dom.appendChild(root);
-
-			Element connectionsRoot = dom.createElement("connection");
-			root.appendChild(connectionsRoot);
-
-			Element lafRoot = dom.createElement("lookandfeel");
-			root.appendChild(lafRoot);
-
-			OutputFormat format = new OutputFormat(dom);
-			format.setIndenting(true);
-
-			XMLSerializer serializer = new XMLSerializer(
-					pluginFile, format);
-
-			serializer.serialize(dom);
-
-
+			copyDirectory(new File(url + location), new File(PLUGIN_DIR_ + File.separator + p.getName() + location));
 		} catch (IOException e) {
-
+			//File could not be created
 			e.printStackTrace();
-		} catch (ParserConfigurationException e) {
+		}	
 
-			e.printStackTrace();
-		}
 
 	}
+
+
 
 
 	/**
