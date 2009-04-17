@@ -41,7 +41,7 @@ public class MessageProcessorImpl implements MessageProcessor {
 	public MessageProcessorImpl(KeyPair kp){
 		kc_ = new KeyContainer(kp);
 	}
-	
+
 	public MessageProcessorImpl(KeyContainer kc){
 		kc_ = kc;
 	}
@@ -63,17 +63,17 @@ public class MessageProcessorImpl implements MessageProcessor {
 		if (encConfig_.containsKey(b)){
 			encConfig_.remove(b);
 		}
-		
+
 		EncryptionEvent e = new EncryptionEvent(b);
 		if (haveKey(b)){
 			encConfig_.put(b, new Encryptor(kc_.getKey(b), kc_.getMyPrivateKey()));
 			e.setEncryptionStatus(EncryptionEvent.ENCRYPTION_ENABLED);
-			
-			
+
+
 		}else{
 			e.setEncryptionStatus(EncryptionEvent.ENCRYPTION_DISABLED);
 		}
-		
+
 		ui_.processEvent(e);
 	}
 
@@ -92,36 +92,19 @@ public class MessageProcessorImpl implements MessageProcessor {
 						m.getMessage().indexOf("keyspec=")+ 8, 
 						m.getMessage().indexOf("--"));
 
-				//Now we have the text of the key, pass it to the Encryptor
-				//to parse it and store it.  We will also probably want to
-				//fire some sort of event that allows the encryption to be
-				//enabled.
-				Encryptor.writeKeyToFile(keyText, m.getFromBuddy());
+				kc_.addKey(m.getFromBuddy(), Encryptor.getPublicKeyFromString(keyText));
 
-				try {
-					X509EncodedKeySpec pubKeySpec = new X509EncodedKeySpec(new Base64().decode(keyText.getBytes()));
-					kc_.addKey(m.getFromBuddy(),KeyFactory.getInstance("RSA").generatePublic(pubKeySpec));
-					
-					ui_.keyReceived(m.getFromBuddy());
-					
-					return;
+				ui_.keyReceived(m.getFromBuddy());
 
-				} catch (NoSuchAlgorithmException e) {
-					e.printStackTrace();
-					m.setMessage("<b><font color=\"red\">An error occurred reading the key that was received.  Please have your Buddy resend it.</font></b>");
-
-				} catch (InvalidKeySpecException e) {
-					e.printStackTrace();
-					m.setMessage("<b><font color=\"red\">An error occurred reading the key that was received.  Please have your Buddy resend it.</font></b>");
-				}
+				return;
 			}
+
+			if (m.getMessage().contains("<key>")){
+				m.setMessage(" (Encrypted Message) " + 
+						encConfig_.get(m.getFrom()).decryptMessage(m.getMessage()));
+			}
+			ui_.receiveMessage(m);
 		}
-		
-		if (m.getMessage().contains("<key>")){
-			m.setMessage(" (Encrypted Message) " + 
-					encConfig_.get(m.getFrom()).decryptMessage(m.getMessage()));
-		}
-		ui_.receiveMessage(m);
 	}
 
 	@Override
@@ -144,9 +127,14 @@ public class MessageProcessorImpl implements MessageProcessor {
 				kc_.addKey(b, key);
 			}
 		}
-		
+
 		return kc_.contains(b);
-		
+
+	}
+	
+	@Override
+	public PublicKey getMyPublicKey(){
+		return kc_.getMyPublicKey();
 	}
 
 	@Override
@@ -157,7 +145,7 @@ public class MessageProcessorImpl implements MessageProcessor {
 	@Override
 	public void setUI(UIController ui) {
 		ui_ = ui;
-		
+
 	}
 
 }

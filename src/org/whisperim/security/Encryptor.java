@@ -19,6 +19,7 @@ package org.whisperim.security;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -40,17 +41,16 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.xml.serialize.OutputFormat;
-import org.apache.xml.serialize.XMLSerializer;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.whisperim.client.Buddy;
+import org.whisperim.keys.KeyContainer;
+import org.whisperim.keys.KeyStringContainer;
 import org.whisperim.prefs.GlobalPreferences;
 import org.xml.sax.SAXException;
 
-import com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingException;
+import com.thoughtworks.xstream.XStream;
 
 
 
@@ -190,127 +190,31 @@ public class Encryptor {
 	}
 
 	/**
-	 * This method is designed to write a key into the key store file. It takes a string
-	 * that has been received from the buddy as well as the buddy's handle.  It will also
-	 * verify that the key does not already exist in the file.  If it does, it will ignore
-	 * the request.  If the buddy has a different key associated with their buddy handle,
-	 * this method will assume the new key is valid and the old key has been discarded.
-	 * It will then overwrite the old key.
-	 * @param keyText
-	 * @param handle
+	 * This method is used to serialize the KeyContainer to an xml file.
+	 * This will save the keys currently stored in memory.  This method
+	 * must be called in order to preserve keys between sessions.  
+	 * It should be called on program exit.
+	 * @param kc - The KeyContainer object to serialize
 	 */
-	public static void writeKeyToFile(String keyText, Buddy b){
-		//Identifier will be handle:protocol
-		//The handle string passed to the encryptor is already formatted correctly,
-		//no need to get any more information, just write the bugger.  Key text is
-		//Base64 encoded
-
-
-		Document doc;
-		DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder docBuilder;
-
-		try {
-			InputStream inStream = null;
-			
-			try {
-				inStream = GlobalPreferences.getInstance().getFSC().getInputStream("keys");
-			}
-			catch(FileNotFoundException e){
-				return;
-			}
-			docBuilder = docBuilderFactory.newDocumentBuilder();
-			doc = docBuilder.parse(inStream);
-
-			Node root = doc.getElementsByTagName("Keys").item(0);
-
-			NodeList buddies = doc.getElementsByTagName("Buddy");
-
-			Element buddy = null;
-
-			if (buddies.getLength() != 0){
-				//We need to see if we already have a key for this buddy
-				for (int i = 0; i < buddies.getLength(); ++i){
-					Element temp = (Element)buddies.item(i);
-
-					if (temp.getAttribute(b.getHandle()) == null){
-						//Not our buddy
-					}else {
-						//We found our buddy
-						buddy = (Element) buddies.item(i);
-
-						break;
-					}
-				}
-			}
-
-			if (buddy == null){
-				//We didn't find the buddy
-				buddy = doc.createElement("Buddy");
-				buddy.setAttribute("handle", b.getProtocolID() + ":" + b.getHandle());
-				Element key = doc.createElement("Key");
-				key.appendChild(doc.createTextNode(keyText));
-				buddy.appendChild(key);
-				root.appendChild(buddy);
-
-
-			}else {
-
-				NodeList children = buddy.getChildNodes();
-				boolean found = false;
-
-				for (int i = 0; i < children.getLength(); ++i){
-					if (children.item(i).getNodeName().compareToIgnoreCase("Key") == 0){
-						//Key node already exists
-						children.item(i).removeChild(children.item(i).getFirstChild());
-
-
-						children.item(i).appendChild(doc.createTextNode(keyText));
-						found = true;
-						break;
-					}
-				}
-				if (!found){
-					Element key = doc.createElement("Key");
-					key.appendChild(doc.createTextNode(keyText));
-					buddy.appendChild(key);
-				}
-
-			}
-
-
-			OutputFormat format = new OutputFormat(doc);
-			format.setIndenting(true);
-
-			XMLSerializer serializer = new XMLSerializer();
-			serializer.setOutputByteStream(GlobalPreferences.getInstance().getFSC().getOutputStream("keys"));
-
-			serializer.serialize(doc);
-
-
-		} catch (ParserConfigurationException e) {
-
-			e.printStackTrace();
-		} catch (SAXException e) {
-
-			e.printStackTrace();
-		} catch (IOException e) {
-
-			e.printStackTrace();
-		}
-
+	public static void serializeKeyContainer(KeyContainer kc){
+		OutputStream os = GlobalPreferences.getInstance().getFSC().getOutputStream("keys");
+		XStream xs = new XStream();
+		KeyStringContainer ksc = new KeyStringContainer(new KeyPair(kc.getMyPublicKey(), kc.getMyPrivateKey()));
+		ksc.setForeignKeys(kc.getStringRepresentation());
+		xs.toXML(ksc, os);		
 	}
 
-	public static KeyPair generateRSAKeyPairFromString(String[] keys) throws Base64DecodingException{
+	public static KeyPair generateRSAKeyPairFromString(String[] keys) {
 		KeyFactory rsaKeyFac = null;
+		Base64 b64 = new Base64();
 
 		try {
 			rsaKeyFac = KeyFactory.getInstance("RSA");
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		}
-		X509EncodedKeySpec pubKeySpec = new X509EncodedKeySpec(new Base64().decode(keys[0].getBytes()));
-		PKCS8EncodedKeySpec privKeySpec = new PKCS8EncodedKeySpec(new Base64().decode(keys[1].getBytes()));
+		X509EncodedKeySpec pubKeySpec = new X509EncodedKeySpec(b64.decode(keys[0].getBytes()));
+		PKCS8EncodedKeySpec privKeySpec = new PKCS8EncodedKeySpec(b64.decode(keys[1].getBytes()));
 
 		PublicKey pubKey = null;
 		PrivateKey privKey = null;
@@ -381,25 +285,6 @@ public class Encryptor {
 
 	}
 
-	public static String getMyPublicKey() throws ParserConfigurationException, SAXException, IOException{
-		InputStream inStream = null;
-		try {
-			inStream = GlobalPreferences.getInstance().getFSC().getInputStream("keys");
-		}catch (FileNotFoundException e) {
-			return "";
-		}
-		
-		DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-		Document doc;
-		doc = docBuilder.parse(inStream);
-		// normalize text representation
-		doc.getDocumentElement().normalize();
-		NodeList buddies = doc.getElementsByTagName("PublicKey");
-
-
-		return  buddies.item(0).getNodeValue();
-	}
 
 	/**
 	 * This function provides the decryption of an entire message.
@@ -441,6 +326,32 @@ public class Encryptor {
 
 	}
 	
+	public static PrivateKey getPrivateKeyFromString(String s){
+		KeyFactory rsaKeyFac = null;
+		try {
+			rsaKeyFac = KeyFactory.getInstance("RSA");
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+		PKCS8EncodedKeySpec privKeySpec = new PKCS8EncodedKeySpec(new Base64().decode(s.getBytes()));
+
+
+		if (rsaKeyFac != null){
+
+			try {
+
+				return rsaKeyFac.generatePrivate(privKeySpec);
+				
+
+			} catch (InvalidKeySpecException e) {
+				e.printStackTrace();
+				return null;
+			}
+		}else {
+			return null;
+		}
+	}
+	
 	public static PublicKey getPublicKeyFromString(String s){
 		
 		KeyFactory rsaKeyFac = null;
@@ -466,6 +377,49 @@ public class Encryptor {
 		}else {
 			return null;
 		}
+	}
+	
+	public static KeyContainer getKeys(){
+		KeyContainer kc = null;
+		KeyStringContainer ksc = null;
+
+		// Make sure that a keypair has been generated.
+
+		InputStream istream = null;
+		try {
+			istream = GlobalPreferences.getInstance().getFSC().getInputStream("keys");
+			XStream xs = new XStream();
+
+			ksc = (KeyStringContainer)xs.fromXML(istream);
+			
+			kc = new KeyContainer(ksc.getMyKeys());
+			kc.addKeys(ksc.getKeys());
+			return kc;	
+		}catch (FileNotFoundException e){
+			 KeyPair kp = generateXML(GlobalPreferences.getInstance().getFSC().getOutputStream("keys"));
+			 if (kp == null){
+				 return null;
+			 }
+			 return new KeyContainer(kp);
+		}
+
+		
+	}
+	
+	
+	/**
+	 * This is a helper method to generate the XML for the keys.
+	 * It also handles generating a keypair for the user.  It will
+	 * only be called if the key file doesn't exist already.
+	 * @param ostream - OutputStream to write keys to
+	 */
+	private static KeyPair generateXML(OutputStream ostream){
+		KeyPair kp = Encryptor.generateRSAKeyPair();
+		KeyStringContainer ksc = new KeyStringContainer(kp);
+		XStream stream = new XStream();
+		stream.toXML(ksc, ostream);		
+		return kp;
+
 	}
 
 

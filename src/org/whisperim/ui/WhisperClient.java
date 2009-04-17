@@ -34,6 +34,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -333,6 +334,10 @@ public class WhisperClient extends JFrame implements ActionListener, UIControlle
 		this.setVisible(true);
 		//System.out.println("frame displayed");
 	}
+	
+	public PublicKey getMyKey(){
+		return mp_.getMyPublicKey();
+	}
 
 
 	private void createBuddyList() {
@@ -508,7 +513,7 @@ public class WhisperClient extends JFrame implements ActionListener, UIControlle
 	 */
 	private void loadAccounts(){
 
-		File accounts = new File(((OpenFileSystemCoordinator)GlobalPreferences.getInstance()).getHomeDirectory() + "accounts");
+		File accounts = new File(((OpenFileSystemCoordinator)GlobalPreferences.getInstance().getFSC()).getHomeDirectory() + "accounts");
 		Document dom;
 		if (!accounts.exists()){
 			//Accounts file doesn't exist,

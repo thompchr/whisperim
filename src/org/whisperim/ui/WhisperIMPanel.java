@@ -291,7 +291,7 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
 			try{
 				Message keyMsg = new Message(new Buddy(myHandle_, myHandle_, buddy_.getProtocolID()), 
 						new Buddy(theirHandle_, myHandle_, buddy_.getProtocolID()), 
-						"<whisperim keyspec=" + Encryptor.getMyPublicKey() + "-- />", buddy_.getProtocolID(),
+						"<whisperim keyspec=" + window_.getMyParent().getMyKey() + "-- />", buddy_.getProtocolID(),
 						Calendar.getInstance().getTime());
 				window_.getMyParent().sendMessage(keyMsg);
 				talkArea_.append("Public key sent\n");

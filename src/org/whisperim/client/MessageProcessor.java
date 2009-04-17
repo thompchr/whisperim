@@ -17,6 +17,8 @@ public interface MessageProcessor {
 	
 	public boolean haveKey(Buddy b);
 	
+	public PublicKey getMyPublicKey();
+	
 	public void registerKey(Buddy b, PublicKey key);
 
 	public void setConnectionManager(ConnectionManager cm);
