@@ -29,11 +29,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -59,37 +54,25 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.xml.serialize.OutputFormat;
-import org.apache.xml.serialize.XMLSerializer;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import org.whisperim.SocialSiteDump.SocialSiteManager;
 import org.whisperim.aim.AIMStrategy;
 import org.whisperim.client.Buddy;
 import org.whisperim.client.ConnectionManager;
-import org.whisperim.client.ConnectionStrategy;
 import org.whisperim.client.Message;
 import org.whisperim.client.MessageProcessor;
 import org.whisperim.events.EncryptionEvent;
 import org.whisperim.events.SessionEvent;
-import org.whisperim.file.OpenFileSystemCoordinator;
 import org.whisperim.lastfm.LastFM;
 import org.whisperim.listeners.ClientListener;
 import org.whisperim.models.BuddyListModel;
 import org.whisperim.models.PluginListModel;
 import org.whisperim.plugins.Plugin;
 import org.whisperim.plugins.PluginLoader;
-import org.whisperim.prefs.GlobalPreferences;
 import org.whisperim.prefs.PrefListener;
 import org.whisperim.prefs.Preferences;
 import org.whisperim.prefs.PreferencesWindow;
 import org.whisperim.renderers.BuddyListRenderer;
-import org.xml.sax.SAXException;
 
 /**
  * This class handles the creation of the swing interface components that 
@@ -315,7 +298,7 @@ public class WhisperClient extends JFrame implements ActionListener, UIControlle
 		}
 
 		registerPlugin("AIM", CONNECTION, new AIMStrategy());
-		loadAccounts();
+		//		loadAccounts();
 
 		//set sizes and show
 		this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -334,7 +317,7 @@ public class WhisperClient extends JFrame implements ActionListener, UIControlle
 		this.setVisible(true);
 		//System.out.println("frame displayed");
 	}
-	
+
 	public PublicKey getMyKey(){
 		return mp_.getMyPublicKey();
 	}
@@ -511,112 +494,112 @@ public class WhisperClient extends JFrame implements ActionListener, UIControlle
 	 * that there is no saved account information, it will display to the user
 	 * the new account window so that they can create an account.
 	 */
-	private void loadAccounts(){
-
-		File accounts = new File(((OpenFileSystemCoordinator)GlobalPreferences.getInstance().getFSC()).getHomeDirectory() + "accounts");
-		Document dom;
-		if (!accounts.exists()){
-			//Accounts file doesn't exist,
-			//likely a first time use
-
-
-			try {
-				accounts.createNewFile();
-				dom = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
-
-				Element root = dom.createElement("Accounts");
-				dom.appendChild(root);
-
-				OutputFormat format = new OutputFormat(dom);
-				format.setIndenting(true);
-
-				XMLSerializer serializer = new XMLSerializer(
-						new FileOutputStream(accounts), format);
-
-				serializer.serialize(dom);
-
-			} catch (IOException e) {
-				JOptionPane.showMessageDialog(this, ERROR_CREATING_ACCOUNTS_ + " " + IO_ERROR_ + ": " + e.getMessage(),
-						IO_ERROR_, JOptionPane.ERROR_MESSAGE);
-				return;
-			}catch (ParserConfigurationException e) {
-
-				e.printStackTrace();
-				return;
-			}
-
-
-			//Show the new account window
-			EventQueue.invokeLater(new Runnable(){
-
-				@Override
-				public void run(){
-					new NewAccountWindow(manager_);
-				}
-			});
-
-		}else {
-			//Load the account information
-			try {
-				dom = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(accounts);
-
-				NodeList accountList = dom.getElementsByTagName("Accounts").item(0).getChildNodes();
-
-				if (accountList.getLength() == 0){
-					//No accounts exist in the file, show the 
-					//new account window and exit
-
-					EventQueue.invokeLater(new Runnable(){
-
-						@Override
-						public void run(){
-							new NewAccountWindow(manager_);
-						}
-					});
-
-					return;
-
-				}else{
-					//Accounts have been saved, load them up
-					for (int i = 0; i < accountList.getLength(); ++i){
-						if (accountList.item(i).getNodeType() == Node.TEXT_NODE){
-
-						}else{
-
-							Element e = (Element) accountList.item(i);
-
-							String handle = e.getTagName().substring(e.getTagName().indexOf(":") + 1);
-
-							String protocol = e.getTagName().substring(0, e.getTagName().indexOf(":"));
-
-							String pw = ((Element)e.getElementsByTagName("Password").item(0)).getAttribute("value");
-
-							HashMap<String, ConnectionStrategy> potentialConnections = manager_.getRegisteredStrategies();
-
-							if(e.getAttribute("autosignin").equalsIgnoreCase("true")){
-								ConnectionStrategy cs = potentialConnections.get(protocol);
-								cs.signOn(manager_, handle, pw);
-								manager_.addStrategy(cs);
-							}else{
-								ConnectionStrategy cs = potentialConnections.get(protocol);
-								cs.setHandle(handle);
-								manager_.addStrategy(cs);
-							}
-						}
-					}
-				}
-
-			} catch (SAXException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				JOptionPane.showMessageDialog(this, ERROR_READING_ACCOUNTS_ + " " + IO_ERROR_ + ": " + e.getMessage(),
-						IO_ERROR_, JOptionPane.ERROR_MESSAGE);
-				e.printStackTrace();
-			} catch (ParserConfigurationException e) {
-				e.printStackTrace();
-			}
-		}
-	}
+	//	private void loadAccounts(){
+	//
+	//		File accounts = new File(((OpenFileSystemCoordinator)GlobalPreferences.getInstance().getFSC()).getHomeDirectory() + "accounts");
+	//		Document dom;
+	//		if (!accounts.exists()){
+	//			//Accounts file doesn't exist,
+	//			//likely a first time use
+	//
+	//
+	//			try {
+	//				accounts.createNewFile();
+	//				dom = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+	//
+	//				Element root = dom.createElement("Accounts");
+	//				dom.appendChild(root);
+	//
+	//				OutputFormat format = new OutputFormat(dom);
+	//				format.setIndenting(true);
+	//
+	//				XMLSerializer serializer = new XMLSerializer(
+	//						new FileOutputStream(accounts), format);
+	//
+	//				serializer.serialize(dom);
+	//
+	//			} catch (IOException e) {
+	//				JOptionPane.showMessageDialog(this, ERROR_CREATING_ACCOUNTS_ + " " + IO_ERROR_ + ": " + e.getMessage(),
+	//						IO_ERROR_, JOptionPane.ERROR_MESSAGE);
+	//				return;
+	//			}catch (ParserConfigurationException e) {
+	//
+	//				e.printStackTrace();
+	//				return;
+	//			}
+	//
+	//
+	//			//Show the new account window
+	//			EventQueue.invokeLater(new Runnable(){
+	//
+	//				@Override
+	//				public void run(){
+	//					new NewAccountWindow(manager_);
+	//				}
+	//			});
+	//
+	//		}else {
+	//			//Load the account information
+	//			try {
+	//				dom = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(accounts);
+	//
+	//				NodeList accountList = dom.getElementsByTagName("Accounts").item(0).getChildNodes();
+	//
+	//				if (accountList.getLength() == 0){
+	//					//No accounts exist in the file, show the 
+	//					//new account window and exit
+	//
+	//					EventQueue.invokeLater(new Runnable(){
+	//
+	//						@Override
+	//						public void run(){
+	//							new NewAccountWindow(manager_);
+	//						}
+	//					});
+	//
+	//					return;
+	//
+	//				}else{
+	//					//Accounts have been saved, load them up
+	//					for (int i = 0; i < accountList.getLength(); ++i){
+	//						if (accountList.item(i).getNodeType() == Node.TEXT_NODE){
+	//
+	//						}else{
+	//
+	//							Element e = (Element) accountList.item(i);
+	//
+	//							String handle = e.getTagName().substring(e.getTagName().indexOf(":") + 1);
+	//
+	//							String protocol = e.getTagName().substring(0, e.getTagName().indexOf(":"));
+	//
+	//							String pw = ((Element)e.getElementsByTagName("Password").item(0)).getAttribute("value");
+	//
+	//							HashMap<String, ConnectionStrategy> potentialConnections = manager_.getRegisteredStrategies();
+	//
+	//							if(e.getAttribute("autosignin").equalsIgnoreCase("true")){
+	//								ConnectionStrategy cs = potentialConnections.get(protocol);
+	//								cs.signOn(manager_, handle, pw);
+	//								manager_.addStrategy(cs);
+	//							}else{
+	//								ConnectionStrategy cs = potentialConnections.get(protocol);
+	//								cs.setHandle(handle);
+	//								manager_.addStrategy(cs);
+	//							}
+	//						}
+	//					}
+	//				}
+	//
+	//			} catch (SAXException e) {
+	//				e.printStackTrace();
+	//			} catch (IOException e) {
+	//				JOptionPane.showMessageDialog(this, ERROR_READING_ACCOUNTS_ + " " + IO_ERROR_ + ": " + e.getMessage(),
+	//						IO_ERROR_, JOptionPane.ERROR_MESSAGE);
+	//				e.printStackTrace();
+	//			} catch (ParserConfigurationException e) {
+	//				e.printStackTrace();
+	//			}
+	//		}
+	//	}
 
 
 
