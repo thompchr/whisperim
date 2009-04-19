@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<manifest>
-	<type value="connection"></type>
-	<entrypoint>
-		<location value="\class\"></location>
-		<class value="org.whisperplugin.test.TestConnection"></class></entrypoint>
-	<name value="Test Connection"></name></manifest>
