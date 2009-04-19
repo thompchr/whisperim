@@ -136,6 +136,8 @@ public class WhisperBot implements AccEvents {
 						+ ((days != 1) ? "s" : "") + ", " + hours + " hour"
 						+ ((hours != 1) ? "s" : "") + ", " + minutes
 						+ " minute" + ((minutes != 1) ? "s" : "") + ".";
+				
+				session.createIm(richText, null);
 			} else if (msg.startsWith("$encryptedSendFile")) {
 
 				// Separate out $encryptedSendFile from file name to be
@@ -186,6 +188,7 @@ public class WhisperBot implements AccEvents {
 
 			} else if (msg.startsWith("help")) {
 				richText = "$stats<br>$directory<br>$sendFile<br>$encryptedSendFile<br>$help<br>";
+				session.createIm(richText, null);
 			}
 
 		} catch (AccException e) {
