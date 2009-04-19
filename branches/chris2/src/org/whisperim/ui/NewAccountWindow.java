@@ -21,9 +21,6 @@ import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Map.Entry;
 
@@ -40,13 +37,7 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.xml.serialize.OutputFormat;
-import org.apache.xml.serialize.XMLSerializer;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.whisperim.client.ConnectionManager;
 import org.whisperim.client.ConnectionStrategy;
 import org.whisperim.models.ActiveAccountModel;
@@ -54,7 +45,6 @@ import org.whisperim.prefs.GlobalPreferences;
 import org.whisperim.prefs.PrefListener;
 import org.whisperim.prefs.Preferences;
 import org.whisperim.renderers.ConnectionRenderer;
-import org.xml.sax.SAXException;
 
 
 /**
@@ -391,59 +381,59 @@ public class NewAccountWindow extends JFrame implements ActionListener {
 				aam_.add(cs);
 			}
 			
-			try {
-				InputStream istream = null;
-				try {
-					istream = GlobalPreferences.getInstance().getFSC().getInputStream("accounts");
-				}catch (FileNotFoundException e) {
-					return;
-				}
-				
-				Document dom = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(istream);
-				
-				Element curAccount = dom.createElement(cs.getProtocol() + ":" + cs.getHandle());
-				curAccount.setAttribute("localalias", localAliasField_.getText());
-				curAccount.setAttribute("savepassword", savePw_);
-				curAccount.setAttribute("autosignin", autoLogin_);
-				
-				Element usernameEle = dom.createElement("Username");
-				usernameEle.setAttribute("value", handleField_.getText());
-				
-				Element passEle = dom.createElement("Password");
-				
-				if (savePw_.equalsIgnoreCase("true")){
-					passEle.setAttribute("value", new String(pwField_.getPassword()));
-				}else{
-					passEle.setAttribute("value", "");
-				}
-				
-				curAccount.appendChild(usernameEle);
-				curAccount.appendChild(passEle);
-				
-				dom.getElementsByTagName("Accounts").item(0).appendChild(curAccount);
-				
-				OutputFormat format = new OutputFormat(dom);
-				format.setIndenting(true);
-
-				XMLSerializer serializer = new XMLSerializer(
-				ostream, format);
-
-				serializer.serialize(dom);
+//			try {
+//				InputStream istream = null;
+//				try {
+//					istream = GlobalPreferences.getInstance().getFSC().getInputStream("accounts");
+//				}catch (FileNotFoundException e) {
+//					return;
+//				}
+//				
+//				Document dom = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(istream);
+//				
+//				Element curAccount = dom.createElement(cs.getProtocol() + ":" + cs.getHandle());
+//				curAccount.setAttribute("localalias", localAliasField_.getText());
+//				curAccount.setAttribute("savepassword", savePw_);
+//				curAccount.setAttribute("autosignin", autoLogin_);
+//				
+//				Element usernameEle = dom.createElement("Username");
+//				usernameEle.setAttribute("value", handleField_.getText());
+//				
+//				Element passEle = dom.createElement("Password");
+//				
+//				if (savePw_.equalsIgnoreCase("true")){
+//					passEle.setAttribute("value", new String(pwField_.getPassword()));
+//				}else{
+//					passEle.setAttribute("value", "");
+//				}
+//				
+//				curAccount.appendChild(usernameEle);
+//				curAccount.appendChild(passEle);
+//				
+//				dom.getElementsByTagName("Accounts").item(0).appendChild(curAccount);
+//				
+//				OutputFormat format = new OutputFormat(dom);
+//				format.setIndenting(true);
+//
+//				XMLSerializer serializer = new XMLSerializer(
+//				ostream, format);
+//
+//				serializer.serialize(dom);
 				
 				//Close the window
 				dispose();
 
-			} catch (SAXException e) {
-				
-				e.printStackTrace();
-			} catch (IOException e) {
-				
-				e.printStackTrace();
-			} catch (ParserConfigurationException e) {
-				
-				e.printStackTrace();
-			}
-			
+//			} catch (SAXException e) {
+//				
+//				e.printStackTrace();
+//			} catch (IOException e) {
+//				
+//				e.printStackTrace();
+//			} catch (ParserConfigurationException e) {
+//				
+//				e.printStackTrace();
+//			}
+//			
 		}else if (ac.equalsIgnoreCase(CANCEL_)){
 			//Discard everything
 			dispose();
