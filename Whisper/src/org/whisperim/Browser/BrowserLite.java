@@ -125,7 +125,7 @@ public class BrowserLite extends JFrame implements HyperlinkListener {
 
 	// Exit this program.
 	private void actionExit() {
-		System.exit(0);
+		dispose();
 	}
 
 	// Go back to the page viewed before the current page.

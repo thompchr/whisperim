@@ -77,6 +77,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.whisperim.Browser.BrowserLite;
 import org.whisperim.DownloadManager.DownloadManager;
+import org.whisperim.EmailManager.ExpressWhisperMailManager;
 import org.whisperim.SocialSiteDump.SocialSiteManager;
 import org.whisperim.aim.AIMStrategy;
 import org.whisperim.client.Buddy;
@@ -147,6 +148,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 	private boolean soundsEnabled_;
 	private JMenuItem socialSites_;
 	private JMenuItem downloadManager_;
+	private JMenuItem emailManager_;
 	private JMenuItem browserLite_;
 	private JMenuItem quit_;
 	private boolean alwaysNewWindow_ = false;
@@ -171,6 +173,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 	private static final String SET_STATUS_ = "Set Status...";
 	private static final String SOCIAL_SITE_MANAGER_ = "Social Site Notifications";
 	private static final String DOWNLOAD_MANAGER_ = "Download Manger";
+	private static final String EMAIL_MANAGER_ = "Express Whisper Mail";
 	private static final String BROWSER_LITE_ = "Whisper Web Browser";
 	private static final String QUIT_ = "Quit";
 	
@@ -520,6 +523,10 @@ public class WhisperClient extends JFrame implements ActionListener {
 		downloadManager_.addActionListener(this);
 		whisperMenu_.add(downloadManager_);
 		
+		emailManager_ = new JMenuItem(EMAIL_MANAGER_);
+		emailManager_.addActionListener(this);
+		whisperMenu_.add(emailManager_);
+		
 		whisperMenu_.add(new JSeparator()); 
 		
 		browserLite_ = new JMenuItem(BROWSER_LITE_);
@@ -537,7 +544,6 @@ public class WhisperClient extends JFrame implements ActionListener {
 		//Options (o)
 			//Preferences (p)
 			//Sound
-			//Social Site Manager
 			//Account
 			//Profile
 			//Plugins
@@ -1088,6 +1094,12 @@ public class WhisperClient extends JFrame implements ActionListener {
 		if(actionCommand.equals(downloadManager_.getActionCommand())){
 			DownloadManager dlm = new DownloadManager();
 			dlm.show();
+		}
+		
+		// Launches the email manager.
+		if(actionCommand.equals(emailManager_.getActionCommand())){
+			ExpressWhisperMailManager ewmm = new ExpressWhisperMailManager();
+			ewmm.show();
 		}
 		
 		// This launches the download manager.
