@@ -95,6 +95,7 @@ import org.whisperim.prefs.Preferences;
 import org.whisperim.prefs.PreferencesWindow;
 import org.whisperim.renderers.BuddyListRenderer;
 import org.whisperim.security.Encryptor;
+import org.whisperim.security.Locking;
 import org.xml.sax.SAXException;
 
 import com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingException;
@@ -155,6 +156,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 	private JMenuItem newWindow_;
 	private JMenuItem profile_;
 	private JMenuItem newSMSText_;
+	private JMenuItem lockWhisper_;
 	private JMenu optionsMenu_;
 	
 	private Dimension frameMinSize_ = new Dimension(175,400);
@@ -184,6 +186,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 	private static final String ACCOUNTS_ = "Accounts";
 	private static final String PROFILE_ = "Profile...";
 	private static final String PLUGINS_ = "Plugins";
+	private static final String LOCK_WHISPER_ = "Lock Whisper...";
 	
 
 	
@@ -219,34 +222,36 @@ public class WhisperClient extends JFrame implements ActionListener {
 		manager_ = manager;
 		manager_.setClient(this);
 		
-		final Container jf = this;
+		//start preferences - speeds up loading time for later
+		Runnable prefsRunnable = new Runnable() {
+			public void run() {
+				PreferencesWindow prefs = PreferencesWindow.getInstance();
+				prefs.setVisible(false);
+			}
+		};
+		Thread prefsThread = new Thread(prefsRunnable);
+		prefsThread.start();
+		
+		final WhisperClient jf = this;
 		
 		//start system tray
 		Runnable systrayRunnable = new Runnable() {
 			public void run() {
-				
+				tray_ = new WhisperSystemTray();
+				tray_.startSystemTray(jf, manager_);
 			}
 		};
 		Thread systray = new Thread(systrayRunnable);
 		systray.start();
-		tray_ = new WhisperSystemTray();
-		tray_.startSystemTray(this, manager);
-		
 		
 		//start sounds
 		final Sound sound = new Sound();
 		getClientListeners().add(sound);
 		
-		//sounds class doesn't implement threads, so calling methods have to
-		//fix this		
-		
-		
+		//play login sound
 		Runnable soundsRunnable = new Runnable() {
 			public void run() {
-				//jf is the WhisperClient frame as a container
-				//playsound takes WhisperClient, not a container
-				//so need to cast to WhisperClient (it's ok because we _know_ its a WhisperClient
-				sound.playSound((WhisperClient)jf, "Open.wav");
+				sound.playSound(jf, "Open.wav");
 			}
 		};
 		Thread soundsThread = new Thread(soundsRunnable);
@@ -547,6 +552,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 			//Account
 			//Profile
 			//Plugins
+			//Lock
 
 		optionsMenu_ = new JMenu(OPTIONS_);
 		optionsMenu_.setMnemonic(KeyEvent.VK_O);
@@ -579,6 +585,10 @@ public class WhisperClient extends JFrame implements ActionListener {
 		plugins_ = new JMenuItem(PLUGINS_);
 		plugins_.addActionListener(this);
 		optionsMenu_.add(plugins_);
+		
+		lockWhisper_ = new JMenuItem(LOCK_WHISPER_);
+		lockWhisper_.addActionListener(this);
+		optionsMenu_.add(lockWhisper_);
 		
 		menuBar_.add(whisperMenu_);
 		menuBar_.add(optionsMenu_);
@@ -832,6 +842,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 	private void formWindowClosing(WindowEvent evt) {
 		WhisperSystemTray.closeTray();
 		manager_.signOff();
+		Preferences.getInstance().savePrefs();
 	}
 
 	public void recieveMessage(final Message message) throws BadLocationException{
@@ -1087,13 +1098,13 @@ public class WhisperClient extends JFrame implements ActionListener {
 		// This launches the social site manager.
 		if(actionCommand.equals(socialSites_.getActionCommand())){
 			SocialSiteManager ssm = new SocialSiteManager();
-			ssm.show();
+			ssm.setVisible(true);
 		}
 		
 		// This launches the download manager.
 		if(actionCommand.equals(downloadManager_.getActionCommand())){
 			DownloadManager dlm = new DownloadManager();
-			dlm.show();
+			dlm.setVisible(true);
 		}
 		
 		// Launches the email manager.
@@ -1105,7 +1116,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 		// This launches the download manager.
 		if(actionCommand.equals(browserLite_.getActionCommand())){
 			BrowserLite bl = new BrowserLite();
-			bl.show();
+			bl.setVisible(true);
 		}
 		
 		//Profile
@@ -1126,6 +1137,17 @@ public class WhisperClient extends JFrame implements ActionListener {
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
+		}
+		
+		if(actionCommand.equals(lockWhisper_.getActionCommand())){
+			Runnable lockRunnable = new Runnable() {
+				public void run() {
+					Locking lock = new Locking();
+				}
+			};
+			Thread lockThread = new Thread(lockRunnable);
+			lockThread.start();
+			
 		}
 	}
 

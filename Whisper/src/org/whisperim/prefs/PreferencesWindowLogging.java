@@ -39,6 +39,7 @@ public class PreferencesWindowLogging extends JPanel implements ItemListener {
 
 	private static final long serialVersionUID = 6555858513398336341L;
 	
+	private static final String LOGGING_ENABLED_ = "Logging Enabled";
 	private boolean loggingEnabled_ = Preferences.getInstance().getLoggingEnabled();
 	private JCheckBox loggingCheckBox_;
 	
@@ -49,7 +50,7 @@ public class PreferencesWindowLogging extends JPanel implements ItemListener {
 		
 		this.setBackground(Color.white);
 		
-		loggingCheckBox_ = new JCheckBox("Logging Enabled");
+		loggingCheckBox_ = new JCheckBox(LOGGING_ENABLED_);
 		loggingCheckBox_.setBackground(Color.white);
 		loggingCheckBox_.setSelected(loggingEnabled_);
 		loggingCheckBox_.setMnemonic(KeyEvent.VK_L);
