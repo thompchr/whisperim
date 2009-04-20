@@ -54,7 +54,8 @@ public class TestConnection extends ConnectionPluginAdapter {
 	@Override
 	public void sendMessage(Message message) {
 		Log.i("WhisperIM", "TestConnection: Message Received: " + message.getFrom() + ": " + message.getMessage());
-		cm_.messageReceived(message);
+		cm_.messageReceived(new Message(new Buddy(message.getFrom(), message.getTo(), message.getProtocol()), message.getFromBuddy(), 
+				message.getMessage(), message.getProtocol(), message.getTimeSent()));
 
 	}
 
