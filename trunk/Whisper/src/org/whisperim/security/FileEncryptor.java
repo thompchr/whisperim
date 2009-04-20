@@ -28,6 +28,7 @@ import java.security.PublicKey;
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 
 public class FileEncryptor {
 	/**
@@ -116,6 +117,7 @@ public class FileEncryptor {
 				rsaCipher.init(Cipher.ENCRYPT_MODE, publicKey_);
 
 				byte [] encryptedKeyBytes = rsaCipher.doFinal(sessionKey.getEncoded());
+				
 
 				// new byte array of the encrypted key []'s length and the file []'s length
 				//and put them together
@@ -145,22 +147,20 @@ public class FileEncryptor {
 		 * @param message
 		 */
 		public void decryptFile(File file){
-			/*
+	
 			// Shift file to byte array to string.
 			try {
 				byte[] fileBytes = fileToByteArray(file);
 			
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
 			String outputMessage = null;
-			try {
-
-				byte [] keyBytes = Base64.decode(encKey.getBytes("UTF-8"));
-
-				byte [] messageBytes = Base64.decode(encMessage.getBytes("UTF-8"));
-
+			
+			byte[] messageBytes = null;// = new byte[];
+			byte[] keyBytes = null;// = new byte[encryptedKeyBytes.length];
+			
+			System.arraycopy(fileBytes, 0, keyBytes, 0, keyBytes.length);
+			System.arraycopy(fileBytes, keyBytes.length, messageBytes, 0, fileBytes.length);
+			
+		
 				Cipher rsaCipherDecrypt = Cipher.getInstance("RSA/ECB/PKCS1Padding");
 				rsaCipherDecrypt.init(Cipher.DECRYPT_MODE, privateKey_);
 
@@ -170,20 +170,14 @@ public class FileEncryptor {
 
 				outputMessage = new String(aesCipher.doFinal(messageBytes));
 
-			}catch (Exception e) {
-				e.printStackTrace();
-			} 
-
 			// Write string to file. Will require "playing with" to support file types and such.
-			try{
+
 				BufferedWriter output = new BufferedWriter(new FileWriter("result.txt"));
 				output.write(outputMessage);
 				output.close();
-			}catch (IOException e)
-			{
+			}catch(Exception e){
 				e.printStackTrace();
 			}
-			*/
 		}
 
 		/**
