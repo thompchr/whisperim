@@ -32,7 +32,6 @@ public class ProfileEditor extends JFrame implements ActionListener{
 	private HTMLDocument document;
 	private JTextPane textPane = new JTextPane();
 	private File currentFile = new File(SAVEPATH_);
-	private WhisperClient client_;
 		
 	protected UndoableEditListener undoHandler = new UndoHandler();
 	protected UndoManager undo = new UndoManager();
@@ -60,7 +59,6 @@ public class ProfileEditor extends JFrame implements ActionListener{
 	private static final String NEW_ = "New";
 	private static final String OPEN_ = "Open";
 	private static final String SAVE_ = "Save";
-	private static final String SAVEAS_ = "Save As";
 	private static final String DELETE_ = "Delete";
 	private static final String EXIT_ = "Exit";
 	private static final String UNDO_ = "Undo";
@@ -129,9 +127,9 @@ public class ProfileEditor extends JFrame implements ActionListener{
 	JMenuItem centerMenuItem;
 	JMenuItem rightAlignMenuItem;
 	
-	public ProfileEditor(WhisperClient client){
+	public ProfileEditor(){
 		super(WHISPER_);
-		client_ = client;
+		
 		HTMLEditorKit editorKit = new HTMLEditorKit();
 		document = (HTMLDocument)editorKit.createDefaultDocument();
 		try {
@@ -148,7 +146,6 @@ public class ProfileEditor extends JFrame implements ActionListener{
 		
 		init();
 		
-		boolean text = currentFile.exists();
 		if (!currentFile.exists()){
 			String message = "You have no profile.  Would you like to create one?";
 			int jp = JOptionPane.showConfirmDialog(null, message, "Profile", JOptionPane.YES_NO_OPTION);
@@ -202,7 +199,6 @@ public class ProfileEditor extends JFrame implements ActionListener{
 		newItem = new JMenuItem(NEW_);
 		openItem = new JMenuItem(OPEN_);
 		saveItem = new JMenuItem(SAVE_);
-		//saveAsItem = new JMenuItem(SAVEAS_);
 		deleteItem = new JMenuItem(DELETE_);
 		exitItem = new JMenuItem(EXIT_);
 		
@@ -210,14 +206,12 @@ public class ProfileEditor extends JFrame implements ActionListener{
 		openItem.addActionListener(this);
 		saveItem.addActionListener(this);
 		deleteItem.addActionListener(this);
-		//saveAsItem.addActionListener(this);
 		exitItem.addActionListener(this);
 		
 		fileMenu.add(newItem);
 		fileMenu.add(openItem);
 		fileMenu.add(saveItem);
 		fileMenu.add(deleteItem);
-		//fileMenu.add(saveAsItem);
 		fileMenu.add(exitItem);
 		
 		undoItem = new JMenuItem(undoAction);
@@ -406,8 +400,6 @@ public class ProfileEditor extends JFrame implements ActionListener{
 			}
 		} else if (actionCommand.compareTo(SAVE_) == 0){
 			saveDocument();
-		} else if (actionCommand.compareTo(SAVEAS_) == 0){
-		    saveDocumentAs();
 		} else if (actionCommand.compareTo(EXIT_) == 0){
 			exit();
 		} else if (actionCommand.compareTo(CLEAR_) == 0){

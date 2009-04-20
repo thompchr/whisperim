@@ -171,18 +171,18 @@ public class WhisperClient extends JFrame implements ActionListener {
 	private static final String NEWUSERIM_ = "IM Selected User";
 	private static final String SMSTEXT_ = "Send SMS Text...";
 	private static final String SET_STATUS_ = "Set Status...";
-	private static final String SOCIAL_SITE_MANAGER_ = "Social Site Notifications";
-	private static final String DOWNLOAD_MANAGER_ = "Download Manger";
-	private static final String EMAIL_MANAGER_ = "Express Whisper Mail";
+	private static final String SOCIAL_SITE_MANAGER_ = "Social Site Notifications...";
+	private static final String DOWNLOAD_MANAGER_ = "Download Manger...";
+	private static final String EMAIL_MANAGER_ = "Express Whisper Mail...";
 	private static final String BROWSER_LITE_ = "Whisper Web Browser";
 	private static final String QUIT_ = "Quit";
 	
 	//second menu\\
 	private static final String OPTIONS_ = "Options";
-	private static final String PREFERENCES_ = "Preferences";
+	private static final String PREFERENCES_ = "Preferences...";
 	private static final String SOUND_ = "Sound";
 	private static final String ACCOUNTS_ = "Accounts";
-	private static final String PROFILE_ = "Profile";
+	private static final String PROFILE_ = "Profile...";
 	private static final String PLUGINS_ = "Plugins";
 	
 
@@ -1111,7 +1111,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 		//Profile
 		if(actionCommand.equals(profile_.getActionCommand())){
 			@SuppressWarnings("unused")
-			ProfileEditor editor = new ProfileEditor(this);
+			ProfileEditor editor = new ProfileEditor();
 		}
 		
 		//SMS Text

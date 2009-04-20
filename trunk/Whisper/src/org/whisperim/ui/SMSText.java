@@ -67,6 +67,7 @@ public class SMSText {
        Object[] cellPhoneCompanys = { "Alltel", "AT&T", "Boost Mobile", "Nextel", "Sprint", "T-Mobile", "Verizon", "Virgin Mobile"};
        Object userInput = JOptionPane.showInputDialog(null, "Select: ", "Cell Phone Carrier", 
                                                                 JOptionPane.QUESTION_MESSAGE, null,cellPhoneCompanys, cellPhoneCompanys[0]);
+       //Check is user canceled SMS Texting process
        if(userInput == null){
            return null;
        }
@@ -153,14 +154,16 @@ public class SMSText {
             	   	}
                }
        }
+       
        //Forming message to be sent
        message_ = new MimeMessage(mailSession_);
-       if(!(carrier_ == null || number_ == null || messageString_ == null) || user_ == null){
+       if(carrier_ != null && number_ != null && messageString_ != null && user_ != null){
                message_.addRecipient(Message.RecipientType.TO, new InternetAddress(number_ + "@" + carrier_));
                message_.setSubject(user_);
                message_.setContent(messageString_, "text/plain");
                return message_;
        }
+       
        //User has decided to cancel SMS Texting process - notifying sendText() method of this
        message_.setContent("cancel", "text/plain");
        return message_;
