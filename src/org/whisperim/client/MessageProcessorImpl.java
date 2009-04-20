@@ -15,15 +15,10 @@ package org.whisperim.client;
  * See the License for the specific language governing permissions and     *
  * limitations under the License.                                          *
  **************************************************************************/
-import java.security.KeyFactory;
 import java.security.KeyPair;
-import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.X509EncodedKeySpec;
 import java.util.HashMap;
 
-import org.apache.commons.codec.binary.Base64;
 import org.whisperim.events.EncryptionEvent;
 import org.whisperim.keys.KeyContainer;
 import org.whisperim.security.Encryptor;
@@ -99,12 +94,14 @@ public class MessageProcessorImpl implements MessageProcessor {
 				return;
 			}
 
-			if (m.getMessage().contains("<key>")){
-				m.setMessage(" (Encrypted Message) " + 
-						encConfig_.get(m.getFrom()).decryptMessage(m.getMessage()));
-			}
-			ui_.receiveMessage(m);
+			
+			
 		}
+		if (m.getMessage().contains("<key>")){
+			m.setMessage(" (Encrypted Message) " + 
+					encConfig_.get(m.getFrom()).decryptMessage(m.getMessage()));
+		}
+		ui_.receiveMessage(m);
 	}
 
 	@Override
