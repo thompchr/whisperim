@@ -285,12 +285,6 @@ public class WhisperIM extends JFrame implements ActionListener, WindowListener{
 	private void createMenu(){
 		final JMenuBar mb = new JMenuBar();
 		this.setJMenuBar(mb);
-		
-		
-		
-		
-
-		
 		//first menu
 		//file (f)
 			//new tab (hidden)
@@ -304,7 +298,6 @@ public class WhisperIM extends JFrame implements ActionListener, WindowListener{
 		newTab_ = new JMenuItem(NEW_TAB_);
 		newTab_.addActionListener(this);
 		newTab_.setAccelerator(KeyStroke.getKeyStroke("control T"));
-		//Adding it to the menu probably isnt necessary...
 		fileMenu_.add(newTab_);
 		
 		closeTab_ = new JMenuItem(CLOSE_TAB_);
