@@ -19,10 +19,14 @@ import java.util.ArrayList;
 
 import org.whisperim.client.Buddy;
 import org.whisperim.client.ConnectionManager;
+import org.whisperim.client.Message;
 import org.whisperim.plugins.ConnectionPluginAdapter;
+
+import android.util.Log;
 
 public class TestConnection extends ConnectionPluginAdapter {
 	
+	private ConnectionManager cm_;
 	
 
 	@Override
@@ -33,9 +37,10 @@ public class TestConnection extends ConnectionPluginAdapter {
 	
 	@Override
 	public void signOn(ConnectionManager cm, String username, String password){
+		cm_ = cm;
 		ArrayList<Buddy> buddies = new ArrayList<Buddy>();
 		for (int i = 0; i < 10; ++i){
-			buddies.add(new Buddy("TestBuddy" + i, "TestBuddy" + i, "testProto"));
+			buddies.add(new Buddy("TestBuddy" + i, "TestBuddyParent", "testProto"));
 		}
 		cm.receiveBuddies(buddies);
 	}
@@ -44,6 +49,13 @@ public class TestConnection extends ConnectionPluginAdapter {
 	public String getIdentifier() {
 		
 		return "TestProto:TestBuddyParent";
+	}
+	
+	@Override
+	public void sendMessage(Message message) {
+		Log.i("WhisperIM", "TestConnection: Message Received: " + message.getFrom() + ": " + message.getMessage());
+		cm_.messageReceived(message);
+
 	}
 
 	@Override
