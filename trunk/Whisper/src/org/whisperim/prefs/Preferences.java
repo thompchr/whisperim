@@ -85,7 +85,7 @@ public class Preferences {
 	//locking
 	private boolean locked_ = false;
 	public static final String LOCKED_ = "Locked";
-	private static String lockPassword_ = "";
+	private static char[] lockPassword_;
 	
 	private boolean encryptionEnabled_ = true;
 	public static final String ENCRYPTION_ = "Encryption";
@@ -253,11 +253,11 @@ public class Preferences {
 		}
 	}
 	
-	public String getLockPassword() {
+	public char[] getLockPassword() {
 		return lockPassword_;
 	}
 	
-	public void setLockPassword(String password) {
+	public void setLockPassword(char[] password) {
 		lockPassword_ = password;
 	}
 	
