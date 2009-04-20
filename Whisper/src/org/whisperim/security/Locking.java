@@ -19,6 +19,7 @@ package org.whisperim.security;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Toolkit;
@@ -71,6 +72,9 @@ public class Locking extends JDialog implements ActionListener {
 	
 	public Locking() {
 		locked_ = false;
+		
+		//set modality type
+		this.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
 		
 		//set themes
 		try {
