@@ -15,14 +15,29 @@
  **************************************************************************/
 package org.whisperim.android.ui;
 
+import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.widget.ListView;
 
 public class BuddyList extends ListView {
+	
+	private Context android_;
 
 	public BuddyList(Context context) {
 		super(context);
+		android_ = context;
 		
+	}
+	
+	@Override
+	protected void onAttachedToWindow() {
+		super.onAttachedToWindow();
+		Log.i("WhisperIM", "BuddyList attached to window.");
+		if (android_ instanceof Activity){
+			Log.i("WhisperIM", "Set Title: BuddyList");
+			((Activity) android_).setTitle("WhisperIM - Buddy List");
+		}
 	}
 
 }

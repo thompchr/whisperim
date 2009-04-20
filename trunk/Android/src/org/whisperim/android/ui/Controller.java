@@ -1,4 +1,4 @@
- /**************************************************************************
+/**************************************************************************
 u * Copyright 2009 Chris Thompson                                           *
  *                                                                         *
  * Licensed under the Apache License, Version 2.0 (the "License");         *
@@ -31,36 +31,40 @@ import org.whisperim.ui.UIController;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class Controller implements UIController {
-	
+
 	private Context android_;
+	private WhisperIM parent_;
 	private MessageProcessor mp_;
 	private ConnectionManager cm_;
-	private HashMap<Buddy, View> openWindows_ = new HashMap<Buddy, View>();
+	private HashMap<Buddy, ChatWindow> openWindows_ = new HashMap<Buddy, ChatWindow>();
 	private BuddyListModel blm_ = new BuddyListModel();
 	private ListView buddyList_;
 	public Controller(Context context, ConnectionManager cm){
 		android_ = context;
+		parent_ = (WhisperIM)context;
 		cm_ = cm;
 		cm_.setClient(this);	
-		
+
 
 		//Create the buddy list
 		buddyList_ = new BuddyList(android_);
+
+		setView(buddyList_);
+		
 		if (android_ instanceof Activity){
-			((Activity)android_).setContentView(buddyList_);
-			((WhisperIM) android_).setCurView(buddyList_);
 			((Activity)android_).setTitle("WhisperIM -- Buddy List");
 		}
-		
-        buddyList_.setAdapter(blm_);
-        
-        buddyList_.setOnItemClickListener(new OnItemClickListener(){
+
+		buddyList_.setAdapter(blm_);
+
+		buddyList_.setOnItemClickListener(new OnItemClickListener(){
 
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position,
@@ -68,30 +72,33 @@ public class Controller implements UIController {
 				Buddy b = null;
 				if (parent.getItemAtPosition(position) instanceof Buddy){
 					b = (Buddy)parent.getItemAtPosition(position);
+				}else{
+					Log.e("WhisperIM", "Invalid Buddy Object");
+					return;
 				}
 				if (openWindows_.get(b) == null){
-					
+
 					ChatWindow cw = new ChatWindow(android_, b, Controller.this);
 					openWindows_.put(b, cw);
 				}else{
-					
+					openWindows_.get(b).show();
 				}
-				
+
 			}
-        	
-        });
-        
-        //Register the test connection
-        cm_.registerConnection("Testconnection", new TestConnection());
-        cm_.loadConnection("Testconnection", "Username", "Password");
-        
-        
+
+		});
+
+		//Register the test connection
+		cm_.registerConnection("Testconnection", new TestConnection());
+		cm_.loadConnection("Testconnection", "Username", "Password");
+
+
 	}
-	
+
 	public void cleanUp(){
 		cm_.signOff();
 	}
-	
+
 	public void sendMessage(Message m){
 		mp_.sendMessage(m);
 	}
@@ -102,18 +109,22 @@ public class Controller implements UIController {
 			blm_.add(b);
 		}
 
-		
+
+	}
+
+	public void setView(View view){
+		parent_.setView(view);
 	}
 
 	@Override
 	public void keyReceived(Buddy b) {
-		
+
 
 	}
 
 	@Override
 	public void processEvent(EncryptionEvent e) {
-	
+
 
 	}
 
@@ -125,6 +136,17 @@ public class Controller implements UIController {
 
 	@Override
 	public void receiveMessage(Message m) {
+		Log.i("WhisperIM", "Message Received: " + m.getTo());
+		Log.i("WhisperIM", "		    From: " + m.getFrom());
+		Log.i("WhisperIM", "		 Message: " + m.getMessage());
+
+		if (openWindows_.get(m.getFromBuddy()) != null){
+			Log.i("WhisperIM", "Open window found.");
+			openWindows_.get(m.getFromBuddy()).receiveMessage(m);
+		}else{
+			//Open a new window
+			Log.i("WhisperIM", "Window could not be found");
+		}
 
 
 	}
@@ -143,17 +165,17 @@ public class Controller implements UIController {
 	@Override
 	public void statusUpdate(String status, String account) {
 
-		
+
 	}
 
 	@Override
 	public void updateBuddyList(ArrayList<Buddy> buddies) {
-		
+
 		for(Buddy b:buddies){
 			blm_.add(b);
 		}
 
-		
+
 	}
 
 }
