@@ -18,6 +18,10 @@ package org.whisperim.client;
 
 import java.util.ArrayList;
 
+import javax.speech.AudioException;
+import javax.speech.EngineException;
+import javax.speech.EngineStateError;
+
 import org.whisperim.plugins.Plugin;
 
 public interface ConnectionStrategy extends Plugin {
@@ -34,7 +38,7 @@ public interface ConnectionStrategy extends Plugin {
 	
 	public void sendMessage(Message message);
 	
-	public void receiveMessage(Message message);
+	public void receiveMessage(Message message) throws IllegalArgumentException, EngineException, EngineStateError, AudioException, InterruptedException;
 	
 	public void receiveBuddies(ArrayList<Buddy> buddies);
 

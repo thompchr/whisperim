@@ -69,6 +69,11 @@ import javax.swing.text.BadLocationException;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import javax.speech.*;
+import javax.speech.synthesis.*;
+import java.util.Locale;
+import java.util.regex.Pattern;
+
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.w3c.dom.Document;
@@ -77,6 +82,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.whisperim.Browser.BrowserLite;
 import org.whisperim.DownloadManager.DownloadManager;
+import org.whisperim.JXTA_P2P.Peer2PeerPlugIn;
 import org.whisperim.EmailManager.ExpressWhisperMailManager;
 import org.whisperim.SocialSiteDump.SocialSiteManager;
 import org.whisperim.aim.AIMStrategy;
@@ -95,9 +101,11 @@ import org.whisperim.prefs.Preferences;
 import org.whisperim.prefs.PreferencesWindow;
 import org.whisperim.renderers.BuddyListRenderer;
 import org.whisperim.security.Encryptor;
+import org.whisperim.whisperbot.WhisperBot;
 import org.whisperim.security.Locking;
 import org.xml.sax.SAXException;
 
+import com.aol.acc.AccException;
 import com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingException;
 import com.sun.org.apache.xml.internal.security.utils.Base64;
 
@@ -159,6 +167,9 @@ public class WhisperClient extends JFrame implements ActionListener {
 	private JMenuItem lockWhisper_;
 	private JMenu optionsMenu_;
 	
+	// Speech Here.
+	private boolean enableSpeech_ = true;
+	
 	private Dimension frameMinSize_ = new Dimension(175,400);
 	private Dimension framePrefSize_ = new Dimension(175,500);
 	
@@ -217,8 +228,9 @@ public class WhisperClient extends JFrame implements ActionListener {
 	/**
 	 * Constructor.
 	 * @param manager - Connection manager to be associated with this instance
+	 * @throws AccException 
 	 */
-	public WhisperClient(ConnectionManager manager) {		
+	public WhisperClient(ConnectionManager manager) throws AccException {		
 		manager_ = manager;
 		manager_.setClient(this);
 		
@@ -348,6 +360,8 @@ public class WhisperClient extends JFrame implements ActionListener {
 		}
 
 		registerPlugin("AIM", CONNECTION, new AIMStrategy());
+		registerPlugin("JXTA_P2P", CONNECTION, new Peer2PeerPlugIn());
+		registerPlugin("AIM BOT", CONNECTION, new WhisperBot());
 		loadAccounts();
 		
 		//set sizes and show
@@ -845,14 +859,38 @@ public class WhisperClient extends JFrame implements ActionListener {
 		Preferences.getInstance().savePrefs();
 	}
 
-	public void recieveMessage(final Message message) throws BadLocationException{
+	public void recieveMessage(final Message message) throws BadLocationException, IllegalArgumentException, InterruptedException, EngineException, EngineStateError, AudioException{
 		//First we need to check to see if it contains
 		//information that is intended for the client
 		//to interpret (key file, etc.)
+		
+		String clearMessage = clearHTMLTags(message.getMessage().toString(), -1);
+		
 		if (message.getMessage().startsWith("<whisperim")){
 			//This is an instruction to the client, we need to parse it
 			//and then we'll swallow it or print out a message to the
 			//user.
+			
+			// Read text.
+			if(enableSpeech_ == true){
+			
+			// Create synthesizer for English Lang.
+			Synthesizer synthesizer = Central.createSynthesizer( new SynthesizerModeDesc(Locale.ENGLISH));
+			
+			// Set up for speaking.						
+			synthesizer.allocate();
+			synthesizer.resume();
+			
+			
+			//Speak the message.
+			synthesizer.speakPlainText(clearMessage,null);
+			
+			// Wait until the speaker is done.
+			synthesizer.waitEngineState(Synthesizer.QUEUE_EMPTY);
+			
+			// Deallocate.
+			synthesizer.deallocate();
+			}
 			
 			System.out.println(message.toString());
 				
@@ -914,20 +952,24 @@ public class WhisperClient extends JFrame implements ActionListener {
 						newIMWindow(new Buddy(message.getFrom(), message.getTo(), message.getProtocol()), alwaysNewWindow_);
 						try {
 							openBuddies_.get(message.getFrom().toLowerCase().replace(" ", "")).getTab(message.getFrom().toLowerCase().replace(" ", "")).receiveMsg(message);
+							
+							
+							
 						} catch (BadLocationException e) {
 							e.printStackTrace();
+						} catch (IllegalArgumentException e) {
+							e.printStackTrace();
 						}
-					}
-				});
+						}});
 
 			}else{
 				openBuddies_.get(message.getFrom().toLowerCase().replace(" ", "")).getTab(message.getFrom()).receiveMsg(message);
+				
 			}
-
+			}
 		//Listener to update SystemTray if IM is received
 		for(ClientListener l:clientListeners_){l.messageRec(this, message, message.getFrom());}
 		}
-	}
 
 	public void sendMessage (Message message){
 		//Listener to update sound if IM is received
@@ -1228,5 +1270,22 @@ public class WhisperClient extends JFrame implements ActionListener {
 
 	public ProfileEditor getEditor() {
 		return editor;
+	}
+	
+	public static String clearHTMLTags(String strHTML, int doWork){
+		 
+        Pattern pattern = null;
+        String htmlChars;
+        String strTagLess = null; 
+        strTagLess = strHTML; 
+
+        if(doWork == -1)
+        {
+              htmlChars = "<[^>]*>";
+              pattern = Pattern.compile(htmlChars);
+              strTagLess = pattern.matcher(strTagLess).replaceAll(""); 
+        }
+
+        return strTagLess;
 	}
 }

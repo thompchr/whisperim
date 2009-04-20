@@ -17,7 +17,10 @@ package org.whisperim.whisperbot;
 
 import java.io.File;
 import java.util.Date;
+import java.util.regex.Pattern;
 
+import org.whisperim.client.ConnectionManager;
+import org.whisperim.plugins.ConnectionPluginAdapter;
 import org.whisperim.security.FileEncryptor;
 
 import com.aol.acc.AccAlert;
@@ -63,58 +66,19 @@ import com.aol.acc.AccUserProp;
 import com.aol.acc.AccUserState;
 import com.aol.acc.AccVariant;
 
-public class WhisperBot implements AccEvents {
+public class WhisperBot extends ConnectionPluginAdapter{
 
-	AccSession session;
-	boolean running = true;
-	long start = new Date().getTime();
+	boolean running_ = true;
+	long start_ = new Date().getTime();
 	private FileEncryptor fileEncryptor_;
+	private String name_ = "WhisperBot";
+	private String id_ = "WhisperBotS";
+	private String iconPath_;
+	private ConnectionManager cm_;
+	private String handle_;
 
-	public WhisperBot() throws AccException {
-		// Create main session object
-		session = new AccSession();
-
-		// Add event listener
-		session.setEventListener(this);
-
-		// Setup prefs so only buddies can access.
-		session.setPrefsHook(new Prefs());
-		AccPreferences prefs = session.getPrefs();
-		prefs.setValue("aimcc.im.chat.permissions.buddies",
-				AccPermissions.RejectAll);
-		prefs.setValue("aimcc.im.chat.permissions.nonBuddies",
-				AccPermissions.RejectAll);
-		prefs.setValue("aimcc.im.direct.permissions.buddies",
-				AccPermissions.RejectAll);
-		prefs.setValue("aimcc.im.direct.permissions.nonBuddies",
-				AccPermissions.RejectAll);
-		prefs.setValue("aimcc.im.standard.permissions.buddies",
-				AccPermissions.AcceptAll);
-		prefs.setValue("aimcc.im.standard.permissions.nonBuddies",
-				AccPermissions.RejectAll);
-
-		// msg pump
-		while (running) {
-			try {
-				AccSession.pump(50);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-
-			try {
-				Thread.sleep(50);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-
-		}
-		session = null;
-		prefs = null;
-
-		System.gc();
-		System.runFinalization();
-	}
-
+	
+	
 	public void OnImReceived(AccSession session, AccImSession imSession,
 			AccParticipant participant, AccIm im) {
 		try {
@@ -124,7 +88,7 @@ public class WhisperBot implements AccEvents {
 			msg = msg.trim();
 
 			if (msg.equals("$stats")) {
-				long diff = (new Date()).getTime() - start;
+				long diff = (new Date()).getTime() - start_;
 				diff /= 1000; // convert to seconds
 				long days = diff / 86400;
 				diff = diff - 86400 * days;
@@ -198,295 +162,76 @@ public class WhisperBot implements AccEvents {
 		}
 	}
 
-	public void OnStateChange(AccSession arg0, AccSessionState arg1,
-			AccResult arg2) {
-		System.out.println(arg1 + "" + arg2);
-
-		if (arg1 == AccSessionState.Offline) {
-			running = false;
-		}
-
-	}
-
-	/** Unimplemented stubs **/
-
-	public void OnSessionChange(AccSession arg0, AccSessionProp arg1) {
-	}
-
-	public void OnIdleStateChange(AccSession arg0, int arg1) {
-	}
-
-	public void OnInstanceChange(AccSession arg0, AccInstance arg1,
-			AccInstance arg2, AccInstanceProp arg3) {
-	}
-
-	public void OnLookupUsersResult(AccSession arg0, String[] arg1, int arg2,
-			AccResult arg3, AccUser[] arg4) {
-	}
-
-	public void OnSearchDirectoryResult(AccSession arg0, int arg1,
-			AccResult arg2, AccDirEntry arg3) {
-	}
-
-	public void OnSendInviteMailResult(AccSession arg0, int arg1, AccResult arg2) {
-	}
-
-	public void OnRequestServiceResult(AccSession arg0, int arg1,
-			AccResult arg2, String arg3, int arg4, byte[] arg5) {
-	}
-
-	public void OnConfirmAccountResult(AccSession arg0, int arg1, AccResult arg2) {
-	}
-
-	public void OnReportUserResult(AccSession arg0, AccUser arg1, int arg2,
-			AccResult arg3, int arg4, int arg5) {
-	}
-
-	public void OnAlertReceived(AccSession arg0, AccAlert arg1) {
-	}
-
-	public void OnPreferenceResult(AccSession arg0, String arg1, int arg2,
-			String arg3, AccResult arg4) {
-	}
-
-	public void OnPreferenceChange(AccSession arg0, String arg1, AccResult arg2) {
-	}
-
-	public void OnPreferenceInvalid(AccSession arg0, String arg1, AccResult arg2) {
-	}
-
-	public void OnPluginChange(AccSession arg0, AccPluginInfo arg1,
-			AccPluginInfoProp arg2) {
-	}
-
-	public void OnBartItemRequestPropertyResult(AccSession arg0,
-			AccBartItem arg1, AccBartItemProp arg2, int arg3, AccResult arg4,
-			AccVariant arg5) {
-	}
-
-	public void OnUserRequestPropertyResult(AccSession arg0, AccUser arg1,
-			AccUserProp arg2, int arg3, AccResult arg4, AccVariant arg5) {
-	}
-
-	public void OnGroupAdded(AccSession arg0, AccGroup arg1, int arg2,
-			AccResult arg3) {
-	}
-
-	public void OnGroupRemoved(AccSession arg0, AccGroup arg1, AccResult arg2) {
-	}
-
-	public void OnGroupMoved(AccSession arg0, AccGroup arg1, int arg2,
-			int arg3, AccResult arg4) {
-	}
-
-	public void OnBuddyAdded(AccSession arg0, AccGroup arg1, AccUser arg2,
-			int arg3, AccResult arg4) {
-	}
-
-	public void OnBuddyRemoved(AccSession arg0, AccGroup arg1, AccUser arg2,
-			AccResult arg3) {
-	}
-
-	public void OnBuddyMoved(AccSession arg0, AccUser arg1, AccGroup arg2,
-			int arg3, AccGroup arg4, int arg5, AccResult arg6) {
-	}
-
-	public void OnBuddyListChange(AccSession arg0, AccBuddyList arg1,
-			AccBuddyListProp arg2) {
-	}
-
-	public void OnGroupChange(AccSession arg0, AccGroup arg1, AccGroupProp arg2) {
-	}
-
-	public void OnUserChange(AccSession arg0, AccUser arg1, AccUser arg2,
-			AccUserProp arg3, AccResult arg4) {
-		try {
-			AccUserState newState = arg2.getState();
-			if (arg1.getState() != newState) {
-				if (newState == AccUserState.Away) {
-					System.out.println(arg2.getName() + " is now away");
-				}
-				if (newState == AccUserState.Idle) {
-					System.out.println(arg2.getName() + " is now idle");
-				}
-				if (newState == AccUserState.Online) {
-					if (arg1.getState() == AccUserState.Offline) {
-						System.out.println(arg2.getName() + " has come online");
-					} else if (arg1.getState() == AccUserState.Unknown) {
-						System.out.println(arg2.getName()
-								+ " was already online");
-					} else {
-						System.out.println(arg2.getName() + " has returned");
-					}
-				}
-				if (newState == AccUserState.Offline) {
-					System.out.println(arg2.getName() + " has gone offline");
-				}
-			}
-		} catch (AccException e) {
-			e.printStackTrace();
-		}
-
-	}
-
-	public void OnChangesBegin(AccSession arg0) {
-	}
-
-	public void OnChangesEnd(AccSession arg0) {
-	}
-
-	public void OnNewSecondarySession(AccSession arg0,
-			AccSecondarySession arg1, int arg2) {
-	}
-
-	public void OnSecondarySessionStateChange(AccSession arg0,
-			AccSecondarySession arg1, AccSecondarySessionState arg2,
-			AccResult arg3) {
-	}
-
-	public void OnSecondarySessionChange(AccSession arg0,
-			AccSecondarySession arg1, int arg2) {
-	}
-
-	public void OnParticipantJoined(AccSession arg0, AccSecondarySession arg1,
-			AccParticipant arg2) {
-	}
-
-	public void OnParticipantChange(AccSession arg0, AccSecondarySession arg1,
-			AccParticipant arg2, AccParticipant arg3, AccParticipantProp arg4) {
-	}
-
-	public void OnParticipantLeft(AccSession arg0, AccSecondarySession arg1,
-			AccParticipant arg2, AccResult arg3, String arg4, String arg5) {
-	}
-
-	public void OnInviteResult(AccSession arg0, AccSecondarySession arg1,
-			String arg2, int arg3, AccResult arg4) {
-	}
-
-	public void OnEjectResult(AccSession arg0, AccSecondarySession arg1,
-			String arg2, int arg3, AccResult arg4) {
-	}
-
-	public void BeforeImSend(AccSession arg0, AccImSession arg1,
-			AccParticipant arg2, AccIm arg3) {
-	}
-
-	public void OnImSent(AccSession arg0, AccImSession arg1,
-			AccParticipant arg2, AccIm arg3) {
-	}
-
-	public void OnImSendResult(AccSession arg0, AccImSession arg1,
-			AccParticipant arg2, AccIm arg3, AccResult arg4) {
-	}
-
-	public void BeforeImReceived(AccSession arg0, AccImSession arg1,
-			AccParticipant arg2, AccIm arg3) {
-	}
-
-	public void OnInputStateChange(AccSession arg0, AccImSession arg1,
-			String arg2, AccImInputState arg3) {
-	}
-
-	public void OnEmbedDownloadComplete(AccSession arg0, AccImSession arg1,
-			AccIm arg2) {
-	}
-
-	public void OnEmbedUploadComplete(AccSession arg0, AccImSession arg1,
-			AccIm arg2) {
-	}
-
-	public void OnRateLimitStateChange(AccSession arg0, AccImSession arg1,
-			AccRateState arg2) {
-	}
-
-	public void OnNewFileXfer(AccSession arg0, AccFileXferSession arg1,
-			AccFileXfer arg2) {
-	}
-
-	public void OnFileXferProgress(AccSession arg0, AccFileXferSession arg1,
-			AccFileXfer arg2) {
-	}
-
-	public void OnFileXferCollision(AccSession arg0, AccFileXferSession arg1,
-			AccFileXfer arg2) {
-	}
-
-	public void OnFileXferComplete(AccSession arg0, AccFileXferSession arg1,
-			AccFileXfer arg2, AccResult arg3) {
-	}
-
-	public void OnFileXferSessionComplete(AccSession arg0,
-			AccFileXferSession arg1, AccResult arg2) {
-	}
-
-	public void OnFileSharingRequestListingResult(AccSession arg0,
-			AccFileSharingSession arg1, AccFileSharingItem arg2, int arg3,
-			AccResult arg4) {
-	}
-
-	public void OnFileSharingRequestXferResult(AccSession arg0,
-			AccFileSharingSession arg1, AccFileXferSession arg2, int arg3,
-			AccFileXfer arg4) {
+	@Override
+	public String getIdentifier() {
+		
+		return id_ + ":" + handle_.toLowerCase().replace(" ", "");
 	}
 
-	public void OnAvStreamStateChange(AccSession arg0, AccAvSession arg1,
-			String arg2, AccAvStreamType arg3, AccSecondarySessionState arg4,
-			AccResult arg5) {
+	@Override
+	public String getProtocol() {
+		return id_;
 	}
 
-	public void OnAudioLevelChange(AccSession arg0, AccAvSession arg1,
-			String arg2, int arg3) {
+	@Override
+	public String getPluginIconLocation() {
+		
+		return iconPath_;
 	}
 
-	public void OnSoundEffectReceived(AccSession arg0, AccAvSession arg1,
-			String arg2, String arg3) {
+	@Override
+	public String getPluginName() {
+		
+		return name_;
 	}
 
-	public void OnCustomDataReceived(AccSession arg0, AccCustomSession arg1,
-			AccParticipant arg2, AccIm arg3) {
-	}
-
-	public void OnCustomSendResult(AccSession arg0, AccCustomSession arg1,
-			AccParticipant arg2, AccIm arg3, AccResult arg4) {
-	}
+	@Override
+	public void setIconLocation(String location) {
+		iconPath_ = location;
 
-	public void OnEmbedUploadProgress(AccSession arg0, AccImSession arg1,
-			AccIm arg2, String arg3, AccStream arg4) {
 	}
 
-	public void OnEmbedDownloadProgress(AccSession arg0, AccImSession arg1,
-			AccIm arg2, String arg3, AccStream arg4) {
+	@Override
+	public void setPluginName(String name) {
+		name_ = name;
 	}
-
-	public void OnDeleteStoredImsResult(AccSession arg0, int arg1,
-			AccResult arg2) {
-	}
-
-	public void OnDeliverStoredImsResult(AccSession arg0, int arg1,
-			AccResult arg2) {
+	
+	private void print(String msg){
+		System.out.println(msg);
 	}
 
-	public void OnRequestSummariesResult(AccSession arg0, int arg1,
-			AccResult arg2, AccVariant arg3) {
+	@Override
+	public String getHandle() {
+		return handle_;
 	}
 
-	public void OnAvManagerChange(AccSession arg0, AccAvManager arg1,
-			AccAvManagerProp arg2, AccResult arg3) {
+	@Override
+	public int getStatus() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
-	public void OnLocalImReceived(AccSession arg0, AccImSession arg1, AccIm arg2) {
+	@Override
+	public void setHandle(String handle) {
+		handle_ = handle;
+		
 	}
 
-	public void OnPluginUninstall(AccSession arg0, AccPluginInfo arg1) {
+	@Override
+	public void setIdle() {
+		// TODO Auto-generated method stub
+		
 	}
 
-	public void OnPushBuddyFeedResult(AccSession arg0, int arg1,
-			AccResult arg2, String arg3) {
+	@Override
+	public void setInvisible(boolean visible) {
+		// TODO Auto-generated method stub
+		
 	}
 
-	public void OnRequestServiceResult(AccSession arg0, int arg1,
-			AccResult arg2, String arg3, int arg4, AccVariant arg5) {
+	@Override
+	public void setStatusMessage(String message) {
+		// TODO Auto-generated method stub
+		
 	}
-
 }
