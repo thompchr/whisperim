@@ -22,6 +22,9 @@
 	<classpathentry kind="lib" path="lib/javax.servlet.jar"/>
 	<classpathentry kind="lib" path="lib/BareBonesBrowserLaunch.jar"/>
 	<classpathentry kind="lib" path="lib/mail.jar"/>
+	<classpathentry kind="lib" path="lib/jsapi.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Scrender"/>
 	<classpathentry kind="lib" path="lib/Scrender.jar"/>
+	<classpathentry kind="lib" path="lib/javax.speech"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

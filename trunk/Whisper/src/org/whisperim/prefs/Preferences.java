@@ -102,6 +102,11 @@ public class Preferences {
 	private boolean whisperBotEnabled_ = false;
 	public static final String WHISPERBOT_ = "WhisperBot";
 	
+	
+	/*
+	 * Email Account Preferences.
+	 */
+	
 
 	protected Preferences() {
 
@@ -289,7 +294,7 @@ public class Preferences {
 			listener.prefChanged(WHISPERBOT_, whisperBotEnabled_);
 		}
 	}
-
+	
 	/*
 	 * Preferences Listener
 	 */

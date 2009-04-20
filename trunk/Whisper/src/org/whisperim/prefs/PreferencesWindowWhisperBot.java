@@ -56,14 +56,8 @@ public class PreferencesWindowWhisperBot extends JPanel implements ItemListener 
 				locked = true;
 				if(!o.equals(whisperbotCheckBox_.isSelected())){
 					whisperbotCheckBox_.setSelected(!whisperbotCheckBox_.isSelected());
-					// Start up whisperbot.
-					try {
-						new WhisperBot();
-					} catch (AccException e2) {
-						e2.printStackTrace();
-					}
-				}else{
-					new Whisper();
+					// Start up whisperbot. as plug in.
+					
 				}
 				locked = false;
 			}

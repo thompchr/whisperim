@@ -51,11 +51,20 @@ public class ExpressWhisperMail implements Runnable
     	return smtpHost_;
     }
     
+    // Set SMTP Host.
+    public void setSMTPHost(String smtp){
+    	smtpHost_ = smtp;
+    }
     // Return the POP3 server.
     public String getPop3(){
     	return pop3Host_;
     }
-
+    
+    // Set the pop3 junk.
+    public void setPop3(String pop3){
+    	pop3Host_ = pop3;
+    }
+    
     // Return the user.
     public String getUser(){
     	return user_;
@@ -85,9 +94,6 @@ public class ExpressWhisperMail implements Runnable
 			e.printStackTrace();
 		}
     }
-    
-    
-   
     
     // Checks for new messages.
     public void checkNewMessages(String smtpHost, String pop3Host, String user, String password, String emailListFile, String from)

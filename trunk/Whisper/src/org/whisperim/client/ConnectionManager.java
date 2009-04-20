@@ -21,8 +21,15 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map.Entry;
 
+import javax.speech.AudioException;
+import javax.speech.Central;
+import javax.speech.EngineException;
+import javax.speech.EngineStateError;
+import javax.speech.synthesis.Synthesizer;
+import javax.speech.synthesis.SynthesizerModeDesc;
 import javax.swing.text.BadLocationException;
 
 import org.whisperim.plugins.Plugin;
@@ -166,10 +173,14 @@ public class ConnectionManager {
 	 * 					session thread from the message received
 	 * 					from the service.
 	 * @throws BadLocationException 
+	 * @throws InterruptedException 
+	 * @throws AudioException 
+	 * @throws EngineStateError 
+	 * @throws EngineException 
+	 * @throws IllegalArgumentException 
 	 */
-	public void messageReceived(Message message) throws BadLocationException{
+	public void messageReceived(Message message) throws BadLocationException, IllegalArgumentException, EngineException, EngineStateError, AudioException, InterruptedException{
 		client_.recieveMessage(message);
-
 	}
 
 	/**

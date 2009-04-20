@@ -34,6 +34,7 @@ import org.whisperim.security.Encryptor;
 import org.whisperim.ui.WhisperClient;
 import org.xml.sax.SAXException;
 
+import com.aol.acc.AccException;
 import com.sun.org.apache.xml.internal.security.utils.Base64;
 
 /**
@@ -63,7 +64,12 @@ public class Whisper {
 		
 		EventQueue.invokeLater(new Runnable() {
 	           public void run() {
-	             new WhisperClient(new ConnectionManager (myKeys));
+	             try {
+					new WhisperClient(new ConnectionManager (myKeys));
+				} catch (AccException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 
 	           }
 	        });

@@ -19,6 +19,10 @@ package org.whisperim.aim;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
+import javax.speech.AudioException;
+import javax.speech.EngineException;
+import javax.speech.EngineStateError;
+
 import org.whisperim.client.Buddy;
 import org.whisperim.client.Message;
 
@@ -355,8 +359,38 @@ public class AIMSession implements AccEvents, Runnable {
 			} catch (AccException e1) {
 				
 				e1.printStackTrace();
+			} catch (IllegalArgumentException a) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (EngineException b) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (EngineStateError c) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (AudioException d) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException g) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (EngineException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (EngineStateError e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (AudioException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
 

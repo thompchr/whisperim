@@ -39,6 +39,8 @@ import javax.swing.WindowConstants;
 
 import org.whisperim.client.ConnectionManager;
 
+import com.aol.acc.AccException;
+
 
 
 /**
@@ -92,7 +94,13 @@ public class Login extends JFrame implements ActionListener {
         usernameTxtBox_.addKeyListener (
         		new KeyAdapter() {
         			public void keyTyped(KeyEvent e) {
-        	            if (e.getKeyChar() == '\n') signOn();
+        	            if (e.getKeyChar() == '\n')
+							try {
+								signOn();
+							} catch (AccException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
         			}
         		}
         	);
@@ -103,7 +111,13 @@ public class Login extends JFrame implements ActionListener {
         passwordTxtBox_.addKeyListener (
         		new KeyAdapter() {
         			public void keyTyped(KeyEvent e) {
-        	            if (e.getKeyChar() == '\n') signOn();
+        	            if (e.getKeyChar() == '\n')
+							try {
+								signOn();
+							} catch (AccException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
         			}
         		}
         	);
@@ -115,7 +129,13 @@ public class Login extends JFrame implements ActionListener {
 		signOnButton_.addKeyListener (
         		new KeyAdapter() {
         			public void keyTyped(KeyEvent e) {
-        	            if (e.getKeyChar() == '\n') signOn();
+        	            if (e.getKeyChar() == '\n')
+							try {
+								signOn();
+							} catch (AccException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
         			}
         		}
         	);
@@ -173,7 +193,7 @@ public class Login extends JFrame implements ActionListener {
         
     }
 
-    private void signOn() {
+    private void signOn() throws AccException {
     	setVisibility(false);
         manager_ = new ConnectionManager(new KeyPair(myPublic_, myPrivate_));
         WhisperClient temp = new WhisperClient(manager_);
@@ -209,7 +229,12 @@ public class Login extends JFrame implements ActionListener {
 	//Handles actions generated in login
 	public void actionPerformed(ActionEvent e) {
 		if (e.getActionCommand().equals(signOnButton_.getActionCommand())) {
-			signOn();
+			try {
+				signOn();
+			} catch (AccException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 		else if (e.getActionCommand().equals(cancelButton_.getActionCommand())){
 			//Might need some additional connection killing stuff..
@@ -222,8 +247,15 @@ public class Login extends JFrame implements ActionListener {
         if (status.equalsIgnoreCase(SIGNED_IN_)){
         	EventQueue.invokeLater(new Runnable() {
         		public void run() {
-        			WhisperClient client = new WhisperClient(manager_);
-        			client.setVisible(true);
+        			WhisperClient client;
+					try {
+						client = new WhisperClient(manager_);
+						client.setVisible(true);
+					} catch (AccException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+        			
         		}
         	});
             this.dispose();

@@ -27,7 +27,11 @@ public class ComposeEmail extends JFrame implements ActionListener {
 	private static final String SENDMAIL_ = "Send Mail";
 	private static final String CANCEL_ = "Cancel";
 	private static final String WINDOW_TITLE_ = "Compose Email";
+	private static final String TO_ = "To:";
+	private static final String SUBJECT_ = "Subject:";
 
+	private JTextField toBox_ = new JTextField();
+	private JTextField subjectBox_ = new JTextField();
 	private JTextField messageBox_ = new JTextField();
 	
 	private JTextArea message_ = new JTextArea(MESSAGE_);
@@ -60,6 +64,8 @@ public class ComposeEmail extends JFrame implements ActionListener {
 		
 		setTitle(WINDOW_TITLE_);
 		
+		cp.add(toBox_);
+		cp.add(subjectBox_);
 		cp.add(message_);
 		cp.add(messageBox_);
 		cp.add(sendButton_);
@@ -87,17 +93,19 @@ public class ComposeEmail extends JFrame implements ActionListener {
 		
 		
 		//Constraints
+		sl.putConstraint(SpringLayout.EAST, toBox_, 30, SpringLayout.EAST, toBox_);
+
 		sl.putConstraint(SpringLayout.WEST, message_, 20, SpringLayout.WEST, cp);
 		sl.putConstraint(SpringLayout.NORTH, message_, 20, SpringLayout.NORTH, cp);
 		
 		sl.putConstraint(SpringLayout.WEST, messageBox_, 5, SpringLayout.EAST, message_);
 		sl.putConstraint(SpringLayout.NORTH, messageBox_, 17, SpringLayout.NORTH, cp);
 		
-		sl.putConstraint(SpringLayout.NORTH, cancelButton_, 25, SpringLayout.NORTH, messageBox_);
+		sl.putConstraint(SpringLayout.SOUTH, cancelButton_, 25, SpringLayout.SOUTH, messageBox_);
 		sl.putConstraint(SpringLayout.WEST, cancelButton_, 20, SpringLayout.EAST, sendButton_);
 		
-		sl.putConstraint(SpringLayout.WEST, sendButton_, 90, SpringLayout.WEST, cp);
-		sl.putConstraint(SpringLayout.NORTH, sendButton_, 25, SpringLayout.NORTH, messageBox_);
+		sl.putConstraint(SpringLayout.SOUTH, sendButton_, 90, SpringLayout.SOUTH, cp);
+		sl.putConstraint(SpringLayout.WEST, sendButton_, 25, SpringLayout.WEST, messageBox_);
 
 		pack();
 		setVisible(true);

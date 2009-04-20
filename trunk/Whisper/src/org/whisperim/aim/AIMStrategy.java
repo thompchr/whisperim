@@ -18,6 +18,9 @@ package org.whisperim.aim;
 
 import java.util.ArrayList;
 
+import javax.speech.AudioException;
+import javax.speech.EngineException;
+import javax.speech.EngineStateError;
 import javax.swing.text.BadLocationException;
 
 import org.whisperim.client.Buddy;
@@ -48,7 +51,8 @@ public class AIMStrategy implements ConnectionStrategy {
 
 	
 	@Override
-	public void receiveMessage(Message message) {
+	public void 
+	receiveMessage(Message message) throws IllegalArgumentException, EngineException, EngineStateError, AudioException, InterruptedException {
 		try {
 			manager_.messageReceived(message);
 		} catch (BadLocationException e) {
