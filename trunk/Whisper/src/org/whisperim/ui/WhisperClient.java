@@ -1110,7 +1110,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 		// Launches the email manager.
 		if(actionCommand.equals(emailManager_.getActionCommand())){
 			ExpressWhisperMailManager ewmm = new ExpressWhisperMailManager();
-			ewmm.show();
+			ewmm.setVisible(true);
 		}
 		
 		// This launches the download manager.
