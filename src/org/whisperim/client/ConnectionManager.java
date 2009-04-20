@@ -125,7 +125,7 @@ public class ConnectionManager {
 	public void loadConnection(String name, String username, String password){
 		ConnectionStrategy cs = registeredStrategies_.get(name);
 		cs.signOn(this, username, password);
-		strategies_.put(cs.getIdentifier(), cs);
+		strategies_.put(cs.getIdentifier().toLowerCase().replace(" ", ""), cs);
 	}
 
 	/**
@@ -196,7 +196,7 @@ public class ConnectionManager {
 	 * Action to send message.
 	 */
 	public void sendMessage(Message message){
-		strategies_.get(message.getProtocol() + ":" + message.getFrom().toLowerCase().replace(" ",""))
+		strategies_.get(message.getProtocol().toLowerCase().replace(" ", "") + ":" + message.getFrom().toLowerCase().replace(" ",""))
 					.sendMessage(message);
 	}
 	
@@ -219,7 +219,7 @@ public class ConnectionManager {
 	 * 		protocol - The protocol identifier
 	 */
 	public void signOff(String handle, String protocol){
-		strategies_.get(protocol + ":" + handle).signOff();
+		strategies_.get(protocol.toLowerCase().replace(" ", "") + ":" + handle.toLowerCase().replace(" ", "")).signOff();
 		
 		//Right now this is a problem because in theory, the ui could reflect something that 
 		//doesn't exist in the running code
