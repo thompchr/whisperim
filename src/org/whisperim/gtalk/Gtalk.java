@@ -48,14 +48,13 @@ public class Gtalk extends ConnectionPluginAdapter implements MessageListener {
 	
 	public void displayBuddyList()
 	{
-		roster_ = connection_.getRoster();
 		Collection<RosterEntry> entries = roster_.getEntries();
-		
-		System.out.println("\n\n" + entries.size() + " buddy(ies):");
+		System.out.println("\n" + entries.size() + " buddies:");
 		for(RosterEntry r:entries)
 		{
 			System.out.println(r.getUser());
 		}
+		System.out.println("\n");
 	}
 	
 	
@@ -120,12 +119,12 @@ public class Gtalk extends ConnectionPluginAdapter implements MessageListener {
 	}
 	
 	public void setAway() {
-		presence_.setMode(Presence.Mode.dnd);
+		presence_.setMode(Presence.Mode.away);
 		connection_.sendPacket(presence_);
 	}
 	
 	public void setAway(String awayMessage) {
-		presence_.setMode(Presence.Mode.dnd);
+		presence_.setMode(Presence.Mode.away);
 		presence_.setStatus(awayMessage);
 		connection_.sendPacket(presence_);
 	}
@@ -149,7 +148,7 @@ public class Gtalk extends ConnectionPluginAdapter implements MessageListener {
 	 * Gtalk doesn't implement invisibility, so don't call this, it does nothing
 	 */
 	public void setInvisible(boolean visible) {
-		//gtalk doesn't allow you to go invisible	
+		//gtalk doesn't allow you to go invisible using desktop clients
 	}
 
 	
@@ -166,7 +165,6 @@ public class Gtalk extends ConnectionPluginAdapter implements MessageListener {
 	
 	public void signOff()
 	{
-		presence_.setType(Presence.Type.unavailable);
 		connection_.disconnect();
 		System.out.println("User:"+localHandle_+" signed out of gtalk");
 	}
@@ -196,21 +194,26 @@ public class Gtalk extends ConnectionPluginAdapter implements MessageListener {
 		try {
 		     connection_.login(username, password);
 		     System.out.println("User: "+username+" signed into gtalk");
-		     System.out.println("Authenticated: "+connection_.isAuthenticated());
 		} catch (XMPPException e) {
 			//e.printStackTrace();
-			System.out.println(e.getMessage());
 			System.out.println("User: "+username+" failed to sign into gtalk");
-			System.exit(3);
+			System.exit(1);
 		}
+		
+		//set local gtalk variables
+		setHandle(username);
+		
+		presence_ = new Presence(Presence.Type.available);
 		
 			
 		//get buddies
 		roster_ = connection_.getRoster();
+		
 		//automatically accepts other users if they add the user
 		//not secure, need to fix
 		roster_.setSubscriptionMode(Roster.SubscriptionMode.accept_all);
 		System.out.println("Initialized the roster");
+		
 		roster_.addRosterListener(new RosterListener() {
 		    public void entriesAdded(Collection<String> addresses) {
 		    	for(String entry : addresses) {
