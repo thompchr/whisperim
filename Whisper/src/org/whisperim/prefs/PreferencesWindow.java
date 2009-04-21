@@ -68,9 +68,9 @@ public class PreferencesWindow extends JFrame implements ListSelectionListener,A
 	public static final String PLUGINS_ = "Plugins";
 	public static final String SOUNDS_ = "Sounds";
 	public static final String WHISPERBOT_ = "Whisper Bot";
-	public static final String EMAIL_ = "Email Account";
+	public static final String EMAIL_ = "Email Accounts";
 	public static final String ABOUT_ = "About";
-	private static final String categoriesList_[] =  {GENERAL_, ACCOUNTS_, LOGGING_, SECURITY_, SOUNDS_, WHISPERBOT_, EMAIL_, ABOUT_};
+	private static final String categoriesList_[] =  {GENERAL_, ACCOUNTS_, EMAIL_, LOGGING_, SECURITY_, SOUNDS_, WHISPERBOT_,  ABOUT_};
 	//old cat list contains plugins
 	//private static final String categoriesList_[] =  {GENERAL_, ACCOUNTS_, LOGGING_, SECURITY_, PLUGINS_, SOUNDS_, WHISPERBOT_, ABOUT_};
 
@@ -87,7 +87,7 @@ public class PreferencesWindow extends JFrame implements ListSelectionListener,A
 	//private JPanel pluginsPrefs_;
 	private JPanel soundsPrefs_;
 	private JPanel whisperbotPrefs_;
-	private PreferencesWindowEmailAccounts emailAccountPrefs_;
+	private JPanel emailAccountPrefs_;
 	private JPanel aboutInfo_;
 	private JPanel mainContent_;
 	private JPanel rightContent_;
@@ -157,6 +157,7 @@ public class PreferencesWindow extends JFrame implements ListSelectionListener,A
 		//add categories to list
 		//general
 		//accounts
+		//email
 		//logging
 		//security
 		//plugins
@@ -207,6 +208,13 @@ public class PreferencesWindow extends JFrame implements ListSelectionListener,A
 		
 		ThreadServices.get().runInThread(new Runnable() {
 			public void run() {
+				emailAccountPrefs_ = new PreferencesWindowEmailAccounts();
+				content_.add(emailAccountPrefs_, EMAIL_);
+			}
+		});
+		
+		ThreadServices.get().runInThread(new Runnable() {
+			public void run() {
 				loggingPrefs_ = new PreferencesWindowLogging();
 				content_.add(loggingPrefs_, LOGGING_);
 			}
@@ -230,13 +238,6 @@ public class PreferencesWindow extends JFrame implements ListSelectionListener,A
 			public void run() {
 				whisperbotPrefs_ = new PreferencesWindowWhisperBot();
 				content_.add(whisperbotPrefs_, WHISPERBOT_);
-			}
-		});
-		
-		ThreadServices.get().runInThread(new Runnable() {
-			public void run() {
-				emailAccountPrefs_ = new PreferencesWindowEmailAccounts();
-				content_.add(emailAccountPrefs_, EMAIL_);
 			}
 		});
 		
