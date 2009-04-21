@@ -8,7 +8,7 @@
  * User's message will be auto-spell checked as it is typed. (John)
  * User can send SMS texts to cell phones using Whisper client. (Kirk)
  * User will be able to click tab to view email, initially gmail only. (Nick)
- * User can check their buddies statistics (Nick)
+ * ~~User can check their buddies statistics.~~ (Already part of whisperbot) (Nick)
 
 
 =Build 6=
