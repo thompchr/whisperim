@@ -22,8 +22,7 @@ import java.util.EventListener;
  * if  more advertisements are discovered
  */
 public interface AdvertisementDiscoveryListener {
-    
-	// Handle newly discovered ads taken care of in AdDiscList.
-    public void advertisementsDiscovered(AdvertisementEvent event);
-}
 
+	// Handle newly discovered ads taken care of in AdDiscList.
+	public void advertisementsDiscovered(AdvertisementEvent event);
+}

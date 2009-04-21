@@ -349,7 +349,7 @@ public class Encryptor {
 			rsaCipher.init(Cipher.ENCRYPT_MODE, publicKey_);
 
 			byte [] encryptedKeyBytes = rsaCipher.doFinal(sessionKey.getEncoded());
-
+			
 			String encryptedKeyString = new String (Base64.encode(encryptedKeyBytes));
 
 			encryptedMessage += encryptedKeyString +"</key>" +

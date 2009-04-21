@@ -37,7 +37,7 @@ import com.aetrion.flickr.auth.Auth;
 import com.aetrion.flickr.auth.Permission;
 import com.aetrion.flickr.util.IOUtilities;
 
-public class FlickrService {
+public class FlickrService implements Runnable {
 	private static String apiKey_ = "c368c2b676805ec3f9dcc5219bb6e982";
 	private static String sharedSecretKey_ = "08483e480ce39d70";
 	private Flickr flickr_;
@@ -65,7 +65,7 @@ public class FlickrService {
 		try {
 			// This will be based off account settings when Cory does his story.
 			flickr_ = new Flickr(apiKey_, sharedSecretKey_, new REST());
-			
+
 		} catch (ParserConfigurationException e) {
 			e.printStackTrace();
 		}
@@ -76,58 +76,36 @@ public class FlickrService {
 		requestContext_.setAuth(auth);
 	}
 
-	public void getNotifications() throws FlickrException, IOException,
-			SAXException {
+	public ArrayList getNotifications() throws FlickrException, IOException,
+	SAXException {
+
+		authorizeFlickrAccount();
 		ActivityInterface interface1 = flickr_.getActivityInterface();
 		ItemList list = interface1.userComments(10, 0);
+
+		ArrayList events = new ArrayList();
 		for (int j = 0; j < list.size(); j++) {
 			Item item = (Item) list.get(j);
-			System.out.println("Item " + (j + 1) + "/" + list.size()
-					+ " type: " + item.getType());
-			System.out.println("Item-id:       " + item.getId() + "\n");
-			ArrayList events = (ArrayList) item.getEvents();
-			for (int i = 0; i < events.size(); i++) {
-				System.out.println("Event " + (i + 1) + "/" + events.size()
-						+ " of Item " + (j + 1));
-				System.out.println("Event-type: "
-						+ ((Event) events.get(i)).getType());
-				System.out.println("User:       "
-						+ ((Event) events.get(i)).getUser());
-				System.out.println("Username:   "
-						+ ((Event) events.get(i)).getUsername());
-				System.out.println("Value:      "
-						+ ((Event) events.get(i)).getValue() + "\n");
-			}
+			events.add((ArrayList) item.getEvents());
 		}
-		ActivityInterface interface2 = flickr_.getActivityInterface();
-		list = interface2.userPhotos(50, 0, "300d");
-		for (int j = 0; j < list.size(); j++) {
-			Item item = (Item) list.get(j);
-			System.out.println("Item " + (j + 1) + "/" + list.size()
-					+ " type: " + item.getType());
-			System.out.println("Item-id:       " + item.getId() + "\n");
-			ArrayList events = (ArrayList) item.getEvents();
-			for (int i = 0; i < events.size(); i++) {
-				System.out.println("Event " + (i + 1) + "/" + events.size()
-						+ " of Item " + (j + 1));
-				System.out.println("Event-type: "
-						+ ((Event) events.get(i)).getType());
-				if (((Event) events.get(i)).getType().equals("note")) {
-					System.out.println("Note-id:    "
-							+ ((Event) events.get(i)).getId());
-				} else if (((Event) events.get(i)).getType().equals("comment")) {
-					System.out.println("Comment-id: "
-							+ ((Event) events.get(i)).getId());
-				}
-				System.out.println("User:       "
-						+ ((Event) events.get(i)).getUser());
-				System.out.println("Username:   "
-						+ ((Event) events.get(i)).getUsername());
-				System.out.println("Value:      "
-						+ ((Event) events.get(i)).getValue());
-				System.out.println("Dateadded:  "
-						+ ((Event) events.get(i)).getDateadded() + "\n");
-			}
-		}
+		return events;
 	}
+
+	@Override
+	public void run() {
+		try {
+			getNotifications();
+		} catch (FlickrException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
 }

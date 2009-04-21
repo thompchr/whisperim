@@ -23,45 +23,41 @@ import java.util.Enumeration;
 // Deals with event notifications.
 public class AdvertisementEvent extends EventObject {
 
-   public static final int       ADV_ADDED = 1;
-   public static final int     ADV_DELETED = 2;
-   public static final int ALL_ADV_DELETED = 3;
-   public static final int     GRP_CHANGED = 4;
+	public static final int ADV_ADDED = 1;
+	public static final int ADV_DELETED = 2;
+	public static final int ALL_ADV_DELETED = 3;
+	public static final int GRP_CHANGED = 4;
 
-   private int type_;
+	private int type_;
 
-   private List changed_ = null;
+	private List changed_ = null;
 
-    // Creates a new event
-    public AdvertisementEvent( Object source,
-                               int type,
-                               List changed){
-        super( source );
-        this.type_ = type;
-        this.changed_ = changed;
-        if( this.changed_ == null)  this.changed_ = new ArrayList();
-    }
+	// Creates a new event
+	public AdvertisementEvent(Object source, int type, List changed) {
+		super(source);
+		this.type_ = type;
+		this.changed_ = changed;
+		if (this.changed_ == null)
+			this.changed_ = new ArrayList();
+	}
 
-    // Creates a new event
-    public AdvertisementEvent( Object source, int type, Enumeration enumeration)
-    {
-        super( source );
-        this.type_ = type;
-        changed_ = new ArrayList();
-        while( enumeration.hasMoreElements() )
-        {
-            changed_.add( enumeration.nextElement() );
-        }
-    }
-    
-    // Returns the event type
-    public int getType() {
-        return type_;
-    }
+	// Creates a new event
+	public AdvertisementEvent(Object source, int type, Enumeration enumeration) {
+		super(source);
+		this.type_ = type;
+		changed_ = new ArrayList();
+		while (enumeration.hasMoreElements()) {
+			changed_.add(enumeration.nextElement());
+		}
+	}
 
+	// Returns the event type
+	public int getType() {
+		return type_;
+	}
 
-    // Returns list of updated ads.
-    public List getChangedAds() {
-        return changed_;
-    }
+	// Returns list of updated ads.
+	public List getChangedAds() {
+		return changed_;
+	}
 }

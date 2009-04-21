@@ -123,6 +123,8 @@ public class FileEncryptor {
 				//and put them together
 				byte [] total = new byte [byteArray.length + encryptedKeyBytes.length];
 				
+				System.out.println(encryptedKeyBytes.length);
+				
 				// Stick the arrays together into one.
 				System.arraycopy(encryptedKeyBytes, 0, total, 0, encryptedKeyBytes.length);
 				System.arraycopy(byteArray, 0, total, encryptedKeyBytes.length, byteArray.length);
@@ -154,8 +156,9 @@ public class FileEncryptor {
 			
 			String outputMessage = null;
 			
-			byte[] messageBytes = null;// = new byte[];
 			byte[] keyBytes = null;// = new byte[encryptedKeyBytes.length];
+			byte[] messageBytes = null;// = new byte[fileBytes.length - keyBytes.length];
+			
 			
 			System.arraycopy(fileBytes, 0, keyBytes, 0, keyBytes.length);
 			System.arraycopy(fileBytes, keyBytes.length, messageBytes, 0, fileBytes.length);

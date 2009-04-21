@@ -17,13 +17,13 @@ package org.whisperim.JXTA_P2P;
 
 import net.jxta.protocol.PeerGroupAdvertisement;
 import net.jxta.peergroup.PeerGroup;
- 
+
 // Interface implemented by class.
 public interface GroupStructureListener {
-	
-    // Called if the peer group structure was changed
-    public void groupStructureChanged (AdvertisementEvent event);
 
-    // Called if more peers for a given group where discovered
-    public void peerDataChanged(AdvertisementEvent event);
+	// Called if the peer group structure was changed
+	public void groupStructureChanged(AdvertisementEvent event);
+
+	// Called if more peers for a given group where discovered
+	public void peerDataChanged(AdvertisementEvent event);
 }

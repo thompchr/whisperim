@@ -16,20 +16,21 @@
 package org.whisperim.JXTA_P2P;
 
 import java.util.Random;
+
 /*
  * TODO: Consider using Crypto key gen.
  */
 
 public class RandomIDGenerator {
-	
+
 	// Generate a random int. ID
-	public int generateID(){
+	public int generateID() {
 		Random random = new Random();
-		
+
 		// Generates a 9 digit long ID.
 		int ID = random.nextInt(100000000);
 		return ID;
-		
+
 	}
 
 }
