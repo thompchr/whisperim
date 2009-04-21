@@ -20,6 +20,8 @@ public interface MessageProcessor {
 	public PublicKey getMyPublicKey();
 	
 	public void registerKey(Buddy b, PublicKey key);
+	
+	public void saveKeys();
 
 	public void setConnectionManager(ConnectionManager cm);
 	
