@@ -113,7 +113,7 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
 
 		this.requestFocusInWindow();
 	}
-	
+
 	public Buddy getBuddy(){
 		return buddy_;
 	}
@@ -125,7 +125,7 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
 		talkArea_.append("<b>Key received. Encryption is now available.</b>\n");
 
 	}	
-	
+
 	public void disableEncryption(){
 		toggleEncryption_.setEnabled(false);
 		talkArea_.append("<b>Encryption Disabled.</b>\n");
@@ -344,21 +344,9 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
 	}		
 
 
-	public static String clearHTMLTags(String strHTML, int doWork){
-
-		Pattern pattern = null;
-		String htmlChars;
-		String strTagLess = null; 
-		strTagLess = strHTML; 
-
-		if(doWork == -1)
-		{
-			htmlChars = "<[^>]*>";
-			pattern = Pattern.compile(htmlChars);
-			strTagLess = pattern.matcher(strTagLess).replaceAll(""); 
-		}
-
-		return strTagLess; 
+	public String clearHTMLTags(String strHTML){
+		Pattern pattern = Pattern.compile("<[^>]*>");
+		return pattern.matcher(strHTML).replaceAll(""); 
 	}
 
 	public void autoScroll() {
