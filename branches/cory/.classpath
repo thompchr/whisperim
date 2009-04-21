@@ -25,6 +25,9 @@
 	<classpathentry kind="lib" path="lib/jsapi.jar"/>
 	<classpathentry kind="lib" path="lib/Scrender.jar"/>
 	<classpathentry kind="lib" path="lib/javax.speech"/>
+	<classpathentry kind="lib" path="lib/smack.jar"/>
+	<classpathentry kind="lib" path="lib/smackx-debug.jar"/>
+	<classpathentry kind="lib" path="lib/smackx.jar"/>
 	<classpathentry kind="lib" path="lib/jmf.jar"/>
 	<classpathentry kind="lib" path="lib/jortho.jar"/>
 	<classpathentry kind="output" path="bin"/>

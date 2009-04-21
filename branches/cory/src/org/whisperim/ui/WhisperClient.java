@@ -74,6 +74,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
+import org.jivesoftware.smack.XMPPException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -88,6 +89,7 @@ import org.whisperim.client.Buddy;
 import org.whisperim.client.ConnectionManager;
 import org.whisperim.client.ConnectionStrategy;
 import org.whisperim.client.Message;
+import org.whisperim.gtalk.Gtalk;
 import org.whisperim.lastfm.LastFM;
 import org.whisperim.listeners.ClientListener;
 import org.whisperim.models.BuddyListModel;
@@ -358,6 +360,9 @@ public class WhisperClient extends JFrame implements ActionListener {
 		}
 
 		registerPlugin("AIM", CONNECTION, new AIMStrategy());
+		
+		registerPlugin("GTALK", CONNECTION, new Gtalk());
+		
 		registerPlugin("JXTA_P2P", CONNECTION, new Peer2PeerPlugIn());
 		registerPlugin("AIM BOT", CONNECTION, new WhisperBot());
 		loadAccounts();
@@ -375,9 +380,22 @@ public class WhisperClient extends JFrame implements ActionListener {
 		this.setMinimumSize(frameMinSize_);
 		this.setPreferredSize(framePrefSize_);
 		this.setTitle(WHISPER_); 
-		//this.pack();
 		this.setVisible(true);
-		//System.out.println("frame displayed");
+		System.out.println("whisperclient displayed");
+		
+		
+		//gtalk testing!
+		Gtalk gtalkTest = new Gtalk();
+		gtalkTest.signOn("jplastek@gmail.com", "keeper7");
+		gtalkTest.displayBuddyList();
+		gtalkTest.sendMessage("Hello from whisper gtalk", "cory.plastek@gmail.com");
+		gtalkTest.setAway("I'm away");
+		try {
+			Thread.currentThread().sleep(10000);
+		} catch (InterruptedException e) {
+			System.out.println("Thread didn't wait 10 secs");
+		}
+		gtalkTest.signOff();
 	}
 
 	
