@@ -1,6 +1,13 @@
 package org.whisperim.gtalk;
 
+import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Date;
+
+import javax.speech.AudioException;
+import javax.speech.EngineException;
+import javax.speech.EngineStateError;
+import javax.swing.text.BadLocationException;
 
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.ConnectionConfiguration;
@@ -15,6 +22,7 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
+import org.whisperim.client.Buddy;
 import org.whisperim.client.ConnectionManager;
 import org.whisperim.client.ConnectionStrategy;
 import org.whisperim.plugins.ConnectionPluginAdapter;
@@ -22,18 +30,19 @@ import org.whisperim.prefs.Preferences;
 
 public class Gtalk extends ConnectionPluginAdapter implements MessageListener {
 
+	SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+	Date date = new Date();
 	
 	private XMPPConnection connection_;
 	private ConnectionManager manager_;
 	private Roster roster_;
 	private Presence presence_;
 	
-	private String iconLocation_ = Preferences.getInstance().getGtalkIconSmallLocation();
-	private static final String protocol_ = "GTALK";
-	private String localHandle_;
-	private static final String protocolName_ = "Gtalk Connection";
-	private static String pluginName_ = "Gtalk";
 	
+	private String iconLocation_ = Preferences.getInstance().getGtalkIconSmallLocation();
+	private String localHandle_;
+	private static String pluginName_ = "Gtalk Connection";
+	private static final String protocol_ = "GTALK";	
 	
 	public final static int STATUS_IDLE = 1;
 	public final static int STATUS_INVISIBLE = 2;
@@ -99,11 +108,39 @@ public class Gtalk extends ConnectionPluginAdapter implements MessageListener {
 	}
 
 	
-	public void processMessage(Chat chat, Message message) {
+	public void processMessage(Message message) {
 		if(message.getType() == Message.Type.chat) {
-	        System.out.println(chat.getParticipant() + " says: " + message.getBody());
+	        System.out.println(message.getFrom() + " says: " + message.getBody());
+	        org.whisperim.client.Message msg = new org.whisperim.client.Message(new Buddy(message.getFrom(), localHandle_, protocol_),
+	        		new Buddy(localHandle_, localHandle_, protocol_), message.getBody(),iconLocation_, date);
+	        try {
+				manager_.messageReceived(msg);
+			} catch (IllegalArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (EngineException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (EngineStateError e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (AudioException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (BadLocationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 	    }
 	}
+	
+	public void processMessage(Chat chat, Message message) {
+		processMessage(message);
+	}
+	
 	
 	public void sendMessage(String message, String to) {
 		Chat chat = connection_.getChatManager().createChat(to, this);
@@ -243,17 +280,15 @@ public class Gtalk extends ConnectionPluginAdapter implements MessageListener {
 		    }
 		});
 		
-		//handle incoming messages
-		
-		
-		
+		//handle incoming messages		
 		PacketListener pl = new PacketListener() {
 			public void processPacket(Packet p) {
 				if(p instanceof Message) {
 					Message msg = (Message)p;
-					processMessage(p.getProperty(name))
+					processMessage(msg);
 				}
 			}
-		}
+		};
+		connection_.addPacketListener(pl, null);
 	}
 }
