@@ -12,9 +12,8 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
 	<classpathentry kind="lib" path="lib/last.fm-bindings.jar"/>
 	<classpathentry kind="lib" path="lib/flickrapi-1.1.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Chris Thompson/workspace/Whisper/lib/commons-codec-1.3.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Chris Thompson/workspace/Whisper/lib/kxml2-2.3.0.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/XStreamAndroid"/>
-	<classpathentry kind="lib" path="C:/Users/Chris Thompson/workspace/Whisper/lib/xpp3_min-1.1.4c.jar"/>
+	<classpathentry kind="lib" path="lib/commons-codec-1.3.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/XStream"/>
+	<classpathentry kind="lib" path="lib/xpp3_min-1.1.4c.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
