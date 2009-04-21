@@ -5,6 +5,7 @@ import java.util.Collection;
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.MessageListener;
+import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.Roster;
 import org.jivesoftware.smack.RosterEntry;
 import org.jivesoftware.smack.RosterListener;
@@ -12,6 +13,7 @@ import org.jivesoftware.smack.SASLAuthentication;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
 import org.whisperim.client.ConnectionManager;
 import org.whisperim.client.ConnectionStrategy;
@@ -240,5 +242,18 @@ public class Gtalk extends ConnectionPluginAdapter implements MessageListener {
 		        System.out.println("Presence changed: " + presence.getFrom() + " " + presence);
 		    }
 		});
+		
+		//handle incoming messages
+		
+		
+		
+		PacketListener pl = new PacketListener() {
+			public void processPacket(Packet p) {
+				if(p instanceof Message) {
+					Message msg = (Message)p;
+					processMessage(p.getProperty(name))
+				}
+			}
+		}
 	}
 }
