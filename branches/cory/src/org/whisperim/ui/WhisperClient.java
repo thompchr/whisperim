@@ -385,7 +385,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 		
 		
 		//gtalk testing!
-		Gtalk gtalkTest = new Gtalk();
+		/*Gtalk gtalkTest = new Gtalk();
 		gtalkTest.signOn("whisperimtest1@gmail.com", "cs279_whisperim");
 		gtalkTest.displayBuddyList();
 		gtalkTest.sendMessage("Hello from whisper gtalk", "cory.plastek@gmail.com");
@@ -421,9 +421,8 @@ public class WhisperClient extends JFrame implements ActionListener {
 		}
 		System.out.println("signing off");
 		
-		gtalkTest.signOff();
-		
-		System.exit(0);
+		gtalkTest.signOff(); 
+		*/
 	}
 
 	
