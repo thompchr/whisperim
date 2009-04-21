@@ -247,7 +247,7 @@ public class Encryptor {
 	public String generateCipherText(String message){
 		String encryptedMessage = null;
 		try{
-
+			Base64 b64 = new Base64();
 			Cipher aesCipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
 
 			KeyGenerator sessionKeyGen = KeyGenerator.getInstance("AES");
@@ -260,7 +260,7 @@ public class Encryptor {
 
 			byte [] byteArray = message.getBytes("UTF-8");
 
-			String cipherMessage = new String (new Base64 ().encode(aesCipher.doFinal(byteArray)));
+			String cipherMessage = new String (b64.encode(aesCipher.doFinal(byteArray)));
 
 			encryptedMessage = "<key>";
 
@@ -270,7 +270,7 @@ public class Encryptor {
 
 			byte [] encryptedKeyBytes = rsaCipher.doFinal(sessionKey.getEncoded());
 
-			String encryptedKeyString = new String (new Base64().encode(encryptedKeyBytes));
+			String encryptedKeyString = new String (b64.encode(encryptedKeyBytes));
 
 			encryptedMessage += encryptedKeyString +"</key>" +
 			"<message>" + cipherMessage + "</message>";
@@ -298,14 +298,14 @@ public class Encryptor {
 
 		String outputMessage = null;
 		try {
-
+			Base64 b64 = new Base64();
 			String encKey = message.substring(5, message.indexOf("</key>"));
-			byte [] keyBytes = new Base64().decode(encKey.getBytes("UTF-8"));
+			byte [] keyBytes = b64.decode(encKey.getBytes("UTF-8"));
 
 
 			String encMessage = message.substring(message.indexOf("</key>") + 15, message.indexOf("</message>"));
 
-			byte [] messageBytes = new Base64().decode(encMessage.getBytes("UTF-8"));
+			byte [] messageBytes = b64.decode(encMessage.getBytes("UTF-8"));
 
 			Cipher rsaCipherDecrypt = Cipher.getInstance("RSA/ECB/PKCS1Padding");
 			rsaCipherDecrypt.init(Cipher.DECRYPT_MODE, privateKey_);

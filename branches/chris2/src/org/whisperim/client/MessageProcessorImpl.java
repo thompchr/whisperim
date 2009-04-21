@@ -145,4 +145,10 @@ public class MessageProcessorImpl implements MessageProcessor {
 
 	}
 
+	@Override
+	public void saveKeys() {
+		Encryptor.serializeKeyContainer(kc_);
+		
+	}
+
 }
