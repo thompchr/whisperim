@@ -55,6 +55,15 @@ public class Message {
 		protocolID_ = protocol;
 	}
 	
+	public Message(Message m){
+		from_ = m.getFromBuddy();
+		to_ = m.getToBuddy();
+		message_ = m.getMessage();
+		timeSent_ = m.getTimeSent();
+		protocolID_ = m.getProtocol();
+		other_ = m.getOther();
+	}
+	
 	/**
 	 * 
 	 * @param from
@@ -81,6 +90,10 @@ public class Message {
 	
 	public String getTo(){
 		return to_.getHandle();
+	}
+	
+	public Buddy getToBuddy(){
+		return to_;
 	}
 	
 	public String getMessage(){

@@ -17,8 +17,10 @@ package org.whisperim.client;
  **************************************************************************/
 import java.security.KeyPair;
 import java.security.PublicKey;
+import java.util.Calendar;
 import java.util.HashMap;
 
+import org.apache.commons.codec.binary.Base64;
 import org.whisperim.events.EncryptionEvent;
 import org.whisperim.keys.KeyContainer;
 import org.whisperim.security.Encryptor;
@@ -90,12 +92,20 @@ public class MessageProcessorImpl implements MessageProcessor {
 				kc_.addKey(m.getFromBuddy(), Encryptor.getPublicKeyFromString(keyText));
 
 				ui_.keyReceived(m.getFromBuddy());
+				if (!m.getMessage().contains("havekey=true--")){
+					Base64 b64 = new Base64();
+					Message keyMsg = new Message(new Buddy(m.getFromBuddy().getAssociatedLocalHandle(), m.getFromBuddy().getAssociatedLocalHandle(), m.getFromBuddy().getProtocolID()), 
+							m.getFromBuddy(), 
+							"<whisperim keyspec=" + new String(b64.encode(kc_.getMyPublicKey().getEncoded())) + "-- havekey=true-- />", m.getFromBuddy().getProtocolID(),
+							Calendar.getInstance().getTime());
 
+					sendMessage(keyMsg);
+				}
 				return;
 			}
 
-			
-			
+
+
 		}
 		if (m.getMessage().contains("<key>")){
 			m.setMessage(" (Encrypted Message) " + 
@@ -107,11 +117,15 @@ public class MessageProcessorImpl implements MessageProcessor {
 	@Override
 	public void sendMessage(Message m) {
 		//Has encryption been enabled?
-		if (encConfig_.containsKey(m.getTo())){
+		if (encConfig_.containsKey(m.getToBuddy())){
+			Message tmp = new Message(m);
+			tmp.setMessage("(Encrypted Message) " + tmp.getMessage());
+			ui_.receiveMessage(tmp);
+			
 			//Encrypt the message
-			m.setMessage(encConfig_.get(m.getTo()).generateCipherText(m.getMessage()));
+			m.setMessage(encConfig_.get(m.getToBuddy()).generateCipherText(m.getMessage()));
 		}
-
+		
 		cm_.sendMessage(m);
 
 	}
@@ -128,7 +142,7 @@ public class MessageProcessorImpl implements MessageProcessor {
 		return kc_.contains(b);
 
 	}
-	
+
 	@Override
 	public PublicKey getMyPublicKey(){
 		return kc_.getMyPublicKey();
