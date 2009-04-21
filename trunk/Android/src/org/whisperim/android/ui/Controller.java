@@ -15,6 +15,7 @@ u * Copyright 2009 Chris Thompson                                           *
  **************************************************************************/
 package org.whisperim.android.ui;
 
+import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -32,6 +33,7 @@ import org.whisperim.ui.UIController;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -47,6 +49,7 @@ public class Controller implements UIController {
 	private HashMap<Buddy, ChatWindow> openWindows_ = new HashMap<Buddy, ChatWindow>();
 	private BuddyListModel blm_ = new BuddyListModel();
 	private ListView buddyList_;
+	private Handler handler_ = new Handler();
 	public Controller(Context context, ConnectionManager cm){
 		android_ = context;
 		parent_ = (WhisperIM)context;
@@ -99,6 +102,7 @@ public class Controller implements UIController {
 	}
 
 	public void cleanUp(){
+		
 		cm_.signOff();
 	}
 
@@ -121,8 +125,9 @@ public class Controller implements UIController {
 
 	@Override
 	public void keyReceived(Buddy b) {
-
-
+		if (openWindows_.get(b) != null){
+			openWindows_.get(b).keyReceived();
+		}
 	}
 
 	@Override
@@ -142,7 +147,7 @@ public class Controller implements UIController {
 	}
 
 	@Override
-	public void receiveMessage(Message m) {
+	public void receiveMessage(final Message m) {
 		Log.i("WhisperIM", "Message Received: " + m.getTo());
 		Log.i("WhisperIM", "		    From: " + m.getFrom());
 		Log.i("WhisperIM", "		 Message: " + m.getMessage());
@@ -150,16 +155,30 @@ public class Controller implements UIController {
 		if (openWindows_.get(m.getFromBuddy()) != null){
 			Log.i("WhisperIM", "Open window found.");
 			openWindows_.get(m.getFromBuddy()).receiveMessage(m);
+			handler_.post(new Runnable(){
+				@Override
+				public void run() {
+					openWindows_.get(m.getFromBuddy()).show();
+				}
+			});
+			
 		}else{
 			//Open a new window
 			Log.i("WhisperIM", "Window could not be found");
-			ChatWindow cw = new ChatWindow(android_, m.getFromBuddy(), Controller.this);
-			openWindows_.put(m.getFromBuddy(), cw);
-			cw.receiveMessage(m);
-			
+			handler_.post(new Runnable(){
+				@Override
+				public void run() {
+					ChatWindow cw = new ChatWindow(android_, m.getFromBuddy(), Controller.this);
+					openWindows_.put(m.getFromBuddy(), cw);
+					cw.receiveMessage(m);
+				}
+				
+			});
 		}
-
-
+	}
+	
+	public boolean haveKey(Buddy b){
+		return mp_.haveKey(b);
 	}
 
 	@Override
@@ -177,6 +196,18 @@ public class Controller implements UIController {
 	public void statusUpdate(String status, String account) {
 
 
+	}
+	
+	public void enableEncryption(Buddy b){
+		mp_.enableEncryption(b);
+	}
+	
+	public void disableEncryption(Buddy b){
+		mp_.disableEncryption(b);
+	}
+	
+	public PublicKey getMyKey(){
+		return mp_.getMyPublicKey();
 	}
 
 	@Override

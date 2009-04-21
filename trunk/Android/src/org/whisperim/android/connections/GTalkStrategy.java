@@ -19,10 +19,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 
-import org.jivesoftware.smack.Chat;
-import org.jivesoftware.smack.ChatManager;
 import org.jivesoftware.smack.ConnectionConfiguration;
-import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.Roster;
 import org.jivesoftware.smack.RosterEntry;
@@ -47,8 +44,7 @@ public class GTalkStrategy implements ConnectionStrategy, PacketListener, Roster
 	private ConnectionManager cm_;
 	private Buddy to_;
 	private ArrayList<Buddy> currentBuddies_ = new ArrayList<Buddy>();
-	private ChatManager chatManager_;
-
+	
 	@Override
 	public String getHandle() {
 
@@ -125,8 +121,12 @@ public class GTalkStrategy implements ConnectionStrategy, PacketListener, Roster
 
 	@Override
 	public void signOff() {
-
-
+		connection_.disconnect();
+		cm_ = null;
+		handle_ = null;
+		to_ = null;
+		connection_ = null;
+		currentBuddies_ = null;
 	}
 
 	@Override
@@ -163,7 +163,6 @@ public class GTalkStrategy implements ConnectionStrategy, PacketListener, Roster
 
 		Roster roster = connection_.getRoster();
 
-		chatManager_ = connection_.getChatManager();
 		ArrayList<Buddy> buddies = new ArrayList<Buddy>();
 
 		for (RosterEntry r:roster.getEntries()){

@@ -13,12 +13,11 @@ import android.widget.EditText;
  * Gather the xmpp settings and create an XMPPConnection
  */
 public class SettingsDialog extends Dialog implements android.view.View.OnClickListener {
-    private Context xmppClient;
+    
     private Controller c_;
 
     public SettingsDialog(Context xmppClient, Controller c) {
         super(xmppClient);
-        this.xmppClient = xmppClient;
         c_ = c;
     }
 
@@ -26,7 +25,7 @@ public class SettingsDialog extends Dialog implements android.view.View.OnClickL
         super.onStart();
         setContentView(R.layout.settings);
         getWindow().setFlags(4, 4);
-        setTitle("XMPP Settings");
+        setTitle("Gtalk Settings");
         Button ok = (Button) findViewById(R.id.ok);
         ok.setOnClickListener(this);
     }
