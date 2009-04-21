@@ -20,7 +20,8 @@ import java.util.HashMap;
 
 import org.whisperim.android.WhisperIM;
 import org.whisperim.android.buddylist.BuddyListModel;
-import org.whisperim.android.tests.TestConnection;
+import org.whisperim.android.connections.GTalkStrategy;
+import org.whisperim.android.connections.SettingsDialog;
 import org.whisperim.client.Buddy;
 import org.whisperim.client.ConnectionManager;
 import org.whisperim.client.Message;
@@ -89,8 +90,10 @@ public class Controller implements UIController {
 		});
 
 		//Register the test connection
-		cm_.registerConnection("Testconnection", new TestConnection());
-		cm_.loadConnection("Testconnection", "Username", "Password");
+		//cm_.registerConnection("Testconnection", new TestConnection());
+		//cm_.loadConnection("Testconnection", "Username", "Password");
+		cm_.registerConnection("GTalk", new GTalkStrategy());
+		new SettingsDialog(android_, this).show();
 
 
 	}
@@ -133,6 +136,10 @@ public class Controller implements UIController {
 
 
 	}
+	
+	public void signOnGtalk(String username, String password){
+		cm_.loadConnection("GTalk", username, password);
+	}
 
 	@Override
 	public void receiveMessage(Message m) {
@@ -146,6 +153,10 @@ public class Controller implements UIController {
 		}else{
 			//Open a new window
 			Log.i("WhisperIM", "Window could not be found");
+			ChatWindow cw = new ChatWindow(android_, m.getFromBuddy(), Controller.this);
+			openWindows_.put(m.getFromBuddy(), cw);
+			cw.receiveMessage(m);
+			
 		}
 
 

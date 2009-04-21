@@ -17,9 +17,16 @@ package org.whisperim.android.connections;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 
+import org.jivesoftware.smack.Chat;
+import org.jivesoftware.smack.ChatManager;
 import org.jivesoftware.smack.ConnectionConfiguration;
+import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.Roster;
+import org.jivesoftware.smack.RosterEntry;
+import org.jivesoftware.smack.RosterListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.MessageTypeFilter;
@@ -33,12 +40,14 @@ import org.whisperim.client.ConnectionStrategy;
 
 import android.util.Log;
 
-public class GTalkStrategy implements ConnectionStrategy, PacketListener {
+public class GTalkStrategy implements ConnectionStrategy, PacketListener, RosterListener {
 	private XMPPConnection connection_;
-	private String handle_ = "thompchr@gmail.com";
+	private String handle_;
 	private String protocol_ = "gtalk";
 	private ConnectionManager cm_;
-	private Buddy to_ = new Buddy (handle_, handle_, protocol_);
+	private Buddy to_;
+	private ArrayList<Buddy> currentBuddies_ = new ArrayList<Buddy>();
+	private ChatManager chatManager_;
 
 	@Override
 	public String getHandle() {
@@ -78,7 +87,9 @@ public class GTalkStrategy implements ConnectionStrategy, PacketListener {
 
 	@Override
 	public void sendMessage(org.whisperim.client.Message message) {
-
+		Message m = new Message (message.getTo(), Message.Type.chat);
+		m.addBody("en", message.getMessage());
+		connection_.sendPacket(m);
 
 	}
 
@@ -121,18 +132,25 @@ public class GTalkStrategy implements ConnectionStrategy, PacketListener {
 	@Override
 	public void signOn(ConnectionManager cm, String username, String password) {
 		cm_ = cm;
+		handle_ = username;
+		to_ = new Buddy (handle_, handle_, protocol_);
 		ConnectionConfiguration config = new ConnectionConfiguration("talk.google.com", 5222, "gmail.com");
 		connection_ = new XMPPConnection(config);
 
 		try{
 			connection_.connect();
 			Log.i("WhisperIM", "[XMPP Protocol] Connected to " + connection_.getHost());
+			if (connection_ == null){
+				return;
+			}
 		}catch (XMPPException e) {
-			Log.i("WhisperIM", "[XMPP Protocol] Failed to connect to " + connection_.getHost());
+			Log.e("WhisperIM", "[XMPP Protocol] Failed to connect to " + connection_.getHost());
+			Log.e("WhisperIM", e.getMessage());
+
 		}
 
 		try{
-			connection_.login("thompchr@gmail.com", "o%UC3e6S");
+			connection_.login(username, password);
 			Log.i("WhisperIM", "[XMPP Protocol] Logged in as " + connection_.getUser());
 			Presence presence = new Presence(Presence.Type.available);
 			connection_.sendPacket(presence);
@@ -142,6 +160,32 @@ public class GTalkStrategy implements ConnectionStrategy, PacketListener {
 		}
 
 		connection_.addPacketListener(this, new MessageTypeFilter(Message.Type.chat));
+
+		Roster roster = connection_.getRoster();
+
+		chatManager_ = connection_.getChatManager();
+		ArrayList<Buddy> buddies = new ArrayList<Buddy>();
+
+		for (RosterEntry r:roster.getEntries()){
+			
+//			if (!roster.getPresence(r.getUser()).isAvailable()){
+//				Log.i("WhisperIM", "[GTalk] " + r.getUser() + " is not available.");
+//
+//			}else{
+				Log.i("WhisperIM", "[GTalk] " + r.getUser() + " is available.");
+				Buddy tmp;
+				if (r.getName() == null){
+					tmp = new Buddy(r.getUser(), handle_, protocol_);
+				}else{
+					 tmp = new Buddy(r.getUser(), handle_, protocol_, r.getName());
+				}
+				
+				buddies.add(tmp);
+				currentBuddies_.add(tmp);
+//			}
+		}
+
+		cm_.receiveBuddies(buddies);
 
 	}
 
@@ -180,14 +224,44 @@ public class GTalkStrategy implements ConnectionStrategy, PacketListener {
 		Message message = (Message) packet;
 		if (message.getBody() != null) {
 			String fromName = StringUtils.parseBareAddress(message.getFrom());
-			Log.i("WhisperIM", "[XMPP Protocol] " + protocol_ + "Got text [" + message.getBody() + "] from [" + fromName + "]");
+			Log.i("WhisperIM", "[XMPP Protocol] " + protocol_ + " Got text [" + message.getBody() + "] from [" + fromName + "]");
 			Buddy from = new Buddy (fromName, handle_, protocol_);
 
 			org.whisperim.client.Message msg = new org.whisperim.client.Message(from, to_, message.getBody(), protocol_, Calendar.getInstance().getTime());
 			cm_.messageReceived(msg);
 
-
 		}
 	}
+
+	@Override
+	public void entriesAdded(Collection<String> arg0) {
+
+	}
+
+	@Override
+	public void entriesDeleted(Collection<String> arg0) {
+
+
+	}
+
+	@Override
+	public void entriesUpdated(Collection<String> arg0) {
+
+
+	}
+
+	@Override
+	public void presenceChanged(Presence arg0) {
+
+
+	}
+
+//	@Override
+//	public void processMessage(Chat arg0, Message arg1) {
+//		Buddy b = new Buddy(arg0.getParticipant(), handle_, protocol_);
+//		org.whisperim.client.Message m = new org.whisperim.client.Message(b, to_, protocol_, arg1.getBody(), Calendar.getInstance().getTime());
+//		receiveMessage(m);
+//		
+//	}
 
 }
