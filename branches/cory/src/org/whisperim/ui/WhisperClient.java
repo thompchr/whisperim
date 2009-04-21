@@ -386,16 +386,44 @@ public class WhisperClient extends JFrame implements ActionListener {
 		
 		//gtalk testing!
 		Gtalk gtalkTest = new Gtalk();
-		gtalkTest.signOn("jplastek@gmail.com", "keeper7");
+		gtalkTest.signOn("whisperimtest1@gmail.com", "cs279_whisperim");
 		gtalkTest.displayBuddyList();
 		gtalkTest.sendMessage("Hello from whisper gtalk", "cory.plastek@gmail.com");
+		gtalkTest.sendMessage("Hello from whisper gtalk", "whisperimtes1@gmail.com");
 		gtalkTest.setAway("I'm away");
 		try {
-			Thread.currentThread().sleep(10000);
+			Thread.currentThread().sleep(5000);
 		} catch (InterruptedException e) {
 			System.out.println("Thread didn't wait 10 secs");
 		}
+		
+		gtalkTest.setAvailable();
+		
+		try {
+			Thread.currentThread().sleep(5000);
+		} catch (InterruptedException e) {
+			System.out.println("Thread didn't wait 10 secs");
+		}
+		gtalkTest.setStatusMessage("I'm back and I'm awesome");
+		
+		try {
+			Thread.currentThread().sleep(5000);
+		} catch (InterruptedException e) {
+			System.out.println("Thread didn't wait 10 secs");
+		}
+		
+		gtalkTest.setIdle();
+		
+		try {
+			Thread.currentThread().sleep(5000);
+		} catch (InterruptedException e) {
+			System.out.println("Thread didn't wait 10 secs");
+		}
+		System.out.println("signing off");
+		
 		gtalkTest.signOff();
+		
+		System.exit(0);
 	}
 
 	
