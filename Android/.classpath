@@ -9,5 +9,6 @@
 			<attribute name="javadoc_location" value="http://www.igniterealtime.org/builds/smack/docs/latest/javadoc/"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="commons-codec-1.3.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

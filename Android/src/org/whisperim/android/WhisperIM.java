@@ -36,6 +36,7 @@ public class WhisperIM extends Activity {
         ConnectionManager cm = new ConnectionManager(mp);
         
         Log.i("WhisperIM","Starting UI");
+        
         c_ = new Controller(this, cm);
         
     }
@@ -66,4 +67,6 @@ public class WhisperIM extends Activity {
     	}
     	return true;
     }
+    
+
 }
