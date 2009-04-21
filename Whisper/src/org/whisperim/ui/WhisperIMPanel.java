@@ -2,15 +2,14 @@ package org.whisperim.ui;
 
 
 import java.awt.Color;
-import java.awt.Desktop;
 import java.awt.Dimension;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.lang.reflect.Method;
-import java.net.URI;
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.text.DateFormat;
@@ -49,6 +48,7 @@ import org.whisperim.client.StringFilter;
 import org.whisperim.security.Encryptor;
 
 import com.centerkey.utils.BareBonesBrowserLaunch;
+import com.inet.jortho.SpellChecker;
 
 
 public class WhisperIMPanel extends JPanel implements ActionListener, ChangeListener {
@@ -110,8 +110,7 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
 	public WhisperIMPanel (Buddy buddy, WhisperIM window, PrivateKey myKey){
 		
 		super(true);
-
-		
+        
 		buddy_ = buddy;
 		window_ = window;
         theirHandle_ = buddy.getHandle();
@@ -202,6 +201,17 @@ public class WhisperIMPanel extends JPanel implements ActionListener, ChangeList
                 }catch(Exception e){} 
 			}
         });
+    
+        
+        try {
+        	File f = new File("dictionaries.cnf");
+			SpellChecker.registerDictionaries(f.toURL(), "en" );
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        SpellChecker.register(messageArea_);
+        
         
         this.requestFocusInWindow();
 	}
