@@ -16,7 +16,6 @@
 
 package org.whisperim.ui;
 
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Toolkit;
@@ -43,9 +42,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.regex.Pattern;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;
+import javax.speech.AudioException;
+import javax.speech.EngineException;
+import javax.speech.EngineStateError;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
@@ -69,11 +72,6 @@ import javax.swing.text.BadLocationException;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import javax.speech.*;
-import javax.speech.synthesis.*;
-import java.util.Locale;
-import java.util.regex.Pattern;
-
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.w3c.dom.Document;
@@ -82,8 +80,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.whisperim.Browser.BrowserLite;
 import org.whisperim.DownloadManager.DownloadManager;
-import org.whisperim.JXTA_P2P.Peer2PeerPlugIn;
 import org.whisperim.EmailManager.ExpressWhisperMailManager;
+import org.whisperim.JXTA_P2P.Peer2PeerPlugIn;
 import org.whisperim.SocialSiteDump.SocialSiteManager;
 import org.whisperim.aim.AIMStrategy;
 import org.whisperim.client.Buddy;
@@ -101,8 +99,8 @@ import org.whisperim.prefs.Preferences;
 import org.whisperim.prefs.PreferencesWindow;
 import org.whisperim.renderers.BuddyListRenderer;
 import org.whisperim.security.Encryptor;
-import org.whisperim.whisperbot.WhisperBot;
 import org.whisperim.security.Locking;
+import org.whisperim.whisperbot.WhisperBot;
 import org.xml.sax.SAXException;
 
 import com.aol.acc.AccException;
@@ -874,6 +872,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 			// Read text.
 			if(enableSpeech_ == true){
 			
+			/*
 			// Create synthesizer for English Lang.
 			Synthesizer synthesizer = Central.createSynthesizer( new SynthesizerModeDesc(Locale.ENGLISH));
 			
@@ -891,6 +890,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 			// Deallocate.
 			synthesizer.deallocate();
 			}
+			*/
 			
 			System.out.println(message.toString());
 				
@@ -968,7 +968,9 @@ public class WhisperClient extends JFrame implements ActionListener {
 			}
 			}
 		//Listener to update SystemTray if IM is received
-		for(ClientListener l:clientListeners_){l.messageRec(this, message, message.getFrom());}
+		for(ClientListener l:clientListeners_) {
+			l.messageRec(this, message, message.getFrom());}
+		}
 		}
 
 	public void sendMessage (Message message){
