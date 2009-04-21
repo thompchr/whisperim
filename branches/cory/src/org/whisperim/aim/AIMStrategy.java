@@ -42,7 +42,8 @@ public class AIMStrategy implements ConnectionStrategy {
 	private ConnectionManager manager_;
 	private String protocol_ = "AIM";
 	private String localHandle_;
-	private String iconLocation_ = Preferences.getInstance().getAimIconSmallLocation();
+	//private String iconLocation_ = Preferences.getInstance().getAimIconSmallLocation();
+	private String iconLocation_ = "..\\images\\aim_icon_small.png";
 	private String name_ = "AIM Connection";
 	private int status_ = ConnectionStrategy.OFFLINE;
 	

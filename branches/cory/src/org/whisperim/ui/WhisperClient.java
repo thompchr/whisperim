@@ -235,7 +235,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 		manager_.setClient(this);
 		
 		//start preferences - speeds up loading time for later
-		Runnable prefsRunnable = new Runnable() {
+		/*Runnable prefsRunnable = new Runnable() {
 			public void run() {
 				PreferencesWindow prefs = PreferencesWindow.getInstance();
 				prefs.setVisible(false);
@@ -243,7 +243,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 		};
 		Thread prefsThread = new Thread(prefsRunnable);
 		prefsThread.start();
-		
+		*/
 		final WhisperClient jf = this;
 		
 		//start system tray
@@ -391,7 +391,8 @@ public class WhisperClient extends JFrame implements ActionListener {
 		gtalkTest.sendMessage("Hello from whisper gtalk", "cory.plastek@gmail.com");
 		gtalkTest.sendMessage("Hello from whisper gtalk", "whisperimtes1@gmail.com");
 		gtalkTest.setAway("I'm away");
-		try {
+		
+		/*try {
 			Thread.currentThread().sleep(5000);
 		} catch (InterruptedException e) {
 			System.out.println("Thread didn't wait 10 secs");
@@ -421,8 +422,8 @@ public class WhisperClient extends JFrame implements ActionListener {
 		}
 		System.out.println("signing off");
 		
-		gtalkTest.signOff(); 
-		*/
+		gtalkTest.signOff(); */
+		System.out.println(Preferences.getInstance().getGtalkIconSmallLocation());
 	}
 
 	
