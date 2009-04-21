@@ -1,3 +1,5 @@
+package org.whisperim.HTTPServer;
+
 /**************************************************************************
  * Copyright 2009 Nick Krieble                                             *
  *                                                                         *
@@ -13,12 +15,9 @@
  * See the License for the specific language governing permissions and     *
  * limitations under the License.                                          *
  **************************************************************************/
-package org.whisperim.HTTPServer;
-import java.net.*;
-import java.io.*;
-import java.util.*;
-import java.lang.*;
 
 public class HTTPServer {
+	
+	
 
 }

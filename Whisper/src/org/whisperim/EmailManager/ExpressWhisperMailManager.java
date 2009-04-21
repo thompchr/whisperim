@@ -1,6 +1,22 @@
 package org.whisperim.EmailManager;
 
-	import java.awt.BorderLayout;
+/**************************************************************************
+ * Copyright 2009 Nick Krieble                                             *
+ *                                                                         *
+ * Licensed under the Apache License, Version 2.0 (the "License");         *
+ * you may not use this file except in compliance with the License.        *
+ * You may obtain a copy of the License at                                 *
+ *                                                                         *
+ * http://www.apache.org/licenses/LICENSE-2.0                              *
+ *                                                                         *
+ * Unless required by applicable law or agreed to in writing, software     *
+ * distributed under the License is distributed on an "AS IS" BASIS,       *
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.*
+ * See the License for the specific language governing permissions and     *
+ * limitations under the License.                                          *
+ **************************************************************************/
+
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -19,136 +35,139 @@ import javax.swing.JTable;
 import javax.swing.JDialog;
 import javax.swing.ListSelectionModel;
 
-	public class ExpressWhisperMailManager extends JFrame {
-		
-		// EWM mem var.
-		ExpressWhisperMail ewm_ = new ExpressWhisperMail(); 
-		
-		// Table Listing notifications.
-		private JTable emailTable_;
-		private emailTableModel tableModel;
+public class ExpressWhisperMailManager extends JFrame {
 
-		// Button for updating email;
-		private JButton updateButton_;
-		private JButton composeButton_;
+	// EWM mem var.
+	ExpressWhisperMail ewm_ = new ExpressWhisperMail();
 
-		// Currently selected email.
-		private ExpressWhisperMail selectedEmail_;
-		
-		public ExpressWhisperMailManager() {
-			// Set window title.
-			setTitle("Express Whisper Mail");
+	// Table Listing notifications.
+	private JTable emailTable_;
+	private emailTableModel tableModel;
 
-			// Set window size;
-			setSize(640, 480);
+	// Button for updating email;
+	private JButton updateButton_;
+	private JButton composeButton_;
 
-			// Handle window closing event.
-			addWindowListener(new WindowAdapter() {
-				public void windowClosing(WindowEvent e) {
-					actionClosed();
-				}
-			});
+	// Currently selected email.
+	private ExpressWhisperMail selectedEmail_;
 
-			// Setup a file menu.
-			JMenuBar menuBar = new JMenuBar();
-			JMenu fileMenu = new JMenu("File");
-			fileMenu.setMnemonic(KeyEvent.VK_F);
-			JMenuItem fileCloseMenuItem = new JMenuItem(
-					"Close Window", KeyEvent.VK_X);
-			fileCloseMenuItem.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					actionClosed();
-				}
-			});
-			fileMenu.add(fileCloseMenuItem);
-			menuBar.add(fileMenu);
-			setJMenuBar(menuBar);
+	public ExpressWhisperMailManager() {
+		// Set window title.
+		setTitle("Express Whisper Mail");
 
-			// Set up compose panel(compose, forward, reply.)
-	        JPanel composePanel = new JPanel();
-	        JButton composeButton = new JButton("Compose");
-	        composeButton.addActionListener(new ActionListener() {
-	            public void actionPerformed(ActionEvent e) {
-	                actionCompose();
-	            }
-	        });
-	        JButton forwardButton = new JButton("Forward");
-	        forwardButton.addActionListener(new ActionListener() {
-	            public void actionPerformed(ActionEvent e) {
-	                actionForward();
-	            }
-	        });
-	        JButton replyButton = new JButton("Reply");
-	        replyButton.addActionListener(new ActionListener() {
-	            public void actionPerformed(ActionEvent e) {
-	                actionReply();
-	            }
-	        });
-	        // Add buttons.
-	        composePanel.add(composeButton);
-	        composePanel.add(forwardButton);
-	        composePanel.add(replyButton);
-	        
-	     // Set up buttons panel.
-	        JPanel updatePanel = new JPanel();
-	        updateButton_ = new JButton("Update");
-	        updateButton_.addActionListener(new ActionListener() {
-	            public void actionPerformed(ActionEvent e) {
-	                actionUpdate();
-	            }
-	        });
-			updatePanel.add(updateButton_);
-			
-	     // Setup email table.
-	        tableModel = new emailTableModel();
-	        emailTable_ = new JTable(tableModel);
-	       
-	        // Allow only one row at a time to be selected.
-	        emailTable_.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-	        
-	        // Set table's row height large enough to fit JProgressBar.
-	        emailTable_.setRowHeight(10);
-	        
-	        // Setup email panel.
-	        JPanel emailsPanel = new JPanel();
-	        emailsPanel.setBorder(
-	                BorderFactory.createTitledBorder("Express Whisper Mail"));
-	        emailsPanel.setLayout(new BorderLayout());
-	        emailsPanel.add(new JScrollPane(emailTable_),
-	                BorderLayout.CENTER);
-	        
+		// Set window size;
+		setSize(640, 480);
 
-	        // Add panels to display.
-	        getContentPane().setLayout(new BorderLayout());
-	        getContentPane().add(composePanel, BorderLayout.NORTH);
-	        getContentPane().add(emailsPanel, BorderLayout.CENTER);
-	        getContentPane().add(updatePanel, BorderLayout.SOUTH);
-	    }
-	    
-		// Action performed when exit is selected or window is closed.
-		private void actionClosed() {
-			this.dispose();
-		}
+		// Handle window closing event.
+		addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent e) {
+				actionClosed();
+			}
+		});
 
-		// This is the action performed when the update button is selected.
-		private void actionUpdate() 
-		{
-			ewm_.updateEmail();
-		}
-		
-		private void actionCompose() {
-	
-			ComposeEmail ce = new ComposeEmail();
-			ce.composeWindow();
-		}
+		// Setup a file menu.
+		JMenuBar menuBar = new JMenuBar();
+		JMenu fileMenu = new JMenu("File");
+		fileMenu.setMnemonic(KeyEvent.VK_F);
+		JMenuItem fileCloseMenuItem = new JMenuItem("Close Window",
+				KeyEvent.VK_X);
+		fileCloseMenuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				actionClosed();
+			}
+		});
+		fileMenu.add(fileCloseMenuItem);
+		menuBar.add(fileMenu);
+		setJMenuBar(menuBar);
 
-		private void actionForward() {
-			// Spring popup
-			
-		}
+		// Set up compose panel(compose, forward, reply.)
+		JPanel composePanel = new JPanel();
+		JButton composeButton = new JButton("Compose");
+		composeButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				actionCompose();
+			}
+		});
+		JButton forwardButton = new JButton("Forward");
+		forwardButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				actionForward();
+			}
+		});
+		JButton replyButton = new JButton("Reply");
+		replyButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				actionReply();
+			}
+		});
+		// Add buttons.
+		composePanel.add(composeButton);
+		composePanel.add(forwardButton);
+		composePanel.add(replyButton);
 
-		private void actionReply() {
-			// spring popup.
-			
+		// Set up buttons panel.
+		JPanel updatePanel = new JPanel();
+		updateButton_ = new JButton("Update");
+		updateButton_.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				actionUpdate();
+			}
+		});
+		updatePanel.add(updateButton_);
+
+		// Setup email table.
+		tableModel = new emailTableModel();
+		emailTable_ = new JTable(tableModel);
+
+		// Allow only one row at a time to be selected.
+		emailTable_.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+		// Set table's row height large enough to fit JProgressBar.
+		emailTable_.setRowHeight(10);
+
+		// Setup email panel.
+		JPanel emailsPanel = new JPanel();
+		emailsPanel.setBorder(BorderFactory
+				.createTitledBorder("Express Whisper Mail"));
+		emailsPanel.setLayout(new BorderLayout());
+		emailsPanel.add(new JScrollPane(emailTable_), BorderLayout.CENTER);
+
+		// Add panels to display.
+		getContentPane().setLayout(new BorderLayout());
+		getContentPane().add(composePanel, BorderLayout.NORTH);
+		getContentPane().add(emailsPanel, BorderLayout.CENTER);
+		getContentPane().add(updatePanel, BorderLayout.SOUTH);
+	}
+
+	// Action performed when exit is selected or window is closed.
+	private void actionClosed() {
+		this.dispose();
+	}
+
+	// This is the action performed when the update button is selected.
+	private void actionUpdate() {
+		try {
+			emailTableModel etm = new emailTableModel();
+			etm.addEmail();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
+
+	private void actionCompose() {
+
+		ComposeEmail ce = new ComposeEmail();
+		ce.composeWindow();
+	}
+
+	private void actionForward() {
+		// Spring popup
+
+	}
+
+	private void actionReply() {
+		// spring popup.
+
+	}
+}

@@ -118,8 +118,7 @@ public class SocialSiteManager extends JFrame {
 	}
 
 	// This is the action performed when the update button is selected.
-	private void actionUpdate() 
-	{
+	private void actionUpdate() {
 		FlickrService fs;
 		try {
 			fs = new FlickrService();

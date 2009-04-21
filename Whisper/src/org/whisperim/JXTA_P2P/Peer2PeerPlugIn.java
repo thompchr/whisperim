@@ -15,6 +15,7 @@
  **************************************************************************/
 
 package org.whisperim.JXTA_P2P;
+
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -27,17 +28,16 @@ import org.whisperim.client.Message;
 import org.whisperim.plugins.ConnectionPluginAdapter;
 
 public class Peer2PeerPlugIn extends ConnectionPluginAdapter {
-	
+
 	private String name_ = "JXTA Connection";
 	private String id_ = "JXTA Connection";
 	private String iconPath_;
 	private ConnectionManager cm_;
 	private String handle_;
-	
 
 	@Override
 	public String getIdentifier() {
-		
+
 		return id_ + ":" + handle_.toLowerCase().replace(" ", "");
 	}
 
@@ -48,13 +48,13 @@ public class Peer2PeerPlugIn extends ConnectionPluginAdapter {
 
 	@Override
 	public String getPluginIconLocation() {
-		
+
 		return iconPath_;
 	}
 
 	@Override
 	public String getPluginName() {
-		
+
 		return name_;
 	}
 
@@ -68,50 +68,50 @@ public class Peer2PeerPlugIn extends ConnectionPluginAdapter {
 	public void setPluginName(String name) {
 		name_ = name;
 	}
-	
+
 	@Override
-	public void signOn(ConnectionManager cm, String username, String password){
-		
+	public void signOn(ConnectionManager cm, String username, String password) {
+
 		// Create a peer group manager.
 		PeerGroupManager pgm = new PeerGroupManager(null);
-		
+
 		// Create a chat object.
 		Chat chat = new Chat(pgm);
-		
+
 		// Login to start server.
 		chat.login(username);
-		
+
 		// Create pipe presence instance.
 		PipePresence pp = new PipePresence((PeerGroup) pgm.getPeerList(), null);
-		
+
 		// Create Buddy hash.
 		Hashtable buddyHash = new Hashtable();
-		
+
 		// Set buddy hash to buddy hash.
 		buddyHash = pp.getOnlineBuddiesHash();
 
 		// Push peers into buddy list.
 		ArrayList<Buddy> list = new ArrayList<Buddy>();
-//		buddyHash.CopyTo(list, 0);
-		
-		for (int i = 0; i < buddyHash.size(); ++i){
-			list.add((Buddy)buddyHash.elements().nextElement());
+		// buddyHash.CopyTo(list, 0);
+
+		for (int i = 0; i < buddyHash.size(); ++i) {
+			list.add((Buddy) buddyHash.elements().nextElement());
 		}
 
 		cm_.receiveBuddies(list);
 	}
-	
+
 	@Override
-	public void sendMessage(Message m){
+	public void sendMessage(Message m) {
 		// Create a chat object.
 		PeerGroupManager pgm = new PeerGroupManager(null);
-		
+
 		Chat chat = new Chat(pgm);
-		
+
 		chat.sendMessageToPeers(m.toString());
 	}
-	
-	private void print(String msg){
+
+	private void print(String msg) {
 		System.out.println(msg);
 	}
 
@@ -129,25 +129,25 @@ public class Peer2PeerPlugIn extends ConnectionPluginAdapter {
 	@Override
 	public void setHandle(String handle) {
 		handle_ = handle;
-		
+
 	}
 
 	@Override
 	public void setIdle() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void setInvisible(boolean visible) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void setStatusMessage(String message) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

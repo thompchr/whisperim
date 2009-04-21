@@ -17,68 +17,67 @@ package org.whisperim.JXTA_P2P;
 
 import java.util.Vector;
 
-public class WorkerThread extends Thread{
+public class WorkerThread extends Thread {
 
 	// Tracks objects to be run.
-    private Vector runObjects;
+	private Vector runObjects;
 
-    // Track if thread is running or not.
-    private boolean running = true;
+	// Track if thread is running or not.
+	private boolean running = true;
 
-   // Create instance.
-    public WorkerThread(){
-        super("WorkerThread");
-	runObjects = new Vector();
-        this.start();
-    }
+	// Create instance.
+	public WorkerThread() {
+		super("WorkerThread");
+		runObjects = new Vector();
+		this.start();
+	}
 
-    // Run the thread.
-    public void run(){
-        Runnable runner;
- 
-        while( running){
-	    synchronized(runObjects){
-                if(runObjects.size() ==  0){
-                    try{
-                      runObjects.wait();
-                    }   
-                    catch(InterruptedException ii){ }
+	// Run the thread.
+	public void run() {
+		Runnable runner;
+
+		while (running) {
+			synchronized (runObjects) {
+				if (runObjects.size() == 0) {
+					try {
+						runObjects.wait();
+					} catch (InterruptedException ii) {
+					}
+				}
+				if (runObjects.size() > 0) {
+					runner = (Runnable) runObjects.elementAt(0);
+					runObjects.removeElementAt(0);
+				} else
+					runner = null;
+			}
+			if (runner != null && running)
+				runner.run();
 		}
-                if( runObjects.size() > 0){
-		    runner = (Runnable)runObjects.elementAt(0);
-                    runObjects.removeElementAt(0);
+	}
+
+	// Adds data to the scheduler.
+	public void addData(Runnable object) {
+		synchronized (runObjects) {
+			runObjects.addElement(object);
+			runObjects.notify();
 		}
-                else runner = null;
-	    }
-            if( runner != null && running)  runner.run();
 	}
-    }
 
+	// Removes a Runnable object from the stack.
+	public boolean removeData(Runnable object) {
+		boolean result = false;
 
-    // Adds data to the scheduler.
-    public void addData(Runnable object){
-	synchronized(runObjects){
-	    runObjects.addElement(object);
-            runObjects.notify();
+		synchronized (runObjects) {
+			result = runObjects.removeElement(object);
+		}
+		return result;
 	}
-    }
 
-    //Removes a Runnable object from the stack.
-    public boolean removeData(Runnable object){
-        boolean result =  false;
-
-        synchronized(runObjects){
- 	    result = runObjects.removeElement(object);
+	// Stops the worker thread.
+	public void stopThread() {
+		running = false;
+		synchronized (runObjects) {
+			runObjects.notify(); // wake the thread if it is waiting
+		}
 	}
-        return result;
-    }
-
-    // Stops the worker thread.
-    public void stopThread(){
-        running = false;
-        synchronized(runObjects){
-            runObjects.notify();    // wake the thread if it is waiting
-	}
-    } 
 }
-

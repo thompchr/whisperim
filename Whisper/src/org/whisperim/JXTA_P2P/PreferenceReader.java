@@ -24,48 +24,46 @@ import java.io.OutputStream;
 import java.util.Properties;
 
 // Stores Preferences of users.
-public class PreferenceReader extends Properties{
-    // The instance of the PreferenceReader.
-    private static PreferenceReader reader = null;
+public class PreferenceReader extends Properties {
+	// The instance of the PreferenceReader.
+	private static PreferenceReader reader = null;
 
-    // The filename of the properties file.
-    private static final String filename = "WhisperJXTAP2P.properties";
+	// The filename of the properties file.
+	private static final String filename = "WhisperJXTAP2P.properties";
 
-    // Constructor.
-    private PreferenceReader(){
-      super();
-      
-      reader = this;
-      try{
-         InputStream stream = new BufferedInputStream(
-		   		       new FileInputStream(filename)); 
-         load(stream);
-       }
-       catch(Exception iox){
-    	   // No preferences found.
-       }        
-    }  
+	// Constructor.
+	private PreferenceReader() {
+		super();
 
-    // Gets this instance of this PreferenceReader
-    public static PreferenceReader getInstance(){
-        if( reader == null){
-            reader = new PreferenceReader();
+		reader = this;
+		try {
+			InputStream stream = new BufferedInputStream(new FileInputStream(
+					filename));
+			load(stream);
+		} catch (Exception iox) {
+			// No preferences found.
+		}
 	}
-        return reader;
-    }
 
-    // Save data.
-    public void save(){
-        try{
-            OutputStream stream = new BufferedOutputStream(
-		   		       new FileOutputStream(filename)); 
-             store(stream,null);           
-             stream.flush();
-             stream.close();
+	// Gets this instance of this PreferenceReader
+	public static PreferenceReader getInstance() {
+		if (reader == null) {
+			reader = new PreferenceReader();
+		}
+		return reader;
 	}
-        catch(Exception iox){ 
-	    // Fails
+
+	// Save data.
+	public void save() {
+		try {
+			OutputStream stream = new BufferedOutputStream(
+					new FileOutputStream(filename));
+			store(stream, null);
+			stream.flush();
+			stream.close();
+		} catch (Exception iox) {
+			// Fails
+		}
 	}
-    }
 
 }

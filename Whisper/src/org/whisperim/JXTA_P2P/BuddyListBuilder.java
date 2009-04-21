@@ -31,64 +31,61 @@ import net.jxta.protocol.PeerGroupAdvertisement;
 import net.jxta.protocol.PipeAdvertisement;
 
 /**
- *  Description of the Class
+ * Description of the Class
  */
 public class BuddyListBuilder {
 
-        public long lastChecked_ = 0;
-        public String name_ = null;
-        public String pipeID_ = null;
-        private PeerGroup group_ = null;
-        private PipeAdvertisement replyPipe_ = null;
-        private PipePresence presence_ = null;
-        private boolean firstMessageSent = true;
+	public long lastChecked_ = 0;
+	public String name_ = null;
+	public String pipeID_ = null;
+	private PeerGroup group_ = null;
+	private PipeAdvertisement replyPipe_ = null;
+	private PipePresence presence_ = null;
+	private boolean firstMessageSent = true;
 
-        // Constructor for the OnlineBuddy object. This will be put into WhisperBuddy List.
-        public BuddyListBuilder( String name,
-                        String pid,
-                        PeerGroup group,
-                        PipePresence presence,
-                        PipeAdvertisement replyPipe ) {
+	// Constructor for the OnlineBuddy object. This will be put into
+	// WhisperBuddy List.
+	public BuddyListBuilder(String name, String pid, PeerGroup group,
+			PipePresence presence, PipeAdvertisement replyPipe) {
 
-                this.lastChecked_ = System.currentTimeMillis();
-                this.pipeID_ = pid;
-                this.name_ = name;
-                this.group_ = group;
-                this.replyPipe_ = replyPipe;
-                this.presence_ = presence;
-        }
+		this.lastChecked_ = System.currentTimeMillis();
+		this.pipeID_ = pid;
+		this.name_ = name;
+		this.group_ = group;
+		this.replyPipe_ = replyPipe;
+		this.presence_ = presence;
+	}
 
-        // Returns the group associated with the object.
-        public PeerGroup getGroup() {
-                return group_;
-        }
+	// Returns the group associated with the object.
+	public PeerGroup getGroup() {
+		return group_;
+	}
 
-        // Gets the replyPipe 
-        public PipeAdvertisement getReplyPipe() {
-                return replyPipe_;
-        }
+	// Gets the replyPipe
+	public PipeAdvertisement getReplyPipe() {
+		return replyPipe_;
+	}
 
-        protected void sendAdInMessage (BuddyListBuilder buddy, Message msg) {
-            Chat.sendAdInMessage (buddy, msg);
-        }
+	protected void sendAdInMessage(BuddyListBuilder buddy, Message msg) {
+		Chat.sendAdInMessage(buddy, msg);
+	}
 
-        
-        public boolean sendMessage( Message msg ) {
-            // Get the OutputPipe
-            OutputPipe op = (OutputPipe) presence_.getOutputPipe( pipeID_ );
-            if ( op == null ) {
-                    // No more output pipe
-                    return false;
-            }
-            if ( firstMessageSent ) {
-                    presence_.sendAdInMessage( this, msg );
-                    firstMessageSent = false;
-            }
-            try {
-                    op.send( msg );
-                    return true;
-            } catch ( IOException ez1 ) {
-                    return false;
-            }
-    }
+	public boolean sendMessage(Message msg) {
+		// Get the OutputPipe
+		OutputPipe op = (OutputPipe) presence_.getOutputPipe(pipeID_);
+		if (op == null) {
+			// No more output pipe
+			return false;
+		}
+		if (firstMessageSent) {
+			presence_.sendAdInMessage(this, msg);
+			firstMessageSent = false;
+		}
+		try {
+			op.send(msg);
+			return true;
+		} catch (IOException ez1) {
+			return false;
+		}
+	}
 }

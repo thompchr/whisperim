@@ -15,7 +15,6 @@
  **************************************************************************/
 package org.whisperim.JXTA_P2P;
 
-
 import java.lang.reflect.InvocationTargetException;
 import java.io.File;
 import java.io.IOException;
@@ -46,20 +45,20 @@ public class PipePresence implements Runnable, OutputPipeListener {
 	// Thread dealings.
 	private final static int mediumWait_ = 5 * 60 * 1000; // 5 Minutes
 	private final static int longWait_ = 15 * 60 * 1000; // 15 Minutes
-	
+
 	// For ping.
 	private static String EOL = System.getProperty("line.separator");
-    public final static String CHATNAMETAG = "JxtaTalkUserName";
-    public final static String SENDERNAME = "JxtaTalkSenderName";
-    public final static String SENDERGROUPNAME = "GrpName";
-    public final static String SENDERMESSAGE = "JxtaTalkSenderMessage";
-    public final static String SRCPEERADV = "JxtaTalkSrcPeerAdv";
-    public final static String SRCPIPEADV = "JxtaTalkSrcPipeAdv";
-    public final static String GROUPID = "JxtaTalkGroupId";
-    public final static String COMMAND = "JxtaTalkCommand";
-    public final static String PING = "Ping";
-    public final static String ACK = "Ack";
-    public final static String BuddyListName = "JXTA_BuddyList";
+	public final static String CHATNAMETAG = "JxtaTalkUserName";
+	public final static String SENDERNAME = "JxtaTalkSenderName";
+	public final static String SENDERGROUPNAME = "GrpName";
+	public final static String SENDERMESSAGE = "JxtaTalkSenderMessage";
+	public final static String SRCPEERADV = "JxtaTalkSrcPeerAdv";
+	public final static String SRCPIPEADV = "JxtaTalkSrcPipeAdv";
+	public final static String GROUPID = "JxtaTalkGroupId";
+	public final static String COMMAND = "JxtaTalkCommand";
+	public final static String PING = "Ping";
+	public final static String ACK = "Ack";
+	public final static String BuddyListName = "JXTA_BuddyList";
 
 	// Buddy lists
 	protected Hashtable onlineBuddies_ = new Hashtable();
@@ -76,12 +75,11 @@ public class PipePresence implements Runnable, OutputPipeListener {
 	// Timer.
 	private Timer timer_ = new Timer();
 
-	
 	// Acssr for online buddies.
-	public Hashtable getOnlineBuddiesHash(){
+	public Hashtable getOnlineBuddiesHash() {
 		return onlineBuddies_;
 	}
-	
+
 	// Resolve input pipes and manage output pipes.
 	public PipePresence(PeerGroup group, PipeAdvertisement replyPipe) {
 		this.group_ = group;
@@ -216,8 +214,8 @@ public class PipePresence implements Runnable, OutputPipeListener {
 
 					// Put in
 					offlineBuddies_.remove(buddy);
-					onlineBuddies_.put(buddy, new BuddyListBuilder(buddy, pipeId,
-							group_, this, replyPipe_));
+					onlineBuddies_.put(buddy, new BuddyListBuilder(buddy,
+							pipeId, group_, this, replyPipe_));
 					foundInOffline = true;
 					break;
 				}
@@ -273,7 +271,8 @@ public class PipePresence implements Runnable, OutputPipeListener {
 	}
 
 	public void processAck(String buddy) {
-		BuddyListBuilder onlineBuddy = (BuddyListBuilder) onlineBuddies_.get(buddy);
+		BuddyListBuilder onlineBuddy = (BuddyListBuilder) onlineBuddies_
+				.get(buddy);
 		if (onlineBuddy != null) {
 			// Update the last checked time
 			onlineBuddy.lastChecked_ = System.currentTimeMillis();
@@ -301,7 +300,7 @@ public class PipePresence implements Runnable, OutputPipeListener {
 
 		// Probe it
 		PreferenceReader prefs = PreferenceReader.getInstance();
-        String propPrefix = getClass().getName() + BuddyListName;
+		String propPrefix = getClass().getName() + BuddyListName;
 		try {
 			probe(buddy, buddyAdv);
 		} catch (Exception ez1) {
@@ -316,26 +315,26 @@ public class PipePresence implements Runnable, OutputPipeListener {
 	// Get a name of the pipe.
 	public String getName(String id) {
 
-                Enumeration pipeName = null;
-                try {
-                	pipeName = discovery_.getLocalAdvertisements(DiscoveryService.ADV,
-                                        PipeAdvertisement.IdTag,
-                                        id);
-                        if (pipeName == null) {
-                                return null;
-                        }
-                } catch (IOException e) {
-                }
-                if (pipeName.hasMoreElements()) {
-                        PipeAdvertisement pipeAdv = (PipeAdvertisement) pipeName.nextElement();
-                        String name = pipeAdv.getName();
-                        if (name != null) {
-                               System.out.println(name);
-                        }
-                }
+		Enumeration pipeName = null;
+		try {
+			pipeName = discovery_.getLocalAdvertisements(DiscoveryService.ADV,
+					PipeAdvertisement.IdTag, id);
+			if (pipeName == null) {
+				return null;
+			}
+		} catch (IOException e) {
+		}
+		if (pipeName.hasMoreElements()) {
+			PipeAdvertisement pipeAdv = (PipeAdvertisement) pipeName
+					.nextElement();
+			String name = pipeAdv.getName();
+			if (name != null) {
+				System.out.println(name);
+			}
+		}
 
-                return null;
-        }
+		return null;
+	}
 
 	public class PresenceEvent extends EventObject {
 
@@ -463,6 +462,6 @@ public class PipePresence implements Runnable, OutputPipeListener {
 
 	public void sendAdInMessage(BuddyListBuilder buddy, Message msg) {
 		Chat.sendAdInMessage(buddy, msg);
-		
+
 	}
 }
