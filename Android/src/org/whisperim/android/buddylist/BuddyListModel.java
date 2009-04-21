@@ -72,7 +72,7 @@ public class BuddyListModel implements ListAdapter {
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		TextView row = new TextView(parent.getContext());
-		row.setText(buddies_.get(position).getHandle());
+		row.setText(buddies_.get(position).getAlias());
 		
 		return row;
 	}

@@ -70,17 +70,19 @@ public class ChatWindow extends LinearLayout implements OnKeyListener {
 		messageHistory_.setVisibility(VISIBLE);
 		messageBox_.setVisibility(VISIBLE);
 		
-		if (android_ instanceof Activity){
-			Log.i("WhisperIM", "Set Title:" + buddy_.getAlias());
-			((Activity) android_).setTitle("WhisperIM - Chat with " + buddy_.getAlias());
-		}
+		
 		
 		show();
 		
 	}
 	
 	public void show(){
+		
 		Log.i("WhisperIM", "Attempting to show ChatWindow Layout");
+		if (android_ instanceof Activity){
+			Log.i("WhisperIM", "Set Title:" + buddy_.getAlias());
+			((Activity) android_).setTitle("WhisperIM - Chat with " + buddy_.getAlias());
+		}
 		parent_.setView(this);
 	}
 
@@ -116,7 +118,7 @@ public class ChatWindow extends LinearLayout implements OnKeyListener {
 	
 	private void appendMessage(Message m){
 		DateFormat d = DateFormat.getTimeInstance(DateFormat.MEDIUM);
-		messageHistory_.append(buddy_.getAlias() + " (" + d.format(m.getTimeSent()) + "): " + clearHTMLTags(m.getMessage()) + "\n");
+		messageHistory_.setText(messageHistory_.getText() + m.getFromBuddy().getAlias() + " (" + d.format(m.getTimeSent()) + "): " + m.getMessage() + "\n");
 	}
 	
 	public String clearHTMLTags(String strHTML){
