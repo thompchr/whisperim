@@ -105,6 +105,7 @@ public class Buddy {
 			if (otherBuddy.getAssociatedLocalHandle().equalsIgnoreCase(associatedLocalHandle_) &&
 					otherBuddy.getHandle().equalsIgnoreCase(handle_) &&
 					otherBuddy.getProtocolID().equalsIgnoreCase(protocolID_)){
+				
 				return true;				
 			}else{
 				return false;
@@ -113,6 +114,20 @@ public class Buddy {
 			return false;
 		}			
 		
+	}
+	
+	@Override
+	public int hashCode(){
+		int hash = 0;
+		for (byte b: protocolID_.getBytes()){
+			hash += b;
+		}
+		
+		for (byte b: handle_.getBytes()){
+			hash += b;
+		}
+		
+		return hash;
 	}
 	
 	
