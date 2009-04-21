@@ -15,7 +15,10 @@
  **************************************************************************/
 package org.whisperim.android.ui;
 
+import java.text.DateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.regex.Pattern;
 
 import org.whisperim.client.Buddy;
 import org.whisperim.client.Message;
@@ -51,13 +54,6 @@ public class ChatWindow extends LinearLayout implements OnKeyListener {
 		
 		LinearLayout.LayoutParams hlp = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, 350);
 		LinearLayout.LayoutParams mlp = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, 60);
-//		if (messageHistory_ == null || messageBox_ == null){
-//			Log.e("WhisperIM", "ChatWindow not properly loaded");
-//			return;
-//		}
-		
-//		messageHistory_ = (EditText) chatView_.findViewById(R.id.messageHistory_);
-//		messageBox_ = (EditText) chatView_.findViewById(R.id.messageBox_);
 		
 		setOrientation(VERTICAL);
 		
@@ -81,10 +77,6 @@ public class ChatWindow extends LinearLayout implements OnKeyListener {
 		
 		show();
 		
-		
-		//addView(messageHistory_);
-		//addView(messageBox_);
-		
 	}
 	
 	public void show(){
@@ -95,8 +87,6 @@ public class ChatWindow extends LinearLayout implements OnKeyListener {
 
 	@Override
 	public boolean onKey(View v, int keyCode, KeyEvent event) {
-		
-
 		if ((keyCode == KeyEvent.KEYCODE_DPAD_CENTER || keyCode == KeyEvent.KEYCODE_ENTER) && (event.getAction() == KeyEvent.ACTION_DOWN)){
 			Log.i("WhisperIM", "KeyCodeIntercepted: " + keyCode);
 			
@@ -104,17 +94,34 @@ public class ChatWindow extends LinearLayout implements OnKeyListener {
 				return true;
 			}
 			
-			parent_.sendMessage(new Message(new Buddy(buddy_.getAssociatedLocalHandle(), buddy_.getAssociatedLocalHandle(), 
-					buddy_.getProtocolID()), buddy_, messageBox_.getText().toString(), buddy_.getProtocolID(), Calendar.getInstance().getTime()));
-			messageBox_.setText("");
+			sendMessage();
 			return true;
 		}
 		return false;
 	}
 	
+	private void sendMessage(){
+		Date da = Calendar.getInstance().getTime();
+		Message temp = new Message(new Buddy(buddy_.getAssociatedLocalHandle(), buddy_.getAssociatedLocalHandle(), 
+				buddy_.getProtocolID()), buddy_, messageBox_.getText().toString(), buddy_.getProtocolID(), da);
+		messageBox_.setText("");
+		parent_.sendMessage(temp);
+		appendMessage(temp);
+	}
+	
 	public void receiveMessage(Message m){
 		Log.i("WhisperIM", "Message processed by ChatWindow:" + m.getMessage());
-		messageHistory_.setText(m.getMessage());
+		appendMessage(m);
+	}
+	
+	private void appendMessage(Message m){
+		DateFormat d = DateFormat.getTimeInstance(DateFormat.MEDIUM);
+		messageHistory_.append(buddy_.getAlias() + " (" + d.format(m.getTimeSent()) + "): " + clearHTMLTags(m.getMessage()) + "\n");
+	}
+	
+	public String clearHTMLTags(String strHTML){
+		Pattern pattern = Pattern.compile("<[^>]*>");
+		return pattern.matcher(strHTML).replaceAll(""); 
 	}
 	
 	@Override
