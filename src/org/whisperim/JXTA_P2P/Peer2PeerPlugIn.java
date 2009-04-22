@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
+import javax.swing.ImageIcon;
+
 import net.jxta.peergroup.PeerGroup;
 
 import org.whisperim.client.Buddy;
@@ -148,6 +150,18 @@ public class Peer2PeerPlugIn extends ConnectionPluginAdapter {
 	public void setStatusMessage(String message) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public ImageIcon getSericeIcon() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ImageIcon getIcon() {
+		// peer2peer doesn't have an icon
+		return null;
 	}
 
 }

@@ -16,11 +16,15 @@
 
 package org.whisperim.plugins;
 
+import javax.swing.ImageIcon;
+
 public interface Plugin {
 
 	public String getPluginName();
 	
 	public String getPluginIconLocation();
+	
+	public ImageIcon getIcon();
 	
 	public void setIconLocation(String location);
 	

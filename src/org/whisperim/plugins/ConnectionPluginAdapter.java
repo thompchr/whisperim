@@ -18,6 +18,8 @@ package org.whisperim.plugins;
 
 import java.util.ArrayList;
 
+import javax.swing.ImageIcon;
+
 import org.whisperim.client.Buddy;
 import org.whisperim.client.ConnectionManager;
 import org.whisperim.client.ConnectionStrategy;
@@ -62,6 +64,11 @@ public abstract class ConnectionPluginAdapter implements Plugin, ConnectionStrat
 	@Override
 	public abstract String getHandle();
 	
+	/**
+	 * This method gets the icon for the service.
+	 */
+	@Override
+	public abstract ImageIcon getSericeIcon();
 
 	@Override
 	public void receiveBuddies(ArrayList<Buddy> buddies) {
