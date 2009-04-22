@@ -153,7 +153,7 @@ public class Peer2PeerPlugIn extends ConnectionPluginAdapter {
 	}
 
 	@Override
-	public ImageIcon getSericeIcon() {
+	public ImageIcon getServiceIcon() {
 		// TODO Auto-generated method stub
 		return null;
 	}

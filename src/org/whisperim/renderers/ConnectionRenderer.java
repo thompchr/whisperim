@@ -69,7 +69,7 @@ public class ConnectionRenderer implements ListCellRenderer {
 			*/
 		    
 		    //instead of re-writing code already written, require all connections to have an associated icon
-		    renderer.setIcon(p.getSericeIcon());
+		    renderer.setIcon(p.getServiceIcon());
 		    renderer.setText(p.getProtocol());
 		    return renderer;
 	}

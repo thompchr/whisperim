@@ -244,7 +244,7 @@ public class WhisperBot extends ConnectionPluginAdapter{
 	}
 
 	@Override
-	public ImageIcon getSericeIcon() {
+	public ImageIcon getServiceIcon() {
 		return null;
 	}
 }
