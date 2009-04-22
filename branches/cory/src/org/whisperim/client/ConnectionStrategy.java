@@ -65,5 +65,5 @@ public interface ConnectionStrategy extends Plugin {
     
     public void setStatusMessage(String message);
 
-	public ImageIcon getSericeIcon();
+	public ImageIcon getServiceIcon();
 }

@@ -359,7 +359,7 @@ public class Gtalk extends ConnectionPluginAdapter implements ConnectionStrategy
 	 * To use as an icon, need to cast getIcon() to Icon.
 	 * 
 	 */
-	public ImageIcon getSericeIcon() {
+	public ImageIcon getServiceIcon() {
 		return serviceIcon_;
 	}
 

@@ -186,7 +186,7 @@ public class AIMStrategy implements ConnectionStrategy {
 
 
 	@Override
-	public ImageIcon getSericeIcon() {
+	public ImageIcon getServiceIcon() {
 		return serviceIcon_;
 	}
 

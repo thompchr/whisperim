@@ -68,7 +68,7 @@ public abstract class ConnectionPluginAdapter implements Plugin, ConnectionStrat
 	 * This method gets the icon for the service.
 	 */
 	@Override
-	public abstract ImageIcon getSericeIcon();
+	public abstract ImageIcon getServiceIcon();
 
 	@Override
 	public void receiveBuddies(ArrayList<Buddy> buddies) {
