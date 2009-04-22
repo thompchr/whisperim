@@ -60,13 +60,16 @@ public class ConnectionRenderer implements ListCellRenderer {
 		JLabel renderer = (JLabel) defaultRenderer.getListCellRendererComponent(list, protocol, index, isSelected, hasFocus);
 
 		    ConnectionStrategy p = (ConnectionStrategy) protocol;
-		    if (p.getPluginIconLocation().equalsIgnoreCase("")){
-		    	serviceIcon_ = new ImageIcon(".." + File.separator + "images" + File.separator + "firewall_icon_small.png");
+		    /* should set a default icon if p.getServiceIcon is null
+		     if (p.getPluginIconLocation().equalsIgnoreCase("")){
+		     	serviceIcon_ = new ImageIcon(".." + File.separator + "images" + File.separator + "firewall_icon_small.png");
 		    }else{
 		    	serviceIcon_ = new ImageIcon(p.getPluginIconLocation().replace("/", File.separator).replace("\\", File.separator));
 		    }
-
-		    renderer.setIcon(serviceIcon_);
+			*/
+		    
+		    //instead of re-writing code already written, require all connections to have an associated icon
+		    renderer.setIcon(p.getSericeIcon());
 		    renderer.setText(p.getProtocol());
 		    return renderer;
 	}

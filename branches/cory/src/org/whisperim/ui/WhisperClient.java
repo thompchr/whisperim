@@ -360,9 +360,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 		}
 
 		registerPlugin("AIM", CONNECTION, new AIMStrategy());
-		
 		registerPlugin("GTALK", CONNECTION, new Gtalk());
-		
 		registerPlugin("JXTA_P2P", CONNECTION, new Peer2PeerPlugIn());
 		registerPlugin("AIM BOT", CONNECTION, new WhisperBot());
 		loadAccounts();
@@ -381,7 +379,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 		this.setPreferredSize(framePrefSize_);
 		this.setTitle(WHISPER_); 
 		this.setVisible(true);
-		System.out.println("whisperclient displayed");
+		System.out.println("buddy list displayed");
 		
 		
 		//gtalk testing!
@@ -423,7 +421,6 @@ public class WhisperClient extends JFrame implements ActionListener {
 		System.out.println("signing off");
 		
 		gtalkTest.signOff(); */
-		System.out.println(Preferences.getInstance().getGtalkIconSmallLocation());
 	}
 
 	
