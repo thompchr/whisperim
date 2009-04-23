@@ -210,10 +210,14 @@ public class WhisperNewIMWindow extends JFrame implements ActionListener{
 		sl.putConstraint(SpringLayout.WEST, okBtn_, 90, SpringLayout.WEST, cp);
 		sl.putConstraint(SpringLayout.NORTH, okBtn_, 50, SpringLayout.NORTH, protocolSelector_);
 		
+		//for testing
+		System.out.println(manager.getStrategies().entrySet().toString());
+		
 		
 		//Populate the protocol selector
 		for (Entry<String, ConnectionStrategy> entry:manager.getStrategies().entrySet()){
 			protocolSelector_.addItem(entry.getValue());
+			System.out.println(entry);
 		}
 		
 		
