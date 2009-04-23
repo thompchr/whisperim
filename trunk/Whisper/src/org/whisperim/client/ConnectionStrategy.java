@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import javax.speech.AudioException;
 import javax.speech.EngineException;
 import javax.speech.EngineStateError;
+import javax.swing.ImageIcon;
 
 import org.whisperim.plugins.Plugin;
 
@@ -63,4 +64,6 @@ public interface ConnectionStrategy extends Plugin {
     public int getStatus();
     
     public void setStatusMessage(String message);
+
+	public ImageIcon getServiceIcon();
 }

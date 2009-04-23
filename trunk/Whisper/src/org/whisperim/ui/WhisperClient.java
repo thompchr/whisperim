@@ -74,6 +74,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
+import org.jivesoftware.smack.XMPPException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -88,6 +89,7 @@ import org.whisperim.client.Buddy;
 import org.whisperim.client.ConnectionManager;
 import org.whisperim.client.ConnectionStrategy;
 import org.whisperim.client.Message;
+import org.whisperim.gtalk.Gtalk;
 import org.whisperim.lastfm.LastFM;
 import org.whisperim.listeners.ClientListener;
 import org.whisperim.models.BuddyListModel;
@@ -233,7 +235,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 		manager_.setClient(this);
 		
 		//start preferences - speeds up loading time for later
-		Runnable prefsRunnable = new Runnable() {
+		/*Runnable prefsRunnable = new Runnable() {
 			public void run() {
 				PreferencesWindow prefs = PreferencesWindow.getInstance();
 				prefs.setVisible(false);
@@ -241,7 +243,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 		};
 		Thread prefsThread = new Thread(prefsRunnable);
 		prefsThread.start();
-		
+		*/
 		final WhisperClient jf = this;
 		
 		//start system tray
@@ -358,6 +360,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 		}
 
 		registerPlugin("AIM", CONNECTION, new AIMStrategy());
+		registerPlugin("GTALK", CONNECTION, new Gtalk());
 		registerPlugin("JXTA_P2P", CONNECTION, new Peer2PeerPlugIn());
 		registerPlugin("AIM BOT", CONNECTION, new WhisperBot());
 		loadAccounts();
@@ -375,9 +378,8 @@ public class WhisperClient extends JFrame implements ActionListener {
 		this.setMinimumSize(frameMinSize_);
 		this.setPreferredSize(framePrefSize_);
 		this.setTitle(WHISPER_); 
-		//this.pack();
 		this.setVisible(true);
-		//System.out.println("frame displayed");
+		System.out.println("buddy list displayed");
 	}
 
 	
@@ -870,9 +872,10 @@ public class WhisperClient extends JFrame implements ActionListener {
 			//user.
 			
 			// Read text.
+			/*
 			if(enableSpeech_ == true){
 			
-			/*
+			
 			// Create synthesizer for English Lang.
 			Synthesizer synthesizer = Central.createSynthesizer( new SynthesizerModeDesc(Locale.ENGLISH));
 			
@@ -970,8 +973,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 		//Listener to update SystemTray if IM is received
 		for(ClientListener l:clientListeners_) {
 			l.messageRec(this, message, message.getFrom());}
-		}
-		}
+	}
 
 	public void sendMessage (Message message){
 		//Listener to update sound if IM is received

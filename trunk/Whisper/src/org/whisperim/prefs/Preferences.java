@@ -64,11 +64,24 @@ public class Preferences {
 
 	//images
 	private final static String imagesDir_ = System.getProperty("user.dir").replace("lib","images")+File.separator;
-	private static final ImageIcon whisperIconSmall_ = new ImageIcon(imagesDir_+"WhisperIMLogo-Small.png","");
-	private static final ImageIcon whisperIconBig_ = new ImageIcon(imagesDir_+"WhisperIMLogo-Big.png","");
-	private static final ImageIcon aimIconSmall_ = new ImageIcon(imagesDir_+"aim_icon_small.png","AIM");
-	private static final ImageIcon aimIconMed_ = new ImageIcon(imagesDir_+"aim_icon_med.png","AIM");
-	private static final ImageIcon aimIconBig_ = new ImageIcon(imagesDir_+"aim_icon_big.png","AIM");
+	
+	private static final String whisperIconSmallLocation_ = imagesDir_+"WhisperIMLogo-Small.png";
+	private static final String whisperIconBigLocation_ = imagesDir_+"WhisperIMLogo-Big.png";
+	private static final String aimIconSmallLocation_ = imagesDir_+"aim_icon_small.png";
+	private static final String aimIconMedLocation_ = imagesDir_+"aim_icon_med.png";
+	private static final String aimIconBigLocation_ = imagesDir_+"aim_icon_big.png";
+	private static final String gtalkIconSmallLocation_ = imagesDir_+"gtalk_icon_small.png";
+	private static final String gtalkIconMedLocation_ = imagesDir_+"gtalk_icon_med.png";
+	private static final String gtalkIconBigLocation_ = imagesDir_+"gtalk_icon_big.png";
+	
+	private static final ImageIcon whisperIconSmall_ = new ImageIcon(whisperIconSmallLocation_,"");
+	private static final ImageIcon whisperIconBig_ = new ImageIcon(whisperIconBigLocation_,"");
+	private static final ImageIcon aimIconSmall_ = new ImageIcon(aimIconSmallLocation_,"AIM");
+	private static final ImageIcon aimIconMed_ = new ImageIcon(aimIconMedLocation_,"AIM");
+	private static final ImageIcon aimIconBig_ = new ImageIcon(aimIconBigLocation_,"AIM");
+	private static final ImageIcon gtalkIconSmall_ = new ImageIcon(gtalkIconSmallLocation_,"GTALK");
+	private static final ImageIcon gtalkIconMed_ = new ImageIcon(gtalkIconMedLocation_,"GTALK");
+	private static final ImageIcon gtalkIconBig_ = new ImageIcon(gtalkIconBigLocation_,"GTALK");
 	
 	
 	/*
@@ -188,6 +201,38 @@ public class Preferences {
 		}
 	}
 	
+	public String getWhisperIconBigLocation() {
+		return whisperIconBigLocation_;
+	}
+	
+	public String getWhisperIconSmallLocation() {
+		return whisperIconSmallLocation_;
+	}
+	
+	public String getAimIconBigLocation() {
+		return aimIconBigLocation_;
+	}
+	
+	public String getAimIconMedLocation() {
+		return aimIconMedLocation_;
+	}
+	
+	public String getAimIconSmallLocation() {
+		return aimIconSmallLocation_;
+	}
+	
+	public String getGtalkIconSmallLocation() {
+		return gtalkIconSmallLocation_;
+	}
+	
+	public String getGtalkIconMedLocation() {
+		return gtalkIconMedLocation_;
+	}
+	
+	public String getGtalkIconBigLocation() {
+		return gtalkIconBigLocation_;
+	}
+	
 	public ImageIcon getWhisperIconBig() {
 		return whisperIconBig_;
 	}
@@ -206,6 +251,18 @@ public class Preferences {
 	
 	public ImageIcon getAimIconSmall() {
 		return aimIconSmall_;
+	}
+	
+	public ImageIcon getGtalkIconSmall() {
+		return gtalkIconSmall_;
+	}
+	
+	public ImageIcon getGtalkIconMed() {
+		return gtalkIconMed_;
+	}
+	
+	public ImageIcon getGtalkIconBig() {
+		return gtalkIconBig_;
 	}
 	
 	

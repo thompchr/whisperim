@@ -36,7 +36,8 @@ public class BuddyListRenderer implements ListCellRenderer {
 	
 	private ImageIcon serviceIcon_ = null;
 	private final ImageIcon aimIcon_ = Preferences.getInstance().getAimIconSmall();
-		
+	private final ImageIcon gtalkIcon_ = Preferences.getInstance().getGtalkIconSmall();
+	
 	public Component getListCellRendererComponent(JList list, Object buddy, int index, boolean isSelected, boolean hasFocus) {
 
 		Component renderer = defaultRenderer.getListCellRendererComponent(list, buddy, index, isSelected, hasFocus);
@@ -44,8 +45,11 @@ public class BuddyListRenderer implements ListCellRenderer {
 		    if (((Buddy) buddy).getProtocolID().equals("AIM")) {
 		      //buddy is on aim
 		      serviceIcon_ =  aimIcon_;
+		    } 
+		    else if(((Buddy)buddy).getProtocolID().equals("GTALK")) {
+		    	serviceIcon_ = gtalkIcon_;
 		    } else {
-		      //serviceIcon_ = aimIcon_;
+		    	//serviceIcon_ = aimIcon_;
 		    }
 		    ((JLabel) renderer).setIcon((Icon)serviceIcon_);
 		    return renderer;

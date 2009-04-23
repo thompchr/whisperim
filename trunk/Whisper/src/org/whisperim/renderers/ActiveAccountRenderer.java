@@ -75,8 +75,9 @@ public class ActiveAccountRenderer implements TableCellRenderer {
 
 		JLabel handleLbl = new JLabel(((ConnectionStrategy)connection).getHandle());
 		handleLbl.setFont(handleLbl.getFont().deriveFont(Font.BOLD));
-		handleLbl.setIcon(new ImageIcon(((ConnectionStrategy)connection).getPluginIconLocation()));
-
+		//handleLbl.setIcon(new ImageIcon(((ConnectionStrategy)connection).getPluginIconLocation()));
+		handleLbl.setIcon(((ConnectionStrategy)connection).getServiceIcon());
+		
 		JLabel statusLbl= new JLabel();
 		statusLbl.setFont(statusLbl.getFont().deriveFont(Font.ITALIC).deriveFont(7));
 		JButton changeStateBtn_;

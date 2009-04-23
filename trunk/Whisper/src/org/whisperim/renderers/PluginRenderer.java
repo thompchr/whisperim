@@ -16,14 +16,17 @@
 package org.whisperim.renderers;
 
 import java.awt.Component;
+import java.io.File;
 
 import javax.swing.DefaultListCellRenderer;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 
 import org.whisperim.plugins.Plugin;
+import org.whisperim.prefs.Preferences;
 
 public class PluginRenderer implements ListCellRenderer {
 	protected DefaultListCellRenderer defaultRenderer = new DefaultListCellRenderer();
@@ -47,8 +50,9 @@ public class PluginRenderer implements ListCellRenderer {
 		JLabel renderer = (JLabel) defaultRenderer.getListCellRendererComponent(list, plugin, index, isSelected, hasFocus);
 		Plugin p = (Plugin) plugin;
 		
-		
-	    renderer.setIcon(createImageIcon(p.getPluginIconLocation(), p.getPluginName()));
+	    //renderer.setIcon(createImageIcon(p.getPluginIconLocation().replace("\\", "/"), p.getPluginName()));
+	    //dirty hack that works - requiring every plugin to have an associated icon
+		renderer.setIcon((Icon)p.getIcon());//, p.getPluginName());
 	    renderer.setText(p.getPluginName());
 	    return renderer;
 

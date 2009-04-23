@@ -21,12 +21,14 @@ import java.util.ArrayList;
 import javax.speech.AudioException;
 import javax.speech.EngineException;
 import javax.speech.EngineStateError;
+import javax.swing.ImageIcon;
 import javax.swing.text.BadLocationException;
 
 import org.whisperim.client.Buddy;
 import org.whisperim.client.ConnectionManager;
 import org.whisperim.client.ConnectionStrategy;
 import org.whisperim.client.Message;
+import org.whisperim.prefs.Preferences;
 
 
 /**
@@ -41,8 +43,9 @@ public class AIMStrategy implements ConnectionStrategy {
 	private ConnectionManager manager_;
 	private String protocol_ = "AIM";
 	private String localHandle_;
-	private String iconLocation_ = "..\\images\\aim_icon_small.png";
+	private String iconLocation_ = Preferences.getInstance().getAimIconSmallLocation();
 	private String name_ = "AIM Connection";
+	private ImageIcon serviceIcon_ = Preferences.getInstance().getAimIconSmall();
 	private int status_ = ConnectionStrategy.OFFLINE;
 	
 	public AIMStrategy(){
@@ -132,8 +135,8 @@ public class AIMStrategy implements ConnectionStrategy {
 	@Override
 	public String getPluginName() {
 		return name_;
-	}
-
+	}	
+	
 	@Override
 	public void setIconLocation(String location) {
 		iconLocation_ = location;
@@ -179,6 +182,18 @@ public class AIMStrategy implements ConnectionStrategy {
 		}
 		
 		
+	}
+
+
+	@Override
+	public ImageIcon getServiceIcon() {
+		return serviceIcon_;
+	}
+
+
+	@Override
+	public ImageIcon getIcon() {
+		return serviceIcon_;
 	}
 
 
