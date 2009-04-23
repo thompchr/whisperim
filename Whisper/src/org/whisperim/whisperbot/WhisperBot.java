@@ -19,6 +19,8 @@ import java.io.File;
 import java.util.Date;
 import java.util.regex.Pattern;
 
+import javax.swing.ImageIcon;
+
 import org.whisperim.client.ConnectionManager;
 import org.whisperim.plugins.ConnectionPluginAdapter;
 import org.whisperim.security.FileEncryptor;
@@ -233,5 +235,16 @@ public class WhisperBot extends ConnectionPluginAdapter{
 	public void setStatusMessage(String message) {
 		// TODO Auto-generated method stub
 		
+	}
+
+
+	@Override
+	public ImageIcon getIcon() {
+		return null;
+	}
+
+	@Override
+	public ImageIcon getServiceIcon() {
+		return null;
 	}
 }

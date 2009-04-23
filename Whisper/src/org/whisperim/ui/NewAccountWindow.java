@@ -368,7 +368,7 @@ public class NewAccountWindow extends JFrame implements ActionListener {
 			}
 		});
 		
-		
+		this.setIconImage(Preferences.getInstance().getWhisperIconSmall().getImage());
 		pack();
 		setVisible(true);
 	}
