@@ -359,7 +359,11 @@ public class Gtalk extends ConnectionPluginAdapter implements ConnectionStrategy
 	 */
 	public void signOff()
 	{
-		connection_.disconnect();
+		try {
+			connection_.disconnect();
+		} catch (NullPointerException e) {
+			System.out.println("User:"+localHandle_+" couldn't log off because they were never logged in");
+		}
 		status_ = ConnectionStrategy.OFFLINE;
 		System.out.println(localHandle_+"/"+connection_.getUser()+" signed out of "+connection_.getServiceName());
 		
