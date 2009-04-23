@@ -31,6 +31,17 @@ import org.whisperim.client.ConnectionStrategy;
 import org.whisperim.plugins.ConnectionPluginAdapter;
 import org.whisperim.prefs.Preferences;
 
+/**
+ * Gtalk
+ * 
+ * Provides methods to interface with the Gtalk protocol: signon, signoff, send messages,
+ *  get buddies, retrieve icons, etc.
+ * Should eventually be implemented as a dynamic plugin instead of
+ * static (everytime Whisper is loaded, the Gtalk plugin is loaded - doesn't matter if there
+ * are any Gtalk accounts or not)
+ * @author Cory Plastek
+ *
+ */
 public class Gtalk extends ConnectionPluginAdapter implements ConnectionStrategy, MessageListener, PacketListener, RosterListener {
 	
 	private XMPPConnection connection_;
@@ -54,7 +65,9 @@ public class Gtalk extends ConnectionPluginAdapter implements ConnectionStrategy
 	public final static int SET_STATUS_MESSAGE = 6;
 	private int status_ = ConnectionStrategy.OFFLINE;
 	
-	
+	/**
+	 * Just an empty function to grab a pointer to use methods
+	 */
 	public Gtalk() {
 		
 	}
@@ -106,6 +119,7 @@ public class Gtalk extends ConnectionPluginAdapter implements ConnectionStrategy
 	/**
 	 * Returns the full gmail chat handle, username@gmail.com. Use this method instead of getHandle()
 	 * if you want to send a message. Gtalk only recognizes username@gmail.com NOT username.
+	 * @return String username@gmail.com
 	 */
 	public String getGmailHandle() {
 		return localHandle_;
@@ -117,27 +131,40 @@ public class Gtalk extends ConnectionPluginAdapter implements ConnectionStrategy
 	 * Returns the handle of the user WITHOUT @gmail.com
 	 * Referred to program-wide as handle_, gtalk needs the @gmail.com extension to be recognized
 	 * If you're using it to send a message, HAVE to append @gmail.com
+	 * @return String handle - username WITHOUT gmail.com
 	 */
 	public String getHandle() {
 		return handle_;
 	}
 
-	
+	/**
+	 * Returns a unique identifier for a protocol/user combination
+	 * @return String protocol:username@gmail.com
+	 */
 	public String getIdentifier() {
 		return getProtocol() + ":" + getGmailHandle();
 	}
 
-	
+	/**
+	 * Returns the protocol name, GTALK
+	 * @return String protocol = "GTALK"
+	 */
 	public String getProtocol() {
 		return protocol_;
 	}
 
-	
+	/**
+	 * Returns the location of the plugin's icon, as defined in Preferences
+	 * @return String iconLocation
+	 */
 	public String getPluginIconLocation() {
 		return iconLocation_;
 	}
 
-	
+	/**
+	 * Returns the plugin name
+	 * @return String pluginName
+	 */
 	public String getPluginName() {
 		return pluginName_;
 	}
@@ -167,7 +194,11 @@ public class Gtalk extends ConnectionPluginAdapter implements ConnectionStrategy
 		return serviceIcon_;
 	}
 	
-	
+	/**
+	 * Returns the current status of the client,
+	 * used to determine online, unavailable, offline, away, idle
+	 * @return int status from ConnectionStrategy 
+	 */
 	public int getStatus() {
 		return status_;
 	}
@@ -217,20 +248,9 @@ public class Gtalk extends ConnectionPluginAdapter implements ConnectionStrategy
 			System.out.println(protocol_);
 			
 			System.out.println(manager_.getStrategies().entrySet().toString());
-			
 
 			org.whisperim.client.Message msg = new org.whisperim.client.Message(from, 
 					to_, message.getBody(), protocol_, Calendar.getInstance().getTime());
-			
-			System.out.println("--------------------------");
-			System.out.println("From:"+msg.getFrom());
-			System.out.println("To:"+msg.getTo());
-			System.out.println("Other:"+msg.getOther());
-			System.out.println("Protocol:"+msg.getProtocol());
-			System.out.println("At time:"+msg.getTimeSent());
-			System.out.println("Message:"+msg.getMessage());
-			System.out.println("--------------------------");
-			
 			try {
 				manager_.messageReceived(msg);
 			} catch (IllegalArgumentException e) {
@@ -254,29 +274,29 @@ public class Gtalk extends ConnectionPluginAdapter implements ConnectionStrategy
 		processMessage(message);
 	}
 	
-	
+	/**
+	 * Sends a message, uses english as the default, hardcoded language
+	 * @param org.whisperim.client.Message message
+	 */
 	public void sendMessage(org.whisperim.client.Message message) {
-		System.out.println("--------------------------");
-		System.out.println("From:"+message.getFrom());
-		System.out.println("To:"+message.getTo());
-		System.out.println("Other:"+message.getOther());
-		System.out.println("Protocol:"+message.getProtocol());
-		System.out.println("At time:"+message.getTimeSent());
-		System.out.println("Message:"+message.getMessage());
-		System.out.println("--------------------------");
 		Message m = new Message (message.getTo(), Message.Type.chat);
 		//en defines the language that gtalk requires
 		m.addBody("en", message.getMessage());
 		connection_.sendPacket(m);
 	}
 	
-	
+	/**
+	 * Sets the user to available (Gtalk sees this as being online,
+	 * without any other attributes). Does not set a status message.
+	 */
 	public void setAvailable() {
 		presence_.setMode(Presence.Mode.available);
 		connection_.sendPacket(presence_);
 	}
 	
-	
+	/**
+	 * Sets the user to be away. Does not set a status message.
+	 */
 	public void setAway() {
 		presence_.setMode(Presence.Mode.away);
 		connection_.sendPacket(presence_);
@@ -285,7 +305,8 @@ public class Gtalk extends ConnectionPluginAdapter implements ConnectionStrategy
 	
 	/**
 	 * Sets the current user's status message _and_ sets the user away.
-	 * Combination of the setAway and setStatus methods.
+	 * Combination of the setAway and setStatus methods. Call this method
+	 * instead of calling setStatus() and setAway()
 	 * @param awayMessage
 	 */
 	public void setAway(String awayMessage) {
@@ -301,7 +322,7 @@ public class Gtalk extends ConnectionPluginAdapter implements ConnectionStrategy
 	 * If you're going to setup a new connection (and Whisper still doesn't allow multiple
 	 * connections using the same protocol) then make the current user signOff, then change the
 	 * handle and call signOn for the new handle.
-	 * @param handle - needs to be @gmail.com
+	 * @param handle - needs to be username@gmail.com
 	 */
 	public void setHandle(String handle) {
 		localHandle_ = handle;
@@ -355,9 +376,12 @@ public class Gtalk extends ConnectionPluginAdapter implements ConnectionStrategy
 	
 	/**
 	 * Signs the user off of gtalk. Must be called after the user has been logged in, 
-	 * or throws NullPointerException
+	 * 
+	 * @throws NullPointerException - when the user didn't actually log in properly,
+	 * and therefore can't be logged out either, prints error message out to the screen 
+	 * OR when signOff is called from Accounts
 	 */
-	public void signOff()
+	public void signOff() throws NullPointerException
 	{
 		try {
 			connection_.disconnect();
@@ -389,7 +413,6 @@ public class Gtalk extends ConnectionPluginAdapter implements ConnectionStrategy
 		to_ = new Buddy(localHandle_, localHandle_, protocol_);
 		
 		
-		
 		ConnectionConfiguration config = new ConnectionConfiguration("talk.google.com", 5222, "gmail.com");
 		connection_ = new XMPPConnection(config);
 		SASLAuthentication.supportSASLMechanism("PLAIN", 0);
@@ -411,13 +434,6 @@ public class Gtalk extends ConnectionPluginAdapter implements ConnectionStrategy
 		try {
 		     connection_.login(localHandle_, password);
 		     System.out.println(localHandle_+"/"+connection_.getUser()+" signed into "+connection_.getServiceName());
-		     sendMessage(new org.whisperim.client.Message(
-		    		new Buddy(localHandle_, localHandle_, protocol_, "whisperimtest1"),
-		    		new Buddy("jplastek@gmail.com", "jplastek@gmail.com", protocol_, "jplastek"),
-		    		"User:"+localHandle_+"/"+connection_.getUser()+" should be whisperimtest1@gmail.com says hello", 
-		    		Calendar.getInstance().getTime(),
-		    		Gtalk.protocol_,
-		    		"other"));
 		     status_ = ConnectionStrategy.ACTIVE;
 		} catch (XMPPException e) {
 			System.out.println(connection_.getUser()+" failed signing into "+connection_.getServiceName());
