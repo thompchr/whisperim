@@ -872,9 +872,10 @@ public class WhisperClient extends JFrame implements ActionListener {
 			//user.
 			
 			// Read text.
+			/*
 			if(enableSpeech_ == true){
 			
-			/*
+			
 			// Create synthesizer for English Lang.
 			Synthesizer synthesizer = Central.createSynthesizer( new SynthesizerModeDesc(Locale.ENGLISH));
 			
@@ -972,8 +973,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 		//Listener to update SystemTray if IM is received
 		for(ClientListener l:clientListeners_) {
 			l.messageRec(this, message, message.getFrom());}
-		}
-		}
+	}
 
 	public void sendMessage (Message message){
 		//Listener to update sound if IM is received
