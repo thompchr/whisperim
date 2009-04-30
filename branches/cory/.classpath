@@ -30,6 +30,6 @@
 	<classpathentry kind="lib" path="lib/smackx.jar"/>
 	<classpathentry kind="lib" path="lib/jmf.jar"/>
 	<classpathentry kind="lib" path="lib/jortho.jar"/>
-	<classpathentry kind="lib" path="D:/cory/Eclipse2/whisperim/lib/skype_win32.jar"/>
+	<classpathentry kind="lib" path="lib/skype_win32.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
