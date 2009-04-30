@@ -74,7 +74,6 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
-import org.jivesoftware.smack.XMPPException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -102,10 +101,12 @@ import org.whisperim.prefs.PreferencesWindow;
 import org.whisperim.renderers.BuddyListRenderer;
 import org.whisperim.security.Encryptor;
 import org.whisperim.security.Locking;
+import org.whisperim.skype.SkypeConnector;
 import org.whisperim.whisperbot.WhisperBot;
 import org.xml.sax.SAXException;
 
 import com.aol.acc.AccException;
+import com.skype.Skype;
 import com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingException;
 import com.sun.org.apache.xml.internal.security.utils.Base64;
 
@@ -361,6 +362,8 @@ public class WhisperClient extends JFrame implements ActionListener {
 
 		registerPlugin("AIM", CONNECTION, new AIMStrategy());
 		registerPlugin("GTALK", CONNECTION, new Gtalk());
+		//TODO - should check to see if skype is installed first
+		registerPlugin("SKYPE", CONNECTION, new SkypeConnector());
 		registerPlugin("JXTA_P2P", CONNECTION, new Peer2PeerPlugIn());
 		registerPlugin("AIM BOT", CONNECTION, new WhisperBot());
 		loadAccounts();
