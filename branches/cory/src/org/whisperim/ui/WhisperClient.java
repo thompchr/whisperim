@@ -393,6 +393,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 			public void contentsChanged(ListDataEvent e) {
 				if (e.getSource() instanceof ListModel){
 					buddyList_.setModel((ListModel) e.getSource());
+					
 				}
 			}
 
