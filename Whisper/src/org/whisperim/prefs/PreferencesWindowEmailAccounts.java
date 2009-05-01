@@ -48,19 +48,18 @@ public class PreferencesWindowEmailAccounts extends JPanel implements
 
 	private static final long serialVersionUID = 2503925217768075611L;
 
-	String username_;
-	String password_;
-	String smtp_;
-	String pop3_;
-
 	private JLabel usernameLbl_;
 	private JLabel pwLbl_;
 	private JLabel smtpLbl_;
 	private JLabel pop3Lbl_;
 	private JLabel headerLbl_;
+	private JLabel popPortLbl_;
+	private JLabel smtpPortLbl_;
 
 	private JTextField smtpField_;
 	private JTextField pop3Field_;
+	private JTextField smtpPortField_;
+	private JTextField popPortField_;
 
 	private JTextField usernameField_;
 	private JPasswordField pwField_;
@@ -81,6 +80,8 @@ public class PreferencesWindowEmailAccounts extends JPanel implements
 	private static final String SMTP_ = "SMTP Server:";
 	private static final String POP3_ = "POP3 Server:";
 	private static final String HEADER_ = "Email Setup:";
+	private static final String POP_PORT_ = "Pop Port:";
+	private static final String SMTP_PORT_ = "SMTP Port:";
 
 	// File System Constants
 	private static final String EMAIL_ACCOUNTS_FILE_ = System
@@ -95,6 +96,8 @@ public class PreferencesWindowEmailAccounts extends JPanel implements
 		smtpLbl_ = new JLabel(SMTP_);
 		pop3Lbl_ = new JLabel(POP3_);
 		headerLbl_ = new JLabel(HEADER_);
+		smtpPortLbl_ = new JLabel(SMTP_PORT_);
+		popPortLbl_ = new JLabel(POP_PORT_);
 
 		hr_ = new JSeparator();
 
@@ -103,6 +106,9 @@ public class PreferencesWindowEmailAccounts extends JPanel implements
 
 		smtpField_ = new JTextField();
 		pop3Field_ = new JTextField();
+		
+		smtpPortField_ = new JTextField();
+		popPortField_ = new JTextField();
 
 		saveButton_ = new JButton(SAVE_);
 		cancelButton_ = new JButton(CANCEL_);
@@ -146,6 +152,14 @@ public class PreferencesWindowEmailAccounts extends JPanel implements
 		pop3Field_.setMinimumSize(new Dimension(150, 23));
 		pop3Field_.setMaximumSize(new Dimension(150, 23));
 		pop3Field_.setPreferredSize(new Dimension(150, 23));
+		
+		popPortField_.setMinimumSize(new Dimension(50, 23));
+		popPortField_.setMaximumSize(new Dimension(50, 23));
+		popPortField_.setPreferredSize(new Dimension(50, 23));
+		
+		smtpPortField_.setMinimumSize(new Dimension(50, 23));
+		smtpPortField_.setMaximumSize(new Dimension(50, 23));
+		smtpPortField_.setPreferredSize(new Dimension(50, 23));
 
 		// Constraints \\
 
@@ -209,7 +223,19 @@ public class PreferencesWindowEmailAccounts extends JPanel implements
 				smtpLbl_);
 		sl.putConstraint(SpringLayout.WEST, smtpField_, 0, SpringLayout.WEST,
 				pwField_);
-
+		
+		//smtp port label
+		sl.putConstraint(SpringLayout.NORTH, smtpPortLbl_, 20, SpringLayout.SOUTH,
+				pwLbl_);
+		sl.putConstraint(SpringLayout.WEST, smtpPortLbl_, 200, SpringLayout.EAST,
+				smtpLbl_);
+		
+		// smtp port field
+		sl.putConstraint(SpringLayout.NORTH, smtpPortField_, 0, SpringLayout.NORTH,
+				smtpPortLbl_);
+		sl.putConstraint(SpringLayout.WEST, smtpPortField_, 5, SpringLayout.EAST,
+				smtpPortLbl_);
+		
 		// pop3 label
 		sl.putConstraint(SpringLayout.NORTH, pop3Lbl_, 20, SpringLayout.SOUTH,
 				smtpLbl_);
@@ -221,6 +247,19 @@ public class PreferencesWindowEmailAccounts extends JPanel implements
 				SpringLayout.SOUTH, smtpField_);
 		sl.putConstraint(SpringLayout.WEST, pop3Field_, 0, SpringLayout.WEST,
 				smtpField_);
+		
+		//pop port lbl
+		sl.putConstraint(SpringLayout.NORTH, popPortLbl_, 20, SpringLayout.SOUTH,
+				smtpLbl_);
+		sl.putConstraint(SpringLayout.WEST, popPortLbl_, 200, SpringLayout.EAST,
+				pop3Lbl_);
+		
+		//pop port field
+		sl.putConstraint(SpringLayout.NORTH, popPortField_, 20,
+				SpringLayout.SOUTH, smtpField_);
+		sl.putConstraint(SpringLayout.WEST, popPortField_, 0, SpringLayout.EAST,
+				popPortLbl_);
+		
 
 		// Save Button
 		sl.putConstraint(SpringLayout.NORTH, saveButton_, 40,
@@ -243,8 +282,12 @@ public class PreferencesWindowEmailAccounts extends JPanel implements
 		this.add(pwField_);
 		this.add(smtpLbl_);
 		this.add(smtpField_);
+		this.add(smtpPortLbl_);
+		this.add(smtpPortField_);
 		this.add(pop3Lbl_);
 		this.add(pop3Field_);
+		this.add(popPortLbl_);
+		this.add(popPortField_);
 		this.add(saveButton_);
 		this.add(cancelButton_);
 
@@ -319,9 +362,18 @@ public class PreferencesWindowEmailAccounts extends JPanel implements
 
 				serializer.serialize(dom);
 
+				Preferences prefs = Preferences.getInstance();
+			
+				prefs.setPassword(pwField_.getText());
+				prefs.setPOP(pop3Field_.getText());
+				prefs.setPopPort(popPortField_.getText());
+				prefs.setSMTP(smtpField_.getText());
+				prefs.setSMTPPort(smtpPortField_.getText());
+				prefs.setUsername(usernameField_.getText());
+				
 				// tell them they're awesome
 				JOptionPane.showMessageDialog(this,
-						"Whatever you just did worked...finally.");
+						"Account Information is saved.");
 
 				// clear the fields
 				usernameField_.setText("");
@@ -344,22 +396,6 @@ public class PreferencesWindowEmailAccounts extends JPanel implements
 			pwField_.setText("");
 		}
 
-	}
-
-	public String getUsername() {
-		return username_ = usernameField_.getText();
-	}
-
-	public String getPassword() {
-		return password_ = pwField_.getText();
-	}
-
-	public String getSMTP() {
-		return smtp_ = smtpField_.getText();
-	}
-
-	public String getPOP3() {
-		return pop3_ = pop3Field_.getText();
 	}
 
 	private void packAndRepaint() {

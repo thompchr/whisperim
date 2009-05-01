@@ -79,7 +79,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.whisperim.Browser.BrowserLite;
 import org.whisperim.DownloadManager.DownloadManager;
-import org.whisperim.EmailManager.ExpressWhisperMailManager;
+import org.whisperim.EmailManager.ComposeEmail;
+import org.whisperim.EmailManager.EmailTableModel;
 import org.whisperim.JXTA_P2P.Peer2PeerPlugIn;
 import org.whisperim.SocialSiteDump.SocialSiteManager;
 import org.whisperim.aim.AIMStrategy;
@@ -163,6 +164,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 	private JMenuItem socialSites_;
 	private JMenuItem downloadManager_;
 	private JMenuItem emailManager_;
+	private JMenuItem composeEmail_;
 	private JMenuItem browserLite_;
 	private JMenuItem quit_;
 	private boolean alwaysNewWindow_ = false;
@@ -194,6 +196,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 	private static final String SOCIAL_SITE_MANAGER_ = "Social Site Notifications...";
 	private static final String DOWNLOAD_MANAGER_ = "Download Manger...";
 	private static final String EMAIL_MANAGER_ = "Express Whisper Mail...";
+	private static final String COMPOSE_EMAIL_ = "Send Email...";
 	private static final String BROWSER_LITE_ = "Whisper Web Browser";
 	private static final String QUIT_ = "Quit";
 	
@@ -560,6 +563,10 @@ public class WhisperClient extends JFrame implements ActionListener {
 		emailManager_ = new JMenuItem(EMAIL_MANAGER_);
 		emailManager_.addActionListener(this);
 		whisperMenu_.add(emailManager_);
+		
+		composeEmail_= new JMenuItem(COMPOSE_EMAIL_);
+		composeEmail_.addActionListener(this);
+		whisperMenu_.add(composeEmail_);
 		
 		whisperMenu_.add(new JSeparator()); 
 		
@@ -1308,9 +1315,20 @@ public class WhisperClient extends JFrame implements ActionListener {
 		
 		// Launches the email manager.
 		if(actionCommand.equals(emailManager_.getActionCommand())){
-			ExpressWhisperMailManager ewmm = new ExpressWhisperMailManager();
-			ewmm.setVisible(true);
+			javax.swing.SwingUtilities.invokeLater(new Runnable() {
+	            public void run() {
+	            	EmailTableModel etm = new EmailTableModel();
+	                etm.createAndShowGUI();
+	            }
+	        });
 		}
+		// Launches the email sender.
+		if(actionCommand.equals(composeEmail_.getActionCommand())){
+			ComposeEmail ce = new ComposeEmail();
+			ce.composeWindow();
+		}
+		
+		
 		
 		// This launches the download manager.
 		if(actionCommand.equals(browserLite_.getActionCommand())){
