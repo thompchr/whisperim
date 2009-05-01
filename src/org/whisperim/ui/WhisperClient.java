@@ -103,6 +103,7 @@ import org.whisperim.security.Encryptor;
 import org.whisperim.security.Locking;
 import org.whisperim.skype.SkypeConnector;
 import org.whisperim.whisperbot.WhisperBot;
+import org.whisperim.yahoo.YahooConnector;
 import org.xml.sax.SAXException;
 
 import com.aol.acc.AccException;
@@ -361,9 +362,10 @@ public class WhisperClient extends JFrame implements ActionListener {
 		}
 
 		registerPlugin("AIM", CONNECTION, new AIMStrategy());
-		registerPlugin("GTALK", CONNECTION, new Gtalk());
+		registerPlugin("Gtalk", CONNECTION, new Gtalk());
 		//TODO - should check to see if skype is installed first
-		registerPlugin("SKYPE", CONNECTION, new SkypeConnector());
+		registerPlugin("Skype", CONNECTION, new SkypeConnector());
+		registerPlugin("Yahoo", CONNECTION, new YahooConnector());
 		registerPlugin("JXTA_P2P", CONNECTION, new Peer2PeerPlugIn());
 		registerPlugin("AIM BOT", CONNECTION, new WhisperBot());
 		loadAccounts();

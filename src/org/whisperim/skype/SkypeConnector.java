@@ -270,6 +270,7 @@ public class SkypeConnector extends ConnectionPluginAdapter implements Connectio
 		}
 		
 		//TODO	
+		
 	}
 	
 	@Override

@@ -53,7 +53,7 @@ public class ProtocolRenderer implements ListCellRenderer {
 
 		ConnectionStrategy p = (ConnectionStrategy) protocol;
 		if (p.getPluginIconLocation().equalsIgnoreCase("")){
-			serviceIcon_ = new ImageIcon(".." + File.separator + "images" + File.separator + "firewall_icon_small.png");
+			serviceIcon_ = null;//new ImageIcon(".." + File.separator + "images" + File.separator + "firewall_icon_small.png");
 		}else{
 			serviceIcon_ = new ImageIcon(p.getPluginIconLocation().replace("/", File.separator).replace("\\", File.separator));
 		}
