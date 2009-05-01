@@ -101,14 +101,19 @@ import org.whisperim.prefs.PreferencesWindow;
 import org.whisperim.renderers.BuddyListRenderer;
 import org.whisperim.security.Encryptor;
 import org.whisperim.security.Locking;
+import org.whisperim.skype.SkypeConnector;
 import org.whisperim.whisperbot.WhisperBot;
+import org.whisperim.yahoo.YahooConnector;
 import org.xml.sax.SAXException;
 
 import com.aol.acc.AccException;
+
 import com.centerkey.utils.BareBonesBrowserLaunch;
 import com.google.code.facebookapi.FacebookException;
 import com.google.code.facebookapi.FacebookXmlRestClient;
 import com.google.code.facebookapi.Permission;
+
+import com.skype.Skype;
 import com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingException;
 import com.sun.org.apache.xml.internal.security.utils.Base64;
 import com.sun.xml.internal.messaging.saaj.packaging.mime.MessagingException;
@@ -371,6 +376,11 @@ public class WhisperClient extends JFrame implements ActionListener {
 
 		registerPlugin("AIM", CONNECTION, new AIMStrategy());
 		registerPlugin("GTALK", CONNECTION, new Gtalk());
+		registerPlugin("Gtalk", CONNECTION, new Gtalk());
+		//TODO - should check to see if skype is installed first
+		registerPlugin("Skype", CONNECTION, new SkypeConnector());
+		registerPlugin("Yahoo", CONNECTION, new YahooConnector());
+
 		registerPlugin("JXTA_P2P", CONNECTION, new Peer2PeerPlugIn());
 		registerPlugin("AIM BOT", CONNECTION, new WhisperBot());
 		loadAccounts();
@@ -400,6 +410,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 			public void contentsChanged(ListDataEvent e) {
 				if (e.getSource() instanceof ListModel){
 					buddyList_.setModel((ListModel) e.getSource());
+					
 				}
 			}
 
