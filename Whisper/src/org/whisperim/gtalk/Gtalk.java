@@ -211,7 +211,7 @@ public class Gtalk extends ConnectionPluginAdapter implements ConnectionStrategy
 		Buddy tmp;
 		if (r.getName() == null){
 			tmp = new Buddy(stripXMPP(r.getUser().toString()), localHandle_, protocol_);
-		}else{
+		} else {
 			tmp = new Buddy(stripXMPP(r.getUser().toString()), localHandle_, protocol_, stripXMPP(r.getName()));
 		}
 		System.out.println("Presence changed: " + stripXMPP(presence.getFrom().toString()) + " " + presence);
@@ -223,7 +223,9 @@ public class Gtalk extends ConnectionPluginAdapter implements ConnectionStrategy
 		else if(presenceType == Presence.Type.unavailable) {
 			buddies_.remove(tmp);
 		}
-		System.out.println(buddies_.toString());
+		else {
+			//do nothing
+		}
 		manager_.receiveBuddies(buddies_);
     }	
 	
