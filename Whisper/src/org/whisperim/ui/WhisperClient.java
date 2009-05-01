@@ -44,7 +44,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.regex.Pattern;
 
-import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;
 import javax.speech.AudioException;
 import javax.speech.EngineException;
@@ -74,7 +73,6 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
-import org.jivesoftware.smack.XMPPException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -106,8 +104,13 @@ import org.whisperim.whisperbot.WhisperBot;
 import org.xml.sax.SAXException;
 
 import com.aol.acc.AccException;
+import com.centerkey.utils.BareBonesBrowserLaunch;
+import com.google.code.facebookapi.FacebookException;
+import com.google.code.facebookapi.FacebookXmlRestClient;
+import com.google.code.facebookapi.Permission;
 import com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingException;
 import com.sun.org.apache.xml.internal.security.utils.Base64;
+import com.sun.xml.internal.messaging.saaj.packaging.mime.MessagingException;
 
 /**
  * This class handles the creation of the swing interface components that 
@@ -147,6 +150,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 	private JMenuBar menuBar_;
 	private JMenuItem newIm_;
 	private JCheckBoxMenuItem setStatus_;
+	private JCheckBoxMenuItem setFBStatus_;
 	private JMenuItem plugins_;
 	private JMenuItem preferences_;
 	private JMenuItem accounts_;
@@ -184,6 +188,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 	private static final String NEWUSERIM_ = "IM Selected User";
 	private static final String SMSTEXT_ = "Send SMS Text...";
 	private static final String SET_STATUS_ = "Set Status...";
+	private static final String SET_FB_STATUS_ = "Set Facebook Status...";
 	private static final String SOCIAL_SITE_MANAGER_ = "Social Site Notifications...";
 	private static final String DOWNLOAD_MANAGER_ = "Download Manger...";
 	private static final String EMAIL_MANAGER_ = "Express Whisper Mail...";
@@ -531,6 +536,10 @@ public class WhisperClient extends JFrame implements ActionListener {
 		setStatus_ = new JCheckBoxMenuItem(SET_STATUS_);
 		setStatus_.addActionListener(this);
 		whisperMenu_.add(setStatus_);
+		
+		setFBStatus_ = new JCheckBoxMenuItem(SET_FB_STATUS_);
+		setFBStatus_.addActionListener(this);
+		whisperMenu_.add(setFBStatus_);
 		
 		whisperMenu_.add(new JSeparator()); 
 		
@@ -1054,6 +1063,77 @@ public class WhisperClient extends JFrame implements ActionListener {
 				setStatus_.setSelected(false);
 			}
 		}
+		
+		
+		//Set / Unset Facebook Status
+		if (actionCommand.equals(setFBStatus_.getActionCommand())){			
+			String API_KEY = "bc1700819b43f527807e2e073429b963";
+			String SECRET = "f496b7ca12b3ef635dfdd77b57133911";
+			
+			FacebookXmlRestClient client = new FacebookXmlRestClient(API_KEY, SECRET);
+
+			client.setIsDesktop(true);
+			String token = null;
+			try {
+				token = client.auth_createToken();
+			} catch (FacebookException e3) {
+				// TODO Auto-generated catch block
+				e3.printStackTrace();
+			}
+
+			// Build the authentication URL for the user to fill out
+			String url = "http://www.facebook.com/login.php?api_key=" + API_KEY + "&v=1.0" + "&auth_token=" + token;
+			BareBonesBrowserLaunch.openURL(url);
+			
+			String url1 = "http://www.facebook.com/authorize.php?api_key="+API_KEY+"&v=1.0&ext_perm=STATUS_UPDATE&popup=1";
+			BareBonesBrowserLaunch.openURL(url1);
+
+			String fbStatus = JOptionPane.showInputDialog(null, "Please enter your facebook status message: ");
+			
+			try {
+				System.in.read();
+			} catch (IOException e2) {
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
+			}
+			
+			String session = null;
+			try {
+				session = client.auth_getSession(token);
+			} catch (FacebookException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+
+			// keep track of the logged in user id
+			Long userId = null;
+			try {
+				userId = client.users_getLoggedInUser();
+			} catch (FacebookException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+
+			if(setFBStatus_.isSelected())	{
+				
+				if(fbStatus != "") {
+					if(setFBStatus_.isSelected())	{
+						try {
+							 if (client.users_hasAppPermission(Permission.STATUS_UPDATE))    
+								 client.users_setStatus(fbStatus, false);
+							 else
+								 System.out.println("Application does not have permission to update your status.");
+						} catch (FacebookException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+					}
+				}
+			}
+			else
+				setStatus_.setSelected(false);
+			}
+
 		
 		//Open the plugins window
 		if (actionCommand.equals(plugins_.getActionCommand())){
