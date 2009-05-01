@@ -57,7 +57,7 @@ public class Gtalk extends ConnectionPluginAdapter implements ConnectionStrategy
 	private Buddy to_;
 	private ArrayList<Buddy> buddies_ = new ArrayList<Buddy>();
 	private static String pluginName_ = "Gtalk Connection";
-	private static final String protocol_ = "GTALK";	
+	private static final String protocol_ = "Gtalk";	
 	
 	public final static int STATUS_IDLE = 1;
 	public final static int STATUS_INVISIBLE = 2;
@@ -114,7 +114,7 @@ public class Gtalk extends ConnectionPluginAdapter implements ConnectionStrategy
 	 * @return String protocol:username@gmail.com
 	 */
 	public String getIdentifier() {
-		return getProtocol() + ":" + getGmailHandle();
+		return protocol_+":"+localHandle_;
 	}
 
 	/**
