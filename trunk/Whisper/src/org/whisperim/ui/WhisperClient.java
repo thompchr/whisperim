@@ -151,6 +151,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 	private JMenuItem newIm_;
 	private JCheckBoxMenuItem setStatus_;
 	private JCheckBoxMenuItem setFBStatus_;
+	private JMenuItem FBNotif_;
 	private JMenuItem plugins_;
 	private JMenuItem preferences_;
 	private JMenuItem accounts_;
@@ -189,6 +190,7 @@ public class WhisperClient extends JFrame implements ActionListener {
 	private static final String SMSTEXT_ = "Send SMS Text...";
 	private static final String SET_STATUS_ = "Set Status...";
 	private static final String SET_FB_STATUS_ = "Set Facebook Status...";
+	private static final String FB_NOTIF_ = "Get Facebook Notifications...";
 	private static final String SOCIAL_SITE_MANAGER_ = "Social Site Notifications...";
 	private static final String DOWNLOAD_MANAGER_ = "Download Manger...";
 	private static final String EMAIL_MANAGER_ = "Express Whisper Mail...";
@@ -540,6 +542,10 @@ public class WhisperClient extends JFrame implements ActionListener {
 		setFBStatus_ = new JCheckBoxMenuItem(SET_FB_STATUS_);
 		setFBStatus_.addActionListener(this);
 		whisperMenu_.add(setFBStatus_);
+		
+		FBNotif_ = new JCheckBoxMenuItem(FB_NOTIF_);
+		FBNotif_.addActionListener(this);
+		whisperMenu_.add(FBNotif_);
 		
 		whisperMenu_.add(new JSeparator()); 
 		
@@ -1134,6 +1140,73 @@ public class WhisperClient extends JFrame implements ActionListener {
 				setStatus_.setSelected(false);
 			}
 
+		
+		//Get outstanding facebook notifications
+		if (actionCommand.equals(FBNotif_.getActionCommand())){
+			String API_KEY = "bc1700819b43f527807e2e073429b963";
+			String SECRET = "f496b7ca12b3ef635dfdd77b57133911";
+			
+			FacebookXmlRestClient client = new FacebookXmlRestClient(API_KEY, SECRET);
+
+			client.setIsDesktop(true);
+			String token = null;
+			try {
+				token = client.auth_createToken();
+			} catch (FacebookException e3) {
+				// TODO Auto-generated catch block
+				e3.printStackTrace();
+			}
+
+			// Build the authentication URL for the user to fill out
+			String url = "http://www.facebook.com/login.php?api_key=" + API_KEY + "&v=1.0" + "&auth_token=" + token;
+			BareBonesBrowserLaunch.openURL(url);
+
+			int fbStatus = JOptionPane.showConfirmDialog(null,new String("Login to Facebook then click 'Yes' to continue."));
+			
+			try {
+				System.in.read();
+			} catch (IOException e2) {
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
+			}
+			
+			String session = null;
+			try {
+				session = client.auth_getSession(token);
+			} catch (FacebookException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+
+			// keep track of the logged in user id
+			Long userId = null;
+			try {
+				userId = client.users_getLoggedInUser();
+			} catch (FacebookException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			Document d = null;
+			try {
+				d = client.notifications_get();
+			} catch (FacebookException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			NodeList nodeM = d.getElementsByTagName("messages");
+			String fbMessages = nodeM.item(0).getChildNodes().item(0).getTextContent();
+			
+			NodeList nodeP = d.getElementsByTagName("pokes");
+			String fbPokes = nodeM.item(0).getChildNodes().item(0).getTextContent();
+			
+			NodeList nodeS = d.getElementsByTagName("shares");
+			String fbShares = nodeM.item(0).getChildNodes().item(0).getTextContent();
+			
+			NodeList nodeF = d.getElementsByTagName("friend_requests");
+			String fbFriend = nodeM.item(0).getChildNodes().item(0).getTextContent();
+			
+			JOptionPane.showConfirmDialog(null,"You have: \n"+fbMessages+ " messages \n"+fbPokes+" pokes \n"+fbShares+" shares \n" +fbFriend+" friend requests");
+		}
 		
 		//Open the plugins window
 		if (actionCommand.equals(plugins_.getActionCommand())){
