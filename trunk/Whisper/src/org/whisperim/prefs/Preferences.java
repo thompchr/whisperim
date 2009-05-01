@@ -22,7 +22,6 @@ package org.whisperim.prefs;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
@@ -102,6 +101,19 @@ public class Preferences {
 	
 	private boolean encryptionEnabled_ = true;
 	public static final String ENCRYPTION_ = "Encryption";
+	
+	/*
+	 * Email prefs
+	 */
+	
+	private String username_;
+	private String password_;
+	private String smtp_;
+	private String pop3_;
+	private String popPort_;
+	private String smtpPort_;
+
+	
 
 	/*
 	 * Sound Preferences
@@ -121,7 +133,7 @@ public class Preferences {
 	 */
 	
 
-	protected Preferences() {
+	private Preferences() {
 
 	}
 
@@ -323,6 +335,56 @@ public class Preferences {
 		lockPassword_ = password;
 	}
 	
+	
+	// Email
+	
+	public void setUsername(String username){
+		username_ = username;
+	}
+	
+	public String getUsername() {
+		return username_;
+	}
+
+	public String getPassword() {
+		return password_;
+	}
+
+	public void setPassword(String password){
+		password_ = password;
+	}
+	
+	public String getSMTP() {
+		return smtp_;
+	}
+
+	public void setSMTP(String smtp){
+		smtp_ = smtp;
+	}
+	
+	public String getPOP3() {
+		return pop3_;
+	}
+	
+	public void setPOP(String pop){
+		pop3_ = pop;
+	}
+	
+	public String getPopPort(){
+		return popPort_;
+	}
+	
+	public void setPopPort(String port){
+		popPort_ = port;
+	}
+	
+	public String getSMTPPort(){
+		return smtpPort_;
+	}
+	
+	public void setSMTPPort(String port){
+		smtpPort_ = port;
+	}	
 	
 	/*
 	 * Sounds

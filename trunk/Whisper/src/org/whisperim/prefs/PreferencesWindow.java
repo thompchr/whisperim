@@ -336,7 +336,7 @@ public class PreferencesWindow extends JFrame implements ListSelectionListener,A
 
 			
 			// Save preferences.
-			Preferences pref = new Preferences();
+			Preferences pref = Preferences.getInstance();
 			pref.savePrefs();
 			
 			// Close window.
@@ -350,7 +350,7 @@ public class PreferencesWindow extends JFrame implements ListSelectionListener,A
 	public void windowClosed(WindowEvent e) {
 		//ask user if they want to save changed prefs?
 		
-		Preferences pref = new Preferences();
+		Preferences pref = Preferences.getInstance();
 		pref.savePrefs();
 
 		this.setVisible(false);

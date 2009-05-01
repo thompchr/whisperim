@@ -20,41 +20,33 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import java.security.Security;
 
-import javax.mail.Message;
-import javax.mail.Session;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
-import javax.swing.UIManager;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.Properties;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import org.whisperim.prefs.Preferences;
+
+import com.sun.net.ssl.internal.ssl.Provider;
 
 public class ComposeEmail extends JFrame implements ActionListener {
 
-	private static final String MESSAGE_ = "Message";
-	private static final String SENDMAIL_ = "Send Mail";
+	private static final long serialVersionUID = 1L;
+	private static final String MESSAGE_ = "Message:";
+	private static final String SENDMAIL_ = "Send";
 	private static final String CANCEL_ = "Cancel";
 	private static final String WINDOW_TITLE_ = "Compose Email";
 	private static final String TO_ = "To:";
 	private static final String SUBJECT_ = "Subject:";
 	private static final String HEADER_ = "Compose Email";
-
-	private Session mailSession_;
-	private Properties props_;
-	private MimeMessage message_;
+	private static final String PORT_ = "Port Number:";
+	private static final String SMTP_ = "SMTP:";
+	private static final String FROM_ = "From:";
+	private static final String PASSWORD_ = "Password:";
 
 	private JLabel headerLbl_ = new JLabel(HEADER_);
 	private JLabel toLbl_ = new JLabel(TO_);
@@ -64,34 +56,14 @@ public class ComposeEmail extends JFrame implements ActionListener {
 	private JTextField toBox_ = new JTextField(TO_);
 	private JTextField subjectBox_ = new JTextField(SUBJECT_);
 
+
 	private JTextArea messageBox_ = new JTextArea(MESSAGE_);
 
 	private JButton sendButton_ = new JButton(SENDMAIL_);
 	private JButton cancelButton_ = new JButton(CANCEL_);
 
-	private Message emailMessage_ = null;
-	private Date sentDate_ = null;
-	private String to_ = null;
-	private String subject_ = null;
-
-	public ComposeEmail() {
-		props_ = new Properties();
-		mailSession_ = Session.getDefaultInstance(props_);
-	}
 
 	public void composeWindow() {
-
-		messageBox_.addKeyListener(new KeyAdapter() {
-
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == '\n') {
-					// Enter key
-					actionPerformed(new ActionEvent(messageBox_,
-							Integer.MAX_VALUE, SENDMAIL_));
-				}
-			}
-		});
 
 		SpringLayout sl = new SpringLayout();
 		Container cp = getContentPane();
@@ -125,17 +97,18 @@ public class ComposeEmail extends JFrame implements ActionListener {
 		cancelButton_.setActionCommand(CANCEL_);
 		cancelButton_.addActionListener(this);
 
-		toBox_.setMinimumSize(new Dimension(65, 20));
-		toBox_.setMaximumSize(new Dimension(65, 20));
-		toBox_.setPreferredSize(new Dimension(65, 20));
+		toBox_.setMinimumSize(new Dimension(120, 20));
+		toBox_.setMaximumSize(new Dimension(120, 20));
+		toBox_.setPreferredSize(new Dimension(120, 20));
 
-		subjectBox_.setMinimumSize(new Dimension(65, 20));
-		subjectBox_.setMaximumSize(new Dimension(65, 20));
-		subjectBox_.setPreferredSize(new Dimension(65, 20));
+		subjectBox_.setMinimumSize(new Dimension(300, 20));
+		subjectBox_.setMaximumSize(new Dimension(300, 20));
+		subjectBox_.setPreferredSize(new Dimension(300, 20));
 
-		messageBox_.setMinimumSize(new Dimension(200, 200));
-		messageBox_.setMaximumSize(new Dimension(200, 200));
-		messageBox_.setPreferredSize(new Dimension(200, 200));
+		messageBox_.setMinimumSize(new Dimension(300, 200));
+		messageBox_.setMaximumSize(new Dimension(300, 200));
+		messageBox_.setPreferredSize(new Dimension(300, 200));
+		
 
 		// Constraints
 		// Title Label
@@ -155,11 +128,11 @@ public class ComposeEmail extends JFrame implements ActionListener {
 				toLbl_);
 		sl.putConstraint(SpringLayout.WEST, toBox_, 0, SpringLayout.EAST,
 				toLbl_);
-
+		
 		// Subject Label
 		sl.putConstraint(SpringLayout.NORTH, subjectLbl_, 10,
 				SpringLayout.SOUTH, toBox_);
-		sl.putConstraint(SpringLayout.EAST, subjectLbl_, 10, SpringLayout.EAST,
+		sl.putConstraint(SpringLayout.EAST, subjectLbl_, 30, SpringLayout.EAST,
 				toLbl_);
 
 		// Subject Field
@@ -179,8 +152,8 @@ public class ComposeEmail extends JFrame implements ActionListener {
 				SpringLayout.NORTH, messageLbl_);
 		sl.putConstraint(SpringLayout.WEST, messageBox_, 30, SpringLayout.WEST,
 				messageLbl_);
-
-		// Save Button
+		
+		// Send Button
 		sl.putConstraint(SpringLayout.NORTH, sendButton_, 20,
 				SpringLayout.SOUTH, messageBox_);
 		sl.putConstraint(SpringLayout.WEST, sendButton_, 0, SpringLayout.WEST,
@@ -200,22 +173,15 @@ public class ComposeEmail extends JFrame implements ActionListener {
 	public void actionPerformed(ActionEvent evt) {
 		String ac = evt.getActionCommand();
 		if (ac.equals(SENDMAIL_)) {
-			ExpressWhisperMail ewm = new ExpressWhisperMail();
-			try {
-				// Still need to set emailMessage_ to the text input and set
-				// variations.
-
-				message_ = new MimeMessage(mailSession_);
-				message_.addRecipient(Message.RecipientType.TO,
-						new InternetAddress(toBox_.getText()));
-				message_.setSubject(subjectBox_.getText());
-				message_.setContent(messageBox_.getText(), "text/plain");
-
-				ewm.sendMessage(null, toBox_.getText(), subjectBox_.getText(),
-						message_);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			Preferences prefs = Preferences.getInstance();
+				try {
+					Security.addProvider(new Provider());
+					//new SendGmail((String)fromBox_.getText(), (String)passwordBox_.getText(), (String)smtpBox_.getText(), Integer.parseInt(portBox_.getText())).sendSSLMessage((String)toBox_.getText(),(String)subjectBox_.getText(),(String)messageBox_.getText() );
+					new SendGmail((String)prefs.getUsername(), (String)prefs.getPassword(), (String)prefs.getSMTP(), Integer.parseInt(prefs.getSMTPPort())).sendSSLMessage((String)toBox_.getText(),(String)subjectBox_.getText(),(String)messageBox_.getText() );
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 
 		} else if (ac.equals(CANCEL_)) {
 			this.dispose();
