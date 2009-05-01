@@ -16,6 +16,7 @@ import org.whisperim.client.Buddy;
 import org.whisperim.client.ConnectionManager;
 import org.whisperim.client.ConnectionStrategy;
 import org.whisperim.plugins.ConnectionPluginAdapter;
+import org.whisperim.prefs.Preferences;
 
 import ymsg.network.AccountLockedException;
 import ymsg.network.LoginRefusedException;
@@ -39,8 +40,8 @@ public class YahooConnector extends ConnectionPluginAdapter implements Connectio
 
 	private ConnectionManager manager_;
 	
-	public ImageIcon serviceIcon_ = null; //= Preferences.getInstance().getYahooIconSmall();
-	private String iconLocation_ = null; //= Preferences.getInstance().getYahooIconSmallLocation();
+	public ImageIcon serviceIcon_ = Preferences.getInstance().getYahooIconSmall();
+	private String iconLocation_ = Preferences.getInstance().getYahooIconSmallLocation();
 	private String handle_;
 	private Buddy to_;
 	private ArrayList<Buddy> buddies_ = new ArrayList<Buddy>();
@@ -167,6 +168,7 @@ public class YahooConnector extends ConnectionPluginAdapter implements Connectio
 	}
 	
 	public void signOn(ConnectionManager connectionManager, String username, String password) {
+		manager_ = connectionManager;
 		handle_ = username;
 		
 		yahooSession_ = new Session();
@@ -174,7 +176,7 @@ public class YahooConnector extends ConnectionPluginAdapter implements Connectio
 		try {
 			yahooSession_.login(handle_, password);
 			
-			System.out.println("Logged into Yahoo w/ user:"+handle_);
+			System.out.println("Logged into Yahoo: "+handle_);
 			
 			status_ = ConnectionStrategy.ACTIVE;
 		} catch (AccountLockedException e) {
@@ -196,15 +198,11 @@ public class YahooConnector extends ConnectionPluginAdapter implements Connectio
 		
 		//get buddies
 		YahooGroup[] groups = yahooSession_.getGroups();
-		System.out.println(groups.length);
-		for(int i = 0; i <= groups.length; i++) {
+		for(int i = 0; i < groups.length; i++) {
 			
 			Vector members = groups[i].getMembers();
 			
-			System.out.println(members.size());
-			System.out.println(members.toString());
-			
-			for(int j = 0; j <= members.size(); j++) {
+			for(int j = 0; j < members.size(); j++) {
 				
 				YahooUser u = (YahooUser) members.elementAt(j);
 				
@@ -225,7 +223,7 @@ public class YahooConnector extends ConnectionPluginAdapter implements Connectio
 		try {
 			yahooSession_.logout();
 			
-			System.out.println("Logged out of Yahoo w/ username:"+handle_);
+			System.out.println("Logged out of Yahoo: "+handle_);
 			
 			status_ = ConnectionStrategy.OFFLINE;
 			
@@ -256,19 +254,13 @@ public class YahooConnector extends ConnectionPluginAdapter implements Connectio
 	
 	}
 	
-	//public void receiveMessage() {
-		//TODO
-		
-	//}
 	
 	public void setAway() {
 		try {
 			yahooSession_.setStatus(StatusConstants.STATUS_BRB_STR, true);
 		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -278,10 +270,8 @@ public class YahooConnector extends ConnectionPluginAdapter implements Connectio
 		try {
 			yahooSession_.setStatus(awayMessage, true);
 		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -324,7 +314,7 @@ public class YahooConnector extends ConnectionPluginAdapter implements Connectio
 
 	@Override
 	public void chatMessageReceived(SessionChatEvent ev) {
-		System.out.println("Chat Message Received");
+		// TODO
 		
 	}
 
@@ -394,7 +384,7 @@ public class YahooConnector extends ConnectionPluginAdapter implements Connectio
 
 	@Override
 	public void errorPacketReceived(SessionErrorEvent arg0) {
-		// TODO Auto-generated method stub
+		System.out.println(protocol_+" error: error packet");
 		
 	}
 
@@ -423,15 +413,17 @@ public class YahooConnector extends ConnectionPluginAdapter implements Connectio
 	@Override
 	public void friendsUpdateReceived(SessionFriendEvent ev) {
 		YahooUser[] u = ev.getFriends();
-		for(int i = 0; i <= ev.getFriends().length; i++) {
+		for(int i = 0; i < ev.getFriends().length; i++) {
 			if(u[i].getStatus() == StatusConstants.STATUS_AVAILABLE ) {
 				buddies_.add(new Buddy(u[i].getId(), handle_, protocol_));
+				System.out.println(u[i].getId()+" is available");
 			}
 			else if(u[i].getStatus() ==  StatusConstants.STATUS_OFFLINE) {
 				buddies_.remove(new Buddy(u[i].getId(), handle_, protocol_));
+				System.out.println(u[i].getId()+" is unavailable");
 			}
 			else {
-				//do nothing
+				System.out.println("nothing");
 			}
 		}
 		
@@ -452,15 +444,14 @@ public class YahooConnector extends ConnectionPluginAdapter implements Connectio
 	}
 
 
-	@Override
+	
 	public void messageReceived(SessionEvent ev) {
 		Buddy from = new Buddy (ev.getFrom(), handle_, protocol_);
 		
 		System.out.println("From: "+ev.getFrom());
 		System.out.println("Message: "+ev.getMessage());
 
-		org.whisperim.client.Message msg = new org.whisperim.client.Message(from, 
-				to_, ev.getTo(), protocol_, ev.getTimestamp());
+		org.whisperim.client.Message msg = new org.whisperim.client.Message(from, to_, ev.getMessage(), protocol_, ev.getTimestamp());
 		try {
 			manager_.messageReceived(msg);
 		} catch (IllegalArgumentException e) {

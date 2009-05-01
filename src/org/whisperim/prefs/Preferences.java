@@ -73,6 +73,9 @@ public class Preferences {
 	private static final String gtalkIconSmallLocation_ = imagesDir_+"gtalk_icon_small.png";
 	private static final String gtalkIconMedLocation_ = imagesDir_+"gtalk_icon_med.png";
 	private static final String gtalkIconBigLocation_ = imagesDir_+"gtalk_icon_big.png";
+	private static final String yahooIconSmallLocation_ = imagesDir_+"yahoo_icon_small.png";
+	private static final String yahooIconMedLocation_ = imagesDir_+"yahoo_icon_med.png";
+	private static final String yahooIconBigLocation_ = imagesDir_+"yahoo_icon_big.png";
 	
 	private static final ImageIcon whisperIconSmall_ = new ImageIcon(whisperIconSmallLocation_,"");
 	private static final ImageIcon whisperIconBig_ = new ImageIcon(whisperIconBigLocation_,"");
@@ -82,6 +85,9 @@ public class Preferences {
 	private static final ImageIcon gtalkIconSmall_ = new ImageIcon(gtalkIconSmallLocation_,"GTALK");
 	private static final ImageIcon gtalkIconMed_ = new ImageIcon(gtalkIconMedLocation_,"GTALK");
 	private static final ImageIcon gtalkIconBig_ = new ImageIcon(gtalkIconBigLocation_,"GTALK");
+	private static final ImageIcon yahooIconSmall_ = new ImageIcon(yahooIconSmallLocation_, "YAHOO");
+	private static final ImageIcon yahooIconMed_ = new ImageIcon(yahooIconMedLocation_, "YAHOO");
+	private static final ImageIcon yahooIconBig_ = new ImageIcon(yahooIconBigLocation_, "YAHOO");
 	
 	
 	/*
@@ -136,6 +142,12 @@ public class Preferences {
 		xstream.omitField(Preferences.class, "aimIconSmall_");
 		xstream.omitField(Preferences.class, "aimIconMed_");
 		xstream.omitField(Preferences.class, "aimIconBig_");
+		xstream.omitField(Preferences.class, "gtalkIconSmall_");
+		xstream.omitField(Preferences.class, "gtalkIconMed_");
+		xstream.omitField(Preferences.class, "gtalkIconLarge_");
+		xstream.omitField(Preferences.class, "yahooIconSmall_");
+		xstream.omitField(Preferences.class, "yahooIconMed_");
+		xstream.omitField(Preferences.class, "yahooIconBig_");
 		
 		//ignore listeners
 		xstream.omitField(Preferences.class, "listeners_");
@@ -233,6 +245,18 @@ public class Preferences {
 		return gtalkIconBigLocation_;
 	}
 	
+	public String getYahooIconSmallLocation() {
+		return yahooIconSmallLocation_;
+	}
+	
+	public String getYahooIconMedLocation() {
+		return yahooIconMedLocation_;
+	}
+	
+	public String getYahooIconBigLocation() {
+		return yahooIconBigLocation_;
+	}
+	
 	public ImageIcon getWhisperIconBig() {
 		return whisperIconBig_;
 	}
@@ -263,6 +287,18 @@ public class Preferences {
 	
 	public ImageIcon getGtalkIconBig() {
 		return gtalkIconBig_;
+	}
+	
+	public ImageIcon getYahooIconSmall() {
+		return yahooIconSmall_;
+	}
+	
+	public ImageIcon getYahooIconMed() {
+		return yahooIconMed_;
+	}
+	
+	public ImageIcon getYahooIconBig() {
+		return yahooIconBig_;
 	}
 	
 	
