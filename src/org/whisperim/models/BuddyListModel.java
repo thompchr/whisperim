@@ -125,6 +125,7 @@ public class BuddyListModel implements ListModel {
 				if (buddy.getProtocolID().equalsIgnoreCase(protocol) && buddy.getAssociatedLocalHandle().equalsIgnoreCase(handle)){
 
 					buddies_.remove(buddy);
+					System.out.println("Remove buddy(in buddylistmodel):"+buddy.toString());
 
 
 				}

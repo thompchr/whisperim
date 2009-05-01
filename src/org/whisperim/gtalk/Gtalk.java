@@ -24,6 +24,7 @@ import org.jivesoftware.smack.filter.MessageTypeFilter;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.packet.Presence.Type;
 import org.jivesoftware.smack.util.StringUtils;
 import org.whisperim.client.Buddy;
 import org.whisperim.client.ConnectionManager;
@@ -85,36 +86,7 @@ public class Gtalk extends ConnectionPluginAdapter implements ConnectionStrategy
 			System.out.println(r.getUser());
 		}
 		System.out.println("\n");
-	}
-	
-	
-	@Override
-	public void entriesAdded(Collection<String> addresses) {
-    	for(String entry : addresses) {
-    		try {
-				roster_.createEntry(entry, entry, null);
-			} catch (XMPPException e) {
-				e.printStackTrace();
-			}
-    	}
-    }
-	
-	@Override
-    public void entriesDeleted(Collection<String> addresses) {
-    	for(String entry : addresses) {
-    		try {
-				roster_.removeEntry(roster_.getEntry(entry));
-			} catch (XMPPException e) {
-				e.printStackTrace();
-			}
-    	}
-    }
-	
-	@Override
-    public void entriesUpdated(Collection<String> addresses) {
-    	//roster_.removeEntry(entry);
-    }
-	
+	}	
 	
 	/**
 	 * Returns the full gmail chat handle, username@gmail.com. Use this method instead of getHandle()
@@ -232,7 +204,27 @@ public class Gtalk extends ConnectionPluginAdapter implements ConnectionStrategy
 	
 	@Override
     public void presenceChanged(Presence presence) {
-        System.out.println("Presence changed: " + presence.getFrom() + " " + presence);
+		Type presenceType = presence.getType();
+		
+		RosterEntry r = roster_.getEntry(stripXMPP(presence.getFrom()));
+		
+		Buddy tmp;
+		if (r.getName() == null){
+			tmp = new Buddy(stripXMPP(r.getUser().toString()), localHandle_, protocol_);
+		}else{
+			tmp = new Buddy(stripXMPP(r.getUser().toString()), localHandle_, protocol_, stripXMPP(r.getName()));
+		}
+		System.out.println("Presence changed: " + stripXMPP(presence.getFrom().toString()) + " " + presence);
+		if(presenceType == Presence.Type.available) {
+			if(!buddies_.contains(tmp)) {
+				buddies_.add(tmp);
+			}
+        }
+		else if(presenceType == Presence.Type.unavailable) {
+			buddies_.remove(tmp);
+		}
+		System.out.println(buddies_.toString());
+		manager_.receiveBuddies(buddies_);
     }	
 	
 
@@ -450,27 +442,31 @@ public class Gtalk extends ConnectionPluginAdapter implements ConnectionStrategy
 		
 		//get buddies
 		roster_ = connection_.getRoster();
-		//ArrayList<Buddy> buddies = new ArrayList<Buddy>();
+		roster_.addRosterListener(this);
 		
 		//automatically accepts other users if they add the user
 		//not secure, need to fix
 		roster_.setSubscriptionMode(Roster.SubscriptionMode.accept_all);
 		
-		System.out.println("Found all buddies for "+localHandle_+"/"+connection_.getUser());
-		
+		/*
 		for(RosterEntry r : roster_.getEntries()) {
 			Buddy tmp;
-			if (r.getName() == null){
-				tmp = new Buddy(r.getUser(), localHandle_, protocol_);
-			}else{
-				 tmp = new Buddy(r.getUser(), localHandle_, protocol_, r.getName());
+			System.out.println(roster_.getPresence(r.getUser()).isAvailable());
+			if(roster_.getPresence(r.getUser()).isAvailable()) {
+				//check for 'nickname' set
+				if (r.getName() == null){
+					tmp = new Buddy(r.getUser(), localHandle_, protocol_);
+				}else{
+					tmp = new Buddy(r.getUser(), localHandle_, protocol_, r.getName());
+				}
+				System.out.println(r.getUser()+" is available");
+				System.out.println(roster_.getPresence(r.getUser()).isAvailable());
+				buddies_.add(tmp);
 			}
-			
-			//buddies.add(tmp);
-			buddies_.add(tmp);
+			//buddies_.add(tmp);
 		}
-		
-		manager_.receiveBuddies(buddies_);
+		*/
+		//manager_.receiveBuddies(buddies_);
 	}
 	
 	
@@ -482,6 +478,50 @@ public class Gtalk extends ConnectionPluginAdapter implements ConnectionStrategy
 	public String toString() {
 		return protocol_+":"+localHandle_;
 	}
+
+	@Override
+	public void entriesAdded(Collection<String> addresses) {
+		for(String entry : addresses) {
+    		try {
+				roster_.createEntry(entry, entry, null);
+			} catch (XMPPException e) {
+				e.printStackTrace();
+			}
+    	}
+		//make a new buddy, and add it to the buddy list
+		/*if (r.getName() == null){
+			tmp = new Buddy(r.getUser(), localHandle_, protocol_);
+		}else{
+			tmp = new Buddy(r.getUser(), localHandle_, protocol_, r.getName());
+		}*/
+		System.out.println("added");
+		System.out.println(addresses.toString());
+		
+	}
+
+	@Override
+	public void entriesDeleted(Collection<String> addresses) {
+		// TODO Auto-generated method stub
+		for(String entry : addresses) {
+    		try {
+				roster_.removeEntry(roster_.getEntry(entry));
+			} catch (XMPPException e) {
+				e.printStackTrace();
+			}
+    	}
+	}
+
+	@Override
+	public void entriesUpdated(Collection<String> addresses) {
+		// TODO Auto-generated method stub
+		// this is called if a user updates their presence (or status)
+		// don't worry about this now		
+	}
 	
-	
+	private String stripXMPP(String xmppuser) {
+		if(xmppuser.indexOf('/') != -1) {
+			return xmppuser.substring(0, xmppuser.indexOf('/'));
+		}
+		else return xmppuser;
+	}
 }
