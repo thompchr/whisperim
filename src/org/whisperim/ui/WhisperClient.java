@@ -63,7 +63,6 @@ import org.whisperim.client.Message;
 import org.whisperim.client.MessageProcessor;
 import org.whisperim.events.EncryptionEvent;
 import org.whisperim.events.SessionEvent;
-import org.whisperim.google.GTalkStrategy;
 import org.whisperim.lastfm.LastFM;
 import org.whisperim.listeners.ClientListener;
 import org.whisperim.models.BuddyListModel;
@@ -299,7 +298,7 @@ public class WhisperClient extends JFrame implements ActionListener, UIControlle
 		}
 
 		registerPlugin("AIM", CONNECTION, new AIMStrategy());
-		registerPlugin("Gtalk", CONNECTION, new GTalkStrategy());
+		
 		//		loadAccounts();
 
 		//set sizes and show
