@@ -51,58 +51,60 @@ public class Controller implements UIController {
 	private ListView buddyList_;
 	private Handler handler_ = new Handler();
 	public Controller(Context context, ConnectionManager cm){
-		android_ = context;
-		parent_ = (WhisperIM)context;
-		cm_ = cm;
-		cm_.setClient(this);	
+		if (android_ == null){
+			android_ = context;
+
+			parent_ = (WhisperIM)context;
+			cm_ = cm;
+			cm_.setClient(this);	
 
 
-		//Create the buddy list
-		buddyList_ = new BuddyList(android_);
+			//Create the buddy list
+			buddyList_ = new BuddyList(android_);
 
-		setView(buddyList_);
-		
-		if (android_ instanceof Activity){
-			((Activity)android_).setTitle("WhisperIM -- Buddy List");
-		}
+			setView(buddyList_);
 
-		buddyList_.setAdapter(blm_);
-
-		buddyList_.setOnItemClickListener(new OnItemClickListener(){
-
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view, int position,
-					long arg3) {
-				Buddy b = null;
-				if (parent.getItemAtPosition(position) instanceof Buddy){
-					b = (Buddy)parent.getItemAtPosition(position);
-				}else{
-					Log.e("WhisperIM", "Invalid Buddy Object");
-					return;
-				}
-				if (openWindows_.get(b) == null){
-
-					ChatWindow cw = new ChatWindow(android_, b, Controller.this);
-					openWindows_.put(b, cw);
-				}else{
-					openWindows_.get(b).show();
-				}
-
+			if (android_ instanceof Activity){
+				((Activity)android_).setTitle("WhisperIM -- Buddy List");
 			}
 
-		});
+			buddyList_.setAdapter(blm_);
 
-		//Register the test connection
-		//cm_.registerConnection("Testconnection", new TestConnection());
-		//cm_.loadConnection("Testconnection", "Username", "Password");
-		cm_.registerConnection("GTalk", new GTalkStrategy());
-		new SettingsDialog(android_, this).show();
+			buddyList_.setOnItemClickListener(new OnItemClickListener(){
 
+				@Override
+				public void onItemClick(AdapterView<?> parent, View view, int position,
+						long arg3) {
+					Buddy b = null;
+					if (parent.getItemAtPosition(position) instanceof Buddy){
+						b = (Buddy)parent.getItemAtPosition(position);
+					}else{
+						Log.e("WhisperIM", "Invalid Buddy Object");
+						return;
+					}
+					if (openWindows_.get(b) == null){
+
+						ChatWindow cw = new ChatWindow(android_, b, Controller.this);
+						openWindows_.put(b, cw);
+					}else{
+						openWindows_.get(b).show();
+					}
+
+				}
+
+			});
+
+			//Register the test connection
+			//cm_.registerConnection("Testconnection", new TestConnection());
+			//cm_.loadConnection("Testconnection", "Username", "Password");
+			cm_.registerConnection("GTalk", new GTalkStrategy());
+			new SettingsDialog(android_, this).show();
+		}
 
 	}
 
 	public void cleanUp(){
-		
+		mp_.saveKeys();
 		cm_.signOff();
 	}
 
@@ -141,7 +143,7 @@ public class Controller implements UIController {
 
 
 	}
-	
+
 	public void signOnGtalk(String username, String password){
 		cm_.loadConnection("GTalk", username, password);
 	}
@@ -161,7 +163,7 @@ public class Controller implements UIController {
 					openWindows_.get(m.getFromBuddy()).show();
 				}
 			});
-			
+
 		}else{
 			//Open a new window
 			Log.i("WhisperIM", "Window could not be found");
@@ -172,11 +174,11 @@ public class Controller implements UIController {
 					openWindows_.put(m.getFromBuddy(), cw);
 					cw.receiveMessage(m);
 				}
-				
+
 			});
 		}
 	}
-	
+
 	public boolean haveKey(Buddy b){
 		return mp_.haveKey(b);
 	}
@@ -197,15 +199,15 @@ public class Controller implements UIController {
 
 
 	}
-	
+
 	public void enableEncryption(Buddy b){
 		mp_.enableEncryption(b);
 	}
-	
+
 	public void disableEncryption(Buddy b){
 		mp_.disableEncryption(b);
 	}
-	
+
 	public PublicKey getMyKey(){
 		return mp_.getMyPublicKey();
 	}

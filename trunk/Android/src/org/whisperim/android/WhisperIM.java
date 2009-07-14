@@ -57,6 +57,7 @@ public class WhisperIM extends Activity {
     			//Right now this exits, what would be
     			//awesome is if we had it simply hide
     			c_.cleanUp();
+    			
     			super.finish();
     		}else{
     			viewStack_.removeLast();

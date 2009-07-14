@@ -22,8 +22,10 @@ import org.whisperim.client.Buddy;
 import android.database.DataSetObserver;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.TextView;
+import android.widget.LinearLayout.LayoutParams;
 
 public class BuddyListModel implements ListAdapter {
 	
@@ -71,6 +73,10 @@ public class BuddyListModel implements ListAdapter {
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
+//		LinearLayout ll = new LinearLayout(parent.getContext());
+//		LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT-50, LayoutParams.FILL_PARENT);
+//		LinearLayout.LayoutParams ilp = new LinearLayout.LayoutParams(45, LayoutParams.FILL_PARENT);
+//		LinearLayout.LayoutParams glp = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
 		TextView row = new TextView(parent.getContext());
 		row.setText(buddies_.get(position).getAlias());
 		

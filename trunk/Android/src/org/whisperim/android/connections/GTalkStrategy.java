@@ -173,6 +173,7 @@ public class GTalkStrategy implements ConnectionStrategy, PacketListener, Roster
 //			}else{
 				Log.i("WhisperIM", "[GTalk] " + r.getUser() + " is available.");
 				Buddy tmp;
+				
 				if (r.getName() == null){
 					tmp = new Buddy(r.getUser(), handle_, protocol_);
 				}else{
@@ -234,6 +235,7 @@ public class GTalkStrategy implements ConnectionStrategy, PacketListener, Roster
 
 	@Override
 	public void entriesAdded(Collection<String> arg0) {
+		
 
 	}
 
