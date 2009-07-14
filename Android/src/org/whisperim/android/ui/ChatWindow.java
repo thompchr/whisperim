@@ -47,7 +47,7 @@ public class ChatWindow extends LinearLayout implements OnKeyListener, OnMenuIte
 	private EditText messageBox_;
 	private Buddy buddy_;
 	private MenuItem encryption_ = null;
-	
+
 	private static final int SEND_KEY = 0;
 	private static final int ENCRYPTION = 1;
 
@@ -62,9 +62,8 @@ public class ChatWindow extends LinearLayout implements OnKeyListener, OnMenuIte
 		buddy_ = buddy;
 		Log.i("WhisperIM", "Creating ChatWindow Object");
 
-
 		LinearLayout.LayoutParams hlp = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, 350);
-		LinearLayout.LayoutParams mlp = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, 60);
+		LinearLayout.LayoutParams mlp = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, 40);
 
 		setOrientation(VERTICAL);
 
@@ -125,7 +124,7 @@ public class ChatWindow extends LinearLayout implements OnKeyListener, OnMenuIte
 				buddy_.getProtocolID()), buddy_, messageBox_.getText().toString(), buddy_.getProtocolID(), da);
 		messageBox_.setText("");
 		parent_.sendMessage(temp);
-		appendMessage(temp);
+		
 	}
 
 	public void receiveMessage(final Message m){
@@ -178,10 +177,16 @@ public class ChatWindow extends LinearLayout implements OnKeyListener, OnMenuIte
 
 
 	}
-	
+
 	public void keyReceived(){
 		if (encryption_ != null){
-			encryption_.setEnabled(true);
+			handler_.post(new Runnable(){
+				@Override
+				public void run() {
+					encryption_.setEnabled(true);
+					messageHistory_.append("Public key received. Encryption is now available.\n");					
+				}				
+			});			
 		}
 	}
 
@@ -191,23 +196,45 @@ public class ChatWindow extends LinearLayout implements OnKeyListener, OnMenuIte
 	public boolean onMenuItemClick(MenuItem item) {
 		if (item.getItemId() == SEND_KEY){
 			Base64 b64 = new Base64();
-			Message keyMsg = new Message(new Buddy(buddy_.getAssociatedLocalHandle(), buddy_.getAssociatedLocalHandle(), buddy_.getProtocolID()), 
-					buddy_, 
-					"<whisperim keyspec=" + new String(b64.encode(parent_.getMyKey().getEncoded())) + "-- />", buddy_.getProtocolID(),
-					Calendar.getInstance().getTime());
+			Message keyMsg;
+			if (parent_.haveKey(buddy_)){
+
+
+				keyMsg = new Message(new Buddy(buddy_.getAssociatedLocalHandle(), buddy_.getAssociatedLocalHandle(), buddy_.getProtocolID()), 
+						buddy_, 
+						"<whisperim keyspec=" + new String(b64.encode(parent_.getMyKey().getEncoded())) + "-- havekey=true-- />", buddy_.getProtocolID(),
+						Calendar.getInstance().getTime());
+			}else{
+				keyMsg = new Message(new Buddy(buddy_.getAssociatedLocalHandle(), buddy_.getAssociatedLocalHandle(), buddy_.getProtocolID()), 
+						buddy_, 
+						"<whisperim keyspec=" + new String(b64.encode(parent_.getMyKey().getEncoded())) + "-- />", buddy_.getProtocolID(),
+						Calendar.getInstance().getTime());
+			}
 			parent_.sendMessage(keyMsg);
 			return true;
 		}else if(item.getItemId() == ENCRYPTION){
+			final MenuItem item2 = item;
 			if (!item.isChecked()){
 				if (parent_.haveKey(buddy_)){
-					parent_.enableEncryption(buddy_);
-					item.setChecked(true);
+					handler_.post(new Runnable(){
+
+						@Override
+						public void run() {
+							parent_.enableEncryption(buddy_);
+							item2.setChecked(true);
+							
+						}
+						
+					});
+					
 					return true;
+				}else{
+					
 				}
 
 			}else{
 				parent_.disableEncryption(buddy_);
-				item.setCheckable(false);
+				item.setChecked(false);
 			}
 		}
 		return false;
